@@ -10,7 +10,7 @@ import {Recibo} from '../models/WSM/Recibo';
 })
 export class ReciboService {
 
-  baseURL = environment.baseURL + "/recibos";
+  baseURL = environment.baseURL + "/receipts";
 
   constructor(private http: HttpClient) { }
 
@@ -23,7 +23,7 @@ export class ReciboService {
   }
 
   downloadRecibo(id: string) {
-    return this.http.get(`http://localhost:8080/recibos/download/${id}`, {
+    return this.http.get(`http://localhost:8080/receipts/download/${id}`, {
       responseType: 'blob' // 👈 Isto diz ao Angular que é um ficheiro, não JSON
     });
   }
