@@ -28,21 +28,14 @@
 
   <div class="filter">
     <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Search..." type="text"/>
-
-    <button (click)="openSprintDrawer()" nz-button nzType="primary">Novo Sprint</button>
     <button (click)="filterByStatus('EM_EXECUCAO')" nz-button nzType="default">Em Execução</button>
     <button (click)="filterByStatus('ENCERRADO')" nz-button nzType="default">Encerrados</button>
     <button (click)="showAll()" nz-button nzType="default">Todos</button>
   </div>
 
-
   <div class="table-container">
     <div class="table-scroll">
-      <nz-table #nzTable
-                [nzData]="listOfDisplayData"
-                [nzScroll]="{ x: '800px', y: '280px'}"
-                nzTableLayout="fixed"
-      >
+      <nz-table [nzData]="listOfDisplayData" [nzScroll]="{ x: '800px', y: '280px'}" nzTableLayout="fixed">
         <thead>
         <tr>
           <th>Nome</th>
@@ -55,10 +48,54 @@
         </thead>
         <tbody>
         <tr *ngFor="let sprint of listOfDisplayData">
-          <td>{{ sprint.name }}</td>
-          <td>{{ sprint.code }}</td>
-          <td>{{ sprint.description }}</td>
 
+          <!-- Nome -->
+          <!-- Nome -->
+          <td>
+            <ng-container *ngIf="editingSprint?.id === sprint.id && editingField === 'name'; else viewName">
+              <input [(ngModel)]="editingSprint!.name"
+                     (blur)="saveInlineEdit(sprint, 'name')"
+                     (keyup.enter)="saveInlineEdit(sprint, 'name')"
+                     nz-input />
+            </ng-container>
+            <ng-template #viewName>
+    <span (click)="startInlineEdit(sprint, 'name')" class="editable-cell">
+      {{ sprint.name }}
+    </span>
+            </ng-template>
+          </td>
+
+
+          <!-- Código -->
+          <td>
+            <ng-container *ngIf="editingSprint?.id === sprint.id && editingField === 'code'; else viewCode">
+              <input [(ngModel)]="editingSprint!.code"
+              (blur)="saveInlineEdit(sprint, 'code')"
+              (keyup.enter)="saveInlineEdit(sprint, 'code')"
+              nz-input />
+            </ng-container>
+            <ng-template #viewCode>
+    <span (click)="startInlineEdit(sprint, 'code')" class="editable-cell">
+      {{ sprint.code }}
+    </span>
+            </ng-template>
+          </td>
+          <!-- Descrição -->
+          <td>
+            <ng-container *ngIf="editingSprint?.id === sprint.id && editingField === 'description'; else viewDesc">
+              <input [(ngModel)]="editingSprint!.description"
+              (blur)="saveInlineEdit(sprint, 'description')"
+              (keyup.enter)="saveInlineEdit(sprint, 'description')"
+              nz-input />
+            </ng-container>
+            <ng-template #viewDesc>
+    <span (click)="startInlineEdit(sprint, 'description')" class="editable-cell">
+      {{ sprint.description }}
+    </span>
+            </ng-template>
+          </td>
+
+          <!-- Status -->
           <td>
             <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
               <nz-tag [nzColor]="sprint.status === 'EM_EXECUCAO' ? 'green' : 'red'">
@@ -79,57 +116,14 @@
           </td>
 
           <td>{{ sprint.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
-          <td> ... </td>
+          <td>
+            <button (click)="deleteSprint(sprint)" nz-button nzDanger nzSize="small" nzType="link">
+              <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
+            </button>
+          </td>
         </tr>
         </tbody>
       </nz-table>
     </div>
   </div>
 </div>
-
-<!-- Sprint Drawer -->
-<nz-drawer
-  (nzOnClose)="closeSprintDrawer()"
-  [nzBodyStyle]="{ overflow: 'auto' }"
-  [nzFooter]="nzSprintDrawerFooter"
-  [nzTitle]="driverDrawerTitle"
-  [nzVisible]="isSprintDrawerVisible"
-  [nzWidth]="480"
->
-  <form *nzDrawerContent [formGroup]="sprintForm" nz-form>
-    <nz-form-item>
-      <nz-form-label nzFor="code" nzRequired>Código</nz-form-label>
-      <nz-form-control>
-        <input formControlName="code" id="code" nz-input placeholder="Código do sprint"/>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label nzFor="name" nzRequired>Name</nz-form-label>
-      <nz-form-control>
-        <input formControlName="name" id="name" nz-input placeholder="Nome do sprint"/>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label nzFor="description" nzRequired>Descrição</nz-form-label>
-      <nz-form-control>
-        <input formControlName="description" id="description" nz-input placeholder="Descrição do sprint"/>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label nzRequired>Status</nz-form-label>
-      <nz-form-control>
-        <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
-          <nz-option nzLabel="Em Execução" nzValue="EM_EXECUCAO"></nz-option>
-          <nz-option nzLabel="Encerrado" nzValue="ENCERRADO"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-  </form>
-
-  <ng-template #nzSprintDrawerFooter>
-    <button (click)="closeSprintDrawer()" nz-button>Cancelar</button>
-    <button (click)="submitSprint()" [disabled]="!sprintForm.valid" nz-button nzType="primary">Salvar</button>
-  </ng-template>
-</nz-drawer>

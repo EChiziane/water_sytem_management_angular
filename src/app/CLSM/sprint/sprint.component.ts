@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {SprintService} from '../../services/sprint.service';
-import {Sprint} from '../../models/CSM/sprint';
+import { Component, OnInit } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { SprintService } from '../../services/sprint.service';
+import { Sprint } from '../../models/CSM/sprint';
+
 
 @Component({
   selector: 'app-sprint',
   templateUrl: './sprint.component.html',
-  styleUrls: ['./sprint.component.scss'],
-  standalone: false
+  standalone: false,
+  styleUrls: ['./sprint.component.scss']
 })
 export class SprintComponent implements OnInit {
 
@@ -17,63 +17,47 @@ export class SprintComponent implements OnInit {
   totalSprints = 0;
   totalEmExecucao = 0;
   totalEncerrados = 0;
-  isSprintDrawerVisible = false;
   searchValue = '';
-  currentEditingSprintId: string | null = null;
 
-  sprintForm!: FormGroup;
+  // Para edição inline
+  editingSprint?: Sprint | null = null;
+  editingField?: string | null = null;
 
   constructor(
     private sprintService: SprintService,
-    private fb: FormBuilder,
     private message: NzMessageService,
     private modal: NzModalService
-  ) {
-    this.initForms();
-  }
-
-  get driverDrawerTitle(): string {
-    return this.currentEditingSprintId ? 'Edição de Sprint' : 'Criação de Sprint';
-  }
+  ) {}
 
   ngOnInit(): void {
     this.loadSprints();
   }
 
-  openSprintDrawer(): void {
-    this.isSprintDrawerVisible = true;
-    this.currentEditingSprintId = null;
-    this.sprintForm.reset({status: 'EM_EXECUCAO'});
+  // Iniciar edição inline
+  startInlineEdit(sprint: Sprint, field: string): void {
+    this.editingSprint = { ...sprint };
+    this.editingField = field;
   }
 
-  submitSprint(): void {
-    if (this.sprintForm.valid) {
-      const sprintData = this.sprintForm.value;
+  // Salvar edição inline
+  saveInlineEdit(original: Sprint, field: string): void {
+    if (!this.editingSprint) return;
 
-      if (this.currentEditingSprintId) {
-        this.sprintService.updateSprint(this.currentEditingSprintId, sprintData).subscribe({
-          next: () => {
-            this.loadSprints();
-            this.closeSprintDrawer();
-            this.message.success('Sprint atualizado com sucesso! ✅');
-          },
-          error: () => {
-            this.message.error('Erro ao atualizar Sprint. 🚫');
-          }
-        });
-      } else {
-        this.sprintService.addSprint(sprintData).subscribe({
-          next: () => {
-            this.loadSprints();
-            this.closeSprintDrawer();
-            this.message.success('Sprint criado com sucesso! ✅');
-          },
-          error: () => {
-            this.message.error('Erro ao criar Sprint. 🚫');
-          }
-        });
+    const updated = { ...original, [field]: (this.editingSprint as any)[field] };
+
+    this.sprintService.updateSprint(original.id, updated).subscribe({
+      next: () => {
+        Object.assign(original, updated);
+        this.message.success(`Campo ${field} atualizado! ✅`);
+        this.editingSprint = null;
+        this.editingField = null;
+      },
+      error: () => {
+        this.message.error('Erro ao atualizar 🚫');
+        this.editingSprint = null;
+        this.editingField = null;
       }
-    }
+    });
   }
 
   deleteSprint(sprint: Sprint): void {
@@ -89,9 +73,7 @@ export class SprintComponent implements OnInit {
             this.loadSprints();
             this.message.success('Sprint deletado com sucesso! 🗑️');
           },
-          error: () => {
-            this.message.error('Erro ao deletar sprint. 🚫');
-          }
+          error: () => this.message.error('Erro ao deletar sprint. 🚫')
         });
       }
     });
@@ -101,43 +83,19 @@ export class SprintComponent implements OnInit {
     if (sprint.status === newStatus) return;
 
     const updated = { ...sprint, status: newStatus };
-    console.log(updated)
-    this.sprintService.updateSprint(sprint.id, updated).subscribe(
-      {
+    this.sprintService.updateSprint(sprint.id, updated).subscribe({
       next: () => {
         sprint.status = newStatus;
-
         this.message.success(`Sprint atualizado para ${newStatus}! ✅`);
         this.totalEmExecucao = this.listOfDisplayData.filter(s => s.status === 'EM_EXECUCAO').length;
         this.totalEncerrados = this.listOfDisplayData.filter(s => s.status === 'ENCERRADO').length;
       },
-      error: () => {
-        this.message.error('Erro ao atualizar status 🚫');
-      }
+      error: () => this.message.error('Erro ao atualizar status 🚫')
     });
-  }
-
-  editSprint(sprint: Sprint): void {
-    this.currentEditingSprintId = sprint.id;
-    this.sprintForm.patchValue({
-      code: sprint.code,
-      name: sprint.name,
-      description: sprint.description,
-      status: sprint.status
-    });
-    this.isSprintDrawerVisible = true;
-  }
-
-  closeSprintDrawer(): void {
-    this.isSprintDrawerVisible = false;
-    this.sprintForm.reset({status: 'EM_EXECUCAO'});
-    this.currentEditingSprintId = null;
   }
 
   filterByStatus(status: 'EM_EXECUCAO' | 'ENCERRADO'): void {
-    this.sprintService.getSprints().subscribe(sprints => {
-      this.listOfDisplayData = sprints.filter(s => s.status === status);
-    });
+    this.listOfDisplayData = this.listOfDisplayData.filter(s => s.status === status);
   }
 
   showAll(): void {
@@ -152,7 +110,8 @@ export class SprintComponent implements OnInit {
     }
     this.listOfDisplayData = this.listOfDisplayData.filter(sprint =>
       sprint.code.toLowerCase().includes(val) ||
-      sprint.description.toLowerCase().includes(val)
+      sprint.description.toLowerCase().includes(val) ||
+      sprint.name.toLowerCase().includes(val)
     );
   }
 
@@ -165,12 +124,4 @@ export class SprintComponent implements OnInit {
     });
   }
 
-  private initForms(): void {
-    this.sprintForm = this.fb.group({
-      code: ['', Validators.required],
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      status: ['EM_EXECUCAO', Validators.required],
-    });
-  }
 }

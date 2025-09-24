@@ -1,9 +1,10 @@
 import {Component} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Manager} from '../../models/WSM/manager';
-import {ManagerService} from '../../services/manager.service';
-import {NzMessageService} from 'ng-zorro-antd/message';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {ManagerService} from '../../services/manager.service';
+
 
 @Component({
   selector: 'app-manager',

@@ -47,7 +47,7 @@ import {NzSpaceComponent, NzSpaceItemDirective} from 'ng-zorro-antd/space';
 import {NzDescriptionsComponent, NzDescriptionsItemComponent} from 'ng-zorro-antd/descriptions';
 import {CustomerDetailsComponent} from './CLSM/customer/customer-details/customer-details.component';
 import {CustomerComponent} from './CLSM/customer/customer.component';
-import {SprintComponent} from './CLSM/sprint/sprint.component';
+
 import {PaymentComponent} from './WSM/payment/payment.component';
 import {PaymentDetailsComponent} from './WSM/payment/payment-details/payment-details.component';
 import {SprintDetailsComponent} from './CLSM/sprint/sprint-details/sprint-details.component';
@@ -61,6 +61,7 @@ import {MatOption, MatSelect} from '@angular/material/select';
 import {MatButton} from '@angular/material/button';
 import {NzDropdownMenuComponent, NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {NzMenuModule} from 'ng-zorro-antd/menu';
+import {SprintComponent} from './CLSM/sprint/sprint.component';
 
 
 
