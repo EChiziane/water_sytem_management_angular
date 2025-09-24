@@ -16,6 +16,7 @@ import {CustomerComponent} from './CLSM/customer/customer.component';
 import {SprintComponent} from './CLSM/sprint/sprint.component';
 import {SprintDetailsComponent} from './CLSM/sprint/sprint-details/sprint-details.component';
 import {CalendarComponent} from './calendar/calendar.component';
+import {InvoiceComponent} from './invoice/invoice.component';
 
 
 const routes: Routes = [
@@ -34,6 +35,7 @@ const routes: Routes = [
   {path: 'sprint-detail/:id', component: SprintDetailsComponent},
   {path: 'driver', component: DriverComponent},
   {path: 'calendar', component: CalendarComponent},
+  {path: 'invoice', component: InvoiceComponent},
   {path: 'welcome', loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)}
 ];
 
