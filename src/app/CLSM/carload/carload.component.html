@@ -107,14 +107,6 @@
 
   <form *nzDrawerContent [formGroup]="carloadForm" nz-form>
     <div [nzGutter]="16" nz-row>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label nzRequired>Destino de Entrega</nz-form-label>
-          <nz-form-control>
-            <input formControlName="deliveryDestination" nz-input placeholder="Destino de entrega">
-          </nz-form-control>
-        </nz-form-item>
-      </div>
 
       <div nz-col nzSpan="12">
         <nz-form-item>
@@ -124,6 +116,17 @@
           </nz-form-control>
         </nz-form-item>
       </div>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label nzRequired>Telefone do Cliente</nz-form-label>
+          <nz-form-control>
+            <nz-input-group nzAddOnBefore="+258">
+              <input formControlName="customerPhoneNumber" nz-input placeholder="Número de telefone">
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
     </div>
 
     <div [nzGutter]="16" nz-row>
@@ -188,13 +191,12 @@
     </div>
 
     <div [nzGutter]="16" nz-row>
+
       <div nz-col nzSpan="12">
         <nz-form-item>
-          <nz-form-label nzRequired>Telefone do Cliente</nz-form-label>
+          <nz-form-label nzRequired>Destino de Entrega</nz-form-label>
           <nz-form-control>
-            <nz-input-group nzAddOnBefore="+258">
-              <input formControlName="customerPhoneNumber" nz-input placeholder="Número de telefone">
-            </nz-input-group>
+            <input formControlName="deliveryDestination" nz-input placeholder="Destino de entrega">
           </nz-form-control>
         </nz-form-item>
       </div>
