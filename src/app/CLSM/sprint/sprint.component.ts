@@ -105,6 +105,31 @@ export class SprintComponent implements OnInit {
 
   }
 
+
+
+  updateStatus(sprint: Sprint, newStatus: string): void {
+    if (sprint.status === newStatus) {
+      return; // nada muda
+    }
+
+    const updated = { ...sprint, status: newStatus };
+
+    this.sprintService.updateSprint(sprint.id, updated).subscribe({
+      next: () => {
+        sprint.status = newStatus; // atualiza na UI sem recarregar tudo
+        this.message.success(`Sprint atualizado para ${newStatus}! ✅`);
+        this.totalActiveSprints =
+          this.listOfDisplayData.filter(s => s.status === 'ACTIVO').length;
+        this.totalInactiveSprints =
+          this.listOfDisplayData.filter(s => s.status === 'INACTIVO').length;
+      },
+      error: () => {
+        this.message.error('Erro ao atualizar status 🚫');
+      }
+    });
+  }
+
+
   editSprint(sprint: Sprint): void {
     this.currentEditingSprintId = sprint.id;
 
@@ -123,6 +148,17 @@ export class SprintComponent implements OnInit {
     this.sprintForm.reset({status: 'ACTIVO'});
     this.currentEditingSprintId = null;
   }
+
+  filterByStatus(status: 'ACTIVO' | 'INACTIVO'): void {
+    this.sprintService.getSprints().subscribe(sprints => {
+      this.listOfDisplayData = sprints.filter(s => s.status === status);
+    });
+  }
+
+  showAll(): void {
+    this.loadSprints();
+  }
+
 
   search(): void {
     // Aqui podes implementar filtro local, ou chamar API com filtro

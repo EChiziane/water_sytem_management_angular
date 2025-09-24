@@ -28,8 +28,13 @@
 
   <div class="filter">
     <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Search..." type="text"/>
+
     <button (click)="openSprintDrawer()" nz-button nzType="primary">Novo Sprint</button>
+    <button (click)="filterByStatus('ACTIVO')" nz-button nzType="default">Ativos</button>
+    <button (click)="filterByStatus('INACTIVO')" nz-button nzType="default">Inativos</button>
+    <button (click)="showAll()" nz-button nzType="default">Todos</button>
   </div>
+
 
   <div class="table-container">
     <div class="table-scroll">
@@ -56,10 +61,26 @@
           <td>{{ sprint.description }}</td>
 
           <td>
-            <nz-tag [nzColor]="sprint.status === 'ACTIVO' ? 'green' : 'red'">
-              {{ sprint.status }}
-            </nz-tag>
+            <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
+              <nz-tag [nzColor]="sprint.status === 'ACTIVO' ? 'green' : 'red'">
+                {{ sprint.status }}
+              </nz-tag>
+            </button>
+
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="updateStatus(sprint, 'ACTIVO')">
+                  <span style="color: green;">Ativar</span>
+                </li>
+                <li nz-menu-item (click)="updateStatus(sprint, 'INACTIVO')">
+                  <span style="color: red;">Inativar</span>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
           </td>
+
+
+
           <td>{{ sprint.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
           <td>
             <button
