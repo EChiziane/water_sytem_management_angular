@@ -13,13 +13,13 @@
           </nz-card>
         </div>
         <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Sprints Ativos">
-            <p>{{ totalActiveSprints | number }}</p>
+          <nz-card nzTitle="Em Execução">
+            <p>{{ totalEmExecucao | number }}</p>
           </nz-card>
         </div>
         <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Sprints Inativos">
-            <p>{{ totalInactiveSprints | number }}</p>
+          <nz-card nzTitle="Encerrados">
+            <p>{{ totalEncerrados | number }}</p>
           </nz-card>
         </div>
       </div>
@@ -30,8 +30,8 @@
     <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Search..." type="text"/>
 
     <button (click)="openSprintDrawer()" nz-button nzType="primary">Novo Sprint</button>
-    <button (click)="filterByStatus('ACTIVO')" nz-button nzType="default">Ativos</button>
-    <button (click)="filterByStatus('INACTIVO')" nz-button nzType="default">Inativos</button>
+    <button (click)="filterByStatus('EM_EXECUCAO')" nz-button nzType="default">Em Execução</button>
+    <button (click)="filterByStatus('ENCERRADO')" nz-button nzType="default">Encerrados</button>
     <button (click)="showAll()" nz-button nzType="default">Todos</button>
   </div>
 
@@ -48,7 +48,6 @@
           <th>Nome</th>
           <th>Código</th>
           <th>Descrição</th>
-
           <th>Status</th>
           <th>Created At</th>
           <th>Ações</th>
@@ -62,47 +61,25 @@
 
           <td>
             <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
-              <nz-tag [nzColor]="sprint.status === 'ACTIVO' ? 'green' : 'red'">
+              <nz-tag [nzColor]="sprint.status === 'EM_EXECUCAO' ? 'green' : 'red'">
                 {{ sprint.status }}
               </nz-tag>
             </button>
 
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item (click)="updateStatus(sprint, 'ACTIVO')">
-                  <span style="color: green;">Ativar</span>
+                <li nz-menu-item (click)="updateStatus(sprint, 'EM_EXECUCAO')">
+                  <span style="color: green;">Executar</span>
                 </li>
-                <li nz-menu-item (click)="updateStatus(sprint, 'INACTIVO')">
-                  <span style="color: red;">Inativar</span>
+                <li nz-menu-item (click)="updateStatus(sprint, 'ENCERRADO')">
+                  <span style="color: red;">Encerrar</span>
                 </li>
               </ul>
             </nz-dropdown-menu>
           </td>
 
-
-
           <td>{{ sprint.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
-          <td>
-            <button
-              (click)="deleteSprint(sprint)"
-              nz-button
-              nzDanger
-              nzSize="small"
-              nzType="link"
-              title="Excluir Sprint"
-            >
-              <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
-            </button>
-            <button (click)="viewSprint(sprint)" [routerLink]="['/sprint-detail', sprint.id]" nz-button nzSize="small"
-                    nzType="link">
-              <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
-            </button>
-
-            <button (click)="editSprint(sprint)" nz-button nzSize="small" nzType="link">
-              <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
-            </button>
-
-          </td>
+          <td> ... </td>
         </tr>
         </tbody>
       </nz-table>
@@ -144,8 +121,8 @@
       <nz-form-label nzRequired>Status</nz-form-label>
       <nz-form-control>
         <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
-          <nz-option nzLabel="ACTIVO" nzValue="ACTIVO"></nz-option>
-          <nz-option nzLabel="INACTIVO" nzValue="INACTIVO"></nz-option>
+          <nz-option nzLabel="Em Execução" nzValue="EM_EXECUCAO"></nz-option>
+          <nz-option nzLabel="Encerrado" nzValue="ENCERRADO"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>

@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -16,18 +15,20 @@ export class SprintComponent implements OnInit {
 
   listOfDisplayData: Sprint[] = [];
   totalSprints = 0;
-  totalActiveSprints = 0;
-  totalInactiveSprints = 0;
+  totalEmExecucao = 0;
+  totalEncerrados = 0;
   isSprintDrawerVisible = false;
   searchValue = '';
   currentEditingSprintId: string | null = null;
 
   sprintForm!: FormGroup;
 
-  constructor(private sprintService: SprintService,
-              private fb: FormBuilder,
-              private message: NzMessageService,
-              private modal: NzModalService) {
+  constructor(
+    private sprintService: SprintService,
+    private fb: FormBuilder,
+    private message: NzMessageService,
+    private modal: NzModalService
+  ) {
     this.initForms();
   }
 
@@ -41,46 +42,39 @@ export class SprintComponent implements OnInit {
 
   openSprintDrawer(): void {
     this.isSprintDrawerVisible = true;
-    this.currentEditingSprintId = null; // Garante que seja criação
-    this.sprintForm.reset({status: 'ACTIVO'});
+    this.currentEditingSprintId = null;
+    this.sprintForm.reset({status: 'EM_EXECUCAO'});
   }
-
 
   submitSprint(): void {
     if (this.sprintForm.valid) {
       const sprintData = this.sprintForm.value;
 
       if (this.currentEditingSprintId) {
-        this.sprintService.updateSprint(this.currentEditingSprintId, sprintData).subscribe
-        ({
-            next: () => {
-              this.loadSprints();
-              this.closeSprintDrawer();
-              this.message.success('Sprint atualizado com sucesso! ✅');
-            },
-            error: () => {
-              this.message.error('Erro ao atualizar Sprint. 🚫');
-            }
+        this.sprintService.updateSprint(this.currentEditingSprintId, sprintData).subscribe({
+          next: () => {
+            this.loadSprints();
+            this.closeSprintDrawer();
+            this.message.success('Sprint atualizado com sucesso! ✅');
+          },
+          error: () => {
+            this.message.error('Erro ao atualizar Sprint. 🚫');
           }
-        )
+        });
       } else {
-        this.sprintService.addSprint(sprintData).subscribe(
-          {
-            next: () => {
-              this.loadSprints();
-              this.closeSprintDrawer();
-              this.message.success('Sprint criado com sucesso! <UNK>');
-            },
-            error: () => {
-              this.message.error('Erro ao criar motorista. <UNK>');
-            }
+        this.sprintService.addSprint(sprintData).subscribe({
+          next: () => {
+            this.loadSprints();
+            this.closeSprintDrawer();
+            this.message.success('Sprint criado com sucesso! ✅');
+          },
+          error: () => {
+            this.message.error('Erro ao criar Sprint. 🚫');
           }
-        )
+        });
       }
-
     }
   }
-
 
   deleteSprint(sprint: Sprint): void {
     this.modal.confirm({
@@ -93,35 +87,29 @@ export class SprintComponent implements OnInit {
         this.sprintService.deleteSprint(sprint.id).subscribe({
           next: () => {
             this.loadSprints();
-            this.message.success('Sprint deletado com sucesso!🗑️');
+            this.message.success('Sprint deletado com sucesso! 🗑️');
           },
           error: () => {
-            this.message.error('Erro ao deletar sprint.🚫');
+            this.message.error('Erro ao deletar sprint. 🚫');
           }
-        })
+        });
       }
-
-    })
-
+    });
   }
 
-
-
   updateStatus(sprint: Sprint, newStatus: string): void {
-    if (sprint.status === newStatus) {
-      return; // nada muda
-    }
+    if (sprint.status === newStatus) return;
 
     const updated = { ...sprint, status: newStatus };
-
-    this.sprintService.updateSprint(sprint.id, updated).subscribe({
+    console.log(updated)
+    this.sprintService.updateSprint(sprint.id, updated).subscribe(
+      {
       next: () => {
-        sprint.status = newStatus; // atualiza na UI sem recarregar tudo
+        sprint.status = newStatus;
+
         this.message.success(`Sprint atualizado para ${newStatus}! ✅`);
-        this.totalActiveSprints =
-          this.listOfDisplayData.filter(s => s.status === 'ACTIVO').length;
-        this.totalInactiveSprints =
-          this.listOfDisplayData.filter(s => s.status === 'INACTIVO').length;
+        this.totalEmExecucao = this.listOfDisplayData.filter(s => s.status === 'EM_EXECUCAO').length;
+        this.totalEncerrados = this.listOfDisplayData.filter(s => s.status === 'ENCERRADO').length;
       },
       error: () => {
         this.message.error('Erro ao atualizar status 🚫');
@@ -129,27 +117,24 @@ export class SprintComponent implements OnInit {
     });
   }
 
-
   editSprint(sprint: Sprint): void {
     this.currentEditingSprintId = sprint.id;
-
     this.sprintForm.patchValue({
       code: sprint.code,
       name: sprint.name,
       description: sprint.description,
       status: sprint.status
     });
-
     this.isSprintDrawerVisible = true;
   }
 
   closeSprintDrawer(): void {
     this.isSprintDrawerVisible = false;
-    this.sprintForm.reset({status: 'ACTIVO'});
+    this.sprintForm.reset({status: 'EM_EXECUCAO'});
     this.currentEditingSprintId = null;
   }
 
-  filterByStatus(status: 'ACTIVO' | 'INACTIVO'): void {
+  filterByStatus(status: 'EM_EXECUCAO' | 'ENCERRADO'): void {
     this.sprintService.getSprints().subscribe(sprints => {
       this.listOfDisplayData = sprints.filter(s => s.status === status);
     });
@@ -159,9 +144,7 @@ export class SprintComponent implements OnInit {
     this.loadSprints();
   }
 
-
   search(): void {
-    // Aqui podes implementar filtro local, ou chamar API com filtro
     const val = this.searchValue.toLowerCase();
     if (!val) {
       this.loadSprints();
@@ -173,15 +156,11 @@ export class SprintComponent implements OnInit {
     );
   }
 
-  viewSprint(sprint: Sprint) {
-
-  }
-
   private loadSprints(): void {
     this.sprintService.getSprints().subscribe(sprints => {
       this.listOfDisplayData = sprints;
-      this.totalActiveSprints = sprints.filter(d => d.status === 'ACTIVO').length;
-      this.totalInactiveSprints = sprints.filter(d => d.status === 'INACTIVO').length;
+      this.totalEmExecucao = sprints.filter(d => d.status === 'EM_EXECUCAO').length;
+      this.totalEncerrados = sprints.filter(d => d.status === 'ENCERRADO').length;
       this.totalSprints = sprints.length;
     });
   }
@@ -191,7 +170,7 @@ export class SprintComponent implements OnInit {
       code: ['', Validators.required],
       name: ['', Validators.required],
       description: ['', Validators.required],
-      status: ['ACTIVO', Validators.required],
+      status: ['EM_EXECUCAO', Validators.required],
     });
   }
 }
