@@ -28,6 +28,7 @@
 
   <div class="filter">
     <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Search..." type="text"/>
+    <button (click)="filterByStatus('EM_EXECUCAO')" nz-button nzType="primary">Novs Sprint</button>
     <button (click)="filterByStatus('EM_EXECUCAO')" nz-button nzType="default">Em Execução</button>
     <button (click)="filterByStatus('ENCERRADO')" nz-button nzType="default">Encerrados</button>
     <button (click)="showAll()" nz-button nzType="default">Todos</button>

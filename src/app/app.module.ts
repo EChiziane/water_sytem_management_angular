@@ -62,7 +62,8 @@ import {MatButton} from '@angular/material/button';
 import {NzDropdownMenuComponent, NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {NzMenuModule} from 'ng-zorro-antd/menu';
 import {SprintComponent} from './CLSM/sprint/sprint.component';
-import {CarloadInvoiceComponent} from './carload-invoice/carload-invoice.component';
+import {CarloadInvoiceComponent} from './CLSM/carload-invoice/carload-invoice.component';
+import {CarloadCustomerComponent} from './CLSM/carload-customer/carload-customer.component';
 
 
 
@@ -81,6 +82,7 @@ CustomerDetailsComponent,
     ListuserComponent,
 CalendarComponent,
     CarloadInvoiceComponent,
+    CarloadCustomerComponent,
     CarloadComponent,
     ManagerComponent,
     SprintComponent,
