@@ -19,7 +19,7 @@ export class CustomerService {
     return this.http.get<Customer[]>(this.baseURL)
   }
 
-  public deleteCustomer(id: number): Observable<Customer> {
+  public deleteCustomer(id: any): Observable<Customer> {
     return this.http.delete<Customer>(`${this.baseURL}/${id}`)
   }
 
@@ -31,7 +31,7 @@ export class CustomerService {
     return this.http.get<Customer>(`${this.baseURL}/${id}`);
   }
 
-  public updateCustomer(id: number, customer: any): Observable<Customer> {
+  public updateCustomer(id: any, customer: any): Observable<Customer> {
     return this.http.put<Customer>(`${this.baseURL}/${id}`, customer).pipe(take(1))
   }
 

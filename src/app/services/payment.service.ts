@@ -3,6 +3,7 @@ import {environment} from '../../environments/environments';
 import {HttpClient} from '@angular/common/http';
 import {Observable, take} from 'rxjs';
 import {Payment} from '../models/WSM/payment';
+import {Student} from '../models/EISSM/students';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,9 @@ export class PaymentService {
     return this.http.get<Payment[]>(`${this.baseURL}/customer/${id}`);
   }
 
+
+
+
   public deletePayment(id: string): Observable<Payment> {
     return this.http.delete<Payment>(`${this.baseURL}/${id}`);
   }
@@ -39,5 +43,9 @@ export class PaymentService {
     return this.http.get<Payment>(`${this.baseURL}/invoice/${id}`);
   }
 
+
+  printInvoice(id: string):Observable<Payment> {
+    return this.http.get<Payment>(`${this.baseURL}/invoice/${id}` );
+  }
 
 }

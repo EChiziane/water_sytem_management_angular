@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import {PaymentService} from '../../../services/payment.service';
 import {Payment} from '../../../models/WSM/payment';
+import {Recibo} from '../../../models/WSM/Recibo';
+import {ReciboService} from '../../../services/recibo.service';
 
 /*import jsPDF from 'jspdf';*/
 
@@ -15,31 +17,44 @@ import {Payment} from '../../../models/WSM/payment';
 })
 export class PaymentDetailsComponent implements OnInit {
   @Input() paymentId!: string;
-  payment!: Payment;
+  recibo: Recibo[]=[];
   meses: string[] = [];
+
+  listOfDisplayData: Recibo[] = [];
 
   constructor(private http: HttpClient,
               private route: ActivatedRoute,
-              private paymentService: PaymentService) {}
+              private paymentService: PaymentService,
+              private reciboService: ReciboService,) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.paymentId = params['id'];
-      this.getPaymentDetails();
+      this.getPaymentIncoices();
     });
   }
 
   private getPaymentDetails(): void {
     this.paymentService.getPaymentById(this.paymentId).subscribe({
       next: (payment: Payment) => {
-        this.payment = payment;
-        this.populateMonths();
+    //    this.populateMonths();
       }
     });
   }
 
-  private populateMonths(): void {
-    const referenceMonths = this.payment.referenceMonth.split(',');
+  private getPaymentIncoices(): void {
+    this.reciboService.getRecibosByPayments(this.paymentId).subscribe({
+      next: (payment: Recibo[]) => {
+        this.recibo = payment;
+        this,this.listOfDisplayData=[...this.recibo]
+        console.log(this.recibo);
+     //   this.populateMonths();
+      }
+    });
+  }
+
+  /*private populateMonths(): void {
+   // const referenceMonths = this.payment.referenceMonth.split(',');
 
     const monthsMap: Record<string, string> = {
       '01': 'Janeiro',
@@ -59,7 +74,7 @@ export class PaymentDetailsComponent implements OnInit {
     this.meses = referenceMonths.map(month => {
       return monthsMap[month.trim()] || month;
     });
-  }
+  }*/
 
   // Função para imprimir
  /* print(): void {
@@ -94,4 +109,16 @@ export class PaymentDetailsComponent implements OnInit {
 
     doc.save('recibo.pdf'); // Gera e faz o download do PDF
   }*/
+
+
+  getDownloadUrl(recibo: Recibo) {
+    this.reciboService.downloadRecibo(recibo.id).subscribe((fileBlob: Blob) => {
+      const url = window.URL.createObjectURL(fileBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = recibo.fileName; // ou qualquer nome
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
 }

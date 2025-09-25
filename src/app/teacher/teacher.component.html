@@ -1,0 +1,95 @@
+<div class="main-content">
+  <div class="header">
+    <p>Lista de Professores</p>
+  </div>
+
+  <div class="filter">
+    <input nz-input placeholder="Pesquisar..." [(ngModel)]="searchValue" (ngModelChange)="search()" />
+    <button nz-button nzType="primary" (click)="openDrawer()">Novo Professor</button>
+  </div>
+
+  <nz-table [nzData]="listOfDisplayData" [nzScroll]="{ x: '800px', y: '280px'}" nzTableLayout="fixed">
+    <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Telefone</th>
+      <th>Especialização</th>
+      <th>Tipo</th>
+      <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let teacher of listOfDisplayData">
+      <td>{{ teacher.name }}</td>
+      <td>{{ teacher.email }}</td>
+      <td>{{ teacher.phoneNumber }}</td>
+      <td>{{ teacher.specialization }}</td>
+      <td>{{ teacher.type }}</td>
+      <td>
+        <button nz-button nzSize="small" nzType="link" (click)="editTeacher(teacher)">
+          <nz-icon nzType="edit"></nz-icon>
+        </button>
+        <button nz-button nzSize="small" nzType="link" nzDanger (click)="deleteTeacher(teacher)">
+          <nz-icon nzType="delete"></nz-icon>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<nz-drawer
+  [nzVisible]="isDrawerVisible"
+  [nzTitle]="drawerTitle"
+  [nzWidth]="480"
+  (nzOnClose)="closeDrawer()"
+  [nzFooter]="drawerFooter"
+  [nzBodyStyle]="{ overflow: 'auto' }"
+>
+  <form [formGroup]="teacherForm" nz-form *nzDrawerContent>
+    <nz-form-item>
+      <nz-form-label nzRequired>Nome</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="name" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Email</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="email" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Telefone</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="phoneNumber" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Especialização</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="specialization" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Tipo</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="type">
+          <nz-option nzValue="HEAD_TEACHER" nzLabel="FHEAD_TEACHER"></nz-option>
+         ,
+          <nz-option nzValue="PASSISTANT" nzLabel="ASSISTANT"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <ng-template #drawerFooter>
+    <button nz-button (click)="closeDrawer()">Cancelar</button>
+    <button nz-button nzType="primary" [disabled]="teacherForm.invalid" (click)="submitTeacher()">Salvar</button>
+  </ng-template>
+</nz-drawer>

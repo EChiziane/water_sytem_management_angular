@@ -4,7 +4,7 @@
   </div>
 
   <div class="dash">
-    <div style="background: #ECECEC; padding:30px;">
+    <div style="background: #ECECEC;">
       <div [nzGutter]="8" nz-row>
         <div [nzSpan]="8" nz-col>
           <nz-card nzTitle="Total Payments">
@@ -30,6 +30,7 @@
     <input class="input-flex" nz-input placeholder="Search by amount" type="text" [(ngModel)]="searchValue" (input)="filterData()"/>
 
     <button (click)="open()" nz-button nzType="primary">Adicionar</button>
+    <button (click)="openCustomerDrawer()" nz-button nzType="primary">Customer</button>
   </div>
 
   <div class="table">
@@ -54,10 +55,11 @@
         <td>{{ data.confirmed ? 'Yes' : 'No' }}</td>
         <td>{{ data.paymentDate | date: 'dd MM yyyy - HH:mm' }}</td>
         <td>
+
           <button (click)="viewPayment(data)" [routerLink]="['/payment-detail', data.id]" nz-button nzSize="small" nzType="link">
             <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
           </button>
-          <button (click)="printPayment(data)" nz-button nzSize="small" nzType="link">
+          <button (click)="   createRecibo(data)" nz-button nzSize="small" nzType="link">
             <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
           </button>
           <button (click)="deletePayment(data)" nz-button nzDanger nzSize="small" nzType="link">
@@ -93,12 +95,14 @@
         <nz-form-item>
           <nz-form-label>Payment Method</nz-form-label>
           <nz-form-control>
-            <nz-select formControlName="paymentMethod" nzPlaceHolder="Select payment method">
-              <nz-option nzLabel="Credit" nzValue="Credit"></nz-option>
-              <nz-option nzLabel="Cash" nzValue="Cash"></nz-option>
-              <nz-option nzLabel="Bank Transfer" nzValue="Bank Transfer"></nz-option>
+            <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o método de pagamento">
+              <nz-option nzLabel="EMOLA" nzValue="EMOLA"></nz-option>
+              <nz-option nzLabel="MPESA" nzValue="MPESA"></nz-option>
+              <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
+              <nz-option nzLabel="NUMERARIO" nzValue="NUMERARIO"></nz-option>
             </nz-select>
           </nz-form-control>
+
         </nz-form-item>
       </div>
     </div>
@@ -141,6 +145,95 @@
     <div style="float: right">
       <button (click)="close()" nz-button style="margin-right: 8px;">Cancel</button>
       <button (click)="createPayment()" nz-button nzType="primary">Submit</button>
+    </div>
+  </ng-template>
+</nz-drawer>
+
+
+
+
+
+<nz-drawer
+  (nzOnClose)="closeCustomerDrawer()"
+  [nzBodyStyle]="{ overflow: 'auto' }"
+  [nzFooter]="footerTpl"
+  [nzMaskClosable]="false"
+  [nzVisible]="visible1CustomerDrawer"
+  [nzWidth]="720"
+  nzTitle="Create Customer">
+
+  <form (ngSubmit)="createCustomer()" *nzDrawerContent [formGroup]="customerForm" nz-form>
+    <div [nzGutter]="16" nz-row>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Nome</nz-form-label>
+          <nz-form-control>
+            <input formControlName="name" nz-input placeholder="Digite o nome do cliente" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Contato</nz-form-label>
+          <nz-form-control>
+            <nz-input-group nzAddOnBefore="+258">
+              <input formControlName="contact" nz-input placeholder="Digite o contato" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div [nzGutter]="16" nz-row>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Endereço</nz-form-label>
+          <nz-form-control>
+            <input formControlName="address" nz-input placeholder="Digite o endereço" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Status</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
+              <nz-option nzLabel="ATIVO" nzValue="ATIVO"></nz-option>
+              <nz-option nzLabel="INATIVO" nzValue="INATIVO"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div [nzGutter]="16" nz-row>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Valve</nz-form-label>
+          <nz-form-control>
+            <nz-input-group nzAddOnBefore="MZN">
+              <input formControlName="valve" nz-input type="number" placeholder="Digite a válvula" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label>Meses em Dívida</nz-form-label>
+          <nz-form-control>
+            <input formControlName="monthsInDebt" nz-input type="number" placeholder="Digite os meses" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+
+  <ng-template #footerTpl>
+    <div style="float: right">
+      <button (click)="close()" nz-button style="margin-right: 8px;">Cancelar</button>
+      <button (click)="createCustomer()" nz-button nzType="primary">
+         'Salvar'
+      </button>
     </div>
   </ng-template>
 </nz-drawer>
