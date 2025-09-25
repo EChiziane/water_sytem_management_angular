@@ -5,7 +5,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {IconsProviderModule} from './icons-provider.module';
 import {NzLayoutModule} from 'ng-zorro-antd/layout';
-
+import {NzMenuModule} from 'ng-zorro-antd/menu';
 import {en_US, provideNzI18n} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
 import en from '@angular/common/locales/en';
@@ -32,7 +32,7 @@ import {AuthInterceptor} from './interceptors/auth-interceptor';
 import {LoginComponent} from './UASM/login/login.component';
 import {NzAlertComponent} from 'ng-zorro-antd/alert';
 import {NzCheckboxComponent} from 'ng-zorro-antd/checkbox';
-
+import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {MainLayoutComponent} from './main-layout/main-layout.component';
 import {NzModalModule} from 'ng-zorro-antd/modal';
 import {NzAvatarModule} from 'ng-zorro-antd/avatar';
@@ -47,7 +47,7 @@ import {NzSpaceComponent, NzSpaceItemDirective} from 'ng-zorro-antd/space';
 import {NzDescriptionsComponent, NzDescriptionsItemComponent} from 'ng-zorro-antd/descriptions';
 import {CustomerDetailsComponent} from './CLSM/customer/customer-details/customer-details.component';
 import {CustomerComponent} from './CLSM/customer/customer.component';
-
+import {SprintComponent} from './CLSM/sprint/sprint.component';
 import {PaymentComponent} from './WSM/payment/payment.component';
 import {PaymentDetailsComponent} from './WSM/payment/payment-details/payment-details.component';
 import {SprintDetailsComponent} from './CLSM/sprint/sprint-details/sprint-details.component';
@@ -59,9 +59,10 @@ import {MatInput} from '@angular/material/input';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MatButton} from '@angular/material/button';
-import {NzDropdownMenuComponent, NzDropDownModule} from 'ng-zorro-antd/dropdown';
-import {NzMenuModule} from 'ng-zorro-antd/menu';
-import {SprintComponent} from './CLSM/sprint/sprint.component';
+import {StudentComponent} from './students/students.component';
+import {TeacherComponent} from './teacher/teacher.component';
+import {ClassroomComponent} from './classroom/classroom.component';
+import {ReciboComponent} from './recibo/recibo.component';
 
 
 
@@ -87,7 +88,10 @@ CalendarComponent,
     PaymentComponent,
     PaymentDetailsComponent,
     CustomerDetailsComponent,
-
+    StudentComponent,
+    TeacherComponent,
+    ClassroomComponent,
+ReciboComponent
 
 
   ],
@@ -97,15 +101,19 @@ CalendarComponent,
     IconsProviderModule,
     HttpClientModule,
     NzLayoutModule,
+    NzDropDownModule,
+    NzMenuModule,
     FormsModule,
     NzInputDirective,
     NzButtonComponent,
     NzDividerComponent,
     NzTableModule,
+
+
+
     NzLayoutModule,
     NzDropDownModule,
     NzMenuModule,
-    NzDropdownMenuComponent,
     FormsModule,
     NzInputDirective,
     NzButtonComponent,

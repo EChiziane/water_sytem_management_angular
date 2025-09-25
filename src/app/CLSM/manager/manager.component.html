@@ -69,6 +69,52 @@
     </div>
   </div>
 </div>
+<nz-drawer
+  (nzOnClose)="closeManagerDrawer()"
+  [nzBodyStyle]="{ overflow: 'auto' }"
+  [nzFooter]="nzManagerDrawerFooter"
+  [nzTitle]="managerDrawerTitle"
+  [nzVisible]="isManagerDrawerVisible"
+  [nzWidth]="480"
+>
+  <form *nzDrawerContent [formGroup]="managerForm" nz-form>
+    <nz-form-item>
+      <nz-form-label nzRequired>Nome</nz-form-label>
+      <nz-form-control>
+        <input formControlName="name" nz-input placeholder="Nome do gestor">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Contacto</nz-form-label>
+      <nz-form-control>
+        <input formControlName="contact" nz-input placeholder="Número de contacto">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Endereço</nz-form-label>
+      <nz-form-control>
+        <input formControlName="address" nz-input placeholder="Endereço do gestor">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Status</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
+          <nz-option nzLabel="ACTIVO" nzValue="ACTIVO"></nz-option>
+          <nz-option nzLabel="INACTIVO" nzValue="INACTIVO"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <ng-template #nzManagerDrawerFooter>
+    <button (click)="closeManagerDrawer()" nz-button>Cancelar</button>
+    <button (click)="submitManager()" [disabled]="!managerForm.valid" nz-button nzType="primary">Salvar</button>
+  </ng-template>
+</nz-drawer>
 
 <!-- Manager Drawer -->
 <nz-drawer
