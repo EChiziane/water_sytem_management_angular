@@ -64,6 +64,8 @@ import {NzMenuModule} from 'ng-zorro-antd/menu';
 import {SprintComponent} from './CLSM/sprint/sprint.component';
 import {CarloadInvoiceComponent} from './CLSM/carload-invoice/carload-invoice.component';
 import {CarloadCustomerComponent} from './CLSM/carload-customer/carload-customer.component';
+import {MaterialItemComponent} from './CLSM/material-item/material-item.component';
+
 
 
 
@@ -83,6 +85,7 @@ CustomerDetailsComponent,
 CalendarComponent,
     CarloadInvoiceComponent,
     CarloadCustomerComponent,
+    MaterialItemComponent,
     CarloadComponent,
     ManagerComponent,
     SprintComponent,

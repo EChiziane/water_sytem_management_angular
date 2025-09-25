@@ -19,6 +19,8 @@ import {CalendarComponent} from './calendar/calendar.component';
 import {InvoiceComponent} from './invoice/invoice.component';
 import {CarloadInvoiceComponent} from './CLSM/carload-invoice/carload-invoice.component';
 import {CarloadCustomerComponent} from './CLSM/carload-customer/carload-customer.component';
+import {MaterialItemComponent} from './CLSM/material-item/material-item.component';
+
 
 
 const routes: Routes = [
@@ -39,6 +41,7 @@ const routes: Routes = [
   {path: 'calendar', component: CalendarComponent},
   {path: 'carload-invoice', component: CarloadInvoiceComponent},
   {path: 'carload-customer', component: CarloadCustomerComponent},
+  {path: 'materials', component: MaterialItemComponent},
   {path: 'welcome', loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)}
 ];
 

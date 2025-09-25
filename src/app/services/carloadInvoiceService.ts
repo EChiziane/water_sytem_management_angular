@@ -31,4 +31,15 @@ export class CarloadInvoiceService {
   deleteInvoice(id: string): Observable<CarloadInvoice> {
     return this.http.delete<CarloadInvoice>(`${this.baseURL}/${id}`);
   }
+
+  public getDownloadUrl(id: string): Observable<CarloadInvoice>{
+    return this.http.get<CarloadInvoice> (`${this.baseURL}/download/${id}`);
+  }
+
+  downloadRecibo(id: string) {
+    return this.http.get(`http://localhost:8080/carload-invoices/download/${id}`, {
+      responseType: 'blob' // 👈 Isto diz ao Angular que é um ficheiro, não JSON
+    });
+  }
+
 }
