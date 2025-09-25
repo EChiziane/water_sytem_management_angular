@@ -1,0 +1,63 @@
+<div class='main-content'>
+  <div class='header'>
+    <p>Customer List</p>
+  </div>
+  <div class='filter'>
+    <input (ngModelChange)='search()' [(ngModel)]='searchValue' nz-input placeholder='Search...' type='text'/>
+    <button (click)='openDrawer()' nz-button nzType='primary'>New Customer</button>
+  </div>
+  <div class='table-container'>
+    <div class='table-scroll'>
+      <nz-table [nzData]='customers' nzTableLayout='fixed'>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Customer Code</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let customer of customers'>
+            <td>{{ customer.name }}</td>
+            <td>{{ customer.customerCode }}</td>
+            <td>{{ customer.phoneNumber }}</td>
+            <td>{{ customer.emailAddress }}</td>
+            <td>{{ customer.createdAt | date:'dd MM yyyy - HH:mm' }}</td>
+            <td>
+              <button (click)='editCustomer(customer)' nz-button nzType='link' nzSize='small'>
+                <nz-icon nzType='edit' nzTheme='outline'></nz-icon>
+              </button>
+              <button (click)='deleteCustomer(customer)' nz-button nzDanger nzType='link' nzSize='small'>
+                <nz-icon nzType='delete' nzTheme='outline'></nz-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</div>
+
+<nz-drawer
+  [nzVisible]='isDrawerVisible'
+  [nzTitle]='drawerTitle'
+  (nzOnClose)='closeDrawer()'
+  [nzWidth]='480'
+  [nzFooter]='drawerFooter'>
+  <form *nzDrawerContent [formGroup]='customerForm' nz-form>
+    <nz-form-item *ngFor='let field of customerForm.controls | keyvalue'>
+      <nz-form-label [nzFor]='field.key' nzRequired>{{ field.key }}</nz-form-label>
+      <nz-form-control>
+        <input [formControlName]='field.key' nz-input [id]='field.key' [placeholder]='field.key'/>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <ng-template #drawerFooter>
+    <button nz-button (click)='closeDrawer()'>Cancel</button>
+    <button nz-button nzType='primary' (click)='submitCustomer()' [disabled]='!customerForm.valid'>Save</button>
+  </ng-template>
+</nz-drawer>

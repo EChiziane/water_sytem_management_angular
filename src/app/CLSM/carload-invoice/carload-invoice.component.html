@@ -1,0 +1,120 @@
+<div class="main-content">
+  <div class="header">
+    <p>Carload Invoices</p>
+  </div> <div class="filter">
+  <input [(ngModel)]="searchValue"
+         (ngModelChange)="search()"
+         nz-input placeholder="Search...">
+  <button (click)="openDrawer()"
+          nz-button nzType="primary">New Invoice</button>
+</div> <div class="table-container">
+  <nz-table [nzData]="invoices"
+            [nzScroll]="{ x: '1000px', y: '300px' }"
+            nzTableLayout="fixed"> <thead>
+  <tr> <th>Invoice Code</th> <th>Description</th>
+    <th>Quantity</th> <th>Unit Price</th> <th>Total</th>
+    <th>File</th> <th>Created At</th> <th>Actions</th> </tr> </thead> <tbody> <tr *ngFor="let invoice of invoices"> <td>{{ invoice.invoiceCode }}</td> <td>{{ invoice.description }}</td> <td>{{ invoice.quantity }}</td> <td>{{ invoice.unitPrice }}</td> <td>{{ invoice.total }}</td> <td> <a (click)="downloadInvoice(invoice)" target="_blank">{{ invoice.filePath }}</a> </td> <td>{{ invoice.createdAt | date:
+  'dd/MM/yyyy - HH:mm' }}</td> <td> <button (click)="editInvoice(invoice)" nz-button nzType="link" nzSize="small">Edit</button> <button (click)="deleteInvoice(invoice)"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             nz-button nzDanger nzType="link" nzSize="small">Delete</button> </td> </tr> </tbody> </nz-table> </div> </div>
+
+
+<nz-drawer
+  [nzVisible]="isDrawerVisible"
+  [nzTitle]="currentInvoiceId ? 'Edit Invoice' : 'New Invoice'"
+  (nzOnClose)="closeDrawer()"
+  [nzWidth]="600"
+  [nzFooter]="nzDrawerFooter">
+
+  <form nz-form [formGroup]="invoiceForm" *nzDrawerContent>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Cliente</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="carloadCustomerId" nzPlaceHolder="Nome Cliente">
+          <nz-option *ngFor="let customer of dataCustomer" [nzLabel]="customer.name" [nzValue]="customer.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Invoice Code</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="invoiceCode">
+      </nz-form-control>
+    </nz-form-item>
+
+    <div formArrayName="items" class="items-array">
+      <div *ngFor="let item of items.controls; let i=index" [formGroupName]="i" class="item-row">
+        <nz-form-item>
+          <nz-form-label nzRequired>Item</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="description">
+              <nz-option *ngFor="let it of itemsOptions" [nzLabel]="it" [nzValue]="it"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Quantidade</nz-form-label>
+          <nz-form-control>
+            <input type="number" nz-input formControlName="quantity">
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Preço Unitário</nz-form-label>
+          <nz-form-control>
+            <input type="number" nz-input formControlName="unitPrice">
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Subtotal Item</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="amount">
+          </nz-form-control>
+        </nz-form-item>
+
+        <button nz-button nzType="default" (click)="removeItem(i)" type="button">Remover</button>
+      </div>
+    </div>
+
+    <button nz-button nzType="dashed" (click)="addItem()" type="button" style="width:100%; margin-bottom:15px;">
+      Adicionar Item
+    </button>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Taxa</nz-form-label>
+      <nz-form-control>
+        <input type="number" nz-input formControlName="taxRate">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Subtotal</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="subtotal" >
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Tax</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="tax" >
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Total</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="total" >
+      </nz-form-control>
+    </nz-form-item>
+
+  </form>
+
+  <ng-template #nzDrawerFooter>
+    <button nz-button (click)="closeDrawer()">Cancelar</button>
+    <button nz-button nzType="primary" (click)="submitInvoice()" [disabled]="!invoiceForm.valid">Salvar</button>
+  </ng-template>
+</nz-drawer>

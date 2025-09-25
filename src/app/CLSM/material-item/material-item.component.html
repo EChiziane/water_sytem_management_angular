@@ -1,0 +1,77 @@
+<div class="main-content">
+  <div class="header">
+    <button (click)="openDrawer()" nz-button nzType="primary">New Material Item</button>
+  </div>
+
+  <div class="table-container">
+    <nz-table [nzData]="listOfDisplayData" [nzBordered]="true">
+      <thead>
+      <tr>
+        <th>Description</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Total Value</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of listOfDisplayData">
+        <td>{{ item.materialDescription }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.unitPrice | currency }}</td>
+        <td>{{ item.totalItemValue | currency }}</td>
+        <td>{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>
+          <button (click)="edit(item)" nz-button nzType="link">Edit</button>
+          <button (click)="delete(item)" nz-button nzType="link" nzDanger>Delete</button>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<!-- Drawer -->
+<nz-drawer
+  [nzVisible]="isDrawerVisible"
+  [nzTitle]="drawerTitle"
+  [nzFooter]="nzDrawerFooter"
+  (nzOnClose)="closeDrawer()"
+  [nzWidth]="480"
+>
+  <form *nzDrawerContent [formGroup]="materialItemForm" nz-form  >
+    <nz-form-item>
+      <nz-form-label nzFor="materialDescription" nzRequired>Description</nz-form-label>
+      <nz-form-control>
+        <input id="materialDescription" formControlName="materialDescription" nz-input />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="quantity" nzRequired>Quantity</nz-form-label>
+      <nz-form-control>
+        <input id="quantity" type="number" formControlName="quantity" nz-input />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzFor="unitPrice" nzRequired>Unit Price</nz-form-label>
+      <nz-form-control>
+        <input id="unitPrice" type="number" formControlName="unitPrice" nz-input />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Total Value</nz-form-label>
+      <nz-form-control>
+        <input formControlName="totalItemValue" nz-input />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <ng-template #nzDrawerFooter>
+    <button (click)="closeDrawer()" nz-button>Cancel</button>
+    <button (click)="submit()" [disabled]="!materialItemForm.valid" nz-button nzType="primary">Save</button>
+  </ng-template>
+</nz-drawer>
