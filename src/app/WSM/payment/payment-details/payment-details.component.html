@@ -1,58 +1,51 @@
-<!--
-&lt;!&ndash; 📄 A4 Page Wrapper &ndash;&gt;
-<div class="a4-page">
-
-  &lt;!&ndash; 🔹 Header Section &ndash;&gt;
-  <div class="section header-section">
-    <nz-page-header nzBackIcon [nzGhost]="false">
-      <nz-page-header-title>Recibo Para: {{ payment.customerName }}</nz-page-header-title>
-      <nz-page-header-extra>
-        <nz-space>
-          <button *nzSpaceItem nz-button >Imprimir</button>
-          <button *nzSpaceItem nz-button >Baixar</button>
-        </nz-space>
-      </nz-page-header-extra>
-    </nz-page-header>
+<div class="main-content">
+  <div class="header">
+    <p>Lista de Recibos</p>
   </div>
 
-  &lt;!&ndash; 💳 Payment Description Section &ndash;&gt;
-  <div class="section payment-description">
-    <nz-page-header-content>
-      <nz-descriptions nzSize="small" [nzColumn]="3">
-        <nz-descriptions-item nzTitle="Valor" [nzSpan]="1"><strong>{{ payment.amount | currency }}</strong></nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Data do Pagamento" [nzSpan]="1">{{ payment.paymentDate | date: 'dd/MM/yyyy' }}</nz-descriptions-item>
-      </nz-descriptions>
 
-      <nz-descriptions nzSize="small" [nzColumn]="3">
-        <nz-descriptions-item nzTitle="Método de Pagamento" [nzSpan]="1">{{ payment.paymentMethod }}</nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Confirmado" [nzSpan]="1">{{ payment.confirmed ? 'Sim' : 'Não' }}</nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Criado Por" [nzSpan]="1"><strong>Joel Garcias</strong></nz-descriptions-item>
-      </nz-descriptions>
-    </nz-page-header-content>
+  <div class="table">
+    <nz-table #nzTable [nzData]="listOfDisplayData" [nzScroll]="{ x: '1150px', y: '340px' }" nzTableLayout="fixed">
+      <thead>
+      <tr>
+        <th nzCustomFilter>
+          Nome do Cliente
+        </th>
+        <th>Nome do Ficheiro</th>
+        <th>Caminho do Ficheiro</th>
+        <th>Data de Criação</th>
+        <th>Ações</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of nzTable.data">
+        <td>{{ data.customerName }}</td>
+        <td>
+          {{ data.fileName }}
+        </td>
+
+        <td>
+          <a target="_blank"
+             (click)="getDownloadUrl(data)" >
+            {{ data.filePath }}
+          </a>
+        </td>
+        <td>{{ data.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
+        <td>
+          <button nz-button nzType="link" nzSize="small" >
+            <nz-icon nzType="eye" nzTheme="outline"></nz-icon>
+          </button>
+          <button nz-button nzType="link" nzSize="small" >
+            <nz-icon nzType="edit" nzTheme="outline"></nz-icon>
+          </button>
+          <button nz-button nzType="link" nzSize="small" nzDanger>
+            <nz-icon nzType="delete" nzTheme="outline"></nz-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+
+
   </div>
-
-  &lt;!&ndash; 🗓️ Meses de Pagamento Section &ndash;&gt;
-  <div class="section payment-months">
-    <nz-page-header-content>
-      <nz-descriptions nzSize="small" [nzColumn]="1">
-        <nz-descriptions-item nzTitle="Pagamento de Água referente ao(s) mês(es)" [nzSpan]="1">
-          <ul>
-            <li *ngFor="let mes of meses"><strong>{{ mes }}</strong></li>
-          </ul>
-        </nz-descriptions-item>
-      </nz-descriptions>
-    </nz-page-header-content>
-  </div>
-
-  &lt;!&ndash; 🏢 Company Information Section &ndash;&gt;
-  <div class="section company-info">
-    <nz-card style="width:100%;" nzTitle="Informações da Empresa">
-      <p><strong>Nome da Empresa:</strong> Transportes Chiziane</p>
-      <p><strong>Localização:</strong> Av. de Moçambique, nº 534, Marginal</p>
-      <p><strong>NUIT:</strong> 123456789</p>
-      <p><strong>Telefone:</strong> 845098583</p>
-    </nz-card>
-  </div>
-
 </div>
--->

@@ -241,7 +241,7 @@ export class CarloadInvoiceComponent implements OnInit {
       const url = window.URL.createObjectURL(fileBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = invoice.fileName || 'invoice.pdf';
+      a.download = invoice.fileName || 'invoice.txt';
       a.click();
       window.URL.revokeObjectURL(url);
     });

@@ -1,20 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {CustomerService} from '../../services/customer.service';
-import {Customer} from '../../models/CSM/customer';
+import { CustomerService } from '../../services/customer.service';
+import { Customer } from '../../models/CSM/customer';
+import { PaymentService } from '../../services/payment.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-customer',
-  standalone:false,
+  standalone: false,
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.scss']
 })
 export class CustomerComponent implements OnInit {
   dataSource: Customer[] = [];
   listOfDisplayData: Customer[] = [];
-
+  dataCostumers: Customer[] = [];
   totalCustomers = 0;
   activeCustomers = 0;
   inactiveCustomers = 0;
@@ -36,7 +38,22 @@ export class CustomerComponent implements OnInit {
     monthsInDebt: new FormControl(1, [Validators.required, Validators.min(0)])
   });
 
-  constructor(private http: HttpClient, private customerService: CustomerService) {}
+  paymentDrawerVisible = false;
+  paymentForm = new FormGroup({
+    amount: new FormControl('', [Validators.required, Validators.min(0)]),
+    numMonths: new FormControl('', Validators.required),
+    paymentMethod: new FormControl('', Validators.required),
+    confirmed: new FormControl(false),
+    customerId: new FormControl('', Validators.required)
+  });
+
+  constructor(
+    private http: HttpClient,
+    private customerService: CustomerService,
+    private paymentService: PaymentService,
+    private message: NzMessageService,
+    private modal: NzModalService
+  ) {}
 
   ngOnInit(): void {
     this.getCustomers();
@@ -45,6 +62,7 @@ export class CustomerComponent implements OnInit {
   getCustomers() {
     this.customerService.getCustomers().subscribe((customers: Customer[]) => {
       this.dataSource = customers;
+      this.dataCostumers = customers;
       this.listOfDisplayData = [...this.dataSource];
       this.calculateCustomerStats();
     });
@@ -75,41 +93,50 @@ export class CustomerComponent implements OnInit {
     this.visible1 = true;
   }
 
+  openPaymentDrawer(): void {
+    this.paymentDrawerVisible = true;
+  }
+
   close(): void {
     this.visible1 = false;
     this.customerForm.reset();
     this.selectedCustomerId = null;
   }
 
+  closePaymentDrawer(): void {
+    this.paymentDrawerVisible = false;
+    this.paymentForm.reset();
+  }
+
   createCustomer() {
     if (this.customerForm.invalid) {
-      console.error('Formulário inválido.');
+      this.message.warning('Preencha todos os campos obrigatórios!');
       return;
     }
 
     if (this.isEditMode && this.selectedCustomerId) {
       this.customerService.updateCustomer(this.selectedCustomerId, this.customerForm.value).subscribe({
         next: (updatedCustomer) => {
-          console.log('Cliente atualizado com sucesso:', updatedCustomer);
           this.getCustomers();
           this.close();
+          this.message.success('Cliente atualizado com sucesso! ✅');
         },
-        error: (err) => {
-          console.error('Erro ao atualizar cliente:', err);
+        error: () => {
+          this.message.error('Erro ao atualizar cliente. 🚫');
         }
       });
     } else {
       this.customerService.addCustomer(this.customerForm.value).subscribe({
         next: (newCustomer) => {
-          console.log('Cliente criado com sucesso:', newCustomer);
           this.dataSource = [...this.dataSource, newCustomer];
           this.listOfDisplayData = [...this.dataSource];
           this.calculateCustomerStats();
           this.customerForm.reset({ status: 'ATIVO', valve: 10, monthsInDebt: 1 });
           this.close();
+          this.message.success('Cliente criado com sucesso! ✅');
         },
-        error: (err) => {
-          console.error('Erro ao adicionar cliente:', err);
+        error: () => {
+          this.message.error('Erro ao criar cliente. 🚫');
         }
       });
     }
@@ -136,6 +163,43 @@ export class CustomerComponent implements OnInit {
   }
 
   deleteCustomer(data: Customer) {
-    // Lógica de exclusão aqui
+    this.modal.confirm({
+      nzTitle: 'Tens certeza que quer eliminar este Cliente?',
+      nzContent: `Cliente: <strong>${data.name}</strong>`,
+      nzOkText: 'Sim',
+      nzOkType: 'primary',
+      nzCancelText: 'Não',
+      nzOnOk: () => {
+        this.customerService.deleteCustomer(data.id).subscribe({
+          next: () => {
+            this.getCustomers();
+            this.message.success('Cliente deletado com sucesso! 🗑️');
+          },
+          error: () => {
+            this.message.error('Erro ao deletar cliente. 🚫');
+          }
+        });
+      }
+    });
+  }
+
+  public createPayment() {
+    if (this.paymentForm.invalid) {
+      this.message.warning('Preencha todos os campos obrigatórios do pagamento!');
+      return;
+    }
+
+    this.paymentService.addPayment(this.paymentForm.value).subscribe({
+      next: (newPayment) => {
+        console.log('Form Data:', this.paymentForm.value);
+        console.log('Pagamento adicionado com sucesso:', newPayment);
+        this.paymentForm.reset({ confirmed: false });
+        this.closePaymentDrawer();;
+        this.message.success('Pagamento registrado com sucesso! 💰');
+      },
+      error: () => {
+        this.message.error('Erro ao registrar pagamento. 🚫');
+      }
+    });
   }
 }
