@@ -32,3 +32,18 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   overflow: hidden;
 }
+.item-row-flex {
+  display: flex;
+  align-items: flex-end; /* alinhamento vertical */
+  gap: 16px; /* espaçamento entre os campos */
+  margin-bottom: 12px; /* espaçamento entre linhas de item */
+  flex-wrap: wrap; /* quebra de linha se a tela for pequena */
+}
+
+.item-row-flex nz-form-item {
+  flex: 1 1 200px; /* cada item ocupa mínimo 200px e cresce conforme disponível */
+}
+
+.item-row-flex button {
+  height: 40px; /* alinhar botão com os inputs */
+}
