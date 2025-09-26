@@ -113,14 +113,14 @@ export class CarloadInvoiceComponent implements OnInit {
   openDrawer(): void {
     this.isDrawerVisible = true;
     this.currentInvoiceId = null;
-    this.invoiceForm.reset({ taxRate: 0.1 });
+    this.invoiceForm.reset({ taxRate: 0.16 });
     this.items.clear();
     this.addItem(); // um item por default
   }
 
   closeDrawer(): void {
     this.isDrawerVisible = false;
-    this.invoiceForm.reset({ taxRate: 0.1 });
+    this.invoiceForm.reset({ taxRate: 0.16 });
     this.items.clear();
     this.currentInvoiceId = null;
   }
@@ -197,7 +197,7 @@ export class CarloadInvoiceComponent implements OnInit {
       const url = window.URL.createObjectURL(fileBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = invoice.filePath || 'invoice.xlsx';
+      a.download = invoice.fileName || 'invoice.xlsx';
       a.click();
       window.URL.revokeObjectURL(url);
     });
