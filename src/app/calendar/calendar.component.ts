@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import _moment from 'moment';
-import { Moment } from 'moment';
 
-const moment = _moment;
+
+
 
 
 @Component({
@@ -12,74 +11,78 @@ const moment = _moment;
   styleUrl: './calendar.component.scss'
 })
 export class CalendarComponent {
-  referenceDate: Date = new Date();
-  selectedStartType: string = 'turno-dia';
-  selectedYear: number = new Date().getFullYear();
-  selectedMonth: number = new Date().getMonth();
+  weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  dates: number[] = [];
+  month: number = 0;
+  monthName: string = '';
+  year: number = 0;
 
-  calendarDays: { date: Date; type: string; label: string }[] = [];
+  // Estado atual de hoje selecionado
+  todayShift: number | null = null;
 
-  months = [
-    { name: 'Janeiro', value: 0 },
-    { name: 'Fevereiro', value: 1 },
-    { name: 'Março', value: 2 },
-    { name: 'Abril', value: 3 },
-    { name: 'Maio', value: 4 },
-    { name: 'Junho', value: 5 },
-    { name: 'Julho', value: 6 },
-    { name: 'Agosto', value: 7 },
-    { name: 'Setembro', value: 8 },
-    { name: 'Outubro', value: 9 },
-    { name: 'Novembro', value: 10 },
-    { name: 'Dezembro', value: 11 }
-  ];
+  // Dia de referência e turno correspondente
+  referenceDate!: number;
+  referenceShift: number | null = null;
 
-  generateSchedule() {
-    this.calendarDays = [];
-
-    const ciclo = ['turno-dia', 'turno-noite', 'folga-1', 'folga-2'];
-    const baseIndex = ciclo.indexOf(this.selectedStartType);
-    const daysInMonth = new Date(this.selectedYear, this.selectedMonth + 1, 0).getDate();
-
-    const firstDayOfMonth = new Date(this.selectedYear, this.selectedMonth, 1);
-    let startWeekday = firstDayOfMonth.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
-
-    // Ajustar para que Segunda seja 0 e Domingo seja 6
-    startWeekday = (startWeekday + 6) % 7;
-
-    // Adiciona células vazias antes do dia 1, se necessário
-    for (let i = 0; i < startWeekday; i++) {
-      this.calendarDays.push({ date: null as any, type: 'empty', label: '' });
-    }
-
-    // Preenche os dias do mês normalmente
-    for (let i = 1; i <= daysInMonth; i++) {
-      const currentDate = new Date(this.selectedYear, this.selectedMonth, i);
-      const diffDays = this.getDaysDiff(this.referenceDate, currentDate);
-      const type = ciclo[(baseIndex + diffDays % 4 + 4) % 4];
-
-      this.calendarDays.push({
-        date: currentDate,
-        type,
-        label: this.getLabel(type)
-      });
-    }
+  ngOnInit() {
+    const today = new Date();
+    this.month = today.getMonth();
+    this.year = today.getFullYear();
+    this.referenceDate = today.getDate(); // hoje como referência
+    this.updateCalendar();
   }
 
-
-  getDaysDiff(d1: Date, d2: Date): number {
-    const time1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate()).getTime();
-    const time2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate()).getTime();
-    return Math.round((time2 - time1) / (1000 * 60 * 60 * 24));
+  // Atualiza o dia de referência com base no turno selecionado
+  updateReference() {
+    // Se selecionou None, não há referência
+    if (!this.todayShift) {
+      this.referenceShift = null;
+      return;
+    }
+    this.referenceShift = this.todayShift;
   }
 
-  getLabel(type: string): string {
-    switch (type) {
-      case 'turno-dia': return 'Turno Dia';
-      case 'turno-noite': return 'Turno Noite';
-      case 'folga-1': return 'Folga 1';
-      case 'folga-2': return 'Folga 2';
+  // Atualiza os dias do mês
+  updateCalendar() {
+    const firstDay = new Date(this.year, this.month, 1);
+    const daysInMonth = new Date(this.year, this.month + 1, 0).getDate();
+    this.monthName = firstDay.toLocaleString('default', { month: 'long' });
+    this.dates = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  }
+
+  // Navegação de mês e ano
+  prevMonth() { this.changeMonth(-1); }
+  nextMonth() { this.changeMonth(1); }
+  prevYear() { this.year--; this.updateCalendar(); }
+  nextYear() { this.year++; this.updateCalendar(); }
+
+  changeMonth(offset: number) {
+    this.month += offset;
+    if (this.month < 0) { this.month = 11; this.year--; }
+    if (this.month > 11) { this.month = 0; this.year++; }
+    this.updateCalendar();
+  }
+
+  // Retorna a classe CSS de cada dia
+  getDayClass(date: number) {
+    // Se não há referência, calendário volta ao normal
+    if (!this.referenceShift) return '';
+
+    const diff = date - this.referenceDate;
+    const shiftNumber = ((this.referenceShift - 1 + diff % 4 + 4) % 4) + 1;
+
+    switch (shiftNumber) {
+      case 1: return 'shift-dia';
+      case 2: return 'shift-noite';
+      case 3: return 'shift-folga1';
+      case 4: return 'shift-folga2';
       default: return '';
     }
+  }
+
+  // Verifica se o dia é hoje
+  isToday(date: number): boolean {
+    const today = new Date();
+    return today.getDate() === date && today.getMonth() === this.month && today.getFullYear() === this.year;
   }
 }

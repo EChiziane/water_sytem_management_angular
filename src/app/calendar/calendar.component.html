@@ -1,58 +1,56 @@
-<div class="schedule-container">
-  <!-- FORMULÁRIO -->
-  <div class="form-section">
-    <mat-form-field appearance="outline">
-      <mat-label>Data de referência</mat-label>
-      <input matInput [matDatepicker]="picker" [(ngModel)]="referenceDate">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+<div class="content">
+  <!-- Lado esquerdo: calendário -->
+  <div class="calendar-section">
+    <div class="calendar">
+      <div class="month-navigation">
+        <button (click)="prevMonth()">&#10094;</button>
+        <p>{{ monthName }} {{ year }}</p>
+        <button (click)="nextMonth()">&#10095;</button>
+      </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Modo na data</mat-label>
-      <mat-select [(ngModel)]="selectedStartType">
-        <mat-option value="turno-dia">Turno Dia</mat-option>
-        <mat-option value="turno-noite">Turno Noite</mat-option>
-        <mat-option value="folga-1">Folga 1</mat-option>
-        <mat-option value="folga-2">Folga 2</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <div class="year-navigation">
+        <button (click)="prevYear()">&#10094;</button>
+        <span>{{ year }}</span>
+        <button (click)="nextYear()">&#10095;</button>
+      </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Ano</mat-label>
-      <input matInput type="number" [(ngModel)]="selectedYear">
-    </mat-form-field>
+      <div class="header">
+        <span *ngFor="let day of weekDays">{{ day }}</span>
+      </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Mês</mat-label>
-      <mat-select [(ngModel)]="selectedMonth">
-        <mat-option *ngFor="let m of months" [value]="m.value">{{ m.name }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <button mat-raised-button color="primary" (click)="generateSchedule()">Check</button>
-  </div>
-
-  <!-- CALENDÁRIO -->
-  <div class="calendar-container">
-    <!-- Cabeçalho com dias da semana -->
-    <div class="calendar-header">
-      <div>Seg.</div>
-      <div>Ter.</div>
-      <div>Qua.</div>
-      <div>Qui.</div>
-      <div>Sex.</div>
-      <div>Sab.</div>
-      <div>Dom.</div>
-    </div>
-
-    <!-- Dias do calendário -->
-    <div class="calendar-grid">
-      <div *ngFor="let day of calendarDays" class="day" [ngClass]="day.type">
-        <div *ngIf="day.date" class="date">{{ day.date.getDate() }}</div>
-        <div *ngIf="day.date" class="label">{{ day.label }}</div>
+      <div class="days">
+        <span *ngFor="let date of dates" [ngClass]="getDayClass(date)">
+          {{ date }}
+        </span>
       </div>
     </div>
+  </div>
 
+  <!-- Lado direito: select + info -->
+  <div class="input-section">
+    <p> Coloque o estado em que esta hoje
+
+    <div class="select-section">
+      <mat-form-field appearance="fill">
+        <mat-label>Selecione o estado atual de hoje</mat-label>
+        <mat-select [(value)]="todayShift" (selectionChange)="updateReference()">
+          <mat-option [value]="null">None</mat-option>
+          <mat-option [value]="1">Dia</mat-option>
+          <mat-option [value]="2">Noite</mat-option>
+          <mat-option [value]="3">Folga 1</mat-option>
+          <mat-option [value]="4">Folga 2</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="info-section">
+      <!-- Legenda -->
+      <div class="legend">
+        <div class="legend-item"><span class="dot shift-dia"></span> Dia</div>
+        <div class="legend-item"><span class="dot shift-noite"></span> Noite</div>
+        <div class="legend-item"><span class="dot shift-folga1"></span> Folga 1</div>
+        <div class="legend-item"><span class="dot shift-folga2"></span> Folga 2</div>
+      </div>
+    </div>
   </div>
 </div>

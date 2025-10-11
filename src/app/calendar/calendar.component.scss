@@ -1,61 +1,136 @@
-.schedule-container {
+.content {
   display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  margin-top: 2rem;
-  padding: 1rem;
+  gap: 20px;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
 
-  .form-section {
+  /* Lado esquerdo: calendário */
+  .calendar-section {
     flex: 1;
-    min-width: 300px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
+    border: 1px solid #ccc;
+    padding: 10px;
 
-  .calendar-header {
-    flex: 2;
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    padding: 0 1rem;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    color: #333;
-    text-align: center;
-  }
-
-  .calendar-grid {
-    flex: 2;
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0.5rem;
-    padding: 1rem;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-    .day {
-      padding: 1rem;
-      background: #f8f9fa;
-      border: 1px solid #ddd;
-      border-radius: 8px;
+    .calendar {
+      background-color: #f3f4f6;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       text-align: center;
 
-      &.turno-dia { background-color: #e00f0f; }
-      &.turno-noite { background-color: #e00f0f; }
-      &.folga-1 { background-color: #0c6a18; }
-      &.folga-2 { background-color: #0c6a18; }
+      /* Navegação mês/ano */
+      .month-navigation,
+      .year-navigation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+
+        p, span {
+          margin: 0 10px;
+          font-weight: bold;
+          font-size: 1.2rem;
+        }
+
+        button {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        button:hover {
+          color: #3b82f6;
+        }
+      }
+
+      /* Dias da semana como grid */
+      .header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        font-weight: bold;
+        margin-bottom: 10px;
+
+        span {
+          text-align: center;
+        }
+      }
+
+      /* Dias do mês como grid alinhado */
+      .days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+
+        span {
+          width: 40px;
+          height: 40px;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        span:hover {
+          background-color: #d1d5db;
+        }
+
+        .today { background-color: #3b82f6; color: white; }
+        .shift-dia { background-color: #34d399; color: white; }
+        .shift-noite { background-color: #6366f1; color: white; }
+        .shift-folga1,
+        .shift-folga2 { background-color: #ef4444; color: white; }
+      }
     }
   }
 
-  .day.empty {
-    background: transparent;
-    border: none;
-  }
+  /* Lado direito: select + info */
+  .input-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
 
+    .select-section,
+    .info-section {
+      border: 1px dashed #aaa;
+      padding: 10px;
+    }
+
+    /* Legenda */
+    .legend {
+      margin-top: 10px;
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+
+        .dot {
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          display: inline-block;
+          margin-right: 8px;
+          transition: transform 0.2s;
+        }
+
+        &:hover .dot {
+          transform: scale(1.2);
+        }
+      }
+
+      /* Cores da legenda */
+      .shift-dia { background-color: #34d399; }
+      .shift-noite { background-color: #6366f1; }
+      .shift-folga1 { background-color: #ef4444; }
+      .shift-folga2 { background-color: #ef4444; }
+    }
+  }
 }
