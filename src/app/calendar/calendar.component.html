@@ -31,7 +31,7 @@
     <p> Coloque o estado em que esta hoje
 
     <div class="select-section">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Selecione o estado atual de hoje</mat-label>
         <mat-select [(value)]="todayShift" (selectionChange)="updateReference()">
           <mat-option [value]="null">None</mat-option>
@@ -46,11 +46,20 @@
     <div class="info-section">
       <!-- Legenda -->
       <div class="legend">
-        <div class="legend-item"><span class="dot shift-dia"></span> Dia</div>
-        <div class="legend-item"><span class="dot shift-noite"></span> Noite</div>
-        <div class="legend-item"><span class="dot shift-folga1"></span> Folga 1</div>
-        <div class="legend-item"><span class="dot shift-folga2"></span> Folga 2</div>
+        <div class="legend-item">
+          <span class="dot shift-dia"></span> Dia: Day you work during the day shift (8:00–17:00)
+        </div>
+        <div class="legend-item">
+          <span class="dot shift-noite"></span> Noite: Day you work during the night shift (17:00–8:00)
+        </div>
+        <div class="legend-item">
+          <span class="dot shift-folga1"></span> Folga 1: First day off
+        </div>
+        <div class="legend-item">
+          <span class="dot shift-folga2"></span> Folga 2: Second day off
+        </div>
       </div>
+
     </div>
   </div>
 </div>
