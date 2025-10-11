@@ -1,3 +1,6 @@
+/* =========================
+   GLOBAL
+========================= */
 .content {
   display: flex;
   gap: 20px;
@@ -5,7 +8,38 @@
   font-family: 'Arial', sans-serif;
 }
 
-/* Calendário */
+/* =========================
+   HEADER
+========================= */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; /* centraliza horizontalmente */
+  text-align: center;
+  background: linear-gradient(to right, #2563eb, #1e40af);
+  color: white;
+  padding: 20px 0;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.page-header p {
+  margin-top: 5px;
+  font-size: 1rem;
+  color: #e0e7ff;
+}
+
+/* =========================
+   CALENDÁRIO
+========================= */
 .calendar-section {
   flex: 1;
   border: 1px solid #ccc;
@@ -47,7 +81,7 @@
   color: #3b82f6;
 }
 
-/* Cabeçalho (dias da semana) */
+/* Cabeçalho dias da semana */
 .header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -81,13 +115,15 @@
   background-color: #d1d5db;
 }
 
-/* cores */
+/* Cores */
 .today { background-color: #3b82f6; color: white; }
 .shift-dia { background-color: #34d399; color: white; }       /* verde */
 .shift-noite { background-color: #6366f1; color: white; }     /* roxo */
 .shift-folga1, .shift-folga2 { background-color: #ef4444; color: white; } /* vermelho */
 
-/* Lado direito: select + info */
+/* =========================
+   INPUT + INFO
+========================= */
 .input-section {
   flex: 1;
   display: flex;
@@ -124,6 +160,10 @@
 .legend-item .shift-dia { background-color: #34d399; }
 .legend-item .shift-noite { background-color: #6366f1; }
 .legend-item .shift-folga1, .legend-item .shift-folga2 { background-color: #ef4444; }
+
+/* =========================
+   RODAPÉ
+========================= */
 .footer {
   margin-top: 20px;
   text-align: center;
@@ -134,11 +174,27 @@
   background-color: #f8f8f8;
   border-radius: 0 0 10px 10px;
   box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
-
-  /* animação suave ao pairar */
   transition: color 0.3s ease;
+}
+.footer:hover {
+  color: #2563eb; /* azul suave ao passar o rato */
+}
 
-  &:hover {
-    color: #2563eb; /* azul suave ao passar o rato */
+/* =========================
+   RESPONSIVO
+========================= */
+@media screen and (max-width: 430px) {
+  .content {
+    flex-direction: column; /* empilha verticalmente */
+  }
+
+  .calendar-section,
+  .input-section {
+    flex: none;
+    width: 100%;
+  }
+
+  .input-section {
+    margin-top: 15px; /* separação do calendário */
   }
 }
