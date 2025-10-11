@@ -7,11 +7,6 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { CarloadInvoice } from '../../models/CSM/carloadInvoice';
 import { CarloadCustomer } from '../../models/CSM/carload-customer';
 
-export interface InvoiceItemOption {
-  code: number;
-  label: string;
-}
-
 @Component({
   selector: 'app-carload-invoice',
   templateUrl: './carload-invoice.component.html',
@@ -27,40 +22,13 @@ export class CarloadInvoiceComponent implements OnInit {
   currentInvoiceId: string | null = null;
   searchValue = '';
 
-  //itemsOptions = ['AREIA_GROSSA', 'PEDRA'];
   itemsOptions: string[] = [
-    "M4_AREIA_GROSSA",
-    "M4_PEDRA_3_4",
-    "M4_PEDRA_SARRISCA",
-    "M4_PO_DE_PEDRA",
-    "M4_AREIA_FINA",
-
-    "M7_AREIA_GROSSA",
-    "M7_PEDRA_3_4",
-    "M7_PEDRA_SARRISCA",
-    "M7_PO_DE_PEDRA",
-    "M7_AREIA_FINA",
-
-    "M18_AREIA_GROSSA",
-    "M18_PEDRA_3_4",
-    "M18_PEDRA_SARRISCA",
-    "M18_PO_DE_PEDRA",
-    "M18_AREIA_FINA",
-
-    "M20_AREIA_GROSSA",
-    "M20_PEDRA_3_4",
-    "M20_PEDRA_SARRISCA",
-    "M20_PO_DE_PEDRA",
-    "M20_AREIA_FINA",
-
-    "M22_AREIA_GROSSA",
-    "M22_PEDRA_3_4",
-    "M22_PEDRA_SARRISCA",
-    "M22_PO_DE_PEDRA",
-    "M22_AREIA_FINA"
+    "M4_AREIA_GROSSA", "M4_PEDRA_3_4", "M4_PEDRA_SARRISCA", "M4_PO_DE_PEDRA", "M4_AREIA_FINA",
+    "M7_AREIA_GROSSA", "M7_PEDRA_3_4", "M7_PEDRA_SARRISCA", "M7_PO_DE_PEDRA", "M7_AREIA_FINA",
+    "M18_AREIA_GROSSA", "M18_PEDRA_3_4", "M18_PEDRA_SARRISCA", "M18_PO_DE_PEDRA", "M18_AREIA_FINA",
+    "M20_AREIA_GROSSA", "M20_PEDRA_3_4", "M20_PEDRA_SARRISCA", "M20_PO_DE_PEDRA", "M20_AREIA_FINA",
+    "M22_AREIA_GROSSA", "M22_PEDRA_3_4", "M22_PEDRA_SARRISCA", "M22_PO_DE_PEDRA", "M22_AREIA_FINA"
   ];
-
-
 
   constructor(
     private fb: FormBuilder,
@@ -74,7 +42,6 @@ export class CarloadInvoiceComponent implements OnInit {
     this.loadInvoices();
     this.loadCustomers();
     this.initForm();
-    this.setupFormCalculation();
   }
 
   private loadInvoices() {
@@ -95,6 +62,9 @@ export class CarloadInvoiceComponent implements OnInit {
       tax: [{ value: 0, disabled: true }],
       total: [{ value: 0, disabled: true }]
     });
+
+    // Recalcular totals quando a taxa mudar
+    this.invoiceForm.get('taxRate')?.valueChanges.subscribe(() => this.calculateTotals());
   }
 
   get items(): FormArray {
@@ -109,22 +79,23 @@ export class CarloadInvoiceComponent implements OnInit {
       amount: [{ value: 0, disabled: true }]
     });
 
-    itemGroup.valueChanges.subscribe(val => {
-      const amount =20;
-      itemGroup.patchValue({ amount }, { emitEvent: false });
-      this.calculateTotals();
-    });
+    itemGroup.get('quantity')?.valueChanges.subscribe(() => this.updateItemAmount(itemGroup));
+    itemGroup.get('unitPrice')?.valueChanges.subscribe(() => this.updateItemAmount(itemGroup));
 
     this.items.push(itemGroup);
+  }
+
+  private updateItemAmount(itemGroup: FormGroup) {
+    const quantity = itemGroup.get('quantity')?.value || 0;
+    const unitPrice = itemGroup.get('unitPrice')?.value || 0;
+    const amount = quantity * unitPrice;
+    itemGroup.patchValue({ amount }, { emitEvent: false });
+    this.calculateTotals();
   }
 
   removeItem(index: number) {
     this.items.removeAt(index);
     this.calculateTotals();
-  }
-
-  private setupFormCalculation() {
-    this.invoiceForm.get('taxRate')?.valueChanges.subscribe(() => this.calculateTotals());
   }
 
   private calculateTotals() {
@@ -136,49 +107,36 @@ export class CarloadInvoiceComponent implements OnInit {
     const tax = subtotal * taxRate;
     const total = subtotal + tax;
 
-    this.invoiceForm.patchValue({
-      subtotal,
-      tax,
-      total
-    }, { emitEvent: false });
+    this.invoiceForm.patchValue({ subtotal, tax, total }, { emitEvent: false });
   }
 
   openDrawer(): void {
     this.isDrawerVisible = true;
     this.currentInvoiceId = null;
-    this.invoiceForm.reset({ taxRate: 0.1 });
+    this.invoiceForm.reset({ taxRate: 0.16 });
     this.items.clear();
-    this.addItem(); // começa com um item por default
+    this.addItem(); // um item por default
   }
 
   closeDrawer(): void {
     this.isDrawerVisible = false;
-    this.invoiceForm.reset({ taxRate: 0.1 });
+    this.invoiceForm.reset({ taxRate: 0.16 });
     this.items.clear();
     this.currentInvoiceId = null;
   }
 
   submitInvoice(): void {
-
     if (!this.invoiceForm.valid) return;
     const invoiceData = this.invoiceForm.getRawValue();
-    console.log(invoiceData);
+
     if (this.currentInvoiceId) {
       this.invoiceService.updateInvoice(this.currentInvoiceId, invoiceData).subscribe({
-        next: () => {
-          this.loadInvoices();
-          this.closeDrawer();
-          this.message.success('Invoice updated successfully ✅');
-        },
+        next: () => { this.loadInvoices(); this.closeDrawer(); this.message.success('Invoice updated ✅'); },
         error: () => this.message.error('Error updating invoice 🚫')
       });
     } else {
       this.invoiceService.addInvoice(invoiceData).subscribe({
-        next: () => {
-          this.loadInvoices();
-          this.closeDrawer();
-          this.message.success('Invoice created successfully ✅');
-        },
+        next: () => { this.loadInvoices(); this.closeDrawer(); this.message.success('Invoice created ✅'); },
         error: () => this.message.error('Error creating invoice 🚫')
       });
     }
@@ -196,7 +154,8 @@ export class CarloadInvoiceComponent implements OnInit {
         unitPrice: [it.unitPrice, Validators.required],
         amount: [{ value: it.quantity * it.unitPrice, disabled: true }]
       });
-      group.valueChanges.subscribe(() => this.calculateTotals());
+      group.get('quantity')?.valueChanges.subscribe(() => this.updateItemAmount(group));
+      group.get('unitPrice')?.valueChanges.subscribe(() => this.updateItemAmount(group));
       this.items.push(group);
     });
 
@@ -217,10 +176,7 @@ export class CarloadInvoiceComponent implements OnInit {
       nzCancelText: 'No',
       nzOnOk: () => {
         this.invoiceService.deleteInvoice(invoice.id).subscribe({
-          next: () => {
-            this.loadInvoices();
-            this.message.success('Invoice deleted successfully 🗑️');
-          },
+          next: () => { this.loadInvoices(); this.message.success('Invoice deleted 🗑️'); },
           error: () => this.message.error('Error deleting invoice 🚫')
         });
       }
@@ -241,10 +197,9 @@ export class CarloadInvoiceComponent implements OnInit {
       const url = window.URL.createObjectURL(fileBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = invoice.filePath || 'invoice.xlsx';
+      a.download = invoice.fileName || 'invoice.xlsx';
       a.click();
       window.URL.revokeObjectURL(url);
     });
   }
-
 }

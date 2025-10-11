@@ -37,7 +37,7 @@ export class CarloadInvoiceService {
   }
 
   downloadRecibo(id: string) {
-    return this.http.get(`http://localhost:8080/carload-invoices/download/${id}`, {
+    return this.http.get(`${this.baseURL}/download/${id}`, {
       responseType: 'blob' // 👈 Isto diz ao Angular que é um ficheiro, não JSON
     });
   }

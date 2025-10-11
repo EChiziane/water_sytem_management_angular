@@ -30,5 +30,54 @@
   background: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  overflow: hidden;
+  overflow: auto; /* permite scroll horizontal e vertical */
+}
+
+/* coluna do file name mais larga */
+.file-name-column {
+  width: 80%;
+}
+
+.file-name-cell {
+  white-space: nowrap;   /* não quebra linha */
+}
+
+.file-link {
+  text-decoration: underline; /* sublinhado */
+  color: #007bff;
+  cursor: pointer;
+}
+
+.item-row-flex {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.item-row-flex nz-form-item {
+  flex: 1 1 200px;
+}
+
+.item-row-flex button {
+  height: 40px;
+}
+/* força a coluna file-name a ser a mais larga */
+.file-name-column {
+  min-width: 400px; /* aumenta largura mínima */
+  max-width: 600px; /* podes ajustar conforme necessário */
+  width: 40%;       /* ocupa 40% da tabela */
+}
+
+.file-name-cell {
+  white-space: nowrap;      /* evita quebra de linha */
+  overflow: hidden;         /* esconde texto extra */
+  text-overflow: ellipsis;  /* adiciona "..." se for muito longo */
+}
+
+.file-link {
+  text-decoration: underline;
+  color: #007bff;
+  cursor: pointer;
 }
