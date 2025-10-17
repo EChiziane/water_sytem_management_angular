@@ -1,3 +1,6 @@
+/* ===========================
+   🟦 Main Content
+   =========================== */
 .main-content {
   padding: 24px;
   background: #f5f5f5;
@@ -7,6 +10,9 @@
   overflow: hidden;
 }
 
+/* ===========================
+   🟦 Header
+   =========================== */
 .header {
   margin-bottom: 14px;
   flex-shrink: 0;
@@ -18,20 +24,59 @@
   }
 }
 
+/* ===========================
+   🟦 Dashboard Cards
+   =========================== */
 .dash {
   margin-bottom: 24px;
   flex-shrink: 0;
+  padding: 8px 0;
+
+  nz-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  nz-col {
+    flex: 1;
+    min-width: 220px; /* garante boa responsividade */
+  }
 
   nz-card {
     text-align: center;
+    border-radius: 12px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    height: 100%;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    ::ng-deep .ant-card-head {
+      border-bottom: none;
+      font-weight: 600;
+      font-size: 15px;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
     p {
-      font-size: 24px;
-      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+      margin: 8px 0 4px 0;
+      color: #333;
     }
   }
 }
 
+/* ===========================
+   🟦 Filter Section
+   =========================== */
 .filter {
   display: flex;
   margin-bottom: 16px;
@@ -44,6 +89,9 @@
   }
 }
 
+/* ===========================
+   🟦 Table Section
+   =========================== */
 .table-container {
   flex: 1;
   min-height: 0;
@@ -72,7 +120,9 @@ nz-table {
   }
 }
 
-/* 🟦 Drawer Styling */
+/* ===========================
+   🟦 Drawer Styling
+   =========================== */
 .drawer-form {
   padding: 8px 16px 24px 16px;
   background-color: #fff;
@@ -115,7 +165,9 @@ nz-select {
   border-radius: 8px;
 }
 
-/* 🦶 Footer Buttons */
+/* ===========================
+   🟦 Drawer Footer Buttons
+   =========================== */
 .drawer-footer {
   display: flex;
   justify-content: flex-end;
@@ -142,7 +194,9 @@ nz-select {
   background-color: #0056b3;
 }
 
-
+/* ===========================
+   🟦 General Button Styling
+   =========================== */
 [nz-button] {
   margin-right: 8px;
 
