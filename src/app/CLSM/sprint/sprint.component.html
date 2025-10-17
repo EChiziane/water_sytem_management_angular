@@ -28,7 +28,7 @@
 
   <div class="filter">
     <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Search..." type="text"/>
-    <button (click)="filterByStatus('EM_EXECUCAO')" nz-button nzType="primary">Novs Sprint</button>
+    <button (click)="openSprintDrawer()" nz-button nzType="primary">Nova Sprint</button>
     <button (click)="filterByStatus('EM_EXECUCAO')" nz-button nzType="default">Em Execução</button>
     <button (click)="filterByStatus('ENCERRADO')" nz-button nzType="default">Encerrados</button>
     <button (click)="showAll()" nz-button nzType="default">Todos</button>
@@ -36,7 +36,9 @@
 
   <div class="table-container">
     <div class="table-scroll">
-      <nz-table [nzData]="listOfDisplayData" [nzScroll]="{ x: '800px', y: '280px'}" nzTableLayout="fixed">
+      <nz-table
+        #nzTable
+        [nzData]="listOfDisplayData" [nzScroll]="{ x: '800px', y: '280px'}" nzTableLayout="fixed">
         <thead>
         <tr>
           <th>Nome</th>
@@ -48,7 +50,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let sprint of listOfDisplayData">
+        <tr *ngFor="let sprint of nzTable.data">
 
           <!-- Nome -->
           <!-- Nome -->
@@ -128,3 +130,49 @@
     </div>
   </div>
 </div>
+<!-- 🟦 Drawer Sprint -->
+<nz-drawer
+  (nzOnClose)="closeSprintDrawer()"
+  [nzVisible]="isSprintDrawerVisible"
+  [nzTitle]="sprintDrawerTitle"
+  [nzWidth]="480"
+  [nzFooter]="sprintDrawerFooter"
+>
+  <form *nzDrawerContent [formGroup]="sprintForm" nz-form>
+    <nz-form-item>
+      <nz-form-label nzRequired>Nome</nz-form-label>
+      <nz-form-control>
+        <input formControlName="name" nz-input placeholder="Nome da Sprint">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired>Código</nz-form-label>
+      <nz-form-control>
+        <input formControlName="code" nz-input placeholder="Código da Sprint">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Descrição</nz-form-label>
+      <nz-form-control>
+        <textarea formControlName="description" nz-input placeholder="Descrição da Sprint"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Status</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
+          <nz-option nzLabel="EM_EXECUCAO" nzValue="EM_EXECUCAO"></nz-option>
+          <nz-option nzLabel="ENCERRADO" nzValue="ENCERRADO"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <ng-template #sprintDrawerFooter>
+    <button (click)="closeSprintDrawer()" nz-button>Cancelar</button>
+    <button (click)="submitSprint()" [disabled]="!sprintForm.valid" nz-button nzType="primary">Salvar</button>
+  </ng-template>
+</nz-drawer>

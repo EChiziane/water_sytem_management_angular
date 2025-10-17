@@ -3,6 +3,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { SprintService } from '../../services/sprint.service';
 import { Sprint } from '../../models/CSM/sprint';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 
 @Component({
@@ -19,6 +20,12 @@ export class SprintComponent implements OnInit {
   totalEncerrados = 0;
   searchValue = '';
 
+  // Drawer
+  isSprintDrawerVisible = false;
+  sprintForm!: FormGroup;
+  currentEditingSprintId: string | null = null;
+
+
   // Para edição inline
   editingSprint?: Sprint | null = null;
   editingField?: string | null = null;
@@ -26,8 +33,11 @@ export class SprintComponent implements OnInit {
   constructor(
     private sprintService: SprintService,
     private message: NzMessageService,
-    private modal: NzModalService
-  ) {}
+    private modal: NzModalService,
+    private fb: FormBuilder,
+  ) {
+    this.initForm();
+  }
 
   ngOnInit(): void {
     this.loadSprints();
@@ -121,6 +131,59 @@ export class SprintComponent implements OnInit {
       this.totalEmExecucao = sprints.filter(d => d.status === 'EM_EXECUCAO').length;
       this.totalEncerrados = sprints.filter(d => d.status === 'ENCERRADO').length;
       this.totalSprints = sprints.length;
+    });
+  }
+
+
+  // Mostrar Drawer
+  openSprintDrawer(): void {
+    this.isSprintDrawerVisible = true;
+    this.currentEditingSprintId = null;
+    this.sprintForm.reset({ status: 'EM_EXECUCAO' });
+  }
+
+  closeSprintDrawer(): void {
+    this.isSprintDrawerVisible = false;
+    this.sprintForm.reset({ status: 'EM_EXECUCAO' });
+    this.currentEditingSprintId = null;
+  }
+
+  get sprintDrawerTitle(): string {
+    return this.currentEditingSprintId ? 'Edição de Sprint' : 'Criação de Sprint';
+  }
+
+  // Submeter (Criar ou Editar)
+  submitSprint(): void {
+    if (this.sprintForm.valid) {
+      const sprintData = this.sprintForm.value;
+
+      if (this.currentEditingSprintId) {
+        this.sprintService.updateSprint(this.currentEditingSprintId, sprintData).subscribe({
+          next: () => {
+            this.loadSprints();
+            this.closeSprintDrawer();
+            this.message.success('Sprint atualizado com sucesso! ✅');
+          },
+          error: () => this.message.error('Erro ao atualizar sprint 🚫')
+        });
+      } else {
+        this.sprintService.addSprint(sprintData).subscribe({
+          next: () => {
+            this.loadSprints();
+            this.closeSprintDrawer();
+            this.message.success('Sprint criada com sucesso! ✅');
+          },
+          error: () => this.message.error('Erro ao criar sprint 🚫')
+        });
+      }
+    }
+  }
+  private initForm(): void {
+    this.sprintForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      code: ['', Validators.required],
+      status: ['EM_EXECUCAO', Validators.required]
     });
   }
 
