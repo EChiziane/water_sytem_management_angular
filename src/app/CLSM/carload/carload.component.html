@@ -36,7 +36,10 @@
   <div class="table-container">
 
     <div class="table-scroll">
-      <nz-table #nzTable [nzData]="listOfDisplayData" [nzScroll]="{ x: '1050px', y: '280' }" nzTableLayout="fixed">
+      <nz-table #nzTable
+                [nzData]="listOfDisplayData"
+                [nzScroll]="{ x: '1050px', y: '280' }"
+                nzTableLayout="fixed">
         <thead>
         <tr>
           <th>Destino</th>
@@ -55,7 +58,7 @@
 
         </thead>
         <tbody>
-        <tr *ngFor="let carload of listOfDisplayData">
+        <tr *ngFor="let carload of nzTable.data">
           <td>{{ carload.deliveryDestination }}</td>
           <td>{{ carload.customerName }}</td>
           <td>{{ carload.customerPhoneNumber }}</td>

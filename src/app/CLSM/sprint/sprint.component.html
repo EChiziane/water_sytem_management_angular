@@ -131,6 +131,7 @@
   </div>
 </div>
 <!-- 🟦 Drawer Sprint -->
+<!-- 🟦 Drawer Sprint -->
 <nz-drawer
   (nzOnClose)="closeSprintDrawer()"
   [nzVisible]="isSprintDrawerVisible"
@@ -138,41 +139,63 @@
   [nzWidth]="480"
   [nzFooter]="sprintDrawerFooter"
 >
-  <form *nzDrawerContent [formGroup]="sprintForm" nz-form>
-    <nz-form-item>
-      <nz-form-label nzRequired>Nome</nz-form-label>
-      <nz-form-control>
-        <input formControlName="name" nz-input placeholder="Nome da Sprint">
-      </nz-form-control>
-    </nz-form-item>
+  <form *nzDrawerContent [formGroup]="sprintForm" nz-form class="drawer-form">
+    <div class="drawer-section">
+      <h3 class="section-title">Informações Básicas</h3>
 
-    <nz-form-item>
-      <nz-form-label nzRequired>Código</nz-form-label>
-      <nz-form-control>
-        <input formControlName="code" nz-input placeholder="Código da Sprint">
-      </nz-form-control>
-    </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Nome</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <input formControlName="name" nz-input placeholder="Insira o nome da Sprint" />
+        </nz-form-control>
+      </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label>Descrição</nz-form-label>
-      <nz-form-control>
-        <textarea formControlName="description" nz-input placeholder="Descrição da Sprint"></textarea>
-      </nz-form-control>
-    </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Código</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <input formControlName="code" nz-input placeholder="Digite o código identificador" />
+        </nz-form-control>
+      </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label>Status</nz-form-label>
-      <nz-form-control>
-        <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
-          <nz-option nzLabel="EM_EXECUCAO" nzValue="EM_EXECUCAO"></nz-option>
-          <nz-option nzLabel="ENCERRADO" nzValue="ENCERRADO"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">Descrição</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <textarea
+            formControlName="description"
+            rows="3"
+            nz-input
+            placeholder="Breve descrição da sprint (opcional)"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">Status</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
+            <nz-option nzLabel="Em Execução" nzValue="EM_EXECUCAO"></nz-option>
+            <nz-option nzLabel="Encerrado" nzValue="ENCERRADO"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
   </form>
 
   <ng-template #sprintDrawerFooter>
-    <button (click)="closeSprintDrawer()" nz-button>Cancelar</button>
-    <button (click)="submitSprint()" [disabled]="!sprintForm.valid" nz-button nzType="primary">Salvar</button>
+    <div class="drawer-footer">
+      <button (click)="closeSprintDrawer()" nz-button nzType="default" class="btn-cancelar">
+        Cancelar
+      </button>
+      <button
+        (click)="submitSprint()"
+        [disabled]="!sprintForm.valid"
+        nz-button
+        nzType="primary"
+        class="btn-salvar"
+      >
+        Salvar
+      </button>
+    </div>
   </ng-template>
 </nz-drawer>
+
