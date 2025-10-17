@@ -163,7 +163,7 @@ export class CarloadComponent {
       assignedDriverId: ['', Validators.required],
       transportedMaterial: ['', Validators.required],
       carloadBatchId: ['', Validators.required],
-      customerPhoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      customerPhoneNumber: ['', [Validators.required]],
       totalSpent: [0, [Validators.required, Validators.min(0)]],
       totalEarnings: [0, [Validators.required, Validators.min(0)]],
       deliveryStatus: ['', Validators.required],
@@ -315,7 +315,7 @@ export class CarloadComponent {
         this.message.success(`Status atualizado para ${status} ✅`);
         this.totalPendente=this.listOfDisplayData.filter(s=>s.deliveryStatus==='PENDING').length;
         this.totalEntregue=this.listOfDisplayData.filter(s=>s.deliveryStatus==='DELIVERED').length;
-        },
+      },
       error: () => this.message.error('Erro ao atualizar status 🚫')
     });
   }

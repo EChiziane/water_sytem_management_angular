@@ -264,7 +264,25 @@
             </nz-form-control>
           </nz-form-item>
         </div>
+        <div nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Destino:</nz-form-label>
+            <nz-form-control nzErrorTip="Informe o destino da entrega">
+              <input nz-input formControlName="deliveryDestination" placeholder="Ex: Matola, Boane..." />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
       </div>
+    </div>
+
+
+    <div nz-col nzSpan="12">
+      <nz-form-item>
+        <nz-form-label nzRequired>Nome do Cliente</nz-form-label>
+        <nz-form-control>
+          <input formControlName="customerName" nz-input placeholder="Nome do cliente" />
+        </nz-form-control>
+      </nz-form-item>
     </div>
 
     <!-- Seção Financeira e Entrega -->
