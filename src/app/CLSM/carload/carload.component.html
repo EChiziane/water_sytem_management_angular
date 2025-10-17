@@ -42,6 +42,13 @@
     <button (click)="setFilterMode('SCHEDULED')" nz-button [nzType]="filterMode==='SCHEDULED' ? 'primary' : 'default'">Agendados</button>
     <button (click)="setFilterMode('DELIVERED')" nz-button [nzType]="filterMode==='DELIVERED' ? 'primary' : 'default'">Entregues</button>
     <button (click)="setFilterMode('PENDING')" nz-button [nzType]="filterMode==='PENDING' ? 'primary' : 'default'">Pendentes</button>
+
+    <nz-range-picker
+      [(ngModel)]="dateRange"
+      (ngModelChange)="applyFilter()"
+      [nzAllowClear]="true"
+      nzPlaceholder="Filtrar por intervalo de datas"
+    ></nz-range-picker>
   </div>
 
 

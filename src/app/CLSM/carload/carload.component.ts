@@ -295,6 +295,8 @@ export class CarloadComponent {
       }
     });
   }
+// Variáveis para o filtro por datas
+  dateRange: [Date | null, Date | null] = [null, null];
 
 // Atualizar status via dropdown
 
@@ -323,27 +325,48 @@ export class CarloadComponent {
     this.applyFilter();
   }
 
-  private applyFilter(): void {
+  protected applyFilter(): void {
+    let filtered = [...this.allCarloads];
+
+    // Filtro por status
     switch (this.filterMode) {
       case 'SCHEDULED':
-        this.listOfDisplayData = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED');
+        filtered = filtered.filter(c => c.deliveryStatus === 'SCHEDULED');
         break;
       case 'DELIVERED':
-        this.listOfDisplayData = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED');
+        filtered = filtered.filter(c => c.deliveryStatus === 'DELIVERED');
         break;
       case 'PENDING':
-        this.listOfDisplayData = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING');
+        filtered = filtered.filter(c => c.deliveryStatus === 'PENDING');
         break;
-      default:
-        this.listOfDisplayData = [...this.allCarloads];
     }
 
-    // Atualiza totais se quiser manter os cards dinâmicos
+    // Filtro por intervalo de datas
+    if (this.dateRange[0] && this.dateRange[1]) {
+      const [start, end] = this.dateRange;
+      filtered = filtered.filter(c => {
+        const deliveryDate = new Date(c.deliveryScheduledDate || c.createdAt); // Se não tiver deliveryScheduledDate, usa createdAt
+        return deliveryDate >= start && deliveryDate <= end;
+      });
+    }
+
+    // Filtro por pesquisa (searchValue)
+    if (this.searchValue) {
+      filtered = filtered.filter(c =>
+        c.customerName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+        c.deliveryDestination.toLowerCase().includes(this.searchValue.toLowerCase())
+      );
+    }
+
+    this.listOfDisplayData = filtered;
+
+    // Atualiza totais
     this.totalCarloads = this.listOfDisplayData.length;
     this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
     this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
     this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
   }
+
 
 
 
