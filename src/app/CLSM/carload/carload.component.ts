@@ -30,6 +30,9 @@ export class CarloadComponent {
   isShowingScheduledOnly = false;
   toggleButtonText = 'Mostrar Agendados';
 
+  totalAgendados = 0;
+  totalEntregue = 0;
+  totalPendente = 0;
 
   // Drawer controls
   isCarloadDrawerVisible = false;
@@ -139,9 +142,18 @@ export class CarloadComponent {
   private loadCarloads(): void {
     this.carloadService.getCarloads().subscribe(carloads => {
       this.allCarloads = carloads;
+
+      // Atualizar totais para os cards
+      this.totalCarloads = this.allCarloads.length;
+      this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
+      this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
+      this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
+
       this.applyFilter();
     });
   }
+
+
 
   private initForms(): void {
     this.carloadForm = this.fb.group({
@@ -230,16 +242,6 @@ export class CarloadComponent {
     this.applyFilter();
   }
 
-  // Aplica o filtro de acordo com a flag isShowingScheduledOnly
-  private applyFilter(): void {
-    if (this.isShowingScheduledOnly) {
-      this.listOfDisplayData = this.allCarloads.filter(cl => cl.deliveryStatus === 'SCHEDULED');
-    } else {
-      this.listOfDisplayData = [...this.allCarloads];
-    }
-    this.totalCarloads = this.listOfDisplayData.length;
-  }
-
 
   encerarCarload(carload: CarLoad): void {
     this.modal.confirm({
@@ -263,5 +265,86 @@ export class CarloadComponent {
       }
     });
   }
+  editingCarload?: CarLoad | null = null;
+  editingField?: string | null = null;
+
+// Iniciar edição inline
+  startInlineEdit(carload: CarLoad, field: string): void {
+    this.editingCarload = { ...carload };
+    this.editingField = field;
+  }
+
+// Salvar edição inline
+  saveInlineEdit(original: CarLoad, field: string): void {
+    if (!this.editingCarload) return;
+
+    const updated = { ...original, [field]: (this.editingCarload as any)[field] };
+
+    this.carloadService.updateCarload(original.id, updated).subscribe({
+      next: () => {
+        Object.assign(original, updated);
+        this.message.success(`Campo ${field} atualizado! ✅`);
+        this.editingCarload = null;
+        this.editingField = null;
+        this.applyFilter(); // atualiza lista
+      },
+      error: () => {
+        this.message.error('Erro ao atualizar 🚫');
+        this.editingCarload = null;
+        this.editingField = null;
+      }
+    });
+  }
+
+// Atualizar status via dropdown
+
+  updateCarloadStatus(carload: CarLoad, status: string): void {
+    if (carload.deliveryStatus === status) return;
+
+    // Se for status diferente de SCHEDULED, adiciona a data
+    const updated: any = { ...carload, deliveryStatus: status };
+    if (status !== 'SCHEDULED') {
+      updated.deliveryScheduledDate = new Date();
+    }
+
+    this.carloadService.updateCarload(carload.id, updated).subscribe({
+      next: () => {
+        carload.deliveryStatus = status;
+        this.message.success(`Status atualizado para ${status} ✅`);
+        this.totalPendente=this.listOfDisplayData.filter(s=>s.deliveryStatus==='PENDING').length;
+        this.totalEntregue=this.listOfDisplayData.filter(s=>s.deliveryStatus==='DELIVERED').length;
+        },
+      error: () => this.message.error('Erro ao atualizar status 🚫')
+    });
+  }
+  filterMode: 'ALL' | 'SCHEDULED' | 'DELIVERED' | 'PENDING' = 'ALL';
+  setFilterMode(mode: 'ALL' | 'SCHEDULED' | 'DELIVERED' | 'PENDING'): void {
+    this.filterMode = mode;
+    this.applyFilter();
+  }
+
+  private applyFilter(): void {
+    switch (this.filterMode) {
+      case 'SCHEDULED':
+        this.listOfDisplayData = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED');
+        break;
+      case 'DELIVERED':
+        this.listOfDisplayData = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED');
+        break;
+      case 'PENDING':
+        this.listOfDisplayData = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING');
+        break;
+      default:
+        this.listOfDisplayData = [...this.allCarloads];
+    }
+
+    // Atualiza totais se quiser manter os cards dinâmicos
+    this.totalCarloads = this.listOfDisplayData.length;
+    this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
+    this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
+    this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
+  }
+
+
 
 }
