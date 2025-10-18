@@ -1,10 +1,12 @@
-<div class="main-content">
-  <div class="header">
-    <p>Lista de Carloads</p>
+<div class="content-wrapper">
+  <!-- Header -->
+  <div class="page-header">
+    <p>Carload List</p>
   </div>
-  <div class="dash">
 
-    <div style="background: #ECECEC;">
+  <!-- Dashboard Summary -->
+  <div class="summary-section">
+    <div class="summary-cards">
       <div [nzGutter]="8" nz-row>
         <div [nzSpan]="6" nz-col>
           <nz-card nzTitle="Total Carloads">
@@ -12,73 +14,87 @@
           </nz-card>
         </div>
         <div [nzSpan]="6" nz-col>
-          <nz-card nzTitle="Agendados">
+          <nz-card nzTitle="Scheduled">
             <p>{{ totalAgendados | number }}</p>
           </nz-card>
         </div>
         <div [nzSpan]="6" nz-col>
-          <nz-card nzTitle="Entregues">
+          <nz-card nzTitle="Delivered">
             <p>{{ totalEntregue | number }}</p>
           </nz-card>
         </div>
         <div [nzSpan]="6" nz-col>
-          <nz-card nzTitle="Pendentes">
+          <nz-card nzTitle="Pending">
             <p>{{ totalPendente | number }}</p>
           </nz-card>
         </div>
       </div>
     </div>
-
-
   </div>
 
+  <!-- Filters -->
+  <div class="filters-panel">
+    <input
+      (ngModelChange)="search()"
+      [(ngModel)]="searchValue"
+      nz-input
+      placeholder="Search..."
+      type="text"
+    />
 
-  <div class="filter">
-    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Search..." type="text"/>
+    <button (click)="openCarloadDrawer()" nz-button nzType="primary">
+      New Carload
+    </button>
 
-    <button (click)="openCarloadDrawer()" nz-button nzType="primary">Novo Carload</button>
-
-    <button (click)="setFilterMode('ALL')" nz-button [nzType]="filterMode==='ALL' ? 'primary' : 'default'">Todos</button>
-    <button (click)="setFilterMode('SCHEDULED')" nz-button [nzType]="filterMode==='SCHEDULED' ? 'primary' : 'default'">Agendados</button>
-    <button (click)="setFilterMode('DELIVERED')" nz-button [nzType]="filterMode==='DELIVERED' ? 'primary' : 'default'">Entregues</button>
-    <button (click)="setFilterMode('PENDING')" nz-button [nzType]="filterMode==='PENDING' ? 'primary' : 'default'">Pendentes</button>
+    <button (click)="setFilterMode('ALL')" nz-button [nzType]="filterMode==='ALL' ? 'primary' : 'default'">
+      All
+    </button>
+    <button (click)="setFilterMode('SCHEDULED')" nz-button [nzType]="filterMode==='SCHEDULED' ? 'primary' : 'default'">
+      Scheduled
+    </button>
+    <button (click)="setFilterMode('DELIVERED')" nz-button [nzType]="filterMode==='DELIVERED' ? 'primary' : 'default'">
+      Delivered
+    </button>
+    <button (click)="setFilterMode('PENDING')" nz-button [nzType]="filterMode==='PENDING' ? 'primary' : 'default'">
+      Pending
+    </button>
 
     <nz-range-picker
       [(ngModel)]="dateRange"
       (ngModelChange)="applyFilter()"
       [nzAllowClear]="true"
-      nzPlaceholder="Filtrar por intervalo de datas"
+      nzPlaceholder="Filter by date range"
     ></nz-range-picker>
   </div>
 
-
-  <div class="table-container">
+  <!-- Data Table -->
+  <div class="table-wrapper">
     <div class="table-scroll">
       <nz-table
         #nzTable
-                [nzData]="listOfDisplayData"
-                [nzScroll]="{ x: '1050px', y: '280px' }"
-                nzTableLayout="fixed">
+        [nzData]="listOfDisplayData"
+        [nzScroll]="{ x: '1050px', y: '280px' }"
+        nzTableLayout="fixed"
+      >
         <thead>
         <tr>
-          <th>Destino</th>
-          <th>Cliente</th>
-          <th>Telefone</th>
-
-          <th *ngIf="!isShowingScheduledOnly">Motorista</th>
+          <th>Destination</th>
+          <th>Client</th>
+          <th>Phone</th>
+          <th *ngIf="!isShowingScheduledOnly">Driver</th>
           <th>Material</th>
-          <th *ngIf="!isShowingScheduledOnly">Lote</th>
-          <th *ngIf="!isShowingScheduledOnly">Gasto Total</th>
-          <th>Ganhos</th>
+          <th *ngIf="!isShowingScheduledOnly" class="batch-column">Batch</th>
+          <th *ngIf="!isShowingScheduledOnly">Total Spent</th>
+          <th>Earnings</th>
           <th>Status</th>
-          <th *ngIf="isShowingScheduledOnly">Entrega</th>
-          <th>Ações</th>
+          <th *ngIf="isShowingScheduledOnly">Delivery Date</th>
+          <th>Actions</th>
         </tr>
-
         </thead>
+
         <tbody>
         <tr *ngFor="let carload of nzTable.data">
-          <!-- Destino -->
+          <!-- Destination -->
           <td>
             <ng-container *ngIf="editingCarload?.id === carload.id && editingField === 'deliveryDestination'; else viewDestination">
               <input [(ngModel)]="editingCarload!.deliveryDestination"
@@ -87,9 +103,9 @@
                      nz-input />
             </ng-container>
             <ng-template #viewDestination>
-    <span (click)="startInlineEdit(carload, 'deliveryDestination')" class="editable-cell">
-      {{ carload.deliveryDestination }}
-    </span>
+                <span (click)="startInlineEdit(carload, 'deliveryDestination')" class="editable-cell">
+                  {{ carload.deliveryDestination }}
+                </span>
             </ng-template>
           </td>
 
@@ -101,9 +117,9 @@
                      nz-input />
             </ng-container>
             <ng-template #viewCustomerName>
-    <span (click)="startInlineEdit(carload, 'customerName')" class="editable-cell">
-      {{ carload.customerName }}
-    </span>
+                <span (click)="startInlineEdit(carload, 'customerName')" class="editable-cell">
+                  {{ carload.customerName }}
+                </span>
             </ng-template>
           </td>
 
@@ -115,18 +131,17 @@
                      nz-input />
             </ng-container>
             <ng-template #viewPhone>
-    <span (click)="startInlineEdit(carload, 'customerPhoneNumber')" class="editable-cell">
-      {{ carload.customerPhoneNumber }}
-    </span>
+                <span (click)="startInlineEdit(carload, 'customerPhoneNumber')" class="editable-cell">
+                  {{ carload.customerPhoneNumber }}
+                </span>
             </ng-template>
           </td>
 
           <td *ngIf="!isShowingScheduledOnly">{{ carload.assignedDriverName }}</td>
           <td>{{ carload.transportedMaterial }}</td>
-          <td *ngIf="!isShowingScheduledOnly">{{ carload.carloadBatchName }}</td>
+          <td *ngIf="!isShowingScheduledOnly" class="batch-column">{{ carload.carloadBatchName }}</td>
           <td *ngIf="!isShowingScheduledOnly">{{ carload.totalSpent | currency:'MZN':'symbol':'1.2-2' }}</td>
           <td>{{ carload.totalEarnings | currency:'MZN':'symbol':'1.2-2' }}</td>
-          <!-- Status -->
           <td>
             <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
               <nz-tag [nzColor]="carload.deliveryStatus === 'DELIVERED' ? 'green' : carload.deliveryStatus === 'PENDING' ? 'orange' : 'blue'">
@@ -135,23 +150,15 @@
             </button>
             <nz-dropdown-menu #menu="nzDropdownMenu">
               <ul nz-menu>
-                <li nz-menu-item (click)="updateCarloadStatus(carload, 'DELIVERED')">
-                  <span style="color: green;">Entregue</span>
-                </li>
-                <li nz-menu-item (click)="updateCarloadStatus(carload, 'PENDING')">
-                  <span style="color: orange;">Pendente</span>
-                </li>
-                <li nz-menu-item (click)="updateCarloadStatus(carload, 'SCHEDULED')">
-                  <span style="color: blue;">Agendado</span>
-                </li>
+                <li nz-menu-item (click)="updateCarloadStatus(carload, 'DELIVERED')">Delivered</li>
+                <li nz-menu-item (click)="updateCarloadStatus(carload, 'PENDING')">Pending</li>
+                <li nz-menu-item (click)="updateCarloadStatus(carload, 'SCHEDULED')">Scheduled</li>
               </ul>
             </nz-dropdown-menu>
           </td>
           <td *ngIf="isShowingScheduledOnly">{{ carload.deliveryScheduledDate | date: 'dd/MM/yyyy' }}</td>
           <td>
-            <button *ngIf="isShowingScheduledOnly" (click)="encerarCarload(carload)"  nz-button
-                    nzSize="small" nzType="link">
-
+            <button *ngIf="isShowingScheduledOnly" (click)="encerarCarload(carload)" nz-button nzSize="small" nzType="link">
               <nz-icon nzType="copyright-circle" nzTheme="outline" />
             </button>
             <button (click)="editCarload(carload)" nz-button nzSize="small" nzType="link">
@@ -162,43 +169,43 @@
             </button>
           </td>
         </tr>
-
         </tbody>
       </nz-table>
     </div>
-
-
   </div>
 </div>
 
+
+<!-- Carload Drawer -->
 <!-- Carload Drawer -->
 <nz-drawer
   (nzOnClose)="closeCarloadDrawer()"
   [nzBodyStyle]="{ overflow: 'auto' }"
-  [nzFooter]="nzCarloadDrawerFooter"
+  [nzFooter]="drawerFooterTemplate"
   [nzVisible]="isCarloadDrawerVisible"
   [nzWidth]="720"
-  nzTitle="Novo Carload"
+  nzTitle="New Carload"
 >
   <form *nzDrawerContent [formGroup]="carloadForm" nz-form class="drawer-form">
-    <!-- Seção Básica -->
+
+    <!-- Client Information -->
     <div class="drawer-section">
-      <h3 class="section-title">Informações do Cliente</h3>
+      <h3 class="section-title">Client Information</h3>
       <div [nzGutter]="16" nz-row>
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Nome do Cliente</nz-form-label>
+            <nz-form-label nzRequired>Client Name</nz-form-label>
             <nz-form-control>
-              <input formControlName="customerName" nz-input placeholder="Nome do cliente" />
+              <input formControlName="customerName" nz-input placeholder="Client name" />
             </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Telefone do Cliente</nz-form-label>
+            <nz-form-label nzRequired>Client Phone</nz-form-label>
             <nz-form-control>
               <nz-input-group nzAddOnBefore="+258">
-                <input formControlName="customerPhoneNumber" nz-input placeholder="Número de telefone" />
+                <input formControlName="customerPhoneNumber" nz-input placeholder="Phone number" />
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
@@ -206,15 +213,15 @@
       </div>
     </div>
 
-    <!-- Seção Motorista e Gestor -->
+    <!-- Team Assignment -->
     <div class="drawer-section">
-      <h3 class="section-title">Equipe</h3>
+      <h3 class="section-title">Team</h3>
       <div [nzGutter]="16" nz-row>
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Motorista Atribuído</nz-form-label>
+            <nz-form-label nzRequired>Assigned Driver</nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="assignedDriverId" nzPlaceHolder="Selecione o motorista">
+              <nz-select formControlName="assignedDriverId" nzPlaceHolder="Select driver">
                 <nz-option *ngFor="let driver of dataDrivers" [nzLabel]="driver.Name" [nzValue]="driver.id"></nz-option>
               </nz-select>
             </nz-form-control>
@@ -222,9 +229,9 @@
         </div>
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Gestor Atribuído</nz-form-label>
+            <nz-form-label nzRequired>Assigned Manager</nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="logisticsManagerId" nzPlaceHolder="Selecione o gestor">
+              <nz-select formControlName="logisticsManagerId" nzPlaceHolder="Select manager">
                 <nz-option *ngFor="let manager of dataManagers" [nzLabel]="manager.name" [nzValue]="manager.id"></nz-option>
               </nz-select>
             </nz-form-control>
@@ -233,15 +240,15 @@
       </div>
     </div>
 
-    <!-- Seção Material e Lote -->
+    <!-- Material and Batch -->
     <div class="drawer-section">
-      <h3 class="section-title">Material e Lote</h3>
+      <h3 class="section-title">Material & Batch</h3>
       <div [nzGutter]="16" nz-row>
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Material Transportado</nz-form-label>
+            <nz-form-label nzRequired>Transported Material</nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="transportedMaterial" nzPlaceHolder="Selecione o material">
+              <nz-select formControlName="transportedMaterial" nzPlaceHolder="Select material">
                 <nz-option nzLabel="Areia grossa" nzValue="Areia grossa"></nz-option>
                 <nz-option nzLabel="Areia fina" nzValue="Areia fina"></nz-option>
                 <nz-option nzLabel="Areia vermelha/saibro" nzValue="Areia vermelha/saibro"></nz-option>
@@ -254,20 +261,22 @@
             </nz-form-control>
           </nz-form-item>
         </div>
+
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Nome do Lote</nz-form-label>
+            <nz-form-label nzRequired>Batch Name</nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="carloadBatchId" nzPlaceHolder="Selecione o lote">
+              <nz-select formControlName="carloadBatchId" nzPlaceHolder="Select batch">
                 <nz-option *ngFor="let sprint of dataSprint" [nzLabel]="sprint.name" [nzValue]="sprint.id"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
         </div>
+
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Destino:</nz-form-label>
-            <nz-form-control nzErrorTip="Informe o destino da entrega">
+            <nz-form-label nzRequired>Destination</nz-form-label>
+            <nz-form-control nzErrorTip="Enter delivery destination">
               <input nz-input formControlName="deliveryDestination" placeholder="Ex: Matola, Boane..." />
             </nz-form-control>
           </nz-form-item>
@@ -275,36 +284,26 @@
       </div>
     </div>
 
-
-    <div nz-col nzSpan="12">
-      <nz-form-item>
-        <nz-form-label nzRequired>Nome do Cliente</nz-form-label>
-        <nz-form-control>
-          <input formControlName="customerName" nz-input placeholder="Nome do cliente" />
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-
-    <!-- Seção Financeira e Entrega -->
+    <!-- Financial & Delivery -->
     <div class="drawer-section">
-      <h3 class="section-title">Financeiro & Entrega</h3>
+      <h3 class="section-title">Financial & Delivery</h3>
       <div [nzGutter]="16" nz-row>
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Total Gasto</nz-form-label>
+            <nz-form-label nzRequired>Total Spent</nz-form-label>
             <nz-form-control>
               <nz-input-group nzAddOnBefore="MZN">
-                <input formControlName="totalSpent" nz-input placeholder="Total gasto" type="number" />
+                <input formControlName="totalSpent" nz-input placeholder="Total spent" type="number" />
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Rendimento Total</nz-form-label>
+            <nz-form-label nzRequired>Total Earnings</nz-form-label>
             <nz-form-control>
               <nz-input-group nzAddOnBefore="MZN">
-                <input formControlName="totalEarnings" nz-input placeholder="Total ganho" type="number" />
+                <input formControlName="totalEarnings" nz-input placeholder="Total earnings" type="number" />
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
@@ -314,28 +313,22 @@
       <div [nzGutter]="16" nz-row>
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label nzRequired>Status da Entrega</nz-form-label>
+            <nz-form-label nzRequired>Status</nz-form-label>
             <nz-form-control>
-              <nz-select
-                formControlName="deliveryStatus"
-                nzPlaceHolder="Selecione o status"
-                (ngModelChange)="onStatusChange($event)"
-              >
-                <nz-option nzLabel="Entregue" nzValue="DELIVERED"></nz-option>
-                <nz-option nzLabel="Pendente" nzValue="PENDING"></nz-option>
-                <nz-option nzLabel="Agendado" nzValue="SCHEDULED"></nz-option>
+              <nz-select formControlName="deliveryStatus" nzPlaceHolder="Select status" (ngModelChange)="onStatusChange($event)">
+                <nz-option nzLabel="Delivered" nzValue="DELIVERED"></nz-option>
+                <nz-option nzLabel="Pending" nzValue="PENDING"></nz-option>
+                <nz-option nzLabel="Scheduled" nzValue="SCHEDULED"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
         </div>
+
         <div nz-col nzSpan="12" *ngIf="showDeliveryDateField">
           <nz-form-item>
-            <nz-form-label nzRequired>Data de Entrega</nz-form-label>
+            <nz-form-label nzRequired>Delivery Date</nz-form-label>
             <nz-form-control>
-              <nz-date-picker
-                formControlName="deliveryScheduledDate"
-                (ngModelChange)="onChange($event)"
-              ></nz-date-picker>
+              <nz-date-picker formControlName="deliveryScheduledDate" (ngModelChange)="onChange($event)"></nz-date-picker>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -343,11 +336,13 @@
     </div>
   </form>
 
-  <ng-template #nzCarloadDrawerFooter>
+  <!-- Footer -->
+  <ng-template #drawerFooterTemplate>
     <div class="drawer-footer">
-      <button (click)="closeCarloadDrawer()" nz-button nzType="default" class="btn-cancelar">Cancelar</button>
-      <button (click)="submitCarload()" [disabled]="carloadForm.invalid" nz-button nzType="primary" class="btn-salvar">Salvar</button>
+      <button (click)="closeCarloadDrawer()" nz-button nzType="default" class="btn-cancel">Cancel</button>
+      <button (click)="submitCarload()" [disabled]="carloadForm.invalid" nz-button nzType="primary" class="btn-save">Save</button>
     </div>
   </ng-template>
 </nz-drawer>
+
 

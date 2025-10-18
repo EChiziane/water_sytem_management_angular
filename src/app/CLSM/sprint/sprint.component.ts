@@ -221,4 +221,7 @@ export class SprintComponent implements OnInit {
     });
   }
 
+  viewSprint(sprint: Sprint) {
+    
+  }
 }
