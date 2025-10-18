@@ -73,8 +73,6 @@ registerLocaleData(en);
 @NgModule({
   declarations: [
     AppComponent,
-
-
 CustomerDetailsComponent,
     CustomerComponent,
     LoginComponent,

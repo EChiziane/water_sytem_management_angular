@@ -1,4 +1,4 @@
-.main-content {
+.content-wrapper {
   padding: 24px;
   background: #f5f5f5;
   height: 100%;
@@ -7,47 +7,52 @@
   overflow: hidden;
 }
 
-.header {
+.page-header {
   margin-bottom: 14px;
 }
 
-.filter {
+.filters-panel {
   display: flex;
   margin-bottom: 16px;
   gap: 8px;
 }
 
-.filter input {
+.filters-panel input {
   flex: 1;
   max-width: 300px;
 }
 
-.table-container {
+.table-wrapper {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  overflow: auto; /* permite scroll horizontal e vertical */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: auto;
 }
 
 /* coluna do file name mais larga */
 .file-name-column {
-  width: 80%;
+  min-width: 400px;
+  max-width: 600px;
+  width: 40%;
 }
 
 .file-name-cell {
-  white-space: nowrap;   /* não quebra linha */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .file-link {
-  text-decoration: underline; /* sublinhado */
+  text-decoration: underline;
   color: #007bff;
   cursor: pointer;
 }
 
+/* item-row layout */
 .item-row-flex {
   display: flex;
   align-items: flex-end;
@@ -63,21 +68,72 @@
 .item-row-flex button {
   height: 40px;
 }
-/* força a coluna file-name a ser a mais larga */
-.file-name-column {
-  min-width: 400px; /* aumenta largura mínima */
-  max-width: 600px; /* podes ajustar conforme necessário */
-  width: 40%;       /* ocupa 40% da tabela */
+/* Base layout */
+.drawer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.file-name-cell {
-  white-space: nowrap;      /* evita quebra de linha */
-  overflow: hidden;         /* esconde texto extra */
-  text-overflow: ellipsis;  /* adiciona "..." se for muito longo */
+/* Section headers */
+.drawer-section {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+  }
 }
 
-.file-link {
-  text-decoration: underline;
-  color: #007bff;
-  cursor: pointer;
+/* Items list styling */
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid #e9ecef;
+}
+
+.item-row nz-form-item {
+  flex: 1 1 200px;
+}
+
+.remove-btn {
+  color: #ff4d4f;
+  align-self: center;
+}
+
+/* Add button */
+.add-item-btn {
+  width: 100%;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Totals section */
+.totals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 10px 0;
 }
