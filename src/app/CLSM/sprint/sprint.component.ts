@@ -92,17 +92,51 @@ export class SprintComponent implements OnInit {
   updateStatus(sprint: Sprint, newStatus: string): void {
     if (sprint.status === newStatus) return;
 
-    const updated = { ...sprint, status: newStatus };
-    this.sprintService.updateSprint(sprint.id, updated).subscribe({
-      next: () => {
-        sprint.status = newStatus;
-        this.message.success(`Sprint atualizado para ${newStatus}! ✅`);
-        this.totalEmExecucao = this.listOfDisplayData.filter(s => s.status === 'EM_EXECUCAO').length;
-        this.totalEncerrados = this.listOfDisplayData.filter(s => s.status === 'ENCERRADO').length;
-      },
-      error: () => this.message.error('Erro ao atualizar status 🚫')
-    });
+    // 🧭 Caso o utilizador tente ENCERRAR o sprint
+    if (newStatus === 'ENCERRADO') {
+      this.modal.confirm({
+        nzTitle: 'Encerrar Sprint',
+        nzContent: `
+        <p>Ao executar esta ação, a sprint será marcada como <strong>Encerrada</strong>.</p>
+        <p>Tem certeza que deseja prosseguir?</p>
+      `,
+        nzOkText: 'Sim, encerrar',
+        nzOkType: 'primary',
+        nzCancelText: 'Cancelar',
+        nzOnOk: () => {
+          const updated = { ...sprint, status: newStatus };
+          this.sprintService.updateSprint(sprint.id, updated).subscribe({
+            next: () => {
+              sprint.status = newStatus;
+              this.message.success('Sprint encerrada com sucesso! ✅');
+              this.refreshTotals();
+            },
+            error: () => this.message.error('Erro ao encerrar sprint 🚫')
+          });
+        }
+      });
+    } else {
+      // 🟢 Atualização normal de status (ex: para EM_EXECUCAO)
+      const updated = { ...sprint, status: newStatus };
+      this.sprintService.updateSprint(sprint.id, updated).subscribe({
+        next: () => {
+          sprint.status = newStatus;
+          this.message.success(`Sprint atualizada para ${newStatus}! ✅`);
+          this.refreshTotals();
+        },
+        error: () => this.message.error('Erro ao atualizar status 🚫')
+      });
+    }
   }
+
+  /**
+   * 🔄 Atualiza os totais de status (Em execução / Encerrados)
+   */
+  private refreshTotals(): void {
+    this.totalEmExecucao = this.listOfDisplayData.filter(s => s.status === 'EM_EXECUCAO').length;
+    this.totalEncerrados = this.listOfDisplayData.filter(s => s.status === 'ENCERRADO').length;
+  }
+
 
   filterByStatus(status: 'EM_EXECUCAO' | 'ENCERRADO'): void {
     this.listOfDisplayData = this.listOfDisplayData.filter(s => s.status === status);
