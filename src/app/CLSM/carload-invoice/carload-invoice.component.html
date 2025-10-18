@@ -47,6 +47,7 @@
   <!-- ====================== TABLE ====================== -->
   <div class="table-wrapper">
     <nz-table
+      #nzTable
       [nzData]="invoices"
       [nzScroll]="{ x: '1400px', y: '300px' }"
       nzTableLayout="fixed">
@@ -60,7 +61,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let invoice of invoices">
+      <tr *ngFor="let invoice of nzTable.data">
         <td>{{ invoice.carloadCustomerName }}</td>
         <td>{{ invoice.invoiceCode }}</td>
         <td class="file-name-cell">
@@ -155,13 +156,17 @@
           <nz-form-item>
             <nz-form-label nzRequired>Item</nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="description" nzPlaceHolder="Selecione o item">
+              <nz-select
+                formControlName="description"
+                nzPlaceHolder="Selecione o item"
+                (ngModelChange)="onItemChange($event, i)">
                 <nz-option
                   *ngFor="let it of itemsOptions"
                   [nzLabel]="it"
                   [nzValue]="it">
                 </nz-option>
               </nz-select>
+
             </nz-form-control>
           </nz-form-item>
 
