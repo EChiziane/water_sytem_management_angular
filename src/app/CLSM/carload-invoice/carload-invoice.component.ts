@@ -22,6 +22,10 @@ export class CarloadInvoiceComponent implements OnInit {
   currentInvoiceId: string | null = null;
   searchValue = '';
 
+  dateRange: Date[] | null = null;
+  allInvoices: CarloadInvoice[] = []; // mantém cópia total para filtros combinados
+  selectedCustomerId: string | null = null;
+
   itemsOptions: string[] = [
     "M4_AREIA_GROSSA", "M4_PEDRA_3_4", "M4_PEDRA_SARRISCA", "M4_PO_DE_PEDRA", "M4_AREIA_FINA",
     "M7_AREIA_GROSSA", "M7_PEDRA_3_4", "M7_PEDRA_SARRISCA", "M7_PO_DE_PEDRA", "M7_AREIA_FINA",
@@ -44,8 +48,18 @@ export class CarloadInvoiceComponent implements OnInit {
     this.initForm();
   }
 
-  private loadInvoices() {
-    this.invoiceService.getInvoices().subscribe(data => this.invoices = data);
+  filterByCustomer(): void {
+    if (!this.selectedCustomerId) {
+      this.invoices = this.allInvoices;
+    } else {
+      this.invoices = this.allInvoices.filter(
+        inv => inv.carloadCustomerId === this.selectedCustomerId
+      );
+    }
+
+    // Aplica filtros adicionais, se houver
+    this.filterByDateRange();
+    this.search();
   }
 
   private loadCustomers() {
@@ -70,6 +84,31 @@ export class CarloadInvoiceComponent implements OnInit {
   get items(): FormArray {
     return this.invoiceForm.get('items') as FormArray;
   }
+
+
+
+
+  filterByDateRange(): void {
+    if (!this.dateRange || this.dateRange.length !== 2) {
+      this.invoices = this.allInvoices;
+      this.search(); // reaplica o filtro de texto se existir
+      return;
+    }
+
+    const [start, end] = this.dateRange;
+    const startDate = new Date(start).setHours(0, 0, 0, 0);
+    const endDate = new Date(end).setHours(23, 59, 59, 999);
+
+    this.invoices = this.allInvoices.filter(inv => {
+      const createdAt = new Date(inv.createdAt).getTime();
+      return createdAt >= startDate && createdAt <= endDate;
+    });
+
+    // mantém compatibilidade com pesquisa ativa
+    this.search();
+  }
+
+
 
   addItem() {
     const itemGroup = this.fb.group({
@@ -140,6 +179,13 @@ export class CarloadInvoiceComponent implements OnInit {
         error: () => this.message.error('Error creating invoice 🚫')
       });
     }
+  }
+
+  private loadInvoices() {
+    this.invoiceService.getInvoices().subscribe(data => {
+      this.invoices = data;
+      this.allInvoices = data;
+    });
   }
 
   editInvoice(invoice: CarloadInvoice) {

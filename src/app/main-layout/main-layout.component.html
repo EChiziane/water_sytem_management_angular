@@ -12,80 +12,72 @@
       </a>
     </div>
     <ul [nzInlineCollapsed]="isCollapsed" nz-menu nzMode="inline" nzTheme="dark">
-      <li nz-submenu nzIcon="dashboard" nzOpen nzTitle="CSM">
+      <li nz-submenu nzIcon="dashboard" nzTitle="CSM" nzOpen>
         <ul>
 
-
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/carload">
-                  <span class="menu-icon-right">
-          <i nz-icon nzType="car"></i>
-        </span>
-              Carload
-            </a>
+          <!-- Operacional -->
+          <li nz-submenu nzTitle="Operacional" nzIcon="car">
+            <ul>
+              <li nz-menu-item nzMatchRouter>
+                <a routerLink="/carload">
+                  <span class="menu-icon-right"><i nz-icon nzType="car"></i></span>
+                  Carload
+                </a>
+              </li>
+              <li nz-menu-item nzMatchRouter>
+                <a routerLink="/driver">
+                  <span class="menu-icon-right"><i nz-icon nzType="team"></i></span>
+                  Driver
+                </a>
+              </li>
+              <li nz-menu-item nzMatchRouter>
+                <a routerLink="/sprint">
+                  <span class="menu-icon-right"><i nz-icon nzType="rocket"></i></span>
+                  Sprint
+                </a>
+              </li>
+            </ul>
           </li>
 
-          <li nz-menu-item nzMatchRouter>
-            <span class="menu-icon-right">
-          <i nz-icon nzType="user"></i>
-        </span>
-            <a routerLink="/manager">
-              Manager
-
-            </a>
+          <!-- Administrativo -->
+          <li nz-submenu nzTitle="Administrativo" nzIcon="user">
+            <ul>
+              <li nz-menu-item nzMatchRouter>
+                <a routerLink="/manager">
+                  <span class="menu-icon-right"><i nz-icon nzType="user"></i></span>
+                  Manager
+                </a>
+              </li>
+              <li nz-menu-item nzMatchRouter>
+                <a routerLink="/carload-invoice">
+                  <span class="menu-icon-right"><i nz-icon nzType="file"></i></span>
+                  Invoice
+                </a>
+              </li>
+              <li nz-menu-item nzMatchRouter>
+                <a routerLink="/carload-customer">
+                  <span class="menu-icon-right"><i nz-icon nzType="team"></i></span>
+                  Customer
+                </a>
+              </li>
+            </ul>
           </li>
 
-          <li nz-menu-item nzMatchRouter>
-            <span class="menu-icon-right">
-          <i nz-icon nzType="rocket"></i>
-        </span>
-            <a routerLink="/sprint">
-              Sprint
-
-            </a>
+          <!-- Materiais -->
+          <li nz-submenu nzTitle="Materiais" nzIcon="appstore">
+            <ul>
+              <li nz-menu-item nzMatchRouter>
+                <a routerLink="/materials">
+                  <span class="menu-icon-right"><i nz-icon nzType="appstore"></i></span>
+                  Item Material
+                </a>
+              </li>
+            </ul>
           </li>
-
-          <li nz-menu-item nzMatchRouter>
-               <span class="menu-icon-right">
-          <i nz-icon nzType="team"></i>
-        </span>
-            <a routerLink="/driver">
-              Driver
-
-            </a>
-          </li>
-
-          <li nz-menu-item nzMatchRouter>
-               <span class="menu-icon-right">
-          <i nz-icon nzType="team"></i>
-        </span>
-            <a routerLink="/carload-invoice">
-             Invoice
-
-            </a>
-          </li>
-
-          <li nz-menu-item nzMatchRouter>
-               <span class="menu-icon-right">
-          <i nz-icon nzType="team"></i>
-        </span>
-            <a routerLink="/carload-customer">
-              Customer
-
-            </a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-               <span class="menu-icon-right">
-          <i nz-icon nzType="team"></i>
-        </span>
-            <a routerLink="/materials">
-            Item Material
-            </a>
-          </li>
-
 
         </ul>
       </li>
+
       <li nz-submenu nzIcon="dashboard" nzOpen nzTitle="WSM">
         <ul>
           <li nz-menu-item nzMatchRouter>

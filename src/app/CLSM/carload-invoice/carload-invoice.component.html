@@ -5,16 +5,44 @@
   </div>
 
   <!-- ====================== FILTERS ====================== -->
+  <!-- ====================== FILTERS ====================== -->
   <div class="filters-panel">
+    <!-- Campo de pesquisa -->
     <input
       [(ngModel)]="searchValue"
       (ngModelChange)="search()"
       nz-input
       placeholder="Search..." />
+
+    <!-- Botão Nova Fatura -->
     <button (click)="openDrawer()" nz-button nzType="primary">
       New Invoice
     </button>
+
+    <!-- Seletor de cliente -->
+    <nz-select
+      [(ngModel)]="selectedCustomerId"
+      (ngModelChange)="filterByCustomer()"
+      nzAllowClear
+      nzPlaceHolder="Select customer">
+      <nz-option
+        *ngFor="let customer of dataCustomer"
+        [nzLabel]="customer.name"
+        [nzValue]="customer.id">
+      </nz-option>
+    </nz-select>
+
+    <!-- Date Range Picker -->
+    <nz-range-picker
+      [(ngModel)]="dateRange"
+      (ngModelChange)="filterByDateRange()"
+      nzFormat="dd/MM/yyyy"
+      nzPlaceHolder="Select date range">
+    </nz-range-picker>
+
+
   </div>
+
 
   <!-- ====================== TABLE ====================== -->
   <div class="table-wrapper">
