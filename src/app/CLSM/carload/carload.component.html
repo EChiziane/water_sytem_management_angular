@@ -177,6 +177,7 @@
 
 
 <!-- Carload Drawer -->
+<!-- Carload Drawer -->
 <nz-drawer
   (nzOnClose)="closeCarloadDrawer()"
   [nzBodyStyle]="{ overflow: 'auto' }"
@@ -185,9 +186,7 @@
   [nzWidth]="720"
   nzTitle="New Carload"
 >
-  <form *nzDrawerContent
-        [formGroup]="carloadForm"
-        nz-form class="drawer-form">
+  <form *nzDrawerContent [formGroup]="carloadForm" nz-form class="drawer-form">
 
     <!-- Client Information -->
     <div class="drawer-section">
