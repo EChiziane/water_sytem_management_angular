@@ -4,24 +4,36 @@
       <nz-input-group class="input-spacing" nzAddOnBeforeIcon="user">
         <input formControlName="login" id="login" nz-input placeholder="Usuário" type="text"/>
       </nz-input-group>
+
       <br/>
+
       <nz-input-group class="input-spacing" nzAddOnBeforeIcon="lock">
         <input formControlName="password" id="password" nz-input placeholder="Senha" type="password"/>
       </nz-input-group>
+
       <br/>
+
       <label class="input-spacing" formControlName="rememberMe" nz-checkbox>Lembrar-me</label>
+
       <div class="actions">
         <a (click)="openForgotPasswordModal()" class="forgot-password">Esqueceu a senha?</a>
       </div>
-      <button class="login-button" nz-button nzType="primary" type="submit">Entrar</button>
+
+      <!-- Botão de login com spinner -->
+      <button class="login-button" nz-button nzType="primary" type="submit" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Entrar</span>
+        <span *ngIf="isLoading">
+          <nz-spin nzSize="small"></nz-spin> A entrar...
+        </span>
+      </button>
+
       <div class="register-link">
-        Não tem conta? <a>Registrar</a>
+        Não tem conta? <a (click)="openRegisterModal()">Registrar</a>
       </div>
+
       <div *ngIf="responseMessage" class="response-container">
         <nz-alert [nzMessage]="responseMessage" nzShowIcon nzType="error"></nz-alert>
       </div>
     </form>
   </nz-card>
 </div>
-
-
