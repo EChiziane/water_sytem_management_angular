@@ -35,7 +35,14 @@
   </div>
 
   <div class="table-wrapper">
-    <div class="table-scroll">
+
+    <!-- 🔄 SPINNER DE CARREGAMENTO -->
+    <div *ngIf="isLoading" class="spinner-container">
+      <nz-spin nzTip="A carregar sprints..." nzSize="large"></nz-spin>
+    </div>
+
+    <!-- 📋 TABELA (só aparece quando não está a carregar) -->
+    <div *ngIf="!isLoading" class="table-scroll">
       <nz-table
         #nzTable
         [nzData]="listOfDisplayData"
@@ -63,9 +70,9 @@
                      nz-input />
             </ng-container>
             <ng-template #viewName>
-              <span (click)="startInlineEdit(sprint, 'name')" class="editable-cell">
-                {{ sprint.name }}
-              </span>
+            <span (click)="startInlineEdit(sprint, 'name')" class="editable-cell">
+              {{ sprint.name }}
+            </span>
             </ng-template>
           </td>
 
@@ -78,9 +85,9 @@
                      nz-input />
             </ng-container>
             <ng-template #viewCode>
-              <span (click)="startInlineEdit(sprint, 'code')" class="editable-cell">
-                {{ sprint.code }}
-              </span>
+            <span (click)="startInlineEdit(sprint, 'code')" class="editable-cell">
+              {{ sprint.code }}
+            </span>
             </ng-template>
           </td>
 
@@ -93,9 +100,9 @@
                      nz-input />
             </ng-container>
             <ng-template #viewDesc>
-              <span (click)="startInlineEdit(sprint, 'description')" class="editable-cell">
-                {{ sprint.description }}
-              </span>
+            <span (click)="startInlineEdit(sprint, 'description')" class="editable-cell">
+              {{ sprint.description }}
+            </span>
             </ng-template>
           </td>
 
@@ -119,9 +126,9 @@
             </nz-dropdown-menu>
           </td>
 
-          <td>{{ sprint.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
-          <td>
+          <td>{{ sprint.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
 
+          <td>
             <button [routerLink]="['/sprint-detail', sprint.id]" nz-button nzType="link" nzSize="small">
               <nz-icon nzType="eye" nzTheme="outline"></nz-icon>
             </button>
@@ -135,4 +142,5 @@
       </nz-table>
     </div>
   </div>
+
 </div>

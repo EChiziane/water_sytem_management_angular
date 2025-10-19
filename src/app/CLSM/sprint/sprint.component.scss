@@ -121,3 +121,20 @@ nz-table {
 }
 
 /* (restante CSS permanece igual — drawer, botões, etc.) */
+/* ===========================
+   🌀 Spinner (carregamento)
+   =========================== */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  gap: 8px; /* espaço entre o ícone e o texto */
+  white-space: nowrap; /* impede que o texto quebre para a linha seguinte */
+}
+
+::ng-deep .ant-spin-text {
+  white-space: nowrap; /* mantém o texto na mesma linha */
+  font-size: 14px;
+}
+

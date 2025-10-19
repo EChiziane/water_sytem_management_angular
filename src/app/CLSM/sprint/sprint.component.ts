@@ -138,35 +138,11 @@ export class SprintComponent implements OnInit {
   }
 
 
-  filterByStatus(status: 'EM_EXECUCAO' | 'ENCERRADO'): void {
-    this.listOfDisplayData = this.listOfDisplayData.filter(s => s.status === status);
-  }
 
-  showAll(): void {
-    this.loadSprints();
-  }
+  isLoading = false; // 🌀 indicador de carregamento
 
-  search(): void {
-    const val = this.searchValue.toLowerCase();
-    if (!val) {
-      this.loadSprints();
-      return;
-    }
-    this.listOfDisplayData = this.listOfDisplayData.filter(sprint =>
-      sprint.code.toLowerCase().includes(val) ||
-      sprint.description.toLowerCase().includes(val) ||
-      sprint.name.toLowerCase().includes(val)
-    );
-  }
 
-  private loadSprints(): void {
-    this.sprintService.getSprints().subscribe(sprints => {
-      this.listOfDisplayData = sprints;
-      this.totalEmExecucao = sprints.filter(d => d.status === 'EM_EXECUCAO').length;
-      this.totalEncerrados = sprints.filter(d => d.status === 'ENCERRADO').length;
-      this.totalSprints = sprints.length;
-    });
-  }
+
 
 
   // Mostrar Drawer
@@ -222,6 +198,62 @@ export class SprintComponent implements OnInit {
   }
 
   viewSprint(sprint: Sprint) {
-    
+
   }
+
+
+  allSprints: Sprint[] = []; // 🧩 Mantém todos os sprints originais
+
+// ...
+
+  private loadSprints(): void {
+    this.isLoading = true;
+    this.sprintService.getSprints().subscribe({
+      next: (sprints) => {
+        this.allSprints = sprints; // guarda todos
+        this.listOfDisplayData = [...sprints]; // copia para exibição
+        this.totalEmExecucao = sprints.filter(d => d.status === 'EM_EXECUCAO').length;
+        this.totalEncerrados = sprints.filter(d => d.status === 'ENCERRADO').length;
+        this.totalSprints = sprints.length;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar sprints', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  /**
+   * 🧭 Filtra Sprints por status (sem perder os outros)
+   */
+  filterByStatus(status: 'EM_EXECUCAO' | 'ENCERRADO'): void {
+    this.listOfDisplayData = this.allSprints.filter(s => s.status === status);
+  }
+
+  /**
+   * 🔄 Restaura todos
+   */
+  showAll(): void {
+    this.listOfDisplayData = [...this.allSprints];
+  }
+
+  /**
+   * 🔍 Pesquisa (mantendo base original)
+   */
+  search(): void {
+    const val = this.searchValue.toLowerCase();
+    if (!val) {
+      this.showAll();
+      return;
+    }
+    this.listOfDisplayData = this.allSprints.filter(sprint =>
+      sprint.code.toLowerCase().includes(val) ||
+      sprint.description.toLowerCase().includes(val) ||
+      sprint.name.toLowerCase().includes(val)
+    );
+  }
+
+
+
 }

@@ -1,0 +1,264 @@
+<div class="content-wrapper">
+  <!-- ====================== HEADER ====================== -->
+  <div class="page-header">
+    <p>Carload Cotacao</p>
+  </div>
+
+  <!-- ====================== FILTERS ====================== -->
+  <!-- ====================== FILTERS ====================== -->
+  <div class="filters-panel">
+    <!-- Campo de pesquisa -->
+    <input
+      [(ngModel)]="searchValue"
+      (ngModelChange)="search()"
+      nz-input
+      placeholder="Search..." />
+
+    <!-- Botão Nova Fatura -->
+    <button (click)="openDrawer()" nz-button nzType="primary">
+      New Cotacao
+    </button>
+
+    <!-- Seletor de cliente -->
+    <nz-select
+      [(ngModel)]="selectedCustomerId"
+      (ngModelChange)="filterByCustomer()"
+      nzAllowClear
+      nzPlaceHolder="Select customer">
+      <nz-option
+        *ngFor="let customer of dataCustomer"
+        [nzLabel]="customer.name"
+        [nzValue]="customer.id">
+      </nz-option>
+    </nz-select>
+
+    <!-- Date Range Picker -->
+    <nz-range-picker
+      [(ngModel)]="dateRange"
+      (ngModelChange)="filterByDateRange()"
+      nzFormat="dd/MM/yyyy"
+      nzPlaceHolder="Select date range">
+    </nz-range-picker>
+
+
+  </div>
+
+
+  <!-- ====================== TABLE ====================== -->
+  <div class="table-wrapper">
+    <nz-table
+      #nzTable
+      [nzData]="invoices"
+      [nzScroll]="{ x: '1400px', y: '300px' }"
+      nzTableLayout="fixed">
+      <thead>
+      <tr>
+        <th>Customer Own</th>
+        <th>Cotacao Code</th>
+        <th class="file-name-column">File Name</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let invoice of nzTable.data">
+        <td>{{ invoice.carloadCustomerName }}</td>
+        <td>{{ invoice.invoiceCode }}</td>
+        <td class="file-name-cell">
+          <a
+            (click)="downloadInvoice(invoice)"
+            target="_blank"
+            class="file-link">
+            {{ invoice.fileName }}
+          </a>
+        </td>
+        <td>{{ invoice.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
+        <td class="action-buttons">
+          <button
+            (click)="downloadInvoice(invoice)"
+            nz-button
+            nzSize="small"
+            nzType="link"
+            nz-tooltip="Download">
+            <nz-icon nzType="printer" nzTheme="outline"></nz-icon>
+          </button>
+
+          <button
+            (click)="editInvoice(invoice)"
+            nz-button
+            nzType="link"
+            nzSize="small"
+            nz-tooltip="Edit">
+            <nz-icon nzType="edit" nzTheme="outline"></nz-icon>
+          </button>
+
+          <button
+            (click)="deleteInvoice(invoice)"
+            nz-button
+            nzDanger
+            nzType="link"
+            nzSize="small"
+            nz-tooltip="Delete">
+            <nz-icon nzType="delete" nzTheme="outline"></nz-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<!-- ====================== DRAWER ====================== -->
+<nz-drawer
+  [nzVisible]="isDrawerVisible"
+  [nzTitle]="currentInvoiceId ? 'Edit Invoice' : 'New Invoice'"
+  (nzOnClose)="closeDrawer()"
+  [nzWidth]="1000"
+  [nzFooter]="drawerFooter">
+
+  <form nz-form [formGroup]="invoiceForm" *nzDrawerContent class="drawer-form">
+    <!-- CLIENT INFO -->
+    <div class="drawer-section">
+      <h3 class="section-title">Customer Information</h3>
+
+      <nz-form-item>
+        <nz-form-label nzRequired>Cliente</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            formControlName="carloadCustomerId"
+            nzPlaceHolder="Nome do Cliente">
+            <nz-option
+              *ngFor="let customer of dataCustomer"
+              [nzLabel]="customer.name"
+              [nzValue]="customer.id">
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired>Invoice Code</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="invoiceCode" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <!-- ITEMS SECTION -->
+    <div class="drawer-section">
+      <h3 class="section-title">Invoice Items</h3>
+
+      <div formArrayName="items" class="items-list">
+        <div
+          *ngFor="let item of items.controls; let i = index"
+          [formGroupName]="i"
+          class="item-row">
+          <nz-form-item>
+            <nz-form-label nzRequired>Item</nz-form-label>
+            <nz-form-control>
+              <nz-select
+                formControlName="description"
+                nzPlaceHolder="Selecione o item"
+                (ngModelChange)="onItemChange($event, i)">
+                <nz-option
+                  *ngFor="let it of itemsOptions"
+                  [nzLabel]="it"
+                  [nzValue]="it">
+                </nz-option>
+              </nz-select>
+
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label nzRequired>Quantidade</nz-form-label>
+            <nz-form-control>
+              <input type="number" nz-input formControlName="quantity" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label nzRequired>Preço Unitário</nz-form-label>
+            <nz-form-control>
+              <input type="number" nz-input formControlName="unitPrice" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label>Subtotal</nz-form-label>
+            <nz-form-control>
+              <input nz-input formControlName="amount" readonly />
+            </nz-form-control>
+          </nz-form-item>
+
+          <button
+            nz-button
+            nzType="default"
+            class="remove-btn"
+            (click)="removeItem(i)"
+            type="button">
+            <nz-icon nzType="minus-circle"></nz-icon> Remover
+          </button>
+        </div>
+      </div>
+
+      <button
+        nz-button
+        nzType="dashed"
+        (click)="addItem()"
+        type="button"
+        class="add-item-btn">
+        <nz-icon nzType="plus"></nz-icon> Adicionar Item
+      </button>
+    </div>
+
+    <!-- TOTALS SECTION -->
+    <div class="drawer-section totals-section">
+      <h3 class="section-title">Totals</h3>
+
+      <div class="totals-grid">
+        <nz-form-item>
+          <nz-form-label nzRequired>Taxa (%)</nz-form-label>
+          <nz-form-control>
+            <input type="number" nz-input formControlName="taxRate" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Subtotal</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="subtotal" readonly />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Tax</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="tax" readonly />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Total</nz-form-label>
+          <nz-form-control>
+            <input nz-input formControlName="total" readonly />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+
+  <!-- ====================== FOOTER ====================== -->
+  <ng-template #drawerFooter>
+    <div class="drawer-footer">
+      <button nz-button (click)="closeDrawer()">Cancelar</button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="submitInvoice()"
+        [disabled]="!invoiceForm.valid">
+        Salvar
+      </button>
+    </div>
+  </ng-template>
+</nz-drawer>
