@@ -59,6 +59,14 @@
         </nz-form-control>
       </nz-form-item>
     </div>
+    <br>
+    <!-- 🔄 Spinner de gravação -->
+    <div *ngIf="isSaving" class="drawer-spinner">
+      <nz-spin nzSize="large"></nz-spin>
+      <br>
+      <p>Aguarde enquanto a sprint está a ser gravada.</p>
+    </div>
+
   </form>
 
   <ng-template #sprintDrawerFooter>

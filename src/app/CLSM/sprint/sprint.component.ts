@@ -183,31 +183,7 @@ export class SprintComponent implements OnInit {
     return this.currentEditingSprintId ? 'Edição de Sprint' : 'Criação de Sprint';
   }
 
-  submitSprint(): void {
-    if (!this.sprintForm.valid) return;
 
-    const sprintData = this.sprintForm.value;
-
-    if (this.currentEditingSprintId) {
-      this.sprintService.updateSprint(this.currentEditingSprintId, sprintData).subscribe({
-        next: () => {
-          this.loadSprints();
-          this.closeSprintDrawer();
-          this.message.success('Sprint atualizado com sucesso! ✅');
-        },
-        error: () => this.message.error('Erro ao atualizar sprint 🚫')
-      });
-    } else {
-      this.sprintService.addSprint(sprintData).subscribe({
-        next: () => {
-          this.loadSprints();
-          this.closeSprintDrawer();
-          this.message.success('Sprint criada com sucesso! ✅');
-        },
-        error: () => this.message.error('Erro ao criar sprint 🚫')
-      });
-    }
-  }
 
   private initForm(): void {
     this.sprintForm = this.fb.group({
@@ -217,5 +193,39 @@ export class SprintComponent implements OnInit {
       status: ['EM_EXECUCAO', Validators.required]
     });
   }
+
+  isSaving = false;
+  submitSprint(): void {
+    if (!this.sprintForm.valid) return;
+
+    const sprintData = this.sprintForm.value;
+    this.isSaving = true; // ⚡ Início do spinner
+
+    const request$ = this.currentEditingSprintId
+      ? this.sprintService.updateSprint(this.currentEditingSprintId, sprintData)
+      : this.sprintService.addSprint(sprintData);
+
+    request$.subscribe({
+      next: () => {
+        this.loadSprints();
+        this.closeSprintDrawer();
+        this.message.success(
+          this.currentEditingSprintId
+            ? 'Sprint atualizado com sucesso! ✅'
+            : 'Sprint criada com sucesso! ✅'
+        );
+        this.isSaving = false; // ⚡ Fim do spinner
+      },
+      error: () => {
+        this.message.error(
+          this.currentEditingSprintId
+            ? 'Erro ao atualizar sprint 🚫'
+            : 'Erro ao criar sprint 🚫'
+        );
+        this.isSaving = false; // ⚡ Fim do spinner
+      }
+    });
+  }
+
 
 }
