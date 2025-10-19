@@ -65,6 +65,8 @@ import {ClassroomComponent} from './classroom/classroom.component';
 import {ReciboComponent} from './recibo/recibo.component';
 import {CarloadInvoiceComponent} from './CLSM/carload-invoice/carload-invoice.component';
 import {CarloadCustomerComponent} from './CLSM/carload-customer/carload-customer.component';
+import {CarloadCotacaoComponent} from './carload-cotacao/carload-cotacao.component';
+import {NzSpinComponent} from 'ng-zorro-antd/spin';
 
 
 
@@ -82,6 +84,7 @@ CustomerDetailsComponent,
     SigninComponent,
     ListuserComponent,
 CalendarComponent,
+    CarloadCotacaoComponent,
     CarloadComponent,
     ManagerComponent,
     SprintComponent,
@@ -112,7 +115,6 @@ ReciboComponent
     NzButtonComponent,
     NzDividerComponent,
     NzTableModule,
-
 
 
     NzLayoutModule,
@@ -198,7 +200,8 @@ ReciboComponent
     MatDatepicker,
     MatSelect,
     MatOption,
-    MatButton
+    MatButton,
+    NzSpinComponent
 
   ],
   providers: [

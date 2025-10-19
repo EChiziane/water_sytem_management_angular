@@ -18,6 +18,9 @@
 .login-button {
   width: 100%;
   margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .actions {
@@ -30,11 +33,3 @@
   margin-bottom: 15px;
   display: block;
 }
-
-.icon-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px; /* Adiciona espaçamento abaixo do ícone */
-}
-

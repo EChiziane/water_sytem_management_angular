@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Inject, OnInit, Output, PLATFORM_ID} from '@angular/core';
-import {AuthService} from '../../services/auth.service';
-import {Router} from '@angular/router';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {isPlatformBrowser} from '@angular/common';
+import { Component, EventEmitter, Inject, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -11,16 +11,18 @@ import {isPlatformBrowser} from '@angular/common';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
-
   @Output() loginSuccess = new EventEmitter<void>();
+
   userForm = new FormGroup({
     login: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
     rememberMe: new FormControl(false)
   });
+
   forgotPasswordForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email])
   });
+
   validateForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
@@ -31,26 +33,35 @@ export class LoginComponent implements OnInit {
     website: new FormControl('', [Validators.required]),
     agree: new FormControl(false, Validators.requiredTrue)
   });
+
   isForgotPasswordVisible = false;
   isRegisterVisible = false;
   responseMessage: string | null = null;
-  visible1 = false; // Controla a visibilidade do modal
+  visible1 = false;
+  isLoading = false; // <=== estado do spinner
 
   constructor(
     private authService: AuthService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: object
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.logout();
   }
 
   logout() {
-    localStorage.removeItem('token')
+    localStorage.removeItem('token');
   }
 
   login() {
     if (this.userForm.valid) {
+      this.isLoading = true; // mostra o spinner
+      this.responseMessage = null;
+
       this.authService.login(this.userForm.value.login!, this.userForm.value.password!).subscribe({
         next: (response) => {
+          this.isLoading = false; // esconde o spinner
           if (response && response.token && isPlatformBrowser(this.platformId)) {
             localStorage.setItem('token', response.token);
             this.loginSuccess.emit();
@@ -60,6 +71,7 @@ export class LoginComponent implements OnInit {
           }
         },
         error: err => {
+          this.isLoading = false; // esconde o spinner
           console.error('Erro no login', err);
           this.responseMessage = 'Usuário ou senha inválidos.';
         }
@@ -107,15 +119,11 @@ export class LoginComponent implements OnInit {
     this.visible1 = true;
   }
 
-  createUser() {
-  }
-
-  // Validator for confirming passwords
   confirmPasswordValidator(form: FormGroup): { [key: string]: boolean } | null {
     const password = form.get('password')?.value;
     const checkPassword = form.get('checkPassword')?.value;
     if (password && checkPassword && password !== checkPassword) {
-      return {confirm: true};
+      return { confirm: true };
     }
     return null;
   }
@@ -126,9 +134,5 @@ export class LoginComponent implements OnInit {
     } else {
       console.log('Form is invalid!');
     }
-  }
-
-  ngOnInit(): void {
-    this.logout()
   }
 }
