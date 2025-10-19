@@ -120,4 +120,107 @@ nz-table {
   }
 }
 
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  gap: 8px; /* espaço entre o ícone e o texto */
+  white-space: nowrap; /* impede que o texto quebre para a linha seguinte */
+}
+
+::ng-deep .ant-spin-text {
+  white-space: nowrap; /* mantém o texto na mesma linha */
+  font-size: 14px;
+}
+
+
 /* (restante CSS permanece igual — drawer, botões, etc.) */
+/* ===========================
+   🟦 Drawer Styling
+   =========================== */
+.drawer-form {
+  padding: 8px 16px 24px 16px;
+  background-color: #fff;
+}
+
+.drawer-section {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: #333;
+  text-align: left;
+  border-left: 4px solid #007bff;
+  padding-left: 8px;
+}
+
+nz-form-item {
+  margin-bottom: 18px;
+}
+
+nz-form-label {
+  font-weight: 500;
+  color: #444;
+}
+
+textarea[nz-input] {
+  resize: none;
+  border-radius: 8px;
+}
+
+input[nz-input],
+textarea[nz-input],
+nz-select {
+  border-radius: 8px;
+}
+
+
+
+
+
+/* ===========================
+   🟦 Drawer Footer Buttons
+   =========================== */
+.drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 24px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.btn-cancelar {
+  color: #555;
+  border-radius: 8px;
+}
+
+.btn-salvar {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.btn-salvar:hover {
+  background-color: #0056b3;
+}
+
+/* ===========================
+   🟦 General Button Styling
+   =========================== */
+[nz-button] {
+  margin-right: 8px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}

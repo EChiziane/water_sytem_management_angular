@@ -1,138 +1,80 @@
-<div class="content-wrapper">
 
-  <div class="page-header">
-    <p>Lista de Sprints</p>
-  </div>
 
-  <div class="summary-section">
-    <div style="background: #ECECEC;">
-      <div [nzGutter]="8" nz-row>
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Total Sprints">
-            <p>{{ totalSprints | number }}</p>
-          </nz-card>
-        </div>
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Em Execução">
-            <p>{{ totalEmExecucao | number }}</p>
-          </nz-card>
-        </div>
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Encerrados">
-            <p>{{ totalEncerrados | number }}</p>
-          </nz-card>
-        </div>
-      </div>
+  <div class="content-wrapper">
+    <div class="page-header">
+      <p>Lista de Sprints</p>
     </div>
-  </div>
+    <div class="summary-section">
+      <div style="background: #ECECEC;">
+        <div [nzGutter]="8" nz-row>
+          <div [nzSpan]="8" nz-col>
+            <nz-card nzTitle="Total Sprints"> <p>{{ totalSprints | number }}</p> </nz-card> </div> <div [nzSpan]="8" nz-col> <nz-card nzTitle="Em Execução"> <p>{{ totalEmExecucao | number }}</p> </nz-card> </div> <div [nzSpan]="8" nz-col> <nz-card nzTitle="Encerrados"> <p>{{ totalEncerrados | number }}</p> </nz-card> </div> </div> </div> </div> <div class="filters-panel"> <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Search..." type="text"/> <button (click)="openSprintDrawer()" nz-button nzType="primary">Nova Sprint</button> <button (click)="filterByStatus('EM_EXECUCAO')" nz-button nzType="default">Em Execução</button> <button (click)="filterByStatus('ENCERRADO')" nz-button nzType="default">Encerrados</button> <button (click)="showAll()" nz-button nzType="default">Todos</button> </div> <div class="table-wrapper"> <!-- 🔄 SPINNER DE CARREGAMENTO --> <div *ngIf="isLoading" class="spinner-container"> <nz-spin nzTip="A carregar sprints..." nzSize="large"></nz-spin> </div> <!-- 📋 TABELA (só aparece quando não está a carregar) --> <div *ngIf="!isLoading" class="table-scroll"> <nz-table #nzTable [nzData]="listOfDisplayData" [nzScroll]="{ x: '800px', y: '280px'}" nzTableLayout="fixed"> <thead> <tr> <th>Nome</th> <th>Código</th> <th>Descrição</th> <th>Status</th> <th>Created At</th> <th>Ações</th> </tr> </thead> <tbody> <tr *ngFor="let sprint of nzTable.data"> <!-- Nome --> <td> <ng-container *ngIf="editingSprint?.id === sprint.id && editingField === 'name'; else viewName"> <input [(ngModel)]="editingSprint!.name" (blur)="saveInlineEdit(sprint, 'name')" (keyup.enter)="saveInlineEdit(sprint, 'name')" nz-input /> </ng-container> <ng-template #viewName> <span (click)="startInlineEdit(sprint, 'name')" class="editable-cell"> {{ sprint.name }} </span> </ng-template> </td> <!-- Código --> <td> <ng-container *ngIf="editingSprint?.id === sprint.id && editingField === 'code'; else viewCode"> <input [(ngModel)]="editingSprint!.code" (blur)="saveInlineEdit(sprint, 'code')" (keyup.enter)="saveInlineEdit(sprint, 'code')" nz-input /> </ng-container> <ng-template #viewCode> <span (click)="startInlineEdit(sprint, 'code')" class="editable-cell"> {{ sprint.code }} </span> </ng-template> </td> <!-- Descrição --> <td> <ng-container *ngIf="editingSprint?.id === sprint.id && editingField === 'description'; else viewDesc"> <input [(ngModel)]="editingSprint!.description" (blur)="saveInlineEdit(sprint, 'description')" (keyup.enter)="saveInlineEdit(sprint, 'description')" nz-input /> </ng-container> <ng-template #viewDesc> <span (click)="startInlineEdit(sprint, 'description')" class="editable-cell"> {{ sprint.description }} </span> </ng-template> </td> <!-- Status --> <td> <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click"> <nz-tag [nzColor]="sprint.status === 'EM_EXECUCAO' ? 'green' : 'red'"> {{ sprint.status }} </nz-tag> </button> <nz-dropdown-menu #menu="nzDropdownMenu"> <ul nz-menu> <li nz-menu-item (click)="updateStatus(sprint, 'EM_EXECUCAO')"> <span style="color: green;">Executar</span> </li> <li nz-menu-item (click)="updateStatus(sprint, 'ENCERRADO')"> <span style="color: red;">Encerrar</span> </li> </ul> </nz-dropdown-menu> </td> <td>{{ sprint.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td> <td> <button [routerLink]="['/sprint-detail', sprint.id]" nz-button nzType="link" nzSize="small"> <nz-icon nzType="eye" nzTheme="outline"></nz-icon> </button> <button (click)="deleteSprint(sprint)" nz-button nzDanger nzSize="small" nzType="link"> <nz-icon nzTheme="outline" nzType="delete"></nz-icon> </button> </td> </tr> </tbody> </nz-table> </div> </div> </div>
 
-  <div class="filters-panel">
-    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Search..." type="text"/>
-    <button (click)="openSprintDrawer()" nz-button nzType="primary">Nova Sprint</button>
-    <button (click)="filterByStatus('EM_EXECUCAO')" nz-button nzType="default">Em Execução</button>
-    <button (click)="filterByStatus('ENCERRADO')" nz-button nzType="default">Encerrados</button>
-    <button (click)="showAll()" nz-button nzType="default">Todos</button>
-  </div>
 
-  <div class="table-wrapper">
-    <div class="table-scroll">
-      <nz-table
-        #nzTable
-        [nzData]="listOfDisplayData"
-        [nzScroll]="{ x: '800px', y: '280px'}"
-        nzTableLayout="fixed">
-        <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Código</th>
-          <th>Descrição</th>
-          <th>Status</th>
-          <th>Created At</th>
-          <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let sprint of nzTable.data">
+<!-- 🟦 Drawer Sprint -->
+<nz-drawer
+  (nzOnClose)="closeSprintDrawer()"
+  [nzVisible]="isSprintDrawerVisible"
+  [nzTitle]="sprintDrawerTitle"
+  [nzWidth]="480"
+  [nzFooter]="sprintDrawerFooter"
+>
+  <form *nzDrawerContent [formGroup]="sprintForm" nz-form class="drawer-form">
+    <div class="drawer-section">
+      <h3 class="section-title">Informações Básicas</h3>
 
-          <!-- Nome -->
-          <td>
-            <ng-container *ngIf="editingSprint?.id === sprint.id && editingField === 'name'; else viewName">
-              <input [(ngModel)]="editingSprint!.name"
-                     (blur)="saveInlineEdit(sprint, 'name')"
-                     (keyup.enter)="saveInlineEdit(sprint, 'name')"
-                     nz-input />
-            </ng-container>
-            <ng-template #viewName>
-              <span (click)="startInlineEdit(sprint, 'name')" class="editable-cell">
-                {{ sprint.name }}
-              </span>
-            </ng-template>
-          </td>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Nome</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <input formControlName="name" nz-input placeholder="Insira o nome da Sprint" />
+        </nz-form-control>
+      </nz-form-item>
 
-          <!-- Código -->
-          <td>
-            <ng-container *ngIf="editingSprint?.id === sprint.id && editingField === 'code'; else viewCode">
-              <input [(ngModel)]="editingSprint!.code"
-                     (blur)="saveInlineEdit(sprint, 'code')"
-                     (keyup.enter)="saveInlineEdit(sprint, 'code')"
-                     nz-input />
-            </ng-container>
-            <ng-template #viewCode>
-              <span (click)="startInlineEdit(sprint, 'code')" class="editable-cell">
-                {{ sprint.code }}
-              </span>
-            </ng-template>
-          </td>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Código</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <input formControlName="code" nz-input placeholder="Digite o código identificador" />
+        </nz-form-control>
+      </nz-form-item>
 
-          <!-- Descrição -->
-          <td>
-            <ng-container *ngIf="editingSprint?.id === sprint.id && editingField === 'description'; else viewDesc">
-              <input [(ngModel)]="editingSprint!.description"
-                     (blur)="saveInlineEdit(sprint, 'description')"
-                     (keyup.enter)="saveInlineEdit(sprint, 'description')"
-                     nz-input />
-            </ng-container>
-            <ng-template #viewDesc>
-              <span (click)="startInlineEdit(sprint, 'description')" class="editable-cell">
-                {{ sprint.description }}
-              </span>
-            </ng-template>
-          </td>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">Descrição</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <textarea
+            formControlName="description"
+            rows="3"
+            nz-input
+            placeholder="Breve descrição da sprint (opcional)"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
 
-          <!-- Status -->
-          <td>
-            <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
-              <nz-tag [nzColor]="sprint.status === 'EM_EXECUCAO' ? 'green' : 'red'">
-                {{ sprint.status }}
-              </nz-tag>
-            </button>
-
-            <nz-dropdown-menu #menu="nzDropdownMenu">
-              <ul nz-menu>
-                <li nz-menu-item (click)="updateStatus(sprint, 'EM_EXECUCAO')">
-                  <span style="color: green;">Executar</span>
-                </li>
-                <li nz-menu-item (click)="updateStatus(sprint, 'ENCERRADO')">
-                  <span style="color: red;">Encerrar</span>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </td>
-
-          <td>{{ sprint.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
-          <td>
-
-            <button [routerLink]="['/sprint-detail', sprint.id]" nz-button nzType="link" nzSize="small">
-              <nz-icon nzType="eye" nzTheme="outline"></nz-icon>
-            </button>
-
-            <button (click)="deleteSprint(sprint)" nz-button nzDanger nzSize="small" nzType="link">
-              <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </nz-table>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24">Status</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
+            <nz-option nzLabel="Em Execução" nzValue="EM_EXECUCAO"></nz-option>
+            <nz-option nzLabel="Encerrado" nzValue="ENCERRADO"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
     </div>
-  </div>
-</div>
+  </form>
+
+  <ng-template #sprintDrawerFooter>
+    <div class="drawer-footer">
+      <button (click)="closeSprintDrawer()" nz-button nzType="default" class="btn-cancelar">
+        Cancelar
+      </button>
+      <button
+        (click)="submitSprint()"
+        [disabled]="!sprintForm.valid"
+        nz-button
+        nzType="primary"
+        class="btn-salvar"
+      >
+        Salvar
+      </button>
+    </div>
+  </ng-template>
+</nz-drawer>
