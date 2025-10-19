@@ -105,31 +105,6 @@ export class CarloadComponent {
     this.currentEditingCarloadId = null;
   }
 
-  submitCarload(): void {
-    if (this.carloadForm.valid) {
-      const formValue = { ...this.carloadForm.value };
-
-      if (formValue.deliveryStatus !== 'SCHEDULED') {
-        formValue.deliveryScheduledDate = new Date(); // Hoje
-      }
-
-      if (this.currentEditingCarloadId) {
-        // Atualizar carload existente
-        this.carloadService.updateCarload(this.currentEditingCarloadId, formValue).subscribe(() => {
-          this.loadCarloads();
-          this.closeCarloadDrawer();
-        });
-      } else {
-        // Criar novo carload
-        this.carloadService.addCarload(formValue).subscribe(() => {
-          this.loadCarloads();
-          this.closeCarloadDrawer();
-        });
-      }
-    }
-  }
-
-
 
 
   private loadData(): void {
@@ -140,20 +115,55 @@ export class CarloadComponent {
   }
   // Carrega todos os carloads uma vez
   private loadCarloads(): void {
-    this.carloadService.getCarloads().subscribe(carloads => {
-      this.allCarloads = carloads;
+    this.loadingCarloads = true;
+    this.carloadService.getCarloads().subscribe({
+      next: (carloads) => {
+        this.allCarloads = carloads;
 
-      // Atualizar totais para os cards
-      this.totalCarloads = this.allCarloads.length;
-      this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
-      this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
-      this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
+        // Atualizar totais para os cards
+        this.totalCarloads = this.allCarloads.length;
+        this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
+        this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
+        this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
 
-      this.applyFilter();
+        this.applyFilter();
+        this.loadingCarloads = false;
+      },
+      error: () => this.loadingCarloads = false
     });
   }
 
 
+  submitCarload(): void {
+    if (this.carloadForm.valid) {
+      const formValue = { ...this.carloadForm.value };
+
+      if (formValue.deliveryStatus !== 'SCHEDULED') {
+        formValue.deliveryScheduledDate = new Date();
+      }
+
+      this.savingCarload = true;
+
+      const request$ = this.currentEditingCarloadId
+        ? this.carloadService.updateCarload(this.currentEditingCarloadId, formValue)
+        : this.carloadService.addCarload(formValue);
+
+      request$.subscribe({
+        next: () => {
+          this.loadCarloads();
+          this.closeCarloadDrawer();
+          this.savingCarload = false;
+        },
+        error: () => {
+          this.savingCarload = false;
+        }
+      });
+    }
+  }
+
+
+  loadingCarloads: boolean = false; // Spinner da tabela
+  savingCarload: boolean = false;   // Spinner ao gravar
 
   private initForms(): void {
     this.carloadForm = this.fb.group({

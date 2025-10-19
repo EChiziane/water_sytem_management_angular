@@ -14,19 +14,21 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 })
 export class SprintComponent implements OnInit {
 
+  allSprints: Sprint[] = [];
   listOfDisplayData: Sprint[] = [];
+  searchValue = '';
+  isLoading = false;
+
   totalSprints = 0;
   totalEmExecucao = 0;
   totalEncerrados = 0;
-  searchValue = '';
 
   // Drawer
   isSprintDrawerVisible = false;
   sprintForm!: FormGroup;
   currentEditingSprintId: string | null = null;
 
-
-  // Para edição inline
+  // Inline editing
   editingSprint?: Sprint | null = null;
   editingField?: string | null = null;
 
@@ -34,7 +36,7 @@ export class SprintComponent implements OnInit {
     private sprintService: SprintService,
     private message: NzMessageService,
     private modal: NzModalService,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
     this.initForm();
   }
@@ -43,13 +45,54 @@ export class SprintComponent implements OnInit {
     this.loadSprints();
   }
 
-  // Iniciar edição inline
+  private loadSprints(): void {
+    this.isLoading = true;
+    this.sprintService.getSprints().subscribe({
+      next: (sprints) => {
+        this.allSprints = sprints;
+        this.listOfDisplayData = [...sprints];
+        this.refreshTotals();
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.message.error('Erro ao carregar sprints 🚫');
+      }
+    });
+  }
+
+  private refreshTotals(): void {
+    this.totalSprints = this.allSprints.length;
+    this.totalEmExecucao = this.allSprints.filter(s => s.status === 'EM_EXECUCAO').length;
+    this.totalEncerrados = this.allSprints.filter(s => s.status === 'ENCERRADO').length;
+  }
+
+  filterByStatus(status: 'EM_EXECUCAO' | 'ENCERRADO'): void {
+    this.listOfDisplayData = this.allSprints.filter(s => s.status === status);
+  }
+
+  showAll(): void {
+    this.listOfDisplayData = [...this.allSprints];
+  }
+
+  search(): void {
+    const val = this.searchValue.toLowerCase();
+    if (!val) {
+      this.showAll();
+      return;
+    }
+    this.listOfDisplayData = this.allSprints.filter(sprint =>
+      sprint.code.toLowerCase().includes(val) ||
+      sprint.name.toLowerCase().includes(val) ||
+      sprint.description.toLowerCase().includes(val)
+    );
+  }
+
   startInlineEdit(sprint: Sprint, field: string): void {
     this.editingSprint = { ...sprint };
     this.editingField = field;
   }
 
-  // Salvar edição inline
   saveInlineEdit(original: Sprint, field: string): void {
     if (!this.editingSprint) return;
 
@@ -68,6 +111,41 @@ export class SprintComponent implements OnInit {
         this.editingField = null;
       }
     });
+  }
+
+  updateStatus(sprint: Sprint, newStatus: string): void {
+    if (sprint.status === newStatus) return;
+
+    const updated = { ...sprint, status: newStatus };
+
+    if (newStatus === 'ENCERRADO') {
+      this.modal.confirm({
+        nzTitle: 'Encerrar Sprint',
+        nzContent: `Tem certeza que deseja encerrar a sprint <strong>${sprint.name}</strong>?`,
+        nzOkText: 'Sim',
+        nzOkType: 'primary',
+        nzCancelText: 'Cancelar',
+        nzOnOk: () => {
+          this.sprintService.updateSprint(sprint.id, updated).subscribe({
+            next: () => {
+              sprint.status = newStatus;
+              this.refreshTotals();
+              this.message.success('Sprint encerrada ✅');
+            },
+            error: () => this.message.error('Erro ao encerrar sprint 🚫')
+          });
+        }
+      });
+    } else {
+      this.sprintService.updateSprint(sprint.id, updated).subscribe({
+        next: () => {
+          sprint.status = newStatus;
+          this.refreshTotals();
+          this.message.success(`Sprint atualizada para ${newStatus} ✅`);
+        },
+        error: () => this.message.error('Erro ao atualizar status 🚫')
+      });
+    }
   }
 
   deleteSprint(sprint: Sprint): void {
@@ -89,63 +167,6 @@ export class SprintComponent implements OnInit {
     });
   }
 
-  updateStatus(sprint: Sprint, newStatus: string): void {
-    if (sprint.status === newStatus) return;
-
-    // 🧭 Caso o utilizador tente ENCERRAR o sprint
-    if (newStatus === 'ENCERRADO') {
-      this.modal.confirm({
-        nzTitle: 'Encerrar Sprint',
-        nzContent: `
-        <p>Ao executar esta ação, a sprint será marcada como <strong>Encerrada</strong>.</p>
-        <p>Tem certeza que deseja prosseguir?</p>
-      `,
-        nzOkText: 'Sim, encerrar',
-        nzOkType: 'primary',
-        nzCancelText: 'Cancelar',
-        nzOnOk: () => {
-          const updated = { ...sprint, status: newStatus };
-          this.sprintService.updateSprint(sprint.id, updated).subscribe({
-            next: () => {
-              sprint.status = newStatus;
-              this.message.success('Sprint encerrada com sucesso! ✅');
-              this.refreshTotals();
-            },
-            error: () => this.message.error('Erro ao encerrar sprint 🚫')
-          });
-        }
-      });
-    } else {
-      // 🟢 Atualização normal de status (ex: para EM_EXECUCAO)
-      const updated = { ...sprint, status: newStatus };
-      this.sprintService.updateSprint(sprint.id, updated).subscribe({
-        next: () => {
-          sprint.status = newStatus;
-          this.message.success(`Sprint atualizada para ${newStatus}! ✅`);
-          this.refreshTotals();
-        },
-        error: () => this.message.error('Erro ao atualizar status 🚫')
-      });
-    }
-  }
-
-  /**
-   * 🔄 Atualiza os totais de status (Em execução / Encerrados)
-   */
-  private refreshTotals(): void {
-    this.totalEmExecucao = this.listOfDisplayData.filter(s => s.status === 'EM_EXECUCAO').length;
-    this.totalEncerrados = this.listOfDisplayData.filter(s => s.status === 'ENCERRADO').length;
-  }
-
-
-
-  isLoading = false; // 🌀 indicador de carregamento
-
-
-
-
-
-  // Mostrar Drawer
   openSprintDrawer(): void {
     this.isSprintDrawerVisible = true;
     this.currentEditingSprintId = null;
@@ -162,32 +183,8 @@ export class SprintComponent implements OnInit {
     return this.currentEditingSprintId ? 'Edição de Sprint' : 'Criação de Sprint';
   }
 
-  // Submeter (Criar ou Editar)
-  submitSprint(): void {
-    if (this.sprintForm.valid) {
-      const sprintData = this.sprintForm.value;
 
-      if (this.currentEditingSprintId) {
-        this.sprintService.updateSprint(this.currentEditingSprintId, sprintData).subscribe({
-          next: () => {
-            this.loadSprints();
-            this.closeSprintDrawer();
-            this.message.success('Sprint atualizado com sucesso! ✅');
-          },
-          error: () => this.message.error('Erro ao atualizar sprint 🚫')
-        });
-      } else {
-        this.sprintService.addSprint(sprintData).subscribe({
-          next: () => {
-            this.loadSprints();
-            this.closeSprintDrawer();
-            this.message.success('Sprint criada com sucesso! ✅');
-          },
-          error: () => this.message.error('Erro ao criar sprint 🚫')
-        });
-      }
-    }
-  }
+
   private initForm(): void {
     this.sprintForm = this.fb.group({
       name: ['', Validators.required],
@@ -197,63 +194,38 @@ export class SprintComponent implements OnInit {
     });
   }
 
-  viewSprint(sprint: Sprint) {
+  isSaving = false;
+  submitSprint(): void {
+    if (!this.sprintForm.valid) return;
 
-  }
+    const sprintData = this.sprintForm.value;
+    this.isSaving = true; // ⚡ Início do spinner
 
+    const request$ = this.currentEditingSprintId
+      ? this.sprintService.updateSprint(this.currentEditingSprintId, sprintData)
+      : this.sprintService.addSprint(sprintData);
 
-  allSprints: Sprint[] = []; // 🧩 Mantém todos os sprints originais
-
-// ...
-
-  private loadSprints(): void {
-    this.isLoading = true;
-    this.sprintService.getSprints().subscribe({
-      next: (sprints) => {
-        this.allSprints = sprints; // guarda todos
-        this.listOfDisplayData = [...sprints]; // copia para exibição
-        this.totalEmExecucao = sprints.filter(d => d.status === 'EM_EXECUCAO').length;
-        this.totalEncerrados = sprints.filter(d => d.status === 'ENCERRADO').length;
-        this.totalSprints = sprints.length;
-        this.isLoading = false;
+    request$.subscribe({
+      next: () => {
+        this.loadSprints();
+        this.closeSprintDrawer();
+        this.message.success(
+          this.currentEditingSprintId
+            ? 'Sprint atualizado com sucesso! ✅'
+            : 'Sprint criada com sucesso! ✅'
+        );
+        this.isSaving = false; // ⚡ Fim do spinner
       },
-      error: (err) => {
-        console.error('Erro ao carregar sprints', err);
-        this.isLoading = false;
+      error: () => {
+        this.message.error(
+          this.currentEditingSprintId
+            ? 'Erro ao atualizar sprint 🚫'
+            : 'Erro ao criar sprint 🚫'
+        );
+        this.isSaving = false; // ⚡ Fim do spinner
       }
     });
   }
-
-  /**
-   * 🧭 Filtra Sprints por status (sem perder os outros)
-   */
-  filterByStatus(status: 'EM_EXECUCAO' | 'ENCERRADO'): void {
-    this.listOfDisplayData = this.allSprints.filter(s => s.status === status);
-  }
-
-  /**
-   * 🔄 Restaura todos
-   */
-  showAll(): void {
-    this.listOfDisplayData = [...this.allSprints];
-  }
-
-  /**
-   * 🔍 Pesquisa (mantendo base original)
-   */
-  search(): void {
-    const val = this.searchValue.toLowerCase();
-    if (!val) {
-      this.showAll();
-      return;
-    }
-    this.listOfDisplayData = this.allSprints.filter(sprint =>
-      sprint.code.toLowerCase().includes(val) ||
-      sprint.description.toLowerCase().includes(val) ||
-      sprint.name.toLowerCase().includes(val)
-    );
-  }
-
 
 
 }

@@ -69,6 +69,7 @@
 
   <!-- Data Table -->
   <div class="table-wrapper">
+    <nz-spin [nzSpinning]="loadingCarloads" nzTip="A carregar carloads...">
     <div class="table-scroll">
       <nz-table
         #nzTable
@@ -172,7 +173,7 @@
         </tbody>
       </nz-table>
     </div>
-  </div>
+    </nz-spin></div>
 </div>
 
 
@@ -340,7 +341,16 @@
   <ng-template #drawerFooterTemplate>
     <div class="drawer-footer">
       <button (click)="closeCarloadDrawer()" nz-button nzType="default" class="btn-cancel">Cancel</button>
-      <button (click)="submitCarload()" [disabled]="carloadForm.invalid" nz-button nzType="primary" class="btn-save">Save</button>
+      <button
+        (click)="submitCarload()"
+        [disabled]="carloadForm.invalid || savingCarload"
+        nz-button
+        nzType="primary"
+        class="btn-save"
+      >
+        <nz-spin [nzSpinning]="savingCarload" nzSize="small"></nz-spin>
+        Save
+      </button>
     </div>
   </ng-template>
 </nz-drawer>
