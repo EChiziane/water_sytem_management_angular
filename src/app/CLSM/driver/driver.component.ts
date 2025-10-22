@@ -18,7 +18,9 @@ export class DriverComponent implements OnInit {
   totalInactiveDrivers = 0;
   currentEditingDriverId: string | null = null;
 
-
+  isLoading = false;
+  /* ===== Saving State ===== */
+  isSaving = false;
   isDriverDrawerVisible = false;
   searchValue = '';
   driverForm!: FormGroup;

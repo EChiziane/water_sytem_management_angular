@@ -1,134 +1,195 @@
-<div class="main-content">
-  <div class="header">
+<div class="content-wrapper">
+
+  <!-- ===== Section: Page Header ===== -->
+  <div class="page-header">
     <p>Lista de Motoristas</p>
   </div>
-  <div class="dash">
-    <div style="background: #ECECEC;">
-      <div [nzGutter]="8" nz-row>
-        <div [nzSpan]="8" nz-col>
+
+
+  <!-- ===== Section: Summary Cards ===== -->
+  <div class="summary-section">
+    <div class="summary-background">
+      <div nz-row [nzGutter]="8">
+
+        <div nz-col [nzSpan]="8">
           <nz-card nzTitle="Total Motoristas">
             <p>{{ totalDrivers | number }}</p>
           </nz-card>
         </div>
-        <div [nzSpan]="8" nz-col>
+
+        <div nz-col [nzSpan]="8">
           <nz-card nzTitle="Motoristas Ativos">
             <p>{{ totalActiveDrivers | number }}</p>
           </nz-card>
         </div>
-        <div [nzSpan]="8" nz-col>
+
+        <div nz-col [nzSpan]="8">
           <nz-card nzTitle="Motoristas Inativos">
             <p>{{ totalInactiveDrivers | number }}</p>
           </nz-card>
         </div>
+
       </div>
-
     </div>
   </div>
-  <div class="filter">
-    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Pesquisar..." type="text"/>
-    <button (click)="openDriverDrawer()" nz-button nzType="primary">Novo Motorista</button>
+
+
+
+
+
+  <!-- ===== Section: Filters ===== -->
+  <div class="filters-panel">
+    <input
+      nz-input
+      type="text"
+      placeholder="Pesquisar..."
+      [(ngModel)]="searchValue"
+      (ngModelChange)="search()"
+    />
+
+    <button nz-button nzType="primary" (click)="openDriverDrawer()">Novo Motorista</button>
   </div>
-  <div class="table-container">
+
+
+  <!-- ===== Section: Table ===== -->
+  <div class="table-wrapper">
     <div class="table-scroll">
-      <nz-table #nzTable
-                [nzData]="listOfDisplayData"
-                [nzScroll]="{ x: '800px', y: '280px' }"
-                nzTableLayout="fixed">
-        <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Telefone</th>
-          <th>Descrição do Carro</th>
-          <th>Status</th>
-          <th>Created At</th>
-          <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let driver of listOfDisplayData">
-          <td>{{ driver.Name }}</td>
-          <td>{{ driver.Phone }}</td>
-          <td>{{ driver.CarDescription }}</td>
+      <nz-spin
+        [nzSpinning]="isLoading"
+        nzTip="A carregar motoristas..."
+        nzSize="large"
+      >
+        <nz-table
+          #nzTable
+          nzTableLayout="fixed"
+          [nzData]="listOfDisplayData"
+          [nzScroll]="{ x: '800px', y: '280px' }"
+        >
+          <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Descrição do Carro</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Ações</th>
+          </tr>
+          </thead>
 
-          <td>
-            <nz-tag [nzColor]="driver.status === 'ACTIVO' ? 'green' : 'red'">
-              {{ driver.status }}
-            </nz-tag>
-          </td>
-          <td>{{ driver.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
-          <td>
-            <button (click)="deleteDriver(driver)" nz-button nzDanger nzType="link">
-              <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
-            </button>
+          <tbody>
+          <tr *ngFor="let driver of nzTable.data">
+            <td>{{ driver.Name }}</td>
+            <td>{{ driver.Phone }}</td>
+            <td>{{ driver.CarDescription }}</td>
 
-            <button (click)="editDriver(driver)" nz-button nzSize="small" nzType="link">
-              <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
-            </button>
-            <button
-              (click)="deleteDriver(driver)"
-              nz-button nzDanger nzSize="small"
-              nzType="link">
-              <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
-            </button>
+            <td>
+              <nz-tag [nzColor]="driver.status === 'ACTIVO' ? 'green' : 'red'">
+                {{ driver.status }}
+              </nz-tag>
+            </td>
 
-          </td>
-        </tr>
-        </tbody>
-      </nz-table>
+            <td>{{ driver.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
+
+            <td>
+              <button
+                nz-button
+                nzType="link"
+                nzSize="small"
+                (click)="editDriver(driver)"
+              >
+                <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
+              </button>
+
+              <button
+                nz-button
+                nzType="link"
+                nzDanger
+                nzSize="small"
+                (click)="deleteDriver(driver)"
+              >
+                <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-spin>
     </div>
   </div>
+
 </div>
 
-<!-- Driver Drawer -->
+<!-- ===== Component: Driver Drawer ===== -->
 <nz-drawer
-  (nzOnClose)="closeDriverDrawer()"
-  [nzBodyStyle]="{ overflow: 'auto' }"
-  [nzFooter]="nzDriverDrawerFooter"
-  [nzTitle]="driverDrawerTitle"
   [nzVisible]="isDriverDrawerVisible"
+  [nzTitle]="driverDrawerTitle"
   [nzWidth]="480"
+  [nzFooter]="driverDrawerFooter"
+  (nzOnClose)="closeDriverDrawer()"
 >
-  <form *nzDrawerContent [formGroup]="driverForm" nz-form>
-    <nz-form-item>
-      <nz-form-label nzRequired>Nome</nz-form-label>
-      <nz-form-control>
-        <input formControlName="name" nz-input placeholder="Nome do motorista">
-      </nz-form-control>
-    </nz-form-item>
+  <form *nzDrawerContent [formGroup]="driverForm" nz-form class="drawer-form">
 
-    <nz-form-item>
-      <nz-form-label nzRequired>Telefone</nz-form-label>
-      <nz-form-control>
-        <input formControlName="phone" nz-input placeholder="Número de telefone">
-      </nz-form-control>
-    </nz-form-item>
+    <!-- ===== Section: Basic Information ===== -->
+    <div class="drawer-section">
+      <h3 class="section-title">Informações do Motorista</h3>
 
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Nome</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <input nz-input formControlName="name" placeholder="Nome do motorista" />
+        </nz-form-control>
+      </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label nzRequired>Descricao do carros</nz-form-label>
-      <nz-form-control>
-        <nz-select formControlName="carDescription" nzPlaceHolder="Selecione a Descrição do carro">
-          <nz-option nzLabel="7m3-HINO RANGER" nzValue="7m3-HINO RANGER"></nz-option>
-          <nz-option nzLabel="18m3-TATA AMARELO" nzValue="18m3-TATA AMARELO"></nz-option>
-          <nz-option nzLabel="20m3-TATA AZUL" nzValue="20m3-TATA AZUL"></nz-option>
-          <nz-option nzLabel="22m3-SINOTRUCK" nzValue="22m3-SINOTRUCK"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Telefone</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <input nz-input formControlName="phone" placeholder="Número de telefone" />
+        </nz-form-control>
+      </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label nzRequired>Status</nz-form-label>
-      <nz-form-control>
-        <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
-          <nz-option nzLabel="ACTIVO" nzValue="ACTIVO"></nz-option>
-          <nz-option nzLabel="INACTIVO" nzValue="INACTIVO"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Descrição do Carro</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-select formControlName="carDescription" nzPlaceHolder="Selecione a Descrição do carro">
+            <nz-option nzLabel="7m3-HINO RANGER" nzValue="7m3-HINO RANGER"></nz-option>
+            <nz-option nzLabel="18m3-TATA AMARELO" nzValue="18m3-TATA AMARELO"></nz-option>
+            <nz-option nzLabel="20m3-TATA AZUL" nzValue="20m3-TATA AZUL"></nz-option>
+            <nz-option nzLabel="22m3-SINOTRUCK" nzValue="22m3-SINOTRUCK"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Status</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
+            <nz-option nzLabel="ACTIVO" nzValue="ACTIVO"></nz-option>
+            <nz-option nzLabel="INACTIVO" nzValue="INACTIVO"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <br />
+
+    <!-- ===== UI: Saving Spinner ===== -->
+    <div *ngIf="isSaving" class="drawer-spinner">
+      <nz-spin nzSize="large"></nz-spin>
+      <br />
+      <p>Salvando motorista... Aguarde.</p>
+    </div>
+
   </form>
 
-  <ng-template #nzDriverDrawerFooter>
-    <button (click)="closeDriverDrawer()" nz-button>Cancelar</button>
-    <button (click)="submitDriver()" [disabled]="!driverForm.valid" nz-button nzType="primary">Salvar</button>
+  <!-- ===== Drawer Footer ===== -->
+  <ng-template #driverDrawerFooter>
+    <div class="drawer-footer">
+      <button nz-button nzType="default" class="btn-cancelar" (click)="closeDriverDrawer()">
+        Cancelar
+      </button>
+      <button nz-button nzType="primary" class="btn-salvar" [disabled]="!driverForm.valid" (click)="submitDriver()">
+        Salvar
+      </button>
+    </div>
   </ng-template>
 </nz-drawer>
