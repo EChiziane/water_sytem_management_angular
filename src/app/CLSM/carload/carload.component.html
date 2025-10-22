@@ -335,6 +335,15 @@
         </div>
       </div>
     </div>
+
+    <br />
+
+    <!-- ===== UI: Saving Spinner ===== -->
+    <div *ngIf="isSaving" class="drawer-spinner">
+      <nz-spin nzSize="large"></nz-spin>
+      <br />
+      <p>Saving Carload... Please wait.</p>
+    </div>
   </form>
 
   <!-- Footer -->
@@ -348,7 +357,6 @@
         nzType="primary"
         class="btn-save"
       >
-        <nz-spin [nzSpinning]="savingCarload" nzSize="small"></nz-spin>
         Save
       </button>
     </div>

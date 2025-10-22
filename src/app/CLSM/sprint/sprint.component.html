@@ -144,7 +144,11 @@
 
             <!-- Editable: Status -->
             <td>
-              <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
+              <button
+                nz-button
+                nz-dropdown
+                [nzDropdownMenu]="menu"
+                nzTrigger="click">
                 <nz-tag [nzColor]="sprint.status === 'EM_EXECUCAO' ? 'green' : 'red'">
                   {{ sprint.status }}
                 </nz-tag>

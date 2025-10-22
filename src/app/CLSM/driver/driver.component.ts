@@ -1,9 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
+
+import { DriverService } from '../../services/driver.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import {Driver} from '../../models/CSM/driver';
-import {DriverService} from '../../services/driver.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {NzMessageService} from 'ng-zorro-antd/message';
+
 
 @Component({
   selector: 'app-driver',
@@ -12,126 +15,227 @@ import {NzMessageService} from 'ng-zorro-antd/message';
   standalone: false
 })
 export class DriverComponent implements OnInit {
+
+  /* ===== Data ===== */
   listOfDisplayData: Driver[] = [];
+  searchValue = '';
+  isLoading = false;
+
+  /* ===== Summary Counters ===== */
   totalDrivers = 0;
   totalActiveDrivers = 0;
   totalInactiveDrivers = 0;
+
+  /* ===== Drawer State ===== */
+  isDriverDrawerVisible = false;
+  driverForm!: FormGroup;
   currentEditingDriverId: string | null = null;
 
-  isLoading = false;
+  /* ===== Inline Editing ===== */
+  editingDriver?: Driver | null = null;
+  editingField?: string | null = null;
+
   /* ===== Saving State ===== */
   isSaving = false;
-  isDriverDrawerVisible = false;
-  searchValue = '';
-  driverForm!: FormGroup;
 
-  constructor(private driverService: DriverService,
-              private fb: FormBuilder,
-              private modal: NzModalService,
-              private message: NzMessageService) {
+  constructor(
+    private driverService: DriverService,
+    private fb: FormBuilder,
+    private modal: NzModalService,
+    private message: NzMessageService
+  ) {
     this.initForm();
   }
+
+  ngOnInit(): void {
+    this.loadDrivers();
+  }
+
+  private refreshTotals(): void {
+    this.totalDrivers = this.listOfDisplayData.length;
+    this.totalActiveDrivers = this.listOfDisplayData.filter(s => s.status === 'ACTIVO').length;
+    this.totalInactiveDrivers = this.listOfDisplayData.filter(s => s.status === 'INACTIVO').length;
+  }
+
 
   get driverDrawerTitle(): string {
     return this.currentEditingDriverId ? 'Edição de Motorista' : 'Criação de Motorista';
   }
 
-  ngOnInit(): void {
-    this.loadDrivers();
-
-  }
-
-  openDriverDrawer(): void {
-    this.isDriverDrawerVisible = true;
-    this.currentEditingDriverId = null; // Garante que seja criação
-    this.driverForm.reset({status: 'ACTIVO'});
-  }
-
-
-  submitDriver(): void {
-    if (this.driverForm.valid) {
-      const driverData = this.driverForm.value;
-
-      if (this.currentEditingDriverId) {
-        // Editar motorista existente
-        this.driverService.updateDriver(this.currentEditingDriverId, driverData).subscribe({
-          next: () => {
-            this.loadDrivers();
-            this.closeDriverDrawer();
-            this.message.success('Motorista atualizado com sucesso! ✅');
-          },
-          error: () => {
-            this.message.error('Erro ao atualizar motorista. 🚫');
-          }
-        });
-      } else {
-        // Criar novo motorista
-        this.driverService.addDriver(driverData).subscribe({
-          next: () => {
-            this.loadDrivers();
-            this.closeDriverDrawer();
-            this.message.success('Motorista criado com sucesso! ✅');
-          },
-          error: () => {
-            this.message.error('Erro ao criar motorista. 🚫');
-          }
-        });
+  /* -------------------- Data Loaders -------------------- */
+  private loadDrivers(): void {
+    this.isLoading = true;
+    this.driverService.getDrivers().subscribe({
+      next: (drivers) => {
+        this.listOfDisplayData = drivers;
+        this.totalDrivers = drivers.length;
+        this.totalActiveDrivers = drivers.filter(d => d.status === 'ACTIVO').length;
+        this.totalInactiveDrivers = drivers.filter(d => d.status === 'INACTIVO').length;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.message.error('Erro ao carregar motoristas 🚫');
       }
-    }
-  }
-
-  deleteDriver(driver: Driver): void {
-    this.modal.confirm({
-      nzTitle: 'Tens certeza que quer eliminar o Driver?',
-      nzContent: `Motorista: <strong>${driver.Name}</strong>`,
-      nzOkText: 'Sim',
-      nzOkType: 'primary',
-      nzCancelText: 'Não',
-      nzOnOk: () =>
-        this.driverService.deleteDriver(driver.id).subscribe({
-          next: () => {
-            this.loadDrivers();
-            this.message.success('Motorista eliminado com sucesso! 🗑️');
-          },
-          error: () => {
-            this.message.error('Erro ao eliminar motorista. 🚫');
-          }
-        })
     });
   }
 
+  /* -------------------- Search -------------------- */
   search(): void {
-    // Implementa aqui o filtro de pesquisa
+    const val = this.searchValue.toLowerCase();
+    if (!val) {
+      this.loadDrivers();
+      return;
+    }
+    this.listOfDisplayData = this.listOfDisplayData.filter(driver =>
+      driver.Name.toLowerCase().includes(val) ||
+      driver.Phone.includes(val) ||
+      driver.CarDescription.toLowerCase().includes(val)
+    );
+  }
+
+  /* -------------------- Inline Edit -------------------- */
+  startInlineEdit(driver: Driver, field: string): void {
+    this.editingDriver = { ...driver };
+    this.editingField = field;
+  }
+
+  saveInlineEdit(original: Driver, field: string): void {
+    if (!this.editingDriver) return;
+    const updated = { ...original, [field]: (this.editingDriver as any)[field] };
+
+    this.isSaving = true;
+    this.driverService.updateDriver(original.id, updated).subscribe({
+      next: () => {
+        Object.assign(original, updated);
+        this.message.success(`Campo ${field} atualizado! ✅`);
+        this.resetInlineEdit();
+        this.isSaving = false;
+      },
+      error: () => {
+        this.message.error('Erro ao atualizar 🚫');
+        this.resetInlineEdit();
+        this.isSaving = false;
+      }
+    });
+  }
+
+  private resetInlineEdit(): void {
+    this.editingDriver = null;
+    this.editingField = null;
+  }
+
+  /* -------------------- Drawer Control -------------------- */
+  openDriverDrawer(): void {
+    this.isDriverDrawerVisible = true;
+    this.currentEditingDriverId = null;
+    this.driverForm.reset({ status: 'ACTIVO' });
   }
 
   editDriver(driver: Driver): void {
     this.currentEditingDriverId = driver.id;
-
     this.driverForm.patchValue({
       name: driver.Name,
       phone: driver.Phone,
       carDescription: driver.CarDescription,
       status: driver.status
     });
-
     this.isDriverDrawerVisible = true;
   }
 
   closeDriverDrawer(): void {
     this.isDriverDrawerVisible = false;
-    this.driverForm.reset({status: 'ACTIVO'});
+    this.driverForm.reset({ status: 'ACTIVO' });
     this.currentEditingDriverId = null;
   }
 
-  private loadDrivers(): void {
-    this.driverService.getDrivers().subscribe(drivers => {
-      this.listOfDisplayData = drivers;
-      this.totalDrivers = drivers.length;
-      this.totalActiveDrivers = drivers.filter(d => d.status === 'ACTIVO').length;
-      this.totalInactiveDrivers = drivers.filter(d => d.status === 'INACTIVO').length;
+  /* -------------------- Submit Drawer -------------------- */
+  submitDriver(): void {
+    if (!this.driverForm.valid) return;
+    const driverData = this.driverForm.value;
+    this.isSaving = true;
+
+    const request$ = this.currentEditingDriverId
+      ? this.driverService.updateDriver(this.currentEditingDriverId, driverData)
+      : this.driverService.addDriver(driverData);
+
+    request$.subscribe({
+      next: () => {
+        this.loadDrivers();
+        this.closeDriverDrawer();
+        this.message.success(
+          this.currentEditingDriverId
+            ? 'Motorista atualizado com sucesso! ✅'
+            : 'Motorista criado com sucesso! ✅'
+        );
+        this.isSaving = false;
+      },
+      error: () => {
+        this.message.error(
+          this.currentEditingDriverId
+            ? 'Erro ao atualizar motorista 🚫'
+            : 'Erro ao criar motorista 🚫'
+        );
+        this.isSaving = false;
+      }
     });
   }
 
+
+  /* -------------------- Status Update -------------------- */
+  updateStatus(driver: Driver, newStatus: string): void {
+    if (driver.status === newStatus) return;
+    const updated = { ...driver, status: newStatus };
+
+    if (newStatus === 'ENCERRADO') {
+      this.modal.confirm({
+        nzTitle: 'Encerrar Driver',
+        nzContent: `Tem certeza que deseja encerrar a driver <strong>${driver.Name}</strong>?`,
+        nzOkText: 'Sim',
+        nzCancelText: 'Cancelar',
+        nzOnOk: () => this.changeDriverStatus(driver, updated, newStatus)
+      });
+    } else {
+      this.changeDriverStatus(driver, updated, newStatus);
+    }
+  }
+
+
+  private changeDriverStatus(driver: Driver, updated: Driver, newStatus: string): void {
+    this.driverService.updateDriver(driver.id, updated).subscribe({
+      next: () => {
+        driver.status = newStatus;
+        this.refreshTotals();
+        this.message.success(`Driver atualizada para ${newStatus} ✅`);
+      },
+      error: () => this.message.error('Erro ao atualizar status 🚫')
+    });
+  }
+
+
+
+
+
+  /* -------------------- Delete -------------------- */
+  deleteDriver(driver: Driver): void {
+    this.modal.confirm({
+      nzTitle: 'Tens certeza que quer eliminar o Motorista?',
+      nzContent: `Motorista: <strong>${driver.Name}</strong>`,
+      nzOkText: 'Sim',
+      nzCancelText: 'Não',
+      nzOnOk: () => {
+        this.driverService.deleteDriver(driver.id).subscribe({
+          next: () => {
+            this.loadDrivers();
+            this.message.success('Motorista eliminado com sucesso! 🗑️');
+          },
+          error: () => this.message.error('Erro ao eliminar motorista 🚫')
+        });
+      }
+    });
+  }
+
+  /* -------------------- Form -------------------- */
   private initForm(): void {
     this.driverForm = this.fb.group({
       name: ['', Validators.required],
@@ -140,6 +244,4 @@ export class DriverComponent implements OnInit {
       status: ['ACTIVO', Validators.required]
     });
   }
-
-
 }

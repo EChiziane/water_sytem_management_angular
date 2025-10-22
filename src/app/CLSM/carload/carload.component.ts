@@ -134,32 +134,41 @@ export class CarloadComponent {
   }
 
 
+  /* ===== Drawer Spinner State ===== */
+  isSaving = false; // mesmo nome do Sprint Drawer
+
   submitCarload(): void {
-    if (this.carloadForm.valid) {
-      const formValue = { ...this.carloadForm.value };
+    if (this.carloadForm.invalid) return;
 
-      if (formValue.deliveryStatus !== 'SCHEDULED') {
-        formValue.deliveryScheduledDate = new Date();
+    const carloadData = this.carloadForm.value;
+    this.isSaving = true; // ativa spinner
+
+    const request$ = this.currentEditingCarloadId
+      ? this.carloadService.updateCarload(this.currentEditingCarloadId, carloadData)
+      : this.carloadService.addCarload(carloadData);
+
+    request$.subscribe({
+      next: () => {
+        this.loadCarloads(); // recarrega lista
+        this.closeCarloadDrawer();
+        this.message.success(
+          this.currentEditingCarloadId
+            ? 'Carload atualizado com sucesso! ✅'
+            : 'Carload criado com sucesso! ✅'
+        );
+        this.isSaving = false; // desativa spinner
+      },
+      error: () => {
+        this.message.error(
+          this.currentEditingCarloadId
+            ? 'Erro ao atualizar carload 🚫'
+            : 'Erro ao criar carload 🚫'
+        );
+        this.isSaving = false; // desativa spinner
       }
-
-      this.savingCarload = true;
-
-      const request$ = this.currentEditingCarloadId
-        ? this.carloadService.updateCarload(this.currentEditingCarloadId, formValue)
-        : this.carloadService.addCarload(formValue);
-
-      request$.subscribe({
-        next: () => {
-          this.loadCarloads();
-          this.closeCarloadDrawer();
-          this.savingCarload = false;
-        },
-        error: () => {
-          this.savingCarload = false;
-        }
-      });
-    }
+    });
   }
+
 
 
   loadingCarloads: boolean = false; // Spinner da tabela
@@ -376,7 +385,6 @@ export class CarloadComponent {
     this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
     this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
   }
-
 
 
 

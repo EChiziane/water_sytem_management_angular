@@ -78,15 +78,71 @@
 
           <tbody>
           <tr *ngFor="let driver of nzTable.data">
-            <td>{{ driver.Name }}</td>
-            <td>{{ driver.Phone }}</td>
-            <td>{{ driver.CarDescription }}</td>
+            <td>
+              <ng-container *ngIf="editingDriver?.id === driver.id && editingField === 'Name'; else viewName">
+                <input
+                  nz-input
+                  [(ngModel)]="editingDriver!.Name"
+                  (blur)="saveInlineEdit(driver, 'Name')"
+                  (keyup.enter)="saveInlineEdit(driver, 'Name')"
+                />
+              </ng-container>
+              <ng-template #viewName>
+                <span class="editable-cell" (click)="startInlineEdit(driver, 'Name')">{{ driver.Name }}</span>
+              </ng-template>
+            </td>
 
             <td>
-              <nz-tag [nzColor]="driver.status === 'ACTIVO' ? 'green' : 'red'">
-                {{ driver.status }}
-              </nz-tag>
+              <ng-container *ngIf="editingDriver?.id === driver.id && editingField === 'Phone'; else viewPhone">
+                <input
+                  nz-input
+                  [(ngModel)]="editingDriver!.Phone"
+                  (blur)="saveInlineEdit(driver, 'Phone')"
+                  (keyup.enter)="saveInlineEdit(driver, 'Phone')"
+                />
+              </ng-container>
+              <ng-template #viewPhone>
+                <span class="editable-cell" (click)="startInlineEdit(driver, 'Phone')">{{ driver.Phone }}</span>
+              </ng-template>
             </td>
+
+            <td>
+              <ng-container *ngIf="editingDriver?.id === driver.id && editingField === 'CarDescription'; else viewCar">
+                <input
+                  nz-input
+                  [(ngModel)]="editingDriver!.CarDescription"
+                  (blur)="saveInlineEdit(driver, 'CarDescription')"
+                  (keyup.enter)="saveInlineEdit(driver, 'CarDescription')"
+                />
+              </ng-container>
+              <ng-template #viewCar>
+                <span class="editable-cell" (click)="startInlineEdit(driver, 'CarDescription')">{{ driver.CarDescription }}</span>
+              </ng-template>
+            </td>
+
+            <td>
+              <button
+                nz-button
+                nz-dropdown
+                [nzDropdownMenu]="menu"
+                nzTrigger="click">
+                <nz-tag
+                  [nzColor]="driver.status === 'ACTIVO' ? 'green' : 'red'">
+                  {{ driver.status }}
+                </nz-tag>
+              </button>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="updateStatus(driver, 'ACTIVO')">
+                      <span class="status-option status-activo">Activo</span>
+                    </li>
+                    <li nz-menu-item (click)="updateStatus(driver, 'INACTIVO')">
+                      <span class="status-option status-inactivo">Inactivo</span>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+            </td>
+
 
             <td>{{ driver.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
 

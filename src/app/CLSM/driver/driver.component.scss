@@ -19,7 +19,7 @@
   }
 }
 
-/* ===== Summary Section ===== */
+/* ===== Summary Cards ===== */
 .summary-section {
   margin-bottom: 24px;
   flex-shrink: 0;
@@ -67,7 +67,7 @@
   }
 }
 
-/* ===== Filters ===== */
+/* ===== Filters Panel ===== */
 .filters-panel {
   display: flex;
   margin-bottom: 16px;
@@ -108,7 +108,6 @@ nz-table {
     z-index: 1;
   }
 }
-
 
 /* ===== Drawer ===== */
 .drawer-form {
@@ -202,9 +201,7 @@ textarea[nz-input] {
   }
 }
 
-
-
-/* ===== Spinner ===== */
+/* ===== Table Spinner ===== */
 .spinner-container {
   display: flex;
   justify-content: center;
