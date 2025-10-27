@@ -48,7 +48,7 @@
   <div class="table-wrapper">
     <nz-table
       #nzTable
-      [nzData]="invoices"
+      [nzData]="cotacoes"
       [nzScroll]="{ x: '1400px', y: '300px' }"
       nzTableLayout="fixed">
       <thead>
@@ -61,21 +61,21 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let invoice of nzTable.data">
-        <td>{{ invoice.carloadCustomerName }}</td>
-        <td>{{ invoice.invoiceCode }}</td>
+      <tr *ngFor="let cotacao of nzTable.data">
+        <td>{{ cotacao.carloadCustomerName }}</td>
+        <td>{{ cotacao.cotacaoCode }}</td>
         <td class="file-name-cell">
           <a
-            (click)="downloadInvoice(invoice)"
+            (click)="downloadCotacao(cotacao)"
             target="_blank"
             class="file-link">
-            {{ invoice.fileName }}
+            {{ cotacao.fileName }}
           </a>
         </td>
-        <td>{{ invoice.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
+        <td>{{ cotacao.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
         <td class="action-buttons">
           <button
-            (click)="downloadInvoice(invoice)"
+            (click)="downloadCotacao(cotacao)"
             nz-button
             nzSize="small"
             nzType="link"
@@ -84,7 +84,7 @@
           </button>
 
           <button
-            (click)="editInvoice(invoice)"
+            (click)="editCotacao(cotacao)"
             nz-button
             nzType="link"
             nzSize="small"
@@ -93,7 +93,7 @@
           </button>
 
           <button
-            (click)="deleteInvoice(invoice)"
+            (click)="deleteCotacao(cotacao)"
             nz-button
             nzDanger
             nzType="link"
@@ -111,12 +111,12 @@
 <!-- ====================== DRAWER ====================== -->
 <nz-drawer
   [nzVisible]="isDrawerVisible"
-  [nzTitle]="currentInvoiceId ? 'Edit Invoice' : 'New Invoice'"
+  [nzTitle]="currentCotacaoId ? 'Edit Cotacao' : 'New Cotacao'"
   (nzOnClose)="closeDrawer()"
   [nzWidth]="1000"
   [nzFooter]="drawerFooter">
 
-  <form nz-form [formGroup]="invoiceForm" *nzDrawerContent class="drawer-form">
+  <form nz-form [formGroup]="cotacaoForm" *nzDrawerContent class="drawer-form">
     <!-- CLIENT INFO -->
     <div class="drawer-section">
       <h3 class="section-title">Customer Information</h3>
@@ -137,16 +137,16 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired>Invoice Code</nz-form-label>
+        <nz-form-label nzRequired>Cotacao Code</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="invoiceCode" />
+          <input nz-input formControlName="cotacaoCode" />
         </nz-form-control>
       </nz-form-item>
     </div>
 
     <!-- ITEMS SECTION -->
     <div class="drawer-section">
-      <h3 class="section-title">Invoice Items</h3>
+      <h3 class="section-title">Cotacao Items</h3>
 
       <div formArrayName="items" class="items-list">
         <div
@@ -255,8 +255,8 @@
       <button
         nz-button
         nzType="primary"
-        (click)="submitInvoice()"
-        [disabled]="!invoiceForm.valid">
+        (click)="submitCotacao()"
+        [disabled]="!cotacaoForm.valid">
         Salvar
       </button>
     </div>

@@ -1,11 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {CarloadInvoice} from '../models/CSM/carloadInvoice';
+
 import {CarloadCustomer} from '../models/CSM/carload-customer';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CarloadInvoiceService} from '../services/carloadInvoiceService';
+
 import {CarloadCustomerService} from '../services/carload-customer.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {CarloadCotacao} from '../models/CSM/carloadInvoice';
+import {CarloadCotacaoService} from '../services/carloadcotacao.service';
 
 @Component({
   selector: 'app-carload-cotacao',
@@ -16,13 +18,13 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 export class CarloadCotacaoComponent implements OnInit {
 
   // ===================== PROPRIEDADES =====================
-  invoices: CarloadInvoice[] = [];
-  allInvoices: CarloadInvoice[] = []; // mantém cópia total para filtros combinados
+  cotacoes: CarloadCotacao[] = [];
+  allCotacoes: CarloadCotacao[] = []; // mantém cópia total para filtros combinados
   dataCustomer: CarloadCustomer[] = [];
 
-  invoiceForm!: FormGroup;
+  cotacaoForm!: FormGroup;
   isDrawerVisible = false;
-  currentInvoiceId: string | null = null;
+  currentCotacaoId: string | null = null;
   searchValue = '';
 
   dateRange: Date[] | null = null;
@@ -47,7 +49,7 @@ export class CarloadCotacaoComponent implements OnInit {
   // ===================== CONSTRUTOR =====================
   constructor(
     private fb: FormBuilder,
-    private invoiceService: CarloadInvoiceService,
+    private cotacaoService: CarloadCotacaoService,
     private customerService: CarloadCustomerService,
     private message: NzMessageService,
     private modal: NzModalService
@@ -55,21 +57,21 @@ export class CarloadCotacaoComponent implements OnInit {
 
   // ===================== CICLO DE VIDA =====================
   ngOnInit(): void {
-    this.loadInvoices();
+    this.loadCotacoes();
     this.loadCustomers();
     this.initForm();
   }
 
   // ===================== GETTERS =====================
   get items(): FormArray {
-    return this.invoiceForm.get('items') as FormArray;
+    return this.cotacaoForm.get('items') as FormArray;
   }
 
   // ===================== INICIALIZAÇÃO =====================
 private initForm() {
-    this.invoiceForm = this.fb.group({
+    this.cotacaoForm = this.fb.group({
       carloadCustomerId: ['', Validators.required],
-      invoiceCode: ['', Validators.required],
+      cotacaoCode: ['', Validators.required],
       items: this.fb.array([]),
       taxRate: [0.1, Validators.required],
       subtotal: [{ value: 0, disabled: true }],
@@ -77,13 +79,13 @@ private initForm() {
       total: [{ value: 0, disabled: true }]
     });
 
-    this.invoiceForm.get('taxRate')?.valueChanges.subscribe(() => this.calculateTotals());
+    this.cotacaoForm.get('taxRate')?.valueChanges.subscribe(() => this.calculateTotals());
   }
 
-private loadInvoices() {
-    this.invoiceService.getInvoices().subscribe(data => {
-      this.invoices = data;
-      this.allInvoices = data;
+private loadCotacoes() {
+    this.cotacaoService.getCotacoes().subscribe(data => {
+      this.cotacoes = data;
+      this.allCotacoes = data;
     });
   }
 
@@ -131,53 +133,53 @@ private calculateTotals() {
       const amount = item.get('amount')?.value || 0;
       return sum + amount;
     }, 0);
-    const taxRate = this.invoiceForm.get('taxRate')?.value || 0;
+    const taxRate = this.cotacaoForm.get('taxRate')?.value || 0;
     const tax = subtotal * taxRate;
     const total = subtotal + tax;
 
-    this.invoiceForm.patchValue({ subtotal, tax, total }, { emitEvent: false });
+    this.cotacaoForm.patchValue({ subtotal, tax, total }, { emitEvent: false });
   }
 
   // ===================== DRAWER =====================
   openDrawer(): void {
     this.isDrawerVisible = true;
-    this.currentInvoiceId = null;
-    this.invoiceForm.reset({ taxRate: 0.16 });
+    this.currentCotacaoId = null;
+    this.cotacaoForm.reset({ taxRate: 0.16 });
     this.items.clear();
     this.addItem();
   }
 
   closeDrawer(): void {
     this.isDrawerVisible = false;
-    this.invoiceForm.reset({ taxRate: 0.16 });
+    this.cotacaoForm.reset({ taxRate: 0.16 });
     this.items.clear();
-    this.currentInvoiceId = null;
+    this.currentCotacaoId = null;
   }
 
   // ===================== CRUD DE INVOICES =====================
-  submitInvoice(): void {
-    if (!this.invoiceForm.valid) return;
-  const invoiceData = this.invoiceForm.getRawValue();
+  submitCotacao(): void {
+    if (!this.cotacaoForm.valid) return;
+  const cotacaoData = this.cotacaoForm.getRawValue();
 
-  if (this.currentInvoiceId) {
-    this.invoiceService.updateInvoice(this.currentInvoiceId, invoiceData).subscribe({
-      next: () => { this.loadInvoices(); this.closeDrawer(); this.message.success('Invoice updated ✅'); },
-      error: () => this.message.error('Error updating invoice 🚫')
+  if (this.currentCotacaoId) {
+    this.cotacaoService.updateCotacao(this.currentCotacaoId, cotacaoData).subscribe({
+      next: () => { this.loadCotacoes(); this.closeDrawer(); this.message.success('Cotacao updated ✅'); },
+      error: () => this.message.error('Error updating cotacao 🚫')
     });
   } else {
-    this.invoiceService.addInvoice(invoiceData).subscribe({
-      next: () => { this.loadInvoices(); this.closeDrawer(); this.message.success('Invoice created ✅'); },
-      error: () => this.message.error('Error creating invoice 🚫')
+    this.cotacaoService.addCotacao(cotacaoData).subscribe({
+      next: () => { this.loadCotacoes(); this.closeDrawer(); this.message.success('Cotacao created ✅'); },
+      error: () => this.message.error('Error creating cotacao 🚫')
     });
   }
 }
 
-  editInvoice(invoice: CarloadInvoice) {
-    this.currentInvoiceId = invoice.id;
+  editCotacao(cotacao: CarloadCotacao) {
+    this.currentCotacaoId = cotacao.id;
     this.isDrawerVisible = true;
 
     this.items.clear();
-    invoice.items.forEach(it => {
+    cotacao.items.forEach(it => {
       const group = this.fb.group({
         description: [it.description, Validators.required],
         quantity: [it.quantity, Validators.required],
@@ -189,25 +191,25 @@ private calculateTotals() {
       this.items.push(group);
     });
 
-    this.invoiceForm.patchValue({
-      carloadCustomerId: invoice.carloadCustomerId,
-      invoiceCode: invoice.invoiceCode,
-      taxRate: invoice.taxRate
+    this.cotacaoForm.patchValue({
+      carloadCustomerId: cotacao.carloadCustomerId,
+      cotacaoCode: cotacao.cotacaoCode,
+      taxRate: cotacao.taxRate
     });
 
     this.calculateTotals();
   }
 
-  deleteInvoice(invoice: CarloadInvoice) {
+  deleteCotacao(cotacao: CarloadCotacao) {
     this.modal.confirm({
-      nzTitle: 'Are you sure you want to delete this invoice?',
-      nzContent: `<b>${invoice.invoiceCode}</b>`,
+      nzTitle: 'Are you sure you want to delete this cotacao?',
+      nzContent: `<b>${cotacao.cotacaoCode}</b>`,
       nzOkText: 'Yes',
       nzCancelText: 'No',
       nzOnOk: () => {
-        this.invoiceService.deleteInvoice(invoice.id).subscribe({
-          next: () => { this.loadInvoices(); this.message.success('Invoice deleted 🗑️'); },
-          error: () => this.message.error('Error deleting invoice 🚫')
+        this.cotacaoService.deleteCotacao(cotacao.id).subscribe({
+          next: () => { this.loadCotacoes(); this.message.success('Cotacao deleted 🗑️'); },
+          error: () => this.message.error('Error deleting cotacao 🚫')
         });
       }
     });
@@ -216,9 +218,9 @@ private calculateTotals() {
   // ===================== FILTROS E PESQUISA =====================
   filterByCustomer(): void {
     if (!this.selectedCustomerId) {
-    this.invoices = this.allInvoices;
+    this.cotacoes = this.allCotacoes;
   } else {
-    this.invoices = this.allInvoices.filter(inv => inv.carloadCustomerId === this.selectedCustomerId);
+    this.cotacoes = this.allCotacoes.filter(inv => inv.carloadCustomerId === this.selectedCustomerId);
   }
   this.filterByDateRange();
   this.search();
@@ -226,7 +228,7 @@ private calculateTotals() {
 
   filterByDateRange(): void {
     if (!this.dateRange || this.dateRange.length !== 2) {
-    this.invoices = this.allInvoices;
+    this.cotacoes = this.allCotacoes;
     this.search();
     return;
   }
@@ -235,7 +237,7 @@ private calculateTotals() {
   const startDate = new Date(start).setHours(0, 0, 0, 0);
   const endDate = new Date(end).setHours(23, 59, 59, 999);
 
-  this.invoices = this.allInvoices.filter(inv => {
+  this.cotacoes = this.allCotacoes.filter(inv => {
     const createdAt = new Date(inv.createdAt).getTime();
     return createdAt >= startDate && createdAt <= endDate;
   });
@@ -245,20 +247,20 @@ private calculateTotals() {
 
   search(): void {
     const val = this.searchValue.toLowerCase();
-    if (!val) { this.loadInvoices(); return; }
-  this.invoices = this.invoices.filter(inv =>
-    inv.invoiceCode.toLowerCase().includes(val) ||
+    if (!val) { this.loadCotacoes(); return; }
+  this.cotacoes = this.cotacoes.filter(inv =>
+    inv.cotacaoCode.toLowerCase().includes(val) ||
     inv.items.some((it: any) => it.description.toLowerCase().includes(val))
   );
 }
 
   // ===================== DOWNLOAD =====================
-  downloadInvoice(invoice: CarloadInvoice) {
-    this.invoiceService.downloadRecibo(invoice.id).subscribe((fileBlob: Blob) => {
+  downloadCotacao(cotacao: CarloadCotacao) {
+    this.cotacaoService.downloadRecibo(cotacao.id).subscribe((fileBlob: Blob) => {
       const url = window.URL.createObjectURL(fileBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = invoice.fileName || 'invoice.xlsx';
+      a.download = cotacao.fileName || 'cotacao.xlsx';
       a.click();
       window.URL.revokeObjectURL(url);
     });
