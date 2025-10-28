@@ -5,7 +5,7 @@
   </div>
 
   <div class="filter">
-    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Pesquisar..." />
+    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Pesquisar..."/>
     <button (click)="openClassroomDrawer()" nz-button nzType="primary">Nova Turma</button>
   </div>
 
@@ -29,7 +29,7 @@
             <nz-icon nzType="edit"></nz-icon>
           </button>
 
-          <button (click)="deleteClassroom(classroom)" nz-button nzSize="small" nzType="link" nzDanger>
+          <button (click)="deleteClassroom(classroom)" nz-button nzDanger nzSize="small" nzType="link">
             <nz-icon nzType="delete"></nz-icon>
           </button>
         </td>
@@ -40,30 +40,30 @@
 </div>
 
 <nz-drawer
-  [nzVisible]="isClassroomDrawerVisible"
-  [nzTitle]="drawerTitle"
-  [nzFooter]="nzClassroomDrawerFooter"
-  [nzWidth]="480"
   (nzOnClose)="closeClassroomDrawer()"
+  [nzFooter]="nzClassroomDrawerFooter"
+  [nzTitle]="drawerTitle"
+  [nzVisible]="isClassroomDrawerVisible"
+  [nzWidth]="480"
 >
   <form *nzDrawerContent [formGroup]="classroomForm" nz-form>
     <nz-form-item>
-      <nz-form-label nzRequired nzFor="name">Nome</nz-form-label>
+      <nz-form-label nzFor="name" nzRequired>Nome</nz-form-label>
       <nz-form-control>
-        <input formControlName="name" nz-input placeholder="Nome da turma" />
+        <input formControlName="name" nz-input placeholder="Nome da turma"/>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label nzRequired nzFor="schedule">Horário</nz-form-label>
+      <nz-form-label nzFor="schedule" nzRequired>Horário</nz-form-label>
       <nz-form-control>
-        <input formControlName="schedule" nz-input placeholder="Ex: Seg-Sex 08:00-10:00" />
+        <input formControlName="schedule" nz-input placeholder="Ex: Seg-Sex 08:00-10:00"/>
       </nz-form-control>
     </nz-form-item>
 
 
     <nz-form-item>
-      <nz-form-label nzRequired>Docente </nz-form-label>
+      <nz-form-label nzRequired>Docente</nz-form-label>
       <nz-form-control>
         <nz-select formControlName="assistantTeacherId" nzPlaceHolder="Select Teacher">
           <nz-option *ngFor="let teacher of allTeachers" [nzLabel]="teacher.name" [nzValue]="teacher.id"></nz-option>

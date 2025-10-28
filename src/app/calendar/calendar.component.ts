@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-calendar',
@@ -60,10 +60,10 @@ export class CalendarComponent implements OnInit {
     const firstDay = new Date(this.year, this.month, 1);
     const firstDayIndex = firstDay.getDay(); // 0 (domingo) .. 6 (sábado)
     const daysInMonth = new Date(this.year, this.month + 1, 0).getDate();
-    this.monthName = firstDay.toLocaleString('default', { month: 'long' });
+    this.monthName = firstDay.toLocaleString('default', {month: 'long'});
 
     const blanks = Array(firstDayIndex).fill(null);
-    const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    const monthDays = Array.from({length: daysInMonth}, (_, i) => i + 1);
     this.displayDays = [...blanks, ...monthDays];
   }
 
@@ -127,11 +127,16 @@ export class CalendarComponent implements OnInit {
     const shiftNumber = ((this.referenceShift - 1 + (diffDays % 4) + 4) % 4) + 1;
 
     switch (shiftNumber) {
-      case 1: return 'shift-dia';
-      case 2: return 'shift-noite';
-      case 3: return 'shift-folga1';
-      case 4: return 'shift-folga2';
-      default: return '';
+      case 1:
+        return 'shift-dia';
+      case 2:
+        return 'shift-noite';
+      case 3:
+        return 'shift-folga1';
+      case 4:
+        return 'shift-folga2';
+      default:
+        return '';
     }
   }
 

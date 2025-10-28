@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CustomerService } from '../../services/customer.service';
-import { Customer } from '../../models/CSM/customer';
-import { PaymentService } from '../../services/payment.service';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {CustomerService} from '../../services/customer.service';
+import {Customer} from '../../models/CSM/customer';
+import {PaymentService} from '../../services/payment.service';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-customer',
@@ -53,7 +53,8 @@ export class CustomerComponent implements OnInit {
     private paymentService: PaymentService,
     private message: NzMessageService,
     private modal: NzModalService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.getCustomers();
@@ -89,7 +90,7 @@ export class CustomerComponent implements OnInit {
   open(): void {
     this.isEditMode = false;
     this.drawerTitle = 'Criar Cliente';
-    this.customerForm.reset({ status: 'ATIVO', valve: 10, monthsInDebt: 1 });
+    this.customerForm.reset({status: 'ATIVO', valve: 10, monthsInDebt: 1});
     this.visible1 = true;
   }
 
@@ -131,7 +132,7 @@ export class CustomerComponent implements OnInit {
           this.dataSource = [...this.dataSource, newCustomer];
           this.listOfDisplayData = [...this.dataSource];
           this.calculateCustomerStats();
-          this.customerForm.reset({ status: 'ATIVO', valve: 10, monthsInDebt: 1 });
+          this.customerForm.reset({status: 'ATIVO', valve: 10, monthsInDebt: 1});
           this.close();
           this.message.success('Cliente criado com sucesso! ✅');
         },
@@ -193,8 +194,9 @@ export class CustomerComponent implements OnInit {
       next: (newPayment) => {
         console.log('Form Data:', this.paymentForm.value);
         console.log('Pagamento adicionado com sucesso:', newPayment);
-        this.paymentForm.reset({ confirmed: false });
-        this.closePaymentDrawer();;
+        this.paymentForm.reset({confirmed: false});
+        this.closePaymentDrawer();
+        ;
         this.message.success('Pagamento registrado com sucesso! 💰');
       },
       error: () => {

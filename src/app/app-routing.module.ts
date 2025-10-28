@@ -42,12 +42,12 @@ const routes: Routes = [
   {path: 'driver', component: DriverComponent},
   {path: 'calendar', component: CalendarComponent},
   {path: 'student', component: StudentComponent},
-  {path: 'teacher', component:TeacherComponent},
-  {path: 'classroom', component:ClassroomComponent},
-  {path: 'carload-invoice', component:CarloadInvoiceComponent},
-  {path: 'carload-cotacao', component:CarloadCotacaoComponent},
-  {path: 'carload-customer', component:CarloadCustomerComponent},
-  {path: 'recibo', component:ReciboComponent},
+  {path: 'teacher', component: TeacherComponent},
+  {path: 'classroom', component: ClassroomComponent},
+  {path: 'carload-invoice', component: CarloadInvoiceComponent},
+  {path: 'carload-cotacao', component: CarloadCotacaoComponent},
+  {path: 'carload-customer', component: CarloadCustomerComponent},
+  {path: 'recibo', component: ReciboComponent},
   {path: 'welcome', loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)}
 ];
 

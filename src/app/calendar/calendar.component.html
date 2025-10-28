@@ -3,7 +3,7 @@
   <div class="calendar-section">
     <div class="calendar">
       <div class="month-navigation">
-        <button  (click)="prevMonth()">&#10094;</button>
+        <button (click)="prevMonth()">&#10094;</button>
         <p>{{ monthName }} {{ year }}</p>
         <button (click)="nextMonth()">&#10095;</button>
       </div>
@@ -41,7 +41,7 @@
     <div class="select-section">
       <mat-form-field appearance="outline">
         <mat-label>Selecione o estado atual de hoje</mat-label>
-        <mat-select [(value)]="todayShift" (selectionChange)="updateReference()">
+        <mat-select (selectionChange)="updateReference()" [(value)]="todayShift">
           <mat-option [value]="null">None</mat-option>
           <mat-option [value]="1">Dia</mat-option>
           <mat-option [value]="2">Noite</mat-option>

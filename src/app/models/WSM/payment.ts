@@ -5,7 +5,7 @@ export interface Payment {
   amount: number;
   numMonths: number;
   referenceMonth: string;
-  paymentMethod:'EMOLA,MPESA,BCI,NUMERARIO';
+  paymentMethod: 'EMOLA,MPESA,BCI,NUMERARIO';
   confirmed: boolean;
   paymentDate: string;
 }

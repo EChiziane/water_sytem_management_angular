@@ -69,7 +69,6 @@ import {CarloadCotacaoComponent} from './carload-cotacao/carload-cotacao.compone
 import {NzSpinComponent} from 'ng-zorro-antd/spin';
 
 
-
 registerLocaleData(en);
 
 @NgModule({
@@ -77,13 +76,13 @@ registerLocaleData(en);
     AppComponent,
 
 
-CustomerDetailsComponent,
+    CustomerDetailsComponent,
     CustomerComponent,
     LoginComponent,
     MainLayoutComponent,
     SigninComponent,
     ListuserComponent,
-CalendarComponent,
+    CalendarComponent,
     CarloadCotacaoComponent,
     CarloadComponent,
     ManagerComponent,
@@ -98,7 +97,7 @@ CalendarComponent,
     StudentComponent,
     TeacherComponent,
     ClassroomComponent,
-ReciboComponent
+    ReciboComponent
 
 
   ],

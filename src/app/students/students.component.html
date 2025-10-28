@@ -4,7 +4,7 @@
   </div>
 
   <div class="filter">
-    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Pesquisar..." type="text" />
+    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Pesquisar..." type="text"/>
     <button (click)="openStudentDrawer()" nz-button nzType="primary">Novo Estudante</button>
   </div>
 
@@ -33,16 +33,16 @@
           <td>{{ student.nivelAcademico }}</td>
           <td>{{ student.ultimoNivelIngles }}</td>
           <td>
-            <button (click)="printStudent(student)" nz-button nzType="link" nzSize="small">
-              <nz-icon nzType="printer" nzTheme="outline"></nz-icon>
+            <button (click)="printStudent(student)" nz-button nzSize="small" nzType="link">
+              <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
             </button>
 
-            <button (click)="editStudent(student)" nz-button nzType="link" nzSize="small">
-              <nz-icon nzType="edit" nzTheme="outline"></nz-icon>
+            <button (click)="editStudent(student)" nz-button nzSize="small" nzType="link">
+              <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
             </button>
 
-            <button (click)="deleteStudent(student)" nz-button nzType="link" nzDanger nzSize="small">
-              <nz-icon nzType="delete" nzTheme="outline"></nz-icon>
+            <button (click)="deleteStudent(student)" nz-button nzDanger nzSize="small" nzType="link">
+              <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
             </button>
           </td>
         </tr>
@@ -53,11 +53,11 @@
 </div>
 
 <nz-drawer
-  [nzVisible]="isStudentDrawerVisible"
-  [nzTitle]="studentDrawerTitle"
-  [nzWidth]="500"
-  [nzFooter]="drawerFooter"
   (nzOnClose)="closeStudentDrawer()"
+  [nzFooter]="drawerFooter"
+  [nzTitle]="studentDrawerTitle"
+  [nzVisible]="isStudentDrawerVisible"
+  [nzWidth]="500"
 >
   <form *nzDrawerContent [formGroup]="studentForm" nz-form>
     <nz-form-item *ngFor="let field of [
@@ -74,8 +74,8 @@
           *ngIf="!field.type"
           [formControlName]="field.name"
           [id]="field.name"
-          nz-input
           [placeholder]="field.label"
+          nz-input
         />
         <input
           *ngIf="field.type === 'date'"
@@ -103,7 +103,7 @@
   </form>
 
   <ng-template #drawerFooter>
-    <button nz-button (click)="closeStudentDrawer()">Cancelar</button>
-    <button nz-button nzType="primary" (click)="submitStudent()" [disabled]="!studentForm.valid">Salvar</button>
+    <button (click)="closeStudentDrawer()" nz-button>Cancelar</button>
+    <button (click)="submitStudent()" [disabled]="!studentForm.valid" nz-button nzType="primary">Salvar</button>
   </ng-template>
 </nz-drawer>

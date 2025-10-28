@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {MaterialItem} from '../../models/MaterialItem';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -108,7 +108,7 @@ export class MaterialItemComponent {
       materialDescription: ['', Validators.required],
       quantity: [0, [Validators.required, Validators.min(1)]],
       unitPrice: [0, [Validators.required, Validators.min(0.01)]],
-      totalItemValue: [{ value: 0, disabled: true }],
+      totalItemValue: [{value: 0, disabled: true}],
       createdAt: [new Date().toISOString()]
     });
 
@@ -116,7 +116,7 @@ export class MaterialItemComponent {
       if (val.quantity && val.unitPrice) {
         this.materialItemForm.patchValue({
           totalItemValue: val.quantity * val.unitPrice
-        }, { emitEvent: false });
+        }, {emitEvent: false});
       }
     });
   }

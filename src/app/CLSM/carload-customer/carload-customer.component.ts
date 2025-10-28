@@ -1,9 +1,9 @@
 // src/app/components/carload-customer/carload-customer.component.ts
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { CarloadCustomerService } from '../../services/carload-customer.service';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {CarloadCustomerService} from '../../services/carload-customer.service';
 import {CarloadCustomer} from '../../models/CSM/carload-customer';
 
 
@@ -29,12 +29,12 @@ export class CarloadCustomerComponent implements OnInit {
     this.initForm();
   }
 
-  ngOnInit(): void {
-    this.loadCustomers();
-  }
-
   get drawerTitle(): string {
     return this.currentEditingCustomerId ? 'Edit Customer' : 'Add Customer';
+  }
+
+  ngOnInit(): void {
+    this.loadCustomers();
   }
 
   openDrawer(): void {
@@ -78,7 +78,7 @@ export class CarloadCustomerComponent implements OnInit {
 
   editCustomer(customer: CarloadCustomer): void {
     this.currentEditingCustomerId = customer.id;
-    this.customerForm.patchValue({ ...customer });
+    this.customerForm.patchValue({...customer});
     this.isDrawerVisible = true;
   }
 

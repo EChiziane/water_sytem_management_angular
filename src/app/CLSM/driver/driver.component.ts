@@ -1,10 +1,9 @@
+import {Component, OnInit} from '@angular/core';
 
-import { Component, OnInit } from '@angular/core';
-
-import { DriverService } from '../../services/driver.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import {DriverService} from '../../services/driver.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzMessageService} from 'ng-zorro-antd/message';
 import {Driver} from '../../models/CSM/driver';
 
 
@@ -47,37 +46,12 @@ export class DriverComponent implements OnInit {
     this.initForm();
   }
 
-  ngOnInit(): void {
-    this.loadDrivers();
-  }
-
-  private refreshTotals(): void {
-    this.totalDrivers = this.listOfDisplayData.length;
-    this.totalActiveDrivers = this.listOfDisplayData.filter(s => s.status === 'ACTIVO').length;
-    this.totalInactiveDrivers = this.listOfDisplayData.filter(s => s.status === 'INACTIVO').length;
-  }
-
-
   get driverDrawerTitle(): string {
     return this.currentEditingDriverId ? 'Edição de Motorista' : 'Criação de Motorista';
   }
 
-  /* -------------------- Data Loaders -------------------- */
-  private loadDrivers(): void {
-    this.isLoading = true;
-    this.driverService.getDrivers().subscribe({
-      next: (drivers) => {
-        this.listOfDisplayData = drivers;
-        this.totalDrivers = drivers.length;
-        this.totalActiveDrivers = drivers.filter(d => d.status === 'ACTIVO').length;
-        this.totalInactiveDrivers = drivers.filter(d => d.status === 'INACTIVO').length;
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
-        this.message.error('Erro ao carregar motoristas 🚫');
-      }
-    });
+  ngOnInit(): void {
+    this.loadDrivers();
   }
 
   /* -------------------- Search -------------------- */
@@ -96,13 +70,13 @@ export class DriverComponent implements OnInit {
 
   /* -------------------- Inline Edit -------------------- */
   startInlineEdit(driver: Driver, field: string): void {
-    this.editingDriver = { ...driver };
+    this.editingDriver = {...driver};
     this.editingField = field;
   }
 
   saveInlineEdit(original: Driver, field: string): void {
     if (!this.editingDriver) return;
-    const updated = { ...original, [field]: (this.editingDriver as any)[field] };
+    const updated = {...original, [field]: (this.editingDriver as any)[field]};
 
     this.isSaving = true;
     this.driverService.updateDriver(original.id, updated).subscribe({
@@ -120,16 +94,11 @@ export class DriverComponent implements OnInit {
     });
   }
 
-  private resetInlineEdit(): void {
-    this.editingDriver = null;
-    this.editingField = null;
-  }
-
   /* -------------------- Drawer Control -------------------- */
   openDriverDrawer(): void {
     this.isDriverDrawerVisible = true;
     this.currentEditingDriverId = null;
-    this.driverForm.reset({ status: 'ACTIVO' });
+    this.driverForm.reset({status: 'ACTIVO'});
   }
 
   editDriver(driver: Driver): void {
@@ -145,7 +114,7 @@ export class DriverComponent implements OnInit {
 
   closeDriverDrawer(): void {
     this.isDriverDrawerVisible = false;
-    this.driverForm.reset({ status: 'ACTIVO' });
+    this.driverForm.reset({status: 'ACTIVO'});
     this.currentEditingDriverId = null;
   }
 
@@ -181,11 +150,10 @@ export class DriverComponent implements OnInit {
     });
   }
 
-
   /* -------------------- Status Update -------------------- */
   updateStatus(driver: Driver, newStatus: string): void {
     if (driver.status === newStatus) return;
-    const updated = { ...driver, status: newStatus };
+    const updated = {...driver, status: newStatus};
 
     if (newStatus === 'ENCERRADO') {
       this.modal.confirm({
@@ -199,22 +167,6 @@ export class DriverComponent implements OnInit {
       this.changeDriverStatus(driver, updated, newStatus);
     }
   }
-
-
-  private changeDriverStatus(driver: Driver, updated: Driver, newStatus: string): void {
-    this.driverService.updateDriver(driver.id, updated).subscribe({
-      next: () => {
-        driver.status = newStatus;
-        this.refreshTotals();
-        this.message.success(`Driver atualizada para ${newStatus} ✅`);
-      },
-      error: () => this.message.error('Erro ao atualizar status 🚫')
-    });
-  }
-
-
-
-
 
   /* -------------------- Delete -------------------- */
   deleteDriver(driver: Driver): void {
@@ -232,6 +184,46 @@ export class DriverComponent implements OnInit {
           error: () => this.message.error('Erro ao eliminar motorista 🚫')
         });
       }
+    });
+  }
+
+  private refreshTotals(): void {
+    this.totalDrivers = this.listOfDisplayData.length;
+    this.totalActiveDrivers = this.listOfDisplayData.filter(s => s.status === 'ACTIVO').length;
+    this.totalInactiveDrivers = this.listOfDisplayData.filter(s => s.status === 'INACTIVO').length;
+  }
+
+  /* -------------------- Data Loaders -------------------- */
+  private loadDrivers(): void {
+    this.isLoading = true;
+    this.driverService.getDrivers().subscribe({
+      next: (drivers) => {
+        this.listOfDisplayData = drivers;
+        this.totalDrivers = drivers.length;
+        this.totalActiveDrivers = drivers.filter(d => d.status === 'ACTIVO').length;
+        this.totalInactiveDrivers = drivers.filter(d => d.status === 'INACTIVO').length;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.message.error('Erro ao carregar motoristas 🚫');
+      }
+    });
+  }
+
+  private resetInlineEdit(): void {
+    this.editingDriver = null;
+    this.editingField = null;
+  }
+
+  private changeDriverStatus(driver: Driver, updated: Driver, newStatus: string): void {
+    this.driverService.updateDriver(driver.id, updated).subscribe({
+      next: () => {
+        driver.status = newStatus;
+        this.refreshTotals();
+        this.message.success(`Driver atualizada para ${newStatus} ✅`);
+      },
+      error: () => this.message.error('Erro ao atualizar status 🚫')
     });
   }
 

@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, take } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, take} from 'rxjs';
 
-import { environment } from '../../environments/environments';
+import {environment} from '../../environments/environments';
 import {Classroom} from '../models/classroom';
 
 @Injectable({
@@ -12,7 +12,8 @@ export class ClassroomService {
 
   private baseURL = `${environment.baseURL}/classrooms`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   public getClassrooms(): Observable<Classroom[]> {
     return this.http.get<Classroom[]>(this.baseURL);

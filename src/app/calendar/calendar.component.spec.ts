@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CalendarComponent } from './calendar.component';
+import {CalendarComponent} from './calendar.component';
 
 describe('CalendarComponent', () => {
   let component: CalendarComponent;
@@ -10,7 +10,7 @@ describe('CalendarComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [CalendarComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CalendarComponent);
     component = fixture.componentInstance;

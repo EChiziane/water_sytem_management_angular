@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environments';
-import { Observable, take } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../environments/environments';
+import {Observable, take} from 'rxjs';
 import {Student} from '../models/EISSM/students';
 
 
@@ -12,15 +12,17 @@ export class StudentService {
 
   private baseURL = `${environment.baseURL}/students`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getStudents(): Observable<Student[]> {
     return this.http.get<Student[]>(this.baseURL);
   }
 
-  printStudentInvoice(id: string):Observable<Student> {
-return this.http.get<Student>(`${this.baseURL}/recibo/${id}` );
+  printStudentInvoice(id: string): Observable<Student> {
+    return this.http.get<Student>(`${this.baseURL}/recibo/${id}`);
   }
+
   getStudentById(id: string): Observable<Student> {
     return this.http.get<Student>(`${this.baseURL}/${id}`);
   }

@@ -27,7 +27,8 @@
 
   <!-- Filtro (Campo de pesquisa e botão "Adicionar") -->
   <div class="filter">
-    <input class="input-flex" nz-input placeholder="Search by amount" type="text" [(ngModel)]="searchValue" (input)="filterData()"/>
+    <input (input)="filterData()" [(ngModel)]="searchValue" class="input-flex" nz-input placeholder="Search by amount"
+           type="text"/>
 
     <button (click)="open()" nz-button nzType="primary">Adicionar</button>
     <button (click)="openCustomerDrawer()" nz-button nzType="primary">Customer</button>
@@ -56,7 +57,8 @@
         <td>{{ data.paymentDate | date: 'dd MM yyyy - HH:mm' }}</td>
         <td>
 
-          <button (click)="viewPayment(data)" [routerLink]="['/payment-detail', data.id]" nz-button nzSize="small" nzType="link">
+          <button (click)="viewPayment(data)" [routerLink]="['/payment-detail', data.id]" nz-button nzSize="small"
+                  nzType="link">
             <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
           </button>
           <button (click)="   createRecibo(data)" nz-button nzSize="small" nzType="link">
@@ -122,7 +124,8 @@
           <nz-form-label>Customer</nz-form-label>
           <nz-form-control>
             <nz-select formControlName="customerId" nzPlaceHolder="Select Customer">
-              <nz-option *ngFor="let customer of dataCostumers" [nzLabel]="customer.name" [nzValue]="customer.id"></nz-option>
+              <nz-option *ngFor="let customer of dataCostumers" [nzLabel]="customer.name"
+                         [nzValue]="customer.id"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -150,9 +153,6 @@
 </nz-drawer>
 
 
-
-
-
 <nz-drawer
   (nzOnClose)="closeCustomerDrawer()"
   [nzBodyStyle]="{ overflow: 'auto' }"
@@ -168,7 +168,7 @@
         <nz-form-item>
           <nz-form-label>Nome</nz-form-label>
           <nz-form-control>
-            <input formControlName="name" nz-input placeholder="Digite o nome do cliente" />
+            <input formControlName="name" nz-input placeholder="Digite o nome do cliente"/>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -177,7 +177,7 @@
           <nz-form-label>Contato</nz-form-label>
           <nz-form-control>
             <nz-input-group nzAddOnBefore="+258">
-              <input formControlName="contact" nz-input placeholder="Digite o contato" />
+              <input formControlName="contact" nz-input placeholder="Digite o contato"/>
             </nz-input-group>
           </nz-form-control>
         </nz-form-item>
@@ -189,7 +189,7 @@
         <nz-form-item>
           <nz-form-label>Endereço</nz-form-label>
           <nz-form-control>
-            <input formControlName="address" nz-input placeholder="Digite o endereço" />
+            <input formControlName="address" nz-input placeholder="Digite o endereço"/>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -212,7 +212,7 @@
           <nz-form-label>Valve</nz-form-label>
           <nz-form-control>
             <nz-input-group nzAddOnBefore="MZN">
-              <input formControlName="valve" nz-input type="number" placeholder="Digite a válvula" />
+              <input formControlName="valve" nz-input placeholder="Digite a válvula" type="number"/>
             </nz-input-group>
           </nz-form-control>
         </nz-form-item>
@@ -221,7 +221,7 @@
         <nz-form-item>
           <nz-form-label>Meses em Dívida</nz-form-label>
           <nz-form-control>
-            <input formControlName="monthsInDebt" nz-input type="number" placeholder="Digite os meses" />
+            <input formControlName="monthsInDebt" nz-input placeholder="Digite os meses" type="number"/>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -232,7 +232,7 @@
     <div style="float: right">
       <button (click)="close()" nz-button style="margin-right: 8px;">Cancelar</button>
       <button (click)="createCustomer()" nz-button nzType="primary">
-         'Salvar'
+        'Salvar'
       </button>
     </div>
   </ng-template>

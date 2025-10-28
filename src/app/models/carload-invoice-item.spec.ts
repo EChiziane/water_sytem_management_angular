@@ -1,4 +1,4 @@
-import { CarloadInvoiceItem } from './carload-invoice-item';
+import {CarloadInvoiceItem} from './carload-invoice-item';
 
 describe('CarloadInvoiceItem', () => {
   it('should create an instance', () => {

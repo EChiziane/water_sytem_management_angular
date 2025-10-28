@@ -43,6 +43,17 @@ export class SprintDetailsComponent {
 
   @Input() sprintId!: string;
   sprintName: string = '';
+  date = null;
+  // ✅ Novas variáveis de controle
+  showDeliveryDateField = false;
+  showTotalEarningsField = true;
+  isEnglish = false;
+  currentEditingCarloadId: string | null = null;
+  editingCarload?: CarLoad | null = null;
+  editingField?: string | null = null;
+// Variáveis para o filtro por datas
+  dateRange: [Date | null, Date | null] = [null, null];
+  filterMode: 'ALL' | 'SCHEDULED' | 'DELIVERED' | 'PENDING' = 'ALL';
 
   constructor(private carloadService: CarloadService,
               private driverService: DriverService,
@@ -77,13 +88,6 @@ export class SprintDetailsComponent {
     })
   }
 
-  private loadSprintName(): void {
-    this.sprintService.getSprintById(this.sprintId).subscribe(sprint => {
-      this.sprintName = sprint.name;
-      console.log(this.sprintName);
-    });
-  }
-
   getManages() {
     this.managerService.getManagers().subscribe((managers: Manager[]) => {
       this.dataManagers = managers;
@@ -115,8 +119,6 @@ export class SprintDetailsComponent {
     // lógica para imprimir
   }
 
-
-
   closeCarloadDrawer(): void {
     this.isCarloadDrawerVisible = false;
     this.carloadForm.reset({
@@ -129,7 +131,7 @@ export class SprintDetailsComponent {
 
   submitCarload(): void {
     if (this.carloadForm.valid) {
-      const formValue = { ...this.carloadForm.value };
+      const formValue = {...this.carloadForm.value};
 
       if (formValue.deliveryStatus !== 'SCHEDULED') {
         formValue.deliveryScheduledDate = new Date(); // Hoje
@@ -151,56 +153,6 @@ export class SprintDetailsComponent {
     }
   }
 
-
-
-
-  private loadData(): void {
-    this.loadCarloads();
-    this.getDrivers()
-    this.getManages()
-    this.getSprinters()
-  }
-  // Carrega todos os carloads uma vez
-  private loadCarloads(): void {
-    this.carloadService.getCarloadsBySprint(this.sprintId).subscribe(carloads => {
-      this.allCarloads = carloads;
-
-      // Atualizar totais para os cards
-      this.totalCarloads = this.allCarloads.length;
-      this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
-      this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
-      this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
-
-      this.applyFilter();
-    });
-  }
-
-
-
-  private initForms(): void {
-    this.carloadForm = this.fb.group({
-      deliveryDestination: ['', Validators.required],
-      customerName: ['', Validators.required],
-      logisticsManagerId: ['', Validators.required],
-      assignedDriverId: ['', Validators.required],
-      transportedMaterial: ['', Validators.required],
-      carloadBatchId: ['', Validators.required],
-      customerPhoneNumber: ['', [Validators.required]],
-      totalSpent: [0, [Validators.required, Validators.min(0)]],
-      totalEarnings: [0, [Validators.required, Validators.min(0)]],
-      deliveryStatus: ['', Validators.required],
-      deliveryScheduledDate:['']
-    });
-  }
-  date = null;
-  // ✅ Novas variáveis de controle
-  showDeliveryDateField = false;
-  showTotalEarningsField = true;
-
-
-  isEnglish = false;
-
-
   onStatusChange(status: string): void {
     if (status === 'SCHEDULED') {
       this.showDeliveryDateField = true;
@@ -214,8 +166,6 @@ export class SprintDetailsComponent {
   onChange(result: Date): void {
     console.log('Data de entrega selecionada:', result);
   }
-
-  currentEditingCarloadId: string | null = null;
 
   editCarload(carload: CarLoad): void {
     this.currentEditingCarloadId = carload.id;
@@ -273,7 +223,7 @@ export class SprintDetailsComponent {
       nzOkType: 'primary',
       nzCancelText: 'Cancelar',
       nzOnOk: () => {
-        const updatedCarload = { ...carload, deliveryStatus: 'DELIVERED' }; // ou outro status final
+        const updatedCarload = {...carload, deliveryStatus: 'DELIVERED'}; // ou outro status final
 
         this.carloadService.encerarCarload(carload.id, updatedCarload).subscribe({
           next: () => {
@@ -287,12 +237,10 @@ export class SprintDetailsComponent {
       }
     });
   }
-  editingCarload?: CarLoad | null = null;
-  editingField?: string | null = null;
 
 // Iniciar edição inline
   startInlineEdit(carload: CarLoad, field: string): void {
-    this.editingCarload = { ...carload };
+    this.editingCarload = {...carload};
     this.editingField = field;
   }
 
@@ -300,7 +248,7 @@ export class SprintDetailsComponent {
   saveInlineEdit(original: CarLoad, field: string): void {
     if (!this.editingCarload) return;
 
-    const updated = { ...original, [field]: (this.editingCarload as any)[field] };
+    const updated = {...original, [field]: (this.editingCarload as any)[field]};
 
     this.carloadService.updateCarload(original.id, updated).subscribe({
       next: () => {
@@ -317,16 +265,12 @@ export class SprintDetailsComponent {
       }
     });
   }
-// Variáveis para o filtro por datas
-  dateRange: [Date | null, Date | null] = [null, null];
-
-// Atualizar status via dropdown
 
   updateCarloadStatus(carload: CarLoad, status: string): void {
     if (carload.deliveryStatus === status) return;
 
     // Se for status diferente de SCHEDULED, adiciona a data
-    const updated: any = { ...carload, deliveryStatus: status };
+    const updated: any = {...carload, deliveryStatus: status};
     if (status !== 'SCHEDULED') {
       updated.deliveryScheduledDate = new Date();
     }
@@ -335,13 +279,13 @@ export class SprintDetailsComponent {
       next: () => {
         carload.deliveryStatus = status;
         this.message.success(`Status atualizado para ${status} ✅`);
-        this.totalPendente=this.listOfDisplayData.filter(s=>s.deliveryStatus==='PENDING').length;
-        this.totalEntregue=this.listOfDisplayData.filter(s=>s.deliveryStatus==='DELIVERED').length;
+        this.totalPendente = this.listOfDisplayData.filter(s => s.deliveryStatus === 'PENDING').length;
+        this.totalEntregue = this.listOfDisplayData.filter(s => s.deliveryStatus === 'DELIVERED').length;
       },
       error: () => this.message.error('Erro ao atualizar status 🚫')
     });
   }
-  filterMode: 'ALL' | 'SCHEDULED' | 'DELIVERED' | 'PENDING' = 'ALL';
+
   setFilterMode(mode: 'ALL' | 'SCHEDULED' | 'DELIVERED' | 'PENDING'): void {
     this.filterMode = mode;
     this.applyFilter();
@@ -389,7 +333,52 @@ export class SprintDetailsComponent {
     this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
   }
 
+// Atualizar status via dropdown
 
+  private loadSprintName(): void {
+    this.sprintService.getSprintById(this.sprintId).subscribe(sprint => {
+      this.sprintName = sprint.name;
+      console.log(this.sprintName);
+    });
+  }
+
+  private loadData(): void {
+    this.loadCarloads();
+    this.getDrivers()
+    this.getManages()
+    this.getSprinters()
+  }
+
+  // Carrega todos os carloads uma vez
+  private loadCarloads(): void {
+    this.carloadService.getCarloadsBySprint(this.sprintId).subscribe(carloads => {
+      this.allCarloads = carloads;
+
+      // Atualizar totais para os cards
+      this.totalCarloads = this.allCarloads.length;
+      this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
+      this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
+      this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
+
+      this.applyFilter();
+    });
+  }
+
+  private initForms(): void {
+    this.carloadForm = this.fb.group({
+      deliveryDestination: ['', Validators.required],
+      customerName: ['', Validators.required],
+      logisticsManagerId: ['', Validators.required],
+      assignedDriverId: ['', Validators.required],
+      transportedMaterial: ['', Validators.required],
+      carloadBatchId: ['', Validators.required],
+      customerPhoneNumber: ['', [Validators.required]],
+      totalSpent: [0, [Validators.required, Validators.min(0)]],
+      totalEarnings: [0, [Validators.required, Validators.min(0)]],
+      deliveryStatus: ['', Validators.required],
+      deliveryScheduledDate: ['']
+    });
+  }
 
 
 }

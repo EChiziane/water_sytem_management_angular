@@ -20,7 +20,7 @@
       </div>
 
       <!-- Botão de login com spinner -->
-      <button class="login-button" nz-button nzType="primary" type="submit" [disabled]="isLoading">
+      <button [disabled]="isLoading" class="login-button" nz-button nzType="primary" type="submit">
         <span *ngIf="!isLoading">Entrar</span>
         <span *ngIf="isLoading">
           <nz-spin nzSize="small"></nz-spin> A entrar...

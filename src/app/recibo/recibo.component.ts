@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { Recibo } from '../models/WSM/Recibo';
-import { ReciboService } from '../services/recibo.service';
-import { Payment } from '../models/WSM/payment';
-import { PaymentService } from '../services/payment.service';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {Recibo} from '../models/WSM/Recibo';
+import {ReciboService} from '../services/recibo.service';
+import {Payment} from '../models/WSM/payment';
+import {PaymentService} from '../services/payment.service';
 
 @Component({
   selector: 'app-recibo',
@@ -38,7 +38,8 @@ export class ReciboComponent implements OnInit {
     private paymentService: PaymentService,
     private message: NzMessageService,
     private modal: NzModalService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.getRecibos();
@@ -166,7 +167,6 @@ export class ReciboComponent implements OnInit {
       window.URL.revokeObjectURL(url);
     });
   }
-
 
 
 }

@@ -10,31 +10,31 @@
     <div class='table-scroll'>
       <nz-table [nzData]='customers' nzTableLayout='fixed'>
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Customer Code</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Created At</th>
-            <th>Actions</th>
-          </tr>
+        <tr>
+          <th>Name</th>
+          <th>Customer Code</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-          <tr *ngFor='let customer of customers'>
-            <td>{{ customer.name }}</td>
-            <td>{{ customer.customerCode }}</td>
-            <td>{{ customer.phoneNumber }}</td>
-            <td>{{ customer.emailAddress }}</td>
-            <td>{{ customer.createdAt | date:'dd MM yyyy - HH:mm' }}</td>
-            <td>
-              <button (click)='editCustomer(customer)' nz-button nzType='link' nzSize='small'>
-                <nz-icon nzType='edit' nzTheme='outline'></nz-icon>
-              </button>
-              <button (click)='deleteCustomer(customer)' nz-button nzDanger nzType='link' nzSize='small'>
-                <nz-icon nzType='delete' nzTheme='outline'></nz-icon>
-              </button>
-            </td>
-          </tr>
+        <tr *ngFor='let customer of customers'>
+          <td>{{ customer.name }}</td>
+          <td>{{ customer.customerCode }}</td>
+          <td>{{ customer.phoneNumber }}</td>
+          <td>{{ customer.emailAddress }}</td>
+          <td>{{ customer.createdAt | date:'dd MM yyyy - HH:mm' }}</td>
+          <td>
+            <button (click)='editCustomer(customer)' nz-button nzSize='small' nzType='link'>
+              <nz-icon nzTheme='outline' nzType='edit'></nz-icon>
+            </button>
+            <button (click)='deleteCustomer(customer)' nz-button nzDanger nzSize='small' nzType='link'>
+              <nz-icon nzTheme='outline' nzType='delete'></nz-icon>
+            </button>
+          </td>
+        </tr>
         </tbody>
       </nz-table>
     </div>
@@ -42,22 +42,22 @@
 </div>
 
 <nz-drawer
-  [nzVisible]='isDrawerVisible'
-  [nzTitle]='drawerTitle'
   (nzOnClose)='closeDrawer()'
-  [nzWidth]='480'
-  [nzFooter]='drawerFooter'>
+  [nzFooter]='drawerFooter'
+  [nzTitle]='drawerTitle'
+  [nzVisible]='isDrawerVisible'
+  [nzWidth]='480'>
   <form *nzDrawerContent [formGroup]='customerForm' nz-form>
     <nz-form-item *ngFor='let field of customerForm.controls | keyvalue'>
       <nz-form-label [nzFor]='field.key' nzRequired>{{ field.key }}</nz-form-label>
       <nz-form-control>
-        <input [formControlName]='field.key' nz-input [id]='field.key' [placeholder]='field.key'/>
+        <input [formControlName]='field.key' [id]='field.key' [placeholder]='field.key' nz-input/>
       </nz-form-control>
     </nz-form-item>
   </form>
 
   <ng-template #drawerFooter>
-    <button nz-button (click)='closeDrawer()'>Cancel</button>
-    <button nz-button nzType='primary' (click)='submitCustomer()' [disabled]='!customerForm.valid'>Save</button>
+    <button (click)='closeDrawer()' nz-button>Cancel</button>
+    <button (click)='submitCustomer()' [disabled]='!customerForm.valid' nz-button nzType='primary'>Save</button>
   </ng-template>
 </nz-drawer>

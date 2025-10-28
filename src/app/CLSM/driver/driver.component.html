@@ -9,21 +9,21 @@
   <!-- ===== Section: Summary Cards ===== -->
   <div class="summary-section">
     <div class="summary-background">
-      <div nz-row [nzGutter]="8">
+      <div [nzGutter]="8" nz-row>
 
-        <div nz-col [nzSpan]="8">
+        <div [nzSpan]="8" nz-col>
           <nz-card nzTitle="Total Motoristas">
             <p>{{ totalDrivers | number }}</p>
           </nz-card>
         </div>
 
-        <div nz-col [nzSpan]="8">
+        <div [nzSpan]="8" nz-col>
           <nz-card nzTitle="Motoristas Ativos">
             <p>{{ totalActiveDrivers | number }}</p>
           </nz-card>
         </div>
 
-        <div nz-col [nzSpan]="8">
+        <div [nzSpan]="8" nz-col>
           <nz-card nzTitle="Motoristas Inativos">
             <p>{{ totalInactiveDrivers | number }}</p>
           </nz-card>
@@ -34,20 +34,17 @@
   </div>
 
 
-
-
-
   <!-- ===== Section: Filters ===== -->
   <div class="filters-panel">
     <input
-      nz-input
-      type="text"
-      placeholder="Pesquisar..."
-      [(ngModel)]="searchValue"
       (ngModelChange)="search()"
+      [(ngModel)]="searchValue"
+      nz-input
+      placeholder="Pesquisar..."
+      type="text"
     />
 
-    <button nz-button nzType="primary" (click)="openDriverDrawer()">Novo Motorista</button>
+    <button (click)="openDriverDrawer()" nz-button nzType="primary">Novo Motorista</button>
   </div>
 
 
@@ -56,14 +53,14 @@
     <div class="table-scroll">
       <nz-spin
         [nzSpinning]="isLoading"
-        nzTip="A carregar motoristas..."
         nzSize="large"
+        nzTip="A carregar motoristas..."
       >
         <nz-table
           #nzTable
-          nzTableLayout="fixed"
           [nzData]="listOfDisplayData"
           [nzScroll]="{ x: '800px', y: '280px' }"
+          nzTableLayout="fixed"
         >
           <thead>
           <tr>
@@ -81,66 +78,67 @@
             <td>
               <ng-container *ngIf="editingDriver?.id === driver.id && editingField === 'Name'; else viewName">
                 <input
-                  nz-input
-                  [(ngModel)]="editingDriver!.Name"
                   (blur)="saveInlineEdit(driver, 'Name')"
                   (keyup.enter)="saveInlineEdit(driver, 'Name')"
+                  [(ngModel)]="editingDriver!.Name"
+                  nz-input
                 />
               </ng-container>
               <ng-template #viewName>
-                <span class="editable-cell" (click)="startInlineEdit(driver, 'Name')">{{ driver.Name }}</span>
+                <span (click)="startInlineEdit(driver, 'Name')" class="editable-cell">{{ driver.Name }}</span>
               </ng-template>
             </td>
 
             <td>
               <ng-container *ngIf="editingDriver?.id === driver.id && editingField === 'Phone'; else viewPhone">
                 <input
-                  nz-input
-                  [(ngModel)]="editingDriver!.Phone"
                   (blur)="saveInlineEdit(driver, 'Phone')"
                   (keyup.enter)="saveInlineEdit(driver, 'Phone')"
+                  [(ngModel)]="editingDriver!.Phone"
+                  nz-input
                 />
               </ng-container>
               <ng-template #viewPhone>
-                <span class="editable-cell" (click)="startInlineEdit(driver, 'Phone')">{{ driver.Phone }}</span>
+                <span (click)="startInlineEdit(driver, 'Phone')" class="editable-cell">{{ driver.Phone }}</span>
               </ng-template>
             </td>
 
             <td>
               <ng-container *ngIf="editingDriver?.id === driver.id && editingField === 'CarDescription'; else viewCar">
                 <input
-                  nz-input
-                  [(ngModel)]="editingDriver!.CarDescription"
                   (blur)="saveInlineEdit(driver, 'CarDescription')"
                   (keyup.enter)="saveInlineEdit(driver, 'CarDescription')"
+                  [(ngModel)]="editingDriver!.CarDescription"
+                  nz-input
                 />
               </ng-container>
               <ng-template #viewCar>
-                <span class="editable-cell" (click)="startInlineEdit(driver, 'CarDescription')">{{ driver.CarDescription }}</span>
+                <span (click)="startInlineEdit(driver, 'CarDescription')"
+                      class="editable-cell">{{ driver.CarDescription }}</span>
               </ng-template>
             </td>
 
             <td>
               <button
+                [nzDropdownMenu]="menu"
                 nz-button
                 nz-dropdown
-                [nzDropdownMenu]="menu"
                 nzTrigger="click">
                 <nz-tag
                   [nzColor]="driver.status === 'ACTIVO' ? 'green' : 'red'">
                   {{ driver.status }}
                 </nz-tag>
               </button>
-                <nz-dropdown-menu #menu="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li nz-menu-item (click)="updateStatus(driver, 'ACTIVO')">
-                      <span class="status-option status-activo">Activo</span>
-                    </li>
-                    <li nz-menu-item (click)="updateStatus(driver, 'INACTIVO')">
-                      <span class="status-option status-inactivo">Inactivo</span>
-                    </li>
-                  </ul>
-                </nz-dropdown-menu>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li (click)="updateStatus(driver, 'ACTIVO')" nz-menu-item>
+                    <span class="status-option status-activo">Activo</span>
+                  </li>
+                  <li (click)="updateStatus(driver, 'INACTIVO')" nz-menu-item>
+                    <span class="status-option status-inactivo">Inactivo</span>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
             </td>
 
 
@@ -148,20 +146,20 @@
 
             <td>
               <button
-                nz-button
-                nzType="link"
-                nzSize="small"
                 (click)="editDriver(driver)"
+                nz-button
+                nzSize="small"
+                nzType="link"
               >
                 <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
               </button>
 
               <button
+                (click)="deleteDriver(driver)"
                 nz-button
-                nzType="link"
                 nzDanger
                 nzSize="small"
-                (click)="deleteDriver(driver)"
+                nzType="link"
               >
                 <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
               </button>
@@ -177,13 +175,13 @@
 
 <!-- ===== Component: Driver Drawer ===== -->
 <nz-drawer
-  [nzVisible]="isDriverDrawerVisible"
-  [nzTitle]="driverDrawerTitle"
-  [nzWidth]="480"
-  [nzFooter]="driverDrawerFooter"
   (nzOnClose)="closeDriverDrawer()"
+  [nzFooter]="driverDrawerFooter"
+  [nzTitle]="driverDrawerTitle"
+  [nzVisible]="isDriverDrawerVisible"
+  [nzWidth]="480"
 >
-  <form *nzDrawerContent [formGroup]="driverForm" nz-form class="drawer-form">
+  <form *nzDrawerContent [formGroup]="driverForm" class="drawer-form" nz-form>
 
     <!-- ===== Section: Basic Information ===== -->
     <div class="drawer-section">
@@ -192,14 +190,14 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Nome</nz-form-label>
         <nz-form-control [nzSm]="18" [nzXs]="24">
-          <input nz-input formControlName="name" placeholder="Nome do motorista" />
+          <input formControlName="name" nz-input placeholder="Nome do motorista"/>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Telefone</nz-form-label>
         <nz-form-control [nzSm]="18" [nzXs]="24">
-          <input nz-input formControlName="phone" placeholder="Número de telefone" />
+          <input formControlName="phone" nz-input placeholder="Número de telefone"/>
         </nz-form-control>
       </nz-form-item>
 
@@ -226,12 +224,12 @@
       </nz-form-item>
     </div>
 
-    <br />
+    <br/>
 
     <!-- ===== UI: Saving Spinner ===== -->
     <div *ngIf="isSaving" class="drawer-spinner">
       <nz-spin nzSize="large"></nz-spin>
-      <br />
+      <br/>
       <p>Salvando motorista... Aguarde.</p>
     </div>
 
@@ -240,10 +238,10 @@
   <!-- ===== Drawer Footer ===== -->
   <ng-template #driverDrawerFooter>
     <div class="drawer-footer">
-      <button nz-button nzType="default" class="btn-cancelar" (click)="closeDriverDrawer()">
+      <button (click)="closeDriverDrawer()" class="btn-cancelar" nz-button nzType="default">
         Cancelar
       </button>
-      <button nz-button nzType="primary" class="btn-salvar" [disabled]="!driverForm.valid" (click)="submitDriver()">
+      <button (click)="submitDriver()" [disabled]="!driverForm.valid" class="btn-salvar" nz-button nzType="primary">
         Salvar
       </button>
     </div>

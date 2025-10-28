@@ -4,8 +4,8 @@
   </div>
 
   <div class="filter">
-    <input nz-input placeholder="Pesquisar..." [(ngModel)]="searchValue" (ngModelChange)="search()" />
-    <button nz-button nzType="primary" (click)="openDrawer()">Novo Professor</button>
+    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Pesquisar..."/>
+    <button (click)="openDrawer()" nz-button nzType="primary">Novo Professor</button>
   </div>
 
   <nz-table [nzData]="listOfDisplayData" [nzScroll]="{ x: '800px', y: '280px'}" nzTableLayout="fixed">
@@ -27,10 +27,10 @@
       <td>{{ teacher.specialization }}</td>
       <td>{{ teacher.type }}</td>
       <td>
-        <button nz-button nzSize="small" nzType="link" (click)="editTeacher(teacher)">
+        <button (click)="editTeacher(teacher)" nz-button nzSize="small" nzType="link">
           <nz-icon nzType="edit"></nz-icon>
         </button>
-        <button nz-button nzSize="small" nzType="link" nzDanger (click)="deleteTeacher(teacher)">
+        <button (click)="deleteTeacher(teacher)" nz-button nzDanger nzSize="small" nzType="link">
           <nz-icon nzType="delete"></nz-icon>
         </button>
       </td>
@@ -40,39 +40,39 @@
 </div>
 
 <nz-drawer
-  [nzVisible]="isDrawerVisible"
-  [nzTitle]="drawerTitle"
-  [nzWidth]="480"
   (nzOnClose)="closeDrawer()"
-  [nzFooter]="drawerFooter"
   [nzBodyStyle]="{ overflow: 'auto' }"
+  [nzFooter]="drawerFooter"
+  [nzTitle]="drawerTitle"
+  [nzVisible]="isDrawerVisible"
+  [nzWidth]="480"
 >
-  <form [formGroup]="teacherForm" nz-form *nzDrawerContent>
+  <form *nzDrawerContent [formGroup]="teacherForm" nz-form>
     <nz-form-item>
       <nz-form-label nzRequired>Nome</nz-form-label>
       <nz-form-control>
-        <input nz-input formControlName="name" />
+        <input formControlName="name" nz-input/>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
       <nz-form-label nzRequired>Email</nz-form-label>
       <nz-form-control>
-        <input nz-input formControlName="email" />
+        <input formControlName="email" nz-input/>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
       <nz-form-label nzRequired>Telefone</nz-form-label>
       <nz-form-control>
-        <input nz-input formControlName="phoneNumber" />
+        <input formControlName="phoneNumber" nz-input/>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
       <nz-form-label nzRequired>Especialização</nz-form-label>
       <nz-form-control>
-        <input nz-input formControlName="specialization" />
+        <input formControlName="specialization" nz-input/>
       </nz-form-control>
     </nz-form-item>
 
@@ -80,16 +80,16 @@
       <nz-form-label nzRequired>Tipo</nz-form-label>
       <nz-form-control>
         <nz-select formControlName="type">
-          <nz-option nzValue="HEAD_TEACHER" nzLabel="FHEAD_TEACHER"></nz-option>
-         ,
-          <nz-option nzValue="PASSISTANT" nzLabel="ASSISTANT"></nz-option>
+          <nz-option nzLabel="FHEAD_TEACHER" nzValue="HEAD_TEACHER"></nz-option>
+          ,
+          <nz-option nzLabel="ASSISTANT" nzValue="PASSISTANT"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
   </form>
 
   <ng-template #drawerFooter>
-    <button nz-button (click)="closeDrawer()">Cancelar</button>
-    <button nz-button nzType="primary" [disabled]="teacherForm.invalid" (click)="submitTeacher()">Salvar</button>
+    <button (click)="closeDrawer()" nz-button>Cancelar</button>
+    <button (click)="submitTeacher()" [disabled]="teacherForm.invalid" nz-button nzType="primary">Salvar</button>
   </ng-template>
 </nz-drawer>

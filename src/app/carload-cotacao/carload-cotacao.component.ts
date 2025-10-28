@@ -39,11 +39,31 @@ export class CarloadCotacaoComponent implements OnInit {
   ];
 
   itemsPrices: { [key: string]: number } = {
-    "M4_AREIA_GROSSA": 5000, "M4_PEDRA_3_4": 5500, "M4_PEDRA_SARRISCA": 5500, "M4_PO_DE_PEDRA": 4500, "M4_AREIA_FINA": 4500,
-    "M7_AREIA_GROSSA": 7500, "M7_PEDRA_3_4": 8000, "M7_PEDRA_SARRISCA": 800, "M7_PO_DE_PEDRA": 7500, "M7_AREIA_FINA": 6500,
-    "M18_AREIA_GROSSA": 17000, "M18_PEDRA_3_4": 18000, "M18_PEDRA_SARRISCA": 18000, "M18_PO_DE_PEDRA":16000, "M18_AREIA_FINA": 12000,
-    "M20_AREIA_GROSSA": 20000, "M20_PEDRA_3_4": 22000, "M20_PEDRA_SARRISCA": 22000, "M20_PO_DE_PEDRA": 19000, "M20_AREIA_FINA": 14000,
-    "M22_AREIA_GROSSA": 22000, "M22_PEDRA_3_4": 25000, "M22_PEDRA_SARRISCA": 25000, "M22_PO_DE_PEDRA": 22000, "M22_AREIA_FINA": 16000
+    "M4_AREIA_GROSSA": 5000,
+    "M4_PEDRA_3_4": 5500,
+    "M4_PEDRA_SARRISCA": 5500,
+    "M4_PO_DE_PEDRA": 4500,
+    "M4_AREIA_FINA": 4500,
+    "M7_AREIA_GROSSA": 7500,
+    "M7_PEDRA_3_4": 8000,
+    "M7_PEDRA_SARRISCA": 800,
+    "M7_PO_DE_PEDRA": 7500,
+    "M7_AREIA_FINA": 6500,
+    "M18_AREIA_GROSSA": 17000,
+    "M18_PEDRA_3_4": 18000,
+    "M18_PEDRA_SARRISCA": 18000,
+    "M18_PO_DE_PEDRA": 16000,
+    "M18_AREIA_FINA": 12000,
+    "M20_AREIA_GROSSA": 20000,
+    "M20_PEDRA_3_4": 22000,
+    "M20_PEDRA_SARRISCA": 22000,
+    "M20_PO_DE_PEDRA": 19000,
+    "M20_AREIA_FINA": 14000,
+    "M22_AREIA_GROSSA": 22000,
+    "M22_PEDRA_3_4": 25000,
+    "M22_PEDRA_SARRISCA": 25000,
+    "M22_PO_DE_PEDRA": 22000,
+    "M22_AREIA_FINA": 16000
   };
 
   // ===================== CONSTRUTOR =====================
@@ -53,7 +73,13 @@ export class CarloadCotacaoComponent implements OnInit {
     private customerService: CarloadCustomerService,
     private message: NzMessageService,
     private modal: NzModalService
-) {}
+  ) {
+  }
+
+  // ===================== GETTERS =====================
+  get items(): FormArray {
+    return this.cotacaoForm.get('items') as FormArray;
+  }
 
   // ===================== CICLO DE VIDA =====================
   ngOnInit(): void {
@@ -62,44 +88,13 @@ export class CarloadCotacaoComponent implements OnInit {
     this.initForm();
   }
 
-  // ===================== GETTERS =====================
-  get items(): FormArray {
-    return this.cotacaoForm.get('items') as FormArray;
-  }
-
-  // ===================== INICIALIZAÇÃO =====================
-private initForm() {
-    this.cotacaoForm = this.fb.group({
-      carloadCustomerId: ['', Validators.required],
-      cotacaoCode: ['', Validators.required],
-      items: this.fb.array([]),
-      taxRate: [0.1, Validators.required],
-      subtotal: [{ value: 0, disabled: true }],
-      tax: [{ value: 0, disabled: true }],
-      total: [{ value: 0, disabled: true }]
-    });
-
-    this.cotacaoForm.get('taxRate')?.valueChanges.subscribe(() => this.calculateTotals());
-  }
-
-private loadCotacoes() {
-    this.cotacaoService.getCotacoes().subscribe(data => {
-      this.cotacoes = data;
-      this.allCotacoes = data;
-    });
-  }
-
-private loadCustomers() {
-    this.customerService.getCustomers().subscribe(data => this.dataCustomer = data);
-  }
-
   // ===================== MANIPULAÇÃO DE ITENS =====================
   addItem() {
     const itemGroup = this.fb.group({
       description: ['', Validators.required],
       quantity: [1, [Validators.required, Validators.min(1)]],
       unitPrice: [0, [Validators.required, Validators.min(0)]],
-      amount: [{ value: 0, disabled: true }]
+      amount: [{value: 0, disabled: true}]
     });
 
     itemGroup.get('quantity')?.valueChanges.subscribe(() => this.updateItemAmount(itemGroup));
@@ -116,42 +111,22 @@ private loadCustomers() {
   onItemChange(itemName: string, index: number) {
     const itemGroup = this.items.at(index) as FormGroup;
     const price = this.itemsPrices[itemName] || 0;
-    itemGroup.patchValue({ unitPrice: price, quantity: 1 });
+    itemGroup.patchValue({unitPrice: price, quantity: 1});
     this.updateItemAmount(itemGroup);
-  }
-
-private updateItemAmount(itemGroup: FormGroup) {
-    const quantity = itemGroup.get('quantity')?.value || 0;
-    const unitPrice = itemGroup.get('unitPrice')?.value || 0;
-    const amount = quantity * unitPrice;
-    itemGroup.patchValue({ amount }, { emitEvent: false });
-    this.calculateTotals();
-  }
-
-private calculateTotals() {
-    const subtotal = this.items.controls.reduce((sum, item) => {
-      const amount = item.get('amount')?.value || 0;
-      return sum + amount;
-    }, 0);
-    const taxRate = this.cotacaoForm.get('taxRate')?.value || 0;
-    const tax = subtotal * taxRate;
-    const total = subtotal + tax;
-
-    this.cotacaoForm.patchValue({ subtotal, tax, total }, { emitEvent: false });
   }
 
   // ===================== DRAWER =====================
   openDrawer(): void {
     this.isDrawerVisible = true;
     this.currentCotacaoId = null;
-    this.cotacaoForm.reset({ taxRate: 0.16 });
+    this.cotacaoForm.reset({taxRate: 0.16});
     this.items.clear();
     this.addItem();
   }
 
   closeDrawer(): void {
     this.isDrawerVisible = false;
-    this.cotacaoForm.reset({ taxRate: 0.16 });
+    this.cotacaoForm.reset({taxRate: 0.16});
     this.items.clear();
     this.currentCotacaoId = null;
   }
@@ -159,20 +134,28 @@ private calculateTotals() {
   // ===================== CRUD DE INVOICES =====================
   submitCotacao(): void {
     if (!this.cotacaoForm.valid) return;
-  const cotacaoData = this.cotacaoForm.getRawValue();
+    const cotacaoData = this.cotacaoForm.getRawValue();
 
-  if (this.currentCotacaoId) {
-    this.cotacaoService.updateCotacao(this.currentCotacaoId, cotacaoData).subscribe({
-      next: () => { this.loadCotacoes(); this.closeDrawer(); this.message.success('Cotacao updated ✅'); },
-      error: () => this.message.error('Error updating cotacao 🚫')
-    });
-  } else {
-    this.cotacaoService.addCotacao(cotacaoData).subscribe({
-      next: () => { this.loadCotacoes(); this.closeDrawer(); this.message.success('Cotacao created ✅'); },
-      error: () => this.message.error('Error creating cotacao 🚫')
-    });
+    if (this.currentCotacaoId) {
+      this.cotacaoService.updateCotacao(this.currentCotacaoId, cotacaoData).subscribe({
+        next: () => {
+          this.loadCotacoes();
+          this.closeDrawer();
+          this.message.success('Cotacao updated ✅');
+        },
+        error: () => this.message.error('Error updating cotacao 🚫')
+      });
+    } else {
+      this.cotacaoService.addCotacao(cotacaoData).subscribe({
+        next: () => {
+          this.loadCotacoes();
+          this.closeDrawer();
+          this.message.success('Cotacao created ✅');
+        },
+        error: () => this.message.error('Error creating cotacao 🚫')
+      });
+    }
   }
-}
 
   editCotacao(cotacao: CarloadCotacao) {
     this.currentCotacaoId = cotacao.id;
@@ -184,7 +167,7 @@ private calculateTotals() {
         description: [it.description, Validators.required],
         quantity: [it.quantity, Validators.required],
         unitPrice: [it.unitPrice, Validators.required],
-        amount: [{ value: it.quantity * it.unitPrice, disabled: true }]
+        amount: [{value: it.quantity * it.unitPrice, disabled: true}]
       });
       group.get('quantity')?.valueChanges.subscribe(() => this.updateItemAmount(group));
       group.get('unitPrice')?.valueChanges.subscribe(() => this.updateItemAmount(group));
@@ -208,7 +191,10 @@ private calculateTotals() {
       nzCancelText: 'No',
       nzOnOk: () => {
         this.cotacaoService.deleteCotacao(cotacao.id).subscribe({
-          next: () => { this.loadCotacoes(); this.message.success('Cotacao deleted 🗑️'); },
+          next: () => {
+            this.loadCotacoes();
+            this.message.success('Cotacao deleted 🗑️');
+          },
           error: () => this.message.error('Error deleting cotacao 🚫')
         });
       }
@@ -218,41 +204,44 @@ private calculateTotals() {
   // ===================== FILTROS E PESQUISA =====================
   filterByCustomer(): void {
     if (!this.selectedCustomerId) {
-    this.cotacoes = this.allCotacoes;
-  } else {
-    this.cotacoes = this.allCotacoes.filter(inv => inv.carloadCustomerId === this.selectedCustomerId);
+      this.cotacoes = this.allCotacoes;
+    } else {
+      this.cotacoes = this.allCotacoes.filter(inv => inv.carloadCustomerId === this.selectedCustomerId);
+    }
+    this.filterByDateRange();
+    this.search();
   }
-  this.filterByDateRange();
-  this.search();
-}
 
   filterByDateRange(): void {
     if (!this.dateRange || this.dateRange.length !== 2) {
-    this.cotacoes = this.allCotacoes;
+      this.cotacoes = this.allCotacoes;
+      this.search();
+      return;
+    }
+
+    const [start, end] = this.dateRange;
+    const startDate = new Date(start).setHours(0, 0, 0, 0);
+    const endDate = new Date(end).setHours(23, 59, 59, 999);
+
+    this.cotacoes = this.allCotacoes.filter(inv => {
+      const createdAt = new Date(inv.createdAt).getTime();
+      return createdAt >= startDate && createdAt <= endDate;
+    });
+
     this.search();
-    return;
   }
-
-  const [start, end] = this.dateRange;
-  const startDate = new Date(start).setHours(0, 0, 0, 0);
-  const endDate = new Date(end).setHours(23, 59, 59, 999);
-
-  this.cotacoes = this.allCotacoes.filter(inv => {
-    const createdAt = new Date(inv.createdAt).getTime();
-    return createdAt >= startDate && createdAt <= endDate;
-  });
-
-  this.search();
-}
 
   search(): void {
     const val = this.searchValue.toLowerCase();
-    if (!val) { this.loadCotacoes(); return; }
-  this.cotacoes = this.cotacoes.filter(inv =>
-    inv.cotacaoCode.toLowerCase().includes(val) ||
-    inv.items.some((it: any) => it.description.toLowerCase().includes(val))
-  );
-}
+    if (!val) {
+      this.loadCotacoes();
+      return;
+    }
+    this.cotacoes = this.cotacoes.filter(inv =>
+      inv.cotacaoCode.toLowerCase().includes(val) ||
+      inv.items.some((it: any) => it.description.toLowerCase().includes(val))
+    );
+  }
 
   // ===================== DOWNLOAD =====================
   downloadCotacao(cotacao: CarloadCotacao) {
@@ -264,5 +253,51 @@ private calculateTotals() {
       a.click();
       window.URL.revokeObjectURL(url);
     });
+  }
+
+  // ===================== INICIALIZAÇÃO =====================
+  private initForm() {
+    this.cotacaoForm = this.fb.group({
+      carloadCustomerId: ['', Validators.required],
+      cotacaoCode: ['', Validators.required],
+      items: this.fb.array([]),
+      taxRate: [0.1, Validators.required],
+      subtotal: [{value: 0, disabled: true}],
+      tax: [{value: 0, disabled: true}],
+      total: [{value: 0, disabled: true}]
+    });
+
+    this.cotacaoForm.get('taxRate')?.valueChanges.subscribe(() => this.calculateTotals());
+  }
+
+  private loadCotacoes() {
+    this.cotacaoService.getCotacoes().subscribe(data => {
+      this.cotacoes = data;
+      this.allCotacoes = data;
+    });
+  }
+
+  private loadCustomers() {
+    this.customerService.getCustomers().subscribe(data => this.dataCustomer = data);
+  }
+
+  private updateItemAmount(itemGroup: FormGroup) {
+    const quantity = itemGroup.get('quantity')?.value || 0;
+    const unitPrice = itemGroup.get('unitPrice')?.value || 0;
+    const amount = quantity * unitPrice;
+    itemGroup.patchValue({amount}, {emitEvent: false});
+    this.calculateTotals();
+  }
+
+  private calculateTotals() {
+    const subtotal = this.items.controls.reduce((sum, item) => {
+      const amount = item.get('amount')?.value || 0;
+      return sum + amount;
+    }, 0);
+    const taxRate = this.cotacaoForm.get('taxRate')?.value || 0;
+    const tax = subtotal * taxRate;
+    const total = subtotal + tax;
+
+    this.cotacaoForm.patchValue({subtotal, tax, total}, {emitEvent: false});
   }
 }

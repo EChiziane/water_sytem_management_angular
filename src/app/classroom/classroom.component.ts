@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {Classroom} from '../models/classroom';
 import {ClassroomService} from '../services/classroom.service';
 import {TeacherService} from '../services/teacher.service';
@@ -35,16 +35,9 @@ export class ClassroomComponent implements OnInit {
     private modal: NzModalService,
     private teacherService: TeacherService,
     private studentService: StudentService,
-
   ) {
     this.loadData();
 
-  }
-
-  private loadData(): void {
-    this.loadStudents();
-    this.loadClassrooms()
-    this.loadTeachers()
   }
 
   get drawerTitle(): string {
@@ -139,6 +132,12 @@ export class ClassroomComponent implements OnInit {
     );
   }
 
+  private loadData(): void {
+    this.loadStudents();
+    this.loadClassrooms()
+    this.loadTeachers()
+  }
+
   private loadClassrooms(): void {
     this.classroomService.getClassrooms().subscribe(classrooms => {
       this.listOfDisplayData = classrooms;
@@ -161,8 +160,8 @@ export class ClassroomComponent implements OnInit {
     this.classroomForm = this.fb.group({
       name: ['', Validators.required],
       schedule: ['', Validators.required],
-      headTeacherId:['', Validators.required],
-      assistantTeacherId:['', Validators.required]
+      headTeacherId: ['', Validators.required],
+      assistantTeacherId: ['', Validators.required]
     });
   }
 }

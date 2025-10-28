@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
 import {Teacher} from '../models/EISSM/Teacher';
 import {TeacherService} from '../services/teacher.service';
 
@@ -29,16 +29,16 @@ export class TeacherComponent implements OnInit {
     this.initForm();
   }
 
-  ngOnInit(): void {
-    this.loadTeachers();
-  }
-
   get drawerTitle(): string {
     return this.currentEditingId ? 'Editar Professor' : 'Novo Professor';
   }
 
+  ngOnInit(): void {
+    this.loadTeachers();
+  }
+
   openDrawer(): void {
-    this.teacherForm.reset({ type: 'FULL_TIME' });
+    this.teacherForm.reset({type: 'FULL_TIME'});
     this.currentEditingId = null;
     this.isDrawerVisible = true;
   }
@@ -46,7 +46,7 @@ export class TeacherComponent implements OnInit {
   closeDrawer(): void {
     this.isDrawerVisible = false;
     this.currentEditingId = null;
-    this.teacherForm.reset({ type: 'FULL_TIME' });
+    this.teacherForm.reset({type: 'FULL_TIME'});
   }
 
   submitTeacher(): void {

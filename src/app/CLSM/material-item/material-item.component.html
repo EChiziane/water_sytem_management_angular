@@ -4,7 +4,7 @@
   </div>
 
   <div class="table-container">
-    <nz-table [nzData]="listOfDisplayData" [nzBordered]="true">
+    <nz-table [nzBordered]="true" [nzData]="listOfDisplayData">
       <thead>
       <tr>
         <th>Description</th>
@@ -24,7 +24,7 @@
         <td>{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
         <td>
           <button (click)="edit(item)" nz-button nzType="link">Edit</button>
-          <button (click)="delete(item)" nz-button nzType="link" nzDanger>Delete</button>
+          <button (click)="delete(item)" nz-button nzDanger nzType="link">Delete</button>
         </td>
       </tr>
       </tbody>
@@ -34,38 +34,38 @@
 
 <!-- Drawer -->
 <nz-drawer
-  [nzVisible]="isDrawerVisible"
-  [nzTitle]="drawerTitle"
-  [nzFooter]="nzDrawerFooter"
   (nzOnClose)="closeDrawer()"
+  [nzFooter]="nzDrawerFooter"
+  [nzTitle]="drawerTitle"
+  [nzVisible]="isDrawerVisible"
   [nzWidth]="480"
 >
-  <form *nzDrawerContent [formGroup]="materialItemForm" nz-form  >
+  <form *nzDrawerContent [formGroup]="materialItemForm" nz-form>
     <nz-form-item>
       <nz-form-label nzFor="materialDescription" nzRequired>Description</nz-form-label>
       <nz-form-control>
-        <input id="materialDescription" formControlName="materialDescription" nz-input />
+        <input formControlName="materialDescription" id="materialDescription" nz-input/>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
       <nz-form-label nzFor="quantity" nzRequired>Quantity</nz-form-label>
       <nz-form-control>
-        <input id="quantity" type="number" formControlName="quantity" nz-input />
+        <input formControlName="quantity" id="quantity" nz-input type="number"/>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
       <nz-form-label nzFor="unitPrice" nzRequired>Unit Price</nz-form-label>
       <nz-form-control>
-        <input id="unitPrice" type="number" formControlName="unitPrice" nz-input />
+        <input formControlName="unitPrice" id="unitPrice" nz-input type="number"/>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
       <nz-form-label>Total Value</nz-form-label>
       <nz-form-control>
-        <input formControlName="totalItemValue" nz-input />
+        <input formControlName="totalItemValue" nz-input/>
       </nz-form-control>
     </nz-form-item>
   </form>

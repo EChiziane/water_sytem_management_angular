@@ -1,8 +1,8 @@
-﻿import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, take } from 'rxjs';
-import { environment } from '../../environments/environments';
-import { MaterialItem } from '../models/MaterialItem';
+﻿import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, take} from 'rxjs';
+import {environment} from '../../environments/environments';
+import {MaterialItem} from '../models/MaterialItem';
 
 
 @Injectable({
@@ -11,7 +11,8 @@ import { MaterialItem } from '../models/MaterialItem';
 export class MaterialItemService {
   private baseURL = environment.baseURL + '/invoice-items';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   public getAll(): Observable<MaterialItem[]> {
     return this.http.get<MaterialItem[]>(this.baseURL);

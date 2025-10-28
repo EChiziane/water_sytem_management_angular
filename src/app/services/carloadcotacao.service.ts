@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import {environment} from '../../environments/environments';
 import {HttpClient} from '@angular/common/http';
 import {Observable, take} from 'rxjs';
@@ -10,7 +10,8 @@ import {CarloadCotacao} from '../models/CSM/carloadInvoice';
 export class CarloadCotacaoService {
   private baseURL = `${environment.baseURL}/carload-cotacoes`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getCotacoes(): Observable<CarloadCotacao[]> {
     return this.http.get<CarloadCotacao[]>(this.baseURL);
@@ -32,8 +33,8 @@ export class CarloadCotacaoService {
     return this.http.delete<CarloadCotacao>(`${this.baseURL}/${id}`);
   }
 
-  public getDownloadUrl(id: string): Observable<CarloadCotacao>{
-    return this.http.get<CarloadCotacao> (`${this.baseURL}/download/${id}`);
+  public getDownloadUrl(id: string): Observable<CarloadCotacao> {
+    return this.http.get<CarloadCotacao>(`${this.baseURL}/download/${id}`);
   }
 
   downloadRecibo(id: string) {

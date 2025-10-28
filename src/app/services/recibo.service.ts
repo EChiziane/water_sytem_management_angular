@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, take } from 'rxjs';
-import { environment } from '../../environments/environments';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, take} from 'rxjs';
+import {environment} from '../../environments/environments';
 import {Recibo} from '../models/WSM/Recibo';
 
 
@@ -12,14 +12,15 @@ export class ReciboService {
 
   baseURL = environment.baseURL + "/receipts";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   public getRecibos(): Observable<Recibo[]> {
     return this.http.get<Recibo[]>(this.baseURL);
   }
 
- public getDownloadUrl(id: string): Observable<Recibo>{
-    return this.http.get<Recibo> (`${this.baseURL}/download/${id}`);
+  public getDownloadUrl(id: string): Observable<Recibo> {
+    return this.http.get<Recibo>(`${this.baseURL}/download/${id}`);
   }
 
   downloadRecibo(id: string) {
@@ -28,7 +29,7 @@ export class ReciboService {
     });
   }
 
-  public getRecibosByPayments(id:any): Observable<Recibo[]> {
+  public getRecibosByPayments(id: any): Observable<Recibo[]> {
     return this.http.get<Recibo[]>(`${this.baseURL}/${id}`);
   }
 
@@ -38,7 +39,7 @@ export class ReciboService {
   }
 
   public addRecibo(paymentId: string): Observable<Recibo> {
-    const body = { paymentId: paymentId }; // cria o objeto com a chave correta
+    const body = {paymentId: paymentId}; // cria o objeto com a chave correta
     console.log(body, "create");
     return this.http.post<Recibo>(`${this.baseURL}`, body).pipe(take(1));
   }

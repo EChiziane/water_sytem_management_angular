@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { SprintService } from '../../services/sprint.service';
-import { Sprint } from '../../models/CSM/sprint';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {SprintService} from '../../services/sprint.service';
+import {Sprint} from '../../models/CSM/sprint';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-sprint',
-  standalone:false,
+  standalone: false,
   templateUrl: './sprint.component.html',
   styleUrls: ['./sprint.component.scss']
 })
@@ -45,32 +45,13 @@ export class SprintComponent implements OnInit {
     this.initForm();
   }
 
+  get sprintDrawerTitle(): string {
+    return this.currentEditingSprintId ? 'Edição de Sprint' : 'Criação de Sprint';
+  }
+
   /* -------------------- Lifecycle -------------------- */
   ngOnInit(): void {
     this.loadSprints();
-  }
-
-  /* -------------------- Data Loaders -------------------- */
-  private loadSprints(): void {
-    this.isLoading = true;
-    this.sprintService.getSprints().subscribe({
-      next: (sprints) => {
-        this.allSprints = sprints;
-        this.listOfDisplayData = [...sprints];
-        this.refreshTotals();
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
-        this.message.error('Erro ao carregar sprints 🚫');
-      }
-    });
-  }
-
-  private refreshTotals(): void {
-    this.totalSprints = this.allSprints.length;
-    this.totalEmExecucao = this.allSprints.filter(s => s.status === 'EM_EXECUCAO').length;
-    this.totalEncerrados = this.allSprints.filter(s => s.status === 'ENCERRADO').length;
   }
 
   /* -------------------- Filters -------------------- */
@@ -98,14 +79,14 @@ export class SprintComponent implements OnInit {
 
   /* -------------------- Inline Edit -------------------- */
   startInlineEdit(sprint: Sprint, field: string): void {
-    this.editingSprint = { ...sprint };
+    this.editingSprint = {...sprint};
     this.editingField = field;
   }
 
   saveInlineEdit(original: Sprint, field: string): void {
     if (!this.editingSprint) return;
 
-    const updated = { ...original, [field]: (this.editingSprint as any)[field] };
+    const updated = {...original, [field]: (this.editingSprint as any)[field]};
 
     this.sprintService.updateSprint(original.id, updated).subscribe({
       next: () => {
@@ -120,15 +101,10 @@ export class SprintComponent implements OnInit {
     });
   }
 
-  private resetInlineEdit(): void {
-    this.editingSprint = null;
-    this.editingField = null;
-  }
-
   /* -------------------- Status Update -------------------- */
   updateStatus(sprint: Sprint, newStatus: string): void {
     if (sprint.status === newStatus) return;
-    const updated = { ...sprint, status: newStatus };
+    const updated = {...sprint, status: newStatus};
 
     if (newStatus === 'ENCERRADO') {
       this.modal.confirm({
@@ -141,17 +117,6 @@ export class SprintComponent implements OnInit {
     } else {
       this.changeSprintStatus(sprint, updated, newStatus);
     }
-  }
-
-  private changeSprintStatus(sprint: Sprint, updated: Sprint, newStatus: string): void {
-    this.sprintService.updateSprint(sprint.id, updated).subscribe({
-      next: () => {
-        sprint.status = newStatus;
-        this.refreshTotals();
-        this.message.success(`Sprint atualizada para ${newStatus} ✅`);
-      },
-      error: () => this.message.error('Erro ao atualizar status 🚫')
-    });
   }
 
   /* -------------------- Delete -------------------- */
@@ -177,27 +142,13 @@ export class SprintComponent implements OnInit {
   openSprintDrawer(): void {
     this.isSprintDrawerVisible = true;
     this.currentEditingSprintId = null;
-    this.sprintForm.reset({ status: 'EM_EXECUCAO' });
+    this.sprintForm.reset({status: 'EM_EXECUCAO'});
   }
 
   closeSprintDrawer(): void {
     this.isSprintDrawerVisible = false;
-    this.sprintForm.reset({ status: 'EM_EXECUCAO' });
+    this.sprintForm.reset({status: 'EM_EXECUCAO'});
     this.currentEditingSprintId = null;
-  }
-
-  get sprintDrawerTitle(): string {
-    return this.currentEditingSprintId ? 'Edição de Sprint' : 'Criação de Sprint';
-  }
-
-  /* -------------------- Form -------------------- */
-  private initForm(): void {
-    this.sprintForm = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      code: ['', Validators.required],
-      status: ['EM_EXECUCAO', Validators.required]
-    });
   }
 
   /* -------------------- Submit -------------------- */
@@ -230,6 +181,55 @@ export class SprintComponent implements OnInit {
         );
         this.isSaving = false;
       }
+    });
+  }
+
+  /* -------------------- Data Loaders -------------------- */
+  private loadSprints(): void {
+    this.isLoading = true;
+    this.sprintService.getSprints().subscribe({
+      next: (sprints) => {
+        this.allSprints = sprints;
+        this.listOfDisplayData = [...sprints];
+        this.refreshTotals();
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.message.error('Erro ao carregar sprints 🚫');
+      }
+    });
+  }
+
+  private refreshTotals(): void {
+    this.totalSprints = this.allSprints.length;
+    this.totalEmExecucao = this.allSprints.filter(s => s.status === 'EM_EXECUCAO').length;
+    this.totalEncerrados = this.allSprints.filter(s => s.status === 'ENCERRADO').length;
+  }
+
+  private resetInlineEdit(): void {
+    this.editingSprint = null;
+    this.editingField = null;
+  }
+
+  private changeSprintStatus(sprint: Sprint, updated: Sprint, newStatus: string): void {
+    this.sprintService.updateSprint(sprint.id, updated).subscribe({
+      next: () => {
+        sprint.status = newStatus;
+        this.refreshTotals();
+        this.message.success(`Sprint atualizada para ${newStatus} ✅`);
+      },
+      error: () => this.message.error('Erro ao atualizar status 🚫')
+    });
+  }
+
+  /* -------------------- Form -------------------- */
+  private initForm(): void {
+    this.sprintForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      code: ['', Validators.required],
+      status: ['EM_EXECUCAO', Validators.required]
     });
   }
 }

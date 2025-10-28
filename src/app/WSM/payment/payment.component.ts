@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Payment} from '../../models/WSM/payment';
 import {CustomerService} from '../../services/customer.service';
 import {PaymentService} from '../../services/payment.service';
 import {Customer} from '../../models/CSM/customer';
-import {Student} from '../../models/EISSM/students';
 import {Recibo} from '../../models/WSM/Recibo';
 import {ReciboService} from '../../services/recibo.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -29,7 +28,7 @@ export class PaymentComponent implements OnInit {
   searchValue = '';
   visible = false;
   visible1 = false;
-  visible1CustomerDrawer=false;// Controla a visibilidade do modal
+  visible1CustomerDrawer = false;// Controla a visibilidade do modal
 
   paymentForm = new FormGroup({
     amount: new FormControl('', [Validators.required, Validators.min(0)]),
@@ -38,6 +37,14 @@ export class PaymentComponent implements OnInit {
     confirmed: new FormControl(false),
     customerId: new FormControl('', Validators.required), // Campo para o ID do Cliente
   });
+  customerForm = new FormGroup({
+    name: new FormControl('', Validators.required),
+    contact: new FormControl('', [Validators.required, Validators.pattern('^[0-9]+$')]),
+    address: new FormControl('', Validators.required),
+    status: new FormControl('ATIVO', Validators.required),
+    valve: new FormControl(10, [Validators.required, Validators.min(0)]),
+    monthsInDebt: new FormControl(1, [Validators.required, Validators.min(0)])
+  });
 
   constructor(
     private paymentService: PaymentService,
@@ -45,7 +52,8 @@ export class PaymentComponent implements OnInit {
     private reciboService: ReciboService,
     private message: NzMessageService,
     private modal: NzModalService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.getPayments();
@@ -104,9 +112,7 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-
-
-  printPayment(payment: Payment):void {
+  printPayment(payment: Payment): void {
     this.paymentService.printInvoice(payment.id).subscribe({})
   }
 
@@ -121,7 +127,6 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-
   createCustomer() {
     if (this.customerForm.invalid) {
       console.error('Formulário inválido.');
@@ -129,23 +134,22 @@ export class PaymentComponent implements OnInit {
     }
 
 
-      this.customerService.addCustomer(this.customerForm.value).subscribe({
-        next: (newCustomer) => {
-          console.log('Cliente criado com sucesso:', newCustomer);
-          this.listOfDisplayData = [...this.dataSource];
-          this.customerForm.reset({ status: 'ATIVO', valve: 10, monthsInDebt: 1 });
-          this.close();
-        },
-        error: (err) => {
-          console.error('Erro ao adicionar cliente:', err);
-        }
-      });
-    }
+    this.customerService.addCustomer(this.customerForm.value).subscribe({
+      next: (newCustomer) => {
+        console.log('Cliente criado com sucesso:', newCustomer);
+        this.listOfDisplayData = [...this.dataSource];
+        this.customerForm.reset({status: 'ATIVO', valve: 10, monthsInDebt: 1});
+        this.close();
+      },
+      error: (err) => {
+        console.error('Erro ao adicionar cliente:', err);
+      }
+    });
+  }
 
+  createRecibo(payment: Payment) {
 
-  createRecibo(payment:Payment) {
-
-     {
+    {
       this.reciboService.addRecibo(payment.id).subscribe({
         next: (newRecibo) => {
           this.message.success('Recibo criado com sucesso! ✅');
@@ -156,8 +160,6 @@ export class PaymentComponent implements OnInit {
       });
     }
   }
-
-
 
   public createPayment() {
     if (this.paymentForm.invalid) {
@@ -173,7 +175,7 @@ export class PaymentComponent implements OnInit {
         this.dataSource = [...this.dataSource, newPayment];
         this.listOfDisplayData = [...this.dataSource]; // Atualiza a tabela
         this.calculatePaymentStats(); // Atualiza os dados estatísticos
-        this.paymentForm.reset({ confirmed: false }); // Reseta o formulário
+        this.paymentForm.reset({confirmed: false}); // Reseta o formulário
         this.close(); // Fecha o modal
       },
       error: (err) => {
@@ -182,22 +184,14 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  deletePayment(data: Payment) {}
+  deletePayment(data: Payment) {
+  }
 
-  editPayment(data: Payment) {}
+  editPayment(data: Payment) {
+  }
 
-  viewPayment(data: Payment) {}
-
-
-
-  customerForm = new FormGroup({
-    name: new FormControl('', Validators.required),
-    contact: new FormControl('', [Validators.required, Validators.pattern('^[0-9]+$')]),
-    address: new FormControl('', Validators.required),
-    status: new FormControl('ATIVO', Validators.required),
-    valve: new FormControl(10, [Validators.required, Validators.min(0)]),
-    monthsInDebt: new FormControl(1, [Validators.required, Validators.min(0)])
-  });
+  viewPayment(data: Payment) {
+  }
 }
 
 

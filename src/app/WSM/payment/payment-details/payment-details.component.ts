@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
-import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {ActivatedRoute} from '@angular/router';
 import {PaymentService} from '../../../services/payment.service';
 import {Payment} from '../../../models/WSM/payment';
 import {Recibo} from '../../../models/WSM/Recibo';
@@ -17,7 +17,7 @@ import {ReciboService} from '../../../services/recibo.service';
 })
 export class PaymentDetailsComponent implements OnInit {
   @Input() paymentId!: string;
-  recibo: Recibo[]=[];
+  recibo: Recibo[] = [];
   meses: string[] = [];
 
   listOfDisplayData: Recibo[] = [];
@@ -25,7 +25,8 @@ export class PaymentDetailsComponent implements OnInit {
   constructor(private http: HttpClient,
               private route: ActivatedRoute,
               private paymentService: PaymentService,
-              private reciboService: ReciboService,) {}
+              private reciboService: ReciboService,) {
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -34,21 +35,21 @@ export class PaymentDetailsComponent implements OnInit {
     });
   }
 
-  private getPaymentDetails(): void {
-    this.paymentService.getPaymentById(this.paymentId).subscribe({
-      next: (payment: Payment) => {
-    //    this.populateMonths();
-      }
+  getDownloadUrl(recibo: Recibo) {
+    this.reciboService.downloadRecibo(recibo.id).subscribe((fileBlob: Blob) => {
+      const url = window.URL.createObjectURL(fileBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = recibo.fileName; // ou qualquer nome
+      a.click();
+      window.URL.revokeObjectURL(url);
     });
   }
 
-  private getPaymentIncoices(): void {
-    this.reciboService.getRecibosByPayments(this.paymentId).subscribe({
-      next: (payment: Recibo[]) => {
-        this.recibo = payment;
-        this,this.listOfDisplayData=[...this.recibo]
-        console.log(this.recibo);
-     //   this.populateMonths();
+  private getPaymentDetails(): void {
+    this.paymentService.getPaymentById(this.paymentId).subscribe({
+      next: (payment: Payment) => {
+        //    this.populateMonths();
       }
     });
   }
@@ -77,48 +78,47 @@ export class PaymentDetailsComponent implements OnInit {
   }*/
 
   // Função para imprimir
- /* print(): void {
-    window.print();
-  }*/
+  /* print(): void {
+     window.print();
+   }*/
 
   // Função para gerar o PDF e realizar o download
-/*  download(): void {
-    const doc = new jsPDF();
+  /*  download(): void {
+      const doc = new jsPDF();
 
-    doc.setFontSize(16);
-    doc.text('Recibo Para: ' + this.payment.customerName, 20, 20);
+      doc.setFontSize(16);
+      doc.text('Recibo Para: ' + this.payment.customerName, 20, 20);
 
-    doc.setFontSize(12);
-    doc.text('Valor: ' + this.payment.amount.toFixed(2), 20, 30);
-    doc.text('Data do Pagamento: ' + this.payment.paymentDate, 20, 40);
-    doc.text('Método de Pagamento: ' + this.payment.paymentMethod, 20, 50);
-    doc.text('Confirmado: ' + (this.payment.confirmed ? 'Sim' : 'Não'), 20, 60);
+      doc.setFontSize(12);
+      doc.text('Valor: ' + this.payment.amount.toFixed(2), 20, 30);
+      doc.text('Data do Pagamento: ' + this.payment.paymentDate, 20, 40);
+      doc.text('Método de Pagamento: ' + this.payment.paymentMethod, 20, 50);
+      doc.text('Confirmado: ' + (this.payment.confirmed ? 'Sim' : 'Não'), 20, 60);
 
-    doc.text('Pagamento de Água referente ao(s) mês(es) de:', 20, 70);
-    let yOffset = 80;
-    this.meses.forEach(mes => {
-      doc.text('• ' + mes, 20, yOffset);
-      yOffset += 10;
-    });
+      doc.text('Pagamento de Água referente ao(s) mês(es) de:', 20, 70);
+      let yOffset = 80;
+      this.meses.forEach(mes => {
+        doc.text('• ' + mes, 20, yOffset);
+        yOffset += 10;
+      });
 
-    doc.text('Informações da Empresa:', 20, yOffset + 10);
-    doc.text('Nome da Empresa: Transportes Chiziane', 20, yOffset + 20);
-    doc.text('Localização: Av. de Moçambique, nº 534, Marginal', 20, yOffset + 30);
-    doc.text('NUIT: 123456789', 20, yOffset + 40);
-    doc.text('Telefone: 845098583', 20, yOffset + 50);
+      doc.text('Informações da Empresa:', 20, yOffset + 10);
+      doc.text('Nome da Empresa: Transportes Chiziane', 20, yOffset + 20);
+      doc.text('Localização: Av. de Moçambique, nº 534, Marginal', 20, yOffset + 30);
+      doc.text('NUIT: 123456789', 20, yOffset + 40);
+      doc.text('Telefone: 845098583', 20, yOffset + 50);
 
-    doc.save('recibo.pdf'); // Gera e faz o download do PDF
-  }*/
+      doc.save('recibo.pdf'); // Gera e faz o download do PDF
+    }*/
 
-
-  getDownloadUrl(recibo: Recibo) {
-    this.reciboService.downloadRecibo(recibo.id).subscribe((fileBlob: Blob) => {
-      const url = window.URL.createObjectURL(fileBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = recibo.fileName; // ou qualquer nome
-      a.click();
-      window.URL.revokeObjectURL(url);
+  private getPaymentIncoices(): void {
+    this.reciboService.getRecibosByPayments(this.paymentId).subscribe({
+      next: (payment: Recibo[]) => {
+        this.recibo = payment;
+        this, this.listOfDisplayData = [...this.recibo]
+        console.log(this.recibo);
+        //   this.populateMonths();
+      }
     });
   }
 }

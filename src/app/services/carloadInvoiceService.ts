@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import {environment} from '../../environments/environments';
 import {HttpClient} from '@angular/common/http';
 import {CarloadInvoice} from '../models/CSM/carloadInvoice';
@@ -10,7 +10,8 @@ import {Observable, take} from 'rxjs';
 export class CarloadInvoiceService {
   private baseURL = `${environment.baseURL}/carload-invoices`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getInvoices(): Observable<CarloadInvoice[]> {
     return this.http.get<CarloadInvoice[]>(this.baseURL);
@@ -32,8 +33,8 @@ export class CarloadInvoiceService {
     return this.http.delete<CarloadInvoice>(`${this.baseURL}/${id}`);
   }
 
-  public getDownloadUrl(id: string): Observable<CarloadInvoice>{
-    return this.http.get<CarloadInvoice> (`${this.baseURL}/download/${id}`);
+  public getDownloadUrl(id: string): Observable<CarloadInvoice> {
+    return this.http.get<CarloadInvoice>(`${this.baseURL}/download/${id}`);
   }
 
   downloadRecibo(id: string) {

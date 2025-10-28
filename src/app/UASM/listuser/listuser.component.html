@@ -43,7 +43,8 @@
           </td>
           <td>{{ data.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
           <td>
-            <button (click)="viewUser(data)" [routerLink]="['/user-detail',data ]" nz-button nzSize="small" nzType="link">
+            <button (click)="viewUser(data)" [routerLink]="['/user-detail',data ]" nz-button nzSize="small"
+                    nzType="link">
               <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
             </button>
             <button (click)="editUser(data)" nz-button nzSize="small" nzType="link">

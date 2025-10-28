@@ -115,27 +115,8 @@ export class StudentComponent implements OnInit {
     });
   }
 
-  private loadStudents(): void {
-    this.studentService.getStudents().subscribe(data => {
-      this.listOfDisplayData = data;
-    });
-  }
-
-
-  printStudent(student: Student):void {
-this.studentService.printStudentInvoice(student.id).subscribe({})
-  }
-
-  private initForm(): void {
-    this.studentForm = this.fb.group({
-      nome: ['', Validators.required],
-      numeroEstudante: ['', Validators.required],
-      bi: ['', Validators.required],
-      dataNascimento: ['', Validators.required],
-      endereco: ['', Validators.required],
-      nivelAcademico: ['', Validators.required],
-      ultimoNivelIngles: ['', Validators.required]
-    });
+  printStudent(student: Student): void {
+    this.studentService.printStudentInvoice(student.id).subscribe({})
   }
 
   search(): void {
@@ -148,6 +129,24 @@ this.studentService.printStudentInvoice(student.id).subscribe({})
       student.nome.toLowerCase().includes(val) ||
       student.numeroEstudante.toLowerCase().includes(val)
     );
+  }
+
+  private loadStudents(): void {
+    this.studentService.getStudents().subscribe(data => {
+      this.listOfDisplayData = data;
+    });
+  }
+
+  private initForm(): void {
+    this.studentForm = this.fb.group({
+      nome: ['', Validators.required],
+      numeroEstudante: ['', Validators.required],
+      bi: ['', Validators.required],
+      dataNascimento: ['', Validators.required],
+      endereco: ['', Validators.required],
+      nivelAcademico: ['', Validators.required],
+      ultimoNivelIngles: ['', Validators.required]
+    });
   }
 
 }

@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, take } from 'rxjs';
-import { environment } from '../../environments/environments';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, take} from 'rxjs';
+import {environment} from '../../environments/environments';
 import {Teacher} from '../models/EISSM/Teacher';
 
 
@@ -12,7 +12,8 @@ export class TeacherService {
 
   private baseURL = environment.baseURL + '/teachers';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getTeachers(): Observable<Teacher[]> {
     return this.http.get<Teacher[]>(this.baseURL);

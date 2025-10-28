@@ -6,7 +6,7 @@ export type CarloadCotacaoDescription = 'AREIA_GROSSA' | 'PEDRA';
 export interface CarloadInvoice {
   id: string;
   carloadCustomerId: string;
-  carloadCustomerName:string;
+  carloadCustomerName: string;
   invoiceCode: string;
   items: CarloadInvoiceItem[];
   description: CarloadInvoiceDescription;
@@ -25,7 +25,7 @@ export interface CarloadInvoice {
 export interface CarloadCotacao {
   id: string;
   carloadCustomerId: string;
-  carloadCustomerName:string;
+  carloadCustomerName: string;
   cotacaoCode: string;
   items: CarloadInvoiceItem[];
   description: CarloadCotacaoDescription;

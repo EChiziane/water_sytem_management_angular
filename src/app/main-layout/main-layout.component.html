@@ -12,11 +12,11 @@
       </a>
     </div>
     <ul [nzInlineCollapsed]="isCollapsed" nz-menu nzMode="inline" nzTheme="dark">
-      <li nz-submenu nzIcon="dashboard" nzTitle="CSM" nzOpen>
+      <li nz-submenu nzIcon="dashboard" nzOpen nzTitle="CSM">
         <ul>
 
           <!-- Operacional -->
-          <li nz-submenu nzTitle="Operacional" nzIcon="car">
+          <li nz-submenu nzIcon="car" nzTitle="Operacional">
             <ul>
               <li nz-menu-item nzMatchRouter>
                 <a routerLink="/carload">
@@ -40,7 +40,7 @@
           </li>
 
           <!-- Administrativo -->
-          <li nz-submenu nzTitle="Administrativo" nzIcon="user">
+          <li nz-submenu nzIcon="user" nzTitle="Administrativo">
             <ul>
               <li nz-menu-item nzMatchRouter>
                 <a routerLink="/manager">
@@ -71,7 +71,7 @@
           </li>
 
           <!-- Materiais -->
-          <li nz-submenu nzTitle="Materiais" nzIcon="appstore">
+          <li nz-submenu nzIcon="appstore" nzTitle="Materiais">
             <ul>
               <li nz-menu-item nzMatchRouter>
                 <a routerLink="/materials">
@@ -125,7 +125,6 @@
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/calendar">Calendar</a>
           </li>
-
 
 
         </ul>

@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Inject, OnInit, Output, PLATFORM_ID } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { isPlatformBrowser } from '@angular/common';
+import {Component, EventEmitter, Inject, OnInit, Output, PLATFORM_ID} from '@angular/core';
+import {AuthService} from '../../services/auth.service';
+import {Router} from '@angular/router';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {isPlatformBrowser} from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -44,7 +44,8 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: object
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.logout();
@@ -123,7 +124,7 @@ export class LoginComponent implements OnInit {
     const password = form.get('password')?.value;
     const checkPassword = form.get('checkPassword')?.value;
     if (password && checkPassword && password !== checkPassword) {
-      return { confirm: true };
+      return {confirm: true};
     }
     return null;
   }
