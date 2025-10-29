@@ -34,6 +34,10 @@ export class CarloadComponent {
   totalEntregue = 0;
   totalPendente = 0;
 
+
+  showBatchField = true;
+  showTotalSpentField = true;
+
   // Drawer controls
   isCarloadDrawerVisible = false;
   searchValue = '';

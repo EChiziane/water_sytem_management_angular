@@ -25,6 +25,8 @@ export class CarloadInvoiceComponent implements OnInit {
   currentInvoiceId: string | null = null;
   searchValue = '';
 
+  isLoading = false;
+
   dateRange: Date[] | null = null;
   selectedCustomerId: string | null = null;
 
@@ -269,9 +271,11 @@ export class CarloadInvoiceComponent implements OnInit {
   }
 
   private loadInvoices() {
+    this.isLoading = true;
     this.invoiceService.getInvoices().subscribe(data => {
       this.invoices = data;
       this.allInvoices = data;
+      this.isLoading = false;
     });
   }
 

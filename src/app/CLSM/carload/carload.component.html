@@ -82,13 +82,13 @@
             <th>Destination</th>
             <th>Client</th>
             <th>Phone</th>
-            <th *ngIf="!isShowingScheduledOnly">Driver</th>
+            <th *ngIf="filterMode !== 'SCHEDULED'">Driver</th>
             <th>Material</th>
-            <th *ngIf="!isShowingScheduledOnly" class="batch-column">Batch</th>
-            <th *ngIf="!isShowingScheduledOnly">Total Spent</th>
+            <th *ngIf="filterMode !== 'SCHEDULED'" class="batch-column">Batch</th>
+            <th *ngIf="filterMode !== 'SCHEDULED'">Total Spent</th>
             <th>Earnings</th>
             <th>Status</th>
-            <th *ngIf="isShowingScheduledOnly">Delivery Date</th>
+            <th *ngIf="filterMode === 'SCHEDULED'">Delivery Date</th>
             <th>Actions</th>
           </tr>
           </thead>
@@ -141,10 +141,10 @@
               </ng-template>
             </td>
 
-            <td *ngIf="!isShowingScheduledOnly">{{ carload.assignedDriverName }}</td>
+            <td *ngIf="filterMode !=='SCHEDULED'">{{ carload.assignedDriverName }}</td>
             <td>{{ carload.transportedMaterial }}</td>
-            <td *ngIf="!isShowingScheduledOnly" class="batch-column">{{ carload.carloadBatchName }}</td>
-            <td *ngIf="!isShowingScheduledOnly">{{ carload.totalSpent | currency:'MZN':'symbol':'1.2-2' }}</td>
+            <td *ngIf="filterMode !== 'SCHEDULED'" class="batch-column">{{ carload.carloadBatchName }}</td>
+            <td *ngIf="filterMode !== 'SCHEDULED'">{{ carload.totalSpent | currency:'MZN':'symbol':'1.2-2' }}</td>
             <td>{{ carload.totalEarnings | currency:'MZN':'symbol':'1.2-2' }}</td>
             <td>
               <button [nzDropdownMenu]="menu" nz-button nz-dropdown nzTrigger="click">
@@ -161,7 +161,9 @@
                 </ul>
               </nz-dropdown-menu>
             </td>
-            <td *ngIf="isShowingScheduledOnly">{{ carload.deliveryScheduledDate | date: 'dd/MM/yyyy' }}</td>
+            <td *ngIf="filterMode === 'SCHEDULED'">
+              {{ carload.deliveryScheduledDate ? (carload.deliveryScheduledDate | date:'dd/MM/yyyy') : '—' }}
+            </td>
             <td>
               <button (click)="encerarCarload(carload)" *ngIf="isShowingScheduledOnly" nz-button nzSize="small"
                       nzType="link">

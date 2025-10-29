@@ -3,8 +3,6 @@
   <div class="page-header">
     <p>Carload Invoices</p>
   </div>
-
-  <!-- ====================== FILTERS ====================== -->
   <!-- ====================== FILTERS ====================== -->
   <div class="filters-panel">
     <!-- Campo de pesquisa -->
@@ -42,10 +40,15 @@
 
 
   </div>
-
-
   <!-- ====================== TABLE ====================== -->
   <div class="table-wrapper">
+    <div class="table-scroll">
+
+      <nz-spin
+        [nzSpinning]="isLoading"
+        nzSize="large"
+        nzTip="A carregar invoices..."
+      >
     <nz-table
       #nzTable
       [nzData]="invoices"
@@ -105,6 +108,8 @@
       </tr>
       </tbody>
     </nz-table>
+      </nz-spin>
+    </div>
   </div>
 </div>
 
