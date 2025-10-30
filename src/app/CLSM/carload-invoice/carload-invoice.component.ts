@@ -115,14 +115,7 @@ export class CarloadInvoiceComponent implements OnInit {
     this.updateItemAmount(itemGroup);
   }
 
-  // ===================== DRAWER =====================
-  openDrawer(): void {
-    this.isDrawerVisible = true;
-    this.currentInvoiceId = null;
-    this.invoiceForm.reset({taxRate: 0.16});
-    this.items.clear();
-    this.addItem();
-  }
+
 
   closeDrawer(): void {
     this.isDrawerVisible = false;
@@ -134,9 +127,14 @@ export class CarloadInvoiceComponent implements OnInit {
   // ===================== CRUD DE INVOICES =====================
   submitInvoice(): void {
     if (!this.invoiceForm.valid) return;
+
+    // Reativar temporariamente para incluir no getRawValue()
+    this.invoiceForm.get('invoiceCode')?.enable();
     const invoiceData = this.invoiceForm.getRawValue();
+    this.invoiceForm.get('invoiceCode')?.disable();
 
     if (this.currentInvoiceId) {
+      // update
       this.invoiceService.updateInvoice(this.currentInvoiceId, invoiceData).subscribe({
         next: () => {
           this.loadInvoices();
@@ -146,6 +144,7 @@ export class CarloadInvoiceComponent implements OnInit {
         error: () => this.message.error('Error updating invoice 🚫')
       });
     } else {
+      // create
       this.invoiceService.addInvoice(invoiceData).subscribe({
         next: () => {
           this.loadInvoices();
@@ -156,6 +155,7 @@ export class CarloadInvoiceComponent implements OnInit {
       });
     }
   }
+
 
   editInvoice(invoice: CarloadInvoice) {
     this.currentInvoiceId = invoice.id;
@@ -278,6 +278,39 @@ export class CarloadInvoiceComponent implements OnInit {
       this.isLoading = false;
     });
   }
+
+  // ===================== GERAÇÃO DE CÓDIGO =====================
+  private generateNextInvoiceCode(): number {
+    if (!this.allInvoices || this.allInvoices.length === 0) {
+      return 1001; // primeiro código
+    }
+
+    // Extrai o número mais alto existente
+    const lastCode = Math.max(
+      ...this.allInvoices.map(inv => Number(inv.invoiceCode) || 0)
+    );
+
+    // Incrementa e devolve o próximo
+    return lastCode + 1;
+  }
+
+
+  openDrawer(): void {
+    this.isDrawerVisible = true;
+    this.currentInvoiceId = null;
+    this.invoiceForm.reset({taxRate: 0.16});
+    this.items.clear();
+    this.addItem();
+
+    // Gerar o próximo código automaticamente
+    const nextCode = this.generateNextInvoiceCode();
+
+    // Preencher o campo no formulário e torná-lo não editável
+    this.invoiceForm.patchValue({ invoiceCode: nextCode.toString() });
+    this.invoiceForm.get('invoiceCode')?.disable();
+  }
+
+
 
   private loadCustomers() {
     this.customerService.getCustomers().subscribe(data => this.dataCustomer = data);
