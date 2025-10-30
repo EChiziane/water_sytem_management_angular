@@ -1,11 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
-import {DriverService} from '../../services/driver.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {Driver} from '../../models/CSM/driver';
-
+import { DriverService } from '../../services/driver.service';
+import { Driver } from '../../models/CSM/driver';
 
 @Component({
   selector: 'app-driver',
@@ -15,26 +14,26 @@ import {Driver} from '../../models/CSM/driver';
 })
 export class DriverComponent implements OnInit {
 
-  /* ===== Data ===== */
+  /* ==================== Data ==================== */
   listOfDisplayData: Driver[] = [];
   searchValue = '';
   isLoading = false;
 
-  /* ===== Summary Counters ===== */
+  /* ==================== Summary Counters ==================== */
   totalDrivers = 0;
   totalActiveDrivers = 0;
   totalInactiveDrivers = 0;
 
-  /* ===== Drawer State ===== */
+  /* ==================== Drawer State ==================== */
   isDriverDrawerVisible = false;
   driverForm!: FormGroup;
   currentEditingDriverId: string | null = null;
 
-  /* ===== Inline Editing ===== */
+  /* ==================== Inline Editing ==================== */
   editingDriver?: Driver | null = null;
   editingField?: string | null = null;
 
-  /* ===== Saving State ===== */
+  /* ==================== Saving State ==================== */
   isSaving = false;
 
   constructor(
@@ -46,15 +45,17 @@ export class DriverComponent implements OnInit {
     this.initForm();
   }
 
+  /* ==================== Getters ==================== */
   get driverDrawerTitle(): string {
     return this.currentEditingDriverId ? 'Edição de Motorista' : 'Criação de Motorista';
   }
 
+  /* ==================== Lifecycle ==================== */
   ngOnInit(): void {
     this.loadDrivers();
   }
 
-  /* -------------------- Search -------------------- */
+  /* ==================== Search ==================== */
   search(): void {
     const val = this.searchValue.toLowerCase();
     if (!val) {
@@ -68,17 +69,18 @@ export class DriverComponent implements OnInit {
     );
   }
 
-  /* -------------------- Inline Edit -------------------- */
+  /* ==================== Inline Edit ==================== */
   startInlineEdit(driver: Driver, field: string): void {
-    this.editingDriver = {...driver};
+    this.editingDriver = { ...driver };
     this.editingField = field;
   }
 
   saveInlineEdit(original: Driver, field: string): void {
     if (!this.editingDriver) return;
-    const updated = {...original, [field]: (this.editingDriver as any)[field]};
 
+    const updated = { ...original, [field]: (this.editingDriver as any)[field] };
     this.isSaving = true;
+
     this.driverService.updateDriver(original.id, updated).subscribe({
       next: () => {
         Object.assign(original, updated);
@@ -94,11 +96,11 @@ export class DriverComponent implements OnInit {
     });
   }
 
-  /* -------------------- Drawer Control -------------------- */
+  /* ==================== Drawer Control ==================== */
   openDriverDrawer(): void {
     this.isDriverDrawerVisible = true;
     this.currentEditingDriverId = null;
-    this.driverForm.reset({status: 'ACTIVO'});
+    this.driverForm.reset({ status: 'ACTIVO' });
   }
 
   editDriver(driver: Driver): void {
@@ -114,13 +116,14 @@ export class DriverComponent implements OnInit {
 
   closeDriverDrawer(): void {
     this.isDriverDrawerVisible = false;
-    this.driverForm.reset({status: 'ACTIVO'});
+    this.driverForm.reset({ status: 'ACTIVO' });
     this.currentEditingDriverId = null;
   }
 
-  /* -------------------- Submit Drawer -------------------- */
+  /* ==================== Submit Drawer ==================== */
   submitDriver(): void {
     if (!this.driverForm.valid) return;
+
     const driverData = this.driverForm.value;
     this.isSaving = true;
 
@@ -150,15 +153,16 @@ export class DriverComponent implements OnInit {
     });
   }
 
-  /* -------------------- Status Update -------------------- */
+  /* ==================== Status Update ==================== */
   updateStatus(driver: Driver, newStatus: string): void {
     if (driver.status === newStatus) return;
-    const updated = {...driver, status: newStatus};
 
-    if (newStatus === 'ENCERRADO') {
+    const updated = { ...driver, status: newStatus };
+
+    if (newStatus === 'INACTIVO') {
       this.modal.confirm({
-        nzTitle: 'Encerrar Driver',
-        nzContent: `Tem certeza que deseja encerrar a driver <strong>${driver.Name}</strong>?`,
+        nzTitle: 'Desativar Driver',
+        nzContent: `Tem certeza que deseja desativar o driver <strong>${driver.Name}</strong>?`,
         nzOkText: 'Sim',
         nzCancelText: 'Cancelar',
         nzOnOk: () => this.changeDriverStatus(driver, updated, newStatus)
@@ -168,7 +172,7 @@ export class DriverComponent implements OnInit {
     }
   }
 
-  /* -------------------- Delete -------------------- */
+  /* ==================== Delete ==================== */
   deleteDriver(driver: Driver): void {
     this.modal.confirm({
       nzTitle: 'Tens certeza que quer eliminar o Motorista?',
@@ -187,21 +191,19 @@ export class DriverComponent implements OnInit {
     });
   }
 
+  /* ==================== Private Helpers ==================== */
   private refreshTotals(): void {
     this.totalDrivers = this.listOfDisplayData.length;
     this.totalActiveDrivers = this.listOfDisplayData.filter(s => s.status === 'ACTIVO').length;
     this.totalInactiveDrivers = this.listOfDisplayData.filter(s => s.status === 'INACTIVO').length;
   }
 
-  /* -------------------- Data Loaders -------------------- */
   private loadDrivers(): void {
     this.isLoading = true;
     this.driverService.getDrivers().subscribe({
       next: (drivers) => {
         this.listOfDisplayData = drivers;
-        this.totalDrivers = drivers.length;
-        this.totalActiveDrivers = drivers.filter(d => d.status === 'ACTIVO').length;
-        this.totalInactiveDrivers = drivers.filter(d => d.status === 'INACTIVO').length;
+        this.refreshTotals();
         this.isLoading = false;
       },
       error: () => {
@@ -227,7 +229,6 @@ export class DriverComponent implements OnInit {
     });
   }
 
-  /* -------------------- Form -------------------- */
   private initForm(): void {
     this.driverForm = this.fb.group({
       name: ['', Validators.required],
