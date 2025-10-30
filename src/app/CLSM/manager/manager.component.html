@@ -129,10 +129,28 @@
 
             <!-- Status -->
             <td>
-              <nz-tag [nzColor]="manager.status === 'ACTIVO' ? 'green' : 'red'">
-                {{ manager.status }}
-              </nz-tag>
+              <button
+                [nzDropdownMenu]="menu"
+                nz-button
+                nz-dropdown
+                nzTrigger="click">
+                <nz-tag [nzColor]="manager.status === 'ACTIVO' ? 'green' : 'red'">
+                  {{ manager.status }}
+                </nz-tag>
+              </button>
+
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li (click)="updateStatusManager(manager, 'ACTIVO')" nz-menu-item>
+                    <span class="status-option status-ativo">Ativo</span>
+                  </li>
+                  <li (click)="updateStatusManager(manager, 'INACTIVO')" nz-menu-item>
+                    <span class="status-option status-inativo">Inativo</span>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
             </td>
+
 
             <!-- Actions -->
             <td>

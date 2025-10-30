@@ -197,4 +197,37 @@ export class ManagerComponent implements OnInit {
     this.editingField = null;
   }
 
+  /* -------------------- Update Status Inline -------------------- */
+  updateStatusManager(manager: Manager, newStatus: 'ACTIVO' | 'INACTIVO'): void {
+    if (manager.status === newStatus) return;
+
+    const updated = { ...manager, status: newStatus };
+
+    // Se quiser, pode adicionar confirmação para INACTIVO
+    if (newStatus === 'INACTIVO') {
+      this.modal.confirm({
+        nzTitle: 'Inativar Manager',
+        nzContent: `Tem certeza que deseja inativar o manager <strong>${manager.name}</strong>?`,
+        nzOkText: 'Sim',
+        nzCancelText: 'Não',
+        nzOnOk: () => this.changeManagerStatus(manager, updated, newStatus)
+      });
+    } else {
+      this.changeManagerStatus(manager, updated, newStatus);
+    }
+  }
+
+  private changeManagerStatus(manager: Manager, updated: Manager, newStatus: 'ACTIVO' | 'INACTIVO'): void {
+    this.managerService.updateManager(manager.id, updated).subscribe({
+      next: () => {
+        manager.status = newStatus;
+        this.totalActiveManagers = this.allManagers.filter(m => m.status === 'ACTIVO').length;
+        this.totalInActiveManagers = this.allManagers.filter(m => m.status === 'INACTIVO').length;
+        this.message.success(`Manager atualizado para ${newStatus} ✅`);
+      },
+      error: () => this.message.error('Erro ao atualizar status 🚫')
+    });
+  }
+
+
 }
