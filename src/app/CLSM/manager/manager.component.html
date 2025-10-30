@@ -1,165 +1,220 @@
-<div class="main-content">
-  <div class="header">
-    <p>Lista de Gestores</p>
+<div class="content-wrapper">
+
+  <!-- ===== Section: Page Header ===== -->
+  <div class="page-header">
+    <p>Lista de Managers</p>
   </div>
-  <div class="dash">
-    <div style="background: #ECECEC;">
+
+  <!-- ===== Section: Summary Cards ===== -->
+  <div class="summary-section">
+    <div class="summary-background">
       <div [nzGutter]="8" nz-row>
+
         <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Total Gestores">
+          <nz-card nzTitle="Total Managers">
             <p>{{ totalManagers | number }}</p>
           </nz-card>
         </div>
+
         <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Managers Ativos">
+          <nz-card nzTitle="Ativos">
             <p>{{ totalActiveManagers | number }}</p>
           </nz-card>
         </div>
+
         <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Managers Inativos">
+          <nz-card nzTitle="Inativos">
             <p>{{ totalInActiveManagers | number }}</p>
           </nz-card>
         </div>
+
       </div>
     </div>
   </div>
 
-  <div class="filter">
-    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Pesquisar..." type="text"/>
-    <button (click)="openManagerDrawer()" nz-button nzType="primary">Novo Gestor</button>
+  <!-- ===== Section: Filters ===== -->
+  <div class="filters-panel">
+    <input
+      (ngModelChange)="search()"
+      [(ngModel)]="searchValue"
+      nz-input
+      placeholder="Search..."
+      type="text"
+    />
+    <button (click)="openManagerDrawer()" nz-button nzType="primary">Novo Manager</button>
+    <button (click)="filterByStatus('ACTIVO')" nz-button nzType="default">Ativos</button>
+    <button (click)="filterByStatus('INACTIVO')" nz-button nzType="default">Inativos</button>
+    <button (click)="showAll()" nz-button nzType="default">Todos</button>
   </div>
 
-  <div class="table-container">
+  <!-- ===== Section: Table ===== -->
+  <div class="table-wrapper">
     <div class="table-scroll">
-      <nz-table [nzData]="listOfDisplayData" [nzScroll]="{ x: '800px', y: '280px' }" nzTableLayout="fixed">
-        <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Contacto</th>
-          <th>Endereço</th>
-          <th>Status</th>
-          <th>Created At</th>
-          <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let manager of listOfDisplayData">
-          <td>{{ manager.name }}</td>
-          <td>{{ manager.contact }}</td>
-          <td>{{ manager.address }}</td>
-          <td>
-            <nz-tag [nzColor]="manager.status === 'ACTIVO' ? 'green' : 'red'">
-              {{ manager.status }}
-            </nz-tag>
-          </td>
-          <td>{{ manager.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
-          <td>
-            <button (click)="deleteManager(manager)" nz-button nzDanger nzType="link">
-              <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
-            </button>
+      <nz-spin [nzSpinning]="isLoading" nzSize="large" nzTip="A carregar managers...">
+        <nz-table
+          #nzTable
+          [nzData]="listOfDisplayData"
+          [nzScroll]="{ x: '800px', y: '280px' }"
+          nzTableLayout="fixed"
+        >
+          <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Contacto</th>
+            <th>Morada</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+          </thead>
 
-            <button (click)="editManager(manager)" nz-button nzSize="small" nzType="link">
-              <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
-            </button>
+          <tbody>
+          <tr *ngFor="let manager of nzTable.data">
 
-          </td>
-        </tr>
-        </tbody>
-      </nz-table>
+            <!-- Editable: Name -->
+            <td>
+              <ng-container
+                *ngIf="currentEditingManagerId === manager.id && editingField === 'name'; else viewName"
+              >
+                <input
+                  (blur)="saveInlineEdit(manager, 'name')"
+                  (keyup.enter)="saveInlineEdit(manager, 'name')"
+                  [(ngModel)]="manager.name"
+                  nz-input
+                />
+              </ng-container>
+              <ng-template #viewName>
+                  <span (click)="startInlineEdit(manager, 'name')" class="editable-cell">
+                    {{ manager.name }}
+                  </span>
+              </ng-template>
+            </td>
+
+            <!-- Editable: Contact -->
+            <td>
+              <ng-container
+                *ngIf="currentEditingManagerId === manager.id && editingField === 'contact'; else viewContact"
+              >
+                <input
+                  (blur)="saveInlineEdit(manager, 'contact')"
+                  (keyup.enter)="saveInlineEdit(manager, 'contact')"
+                  [(ngModel)]="manager.contact"
+                  nz-input
+                />
+              </ng-container>
+              <ng-template #viewContact>
+                  <span (click)="startInlineEdit(manager, 'contact')" class="editable-cell">
+                    {{ manager.contact }}
+                  </span>
+              </ng-template>
+            </td>
+
+            <!-- Editable: Address -->
+            <td>
+              <ng-container
+                *ngIf="currentEditingManagerId === manager.id && editingField === 'address'; else viewAddress"
+              >
+                <input
+                  (blur)="saveInlineEdit(manager, 'address')"
+                  (keyup.enter)="saveInlineEdit(manager, 'address')"
+                  [(ngModel)]="manager.address"
+                  nz-input
+                />
+              </ng-container>
+              <ng-template #viewAddress>
+                  <span (click)="startInlineEdit(manager, 'address')" class="editable-cell">
+                    {{ manager.address }}
+                  </span>
+              </ng-template>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <nz-tag [nzColor]="manager.status === 'ACTIVO' ? 'green' : 'red'">
+                {{ manager.status }}
+              </nz-tag>
+            </td>
+
+            <!-- Actions -->
+            <td>
+              <button (click)="editManager(manager)" nz-button nzSize="small" nzType="link">
+                <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
+              </button>
+              <button (click)="deleteManager(manager)" nz-button nzDanger nzSize="small" nzType="link">
+                <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
+              </button>
+            </td>
+
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-spin>
     </div>
   </div>
 </div>
+
+<!-- ===== Component: Manager Drawer ===== -->
 <nz-drawer
-  (nzOnClose)="closeManagerDrawer()"
-  [nzBodyStyle]="{ overflow: 'auto' }"
-  [nzFooter]="nzManagerDrawerFooter"
   [nzTitle]="managerDrawerTitle"
   [nzVisible]="isManagerDrawerVisible"
   [nzWidth]="480"
->
-  <form *nzDrawerContent [formGroup]="managerForm" nz-form>
-    <nz-form-item>
-      <nz-form-label nzRequired>Nome</nz-form-label>
-      <nz-form-control>
-        <input formControlName="name" nz-input placeholder="Nome do gestor">
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label nzRequired>Contacto</nz-form-label>
-      <nz-form-control>
-        <input formControlName="contact" nz-input placeholder="Número de contacto">
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label nzRequired>Endereço</nz-form-label>
-      <nz-form-control>
-        <input formControlName="address" nz-input placeholder="Endereço do gestor">
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label nzRequired>Status</nz-form-label>
-      <nz-form-control>
-        <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
-          <nz-option nzLabel="ACTIVO" nzValue="ACTIVO"></nz-option>
-          <nz-option nzLabel="INACTIVO" nzValue="INACTIVO"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-  </form>
-
-  <ng-template #nzManagerDrawerFooter>
-    <button (click)="closeManagerDrawer()" nz-button>Cancelar</button>
-    <button (click)="submitManager()" [disabled]="!managerForm.valid" nz-button nzType="primary">Salvar</button>
-  </ng-template>
-</nz-drawer>
-
-<!-- Manager Drawer -->
-<nz-drawer
+  [nzFooter]="managerDrawerFooter"
   (nzOnClose)="closeManagerDrawer()"
-  [nzBodyStyle]="{ overflow: 'auto' }"
-  [nzFooter]="nzManagerDrawerFooter"
-  [nzTitle]="managerDrawerTitle"
-  [nzVisible]="isManagerDrawerVisible"
-  [nzWidth]="480"
 >
-  <form *nzDrawerContent [formGroup]="managerForm" nz-form>
-    <nz-form-item>
-      <nz-form-label nzRequired>Nome</nz-form-label>
-      <nz-form-control>
-        <input formControlName="name" nz-input placeholder="Nome do gestor"/>
-      </nz-form-control>
-    </nz-form-item>
+  <form *nzDrawerContent [formGroup]="managerForm" class="drawer-form" nz-form>
 
-    <nz-form-item>
-      <nz-form-label nzRequired>Contacto</nz-form-label>
-      <nz-form-control>
-        <input formControlName="contact" nz-input placeholder="Contacto (apenas números)"/>
-      </nz-form-control>
-    </nz-form-item>
+    <!-- ===== Section: Basic Information ===== -->
+    <div class="drawer-section">
+      <h3 class="section-title">Informações do Manager</h3>
 
-    <nz-form-item>
-      <nz-form-label nzRequired>Endereço</nz-form-label>
-      <nz-form-control>
-        <input formControlName="address" nz-input placeholder="Endereço"/>
-      </nz-form-control>
-    </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Nome</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <input formControlName="name" nz-input placeholder="Insira o nome"/>
+        </nz-form-control>
+      </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label nzRequired>Status</nz-form-label>
-      <nz-form-control>
-        <nz-select formControlName="status" nzPlaceHolder="Selecione status">
-          <nz-option nzLabel="ACTIVO" nzValue="ACTIVO"></nz-option>
-          <nz-option nzLabel="INACTIVO" nzValue="INACTIVO"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Contacto</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <input formControlName="contact" nz-input placeholder="Digite o contacto"/>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Morada</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <input formControlName="address" nz-input placeholder="Insira a morada"/>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Status</nz-form-label>
+        <nz-form-control [nzSm]="18" [nzXs]="24">
+          <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
+            <nz-option nzLabel="Ativo" nzValue="ACTIVO"></nz-option>
+            <nz-option nzLabel="Inativo" nzValue="INACTIVO"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <br/>
+
+    <!-- ===== UI: Saving Spinner ===== -->
+    <div *ngIf="isSaving" class="drawer-spinner">
+      <nz-spin nzSize="large"></nz-spin>
+      <br/>
+      <p>Saving manager... Please wait.</p>
+    </div>
+
   </form>
 
-  <ng-template #nzManagerDrawerFooter>
-    <button (click)="closeManagerDrawer()" nz-button nzType="default">Cancelar</button>
-    <button (click)="submitManager()" [disabled]="!managerForm.valid" nz-button nzType="primary">Salvar</button>
+  <!-- ===== Drawer Footer ===== -->
+  <ng-template #managerDrawerFooter>
+    <div class="drawer-footer">
+      <button (click)="closeManagerDrawer()" class="btn-cancelar" nz-button nzType="default">Cancel</button>
+      <button (click)="submitManager()" [disabled]="!managerForm.valid" class="btn-salvar" nz-button nzType="primary">Save</button>
+    </div>
   </ng-template>
+
 </nz-drawer>

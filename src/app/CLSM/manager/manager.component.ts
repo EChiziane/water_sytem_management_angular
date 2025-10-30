@@ -1,128 +1,185 @@
-import {Component} from '@angular/core';
-import {Manager} from '../../models/WSM/manager';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {ManagerService} from '../../services/manager.service';
-
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { Manager } from '../../models/WSM/manager';
+import { ManagerService } from '../../services/manager.service';
 
 @Component({
   selector: 'app-manager',
+  standalone:false,
   templateUrl: './manager.component.html',
-  standalone: false,
   styleUrls: ['./manager.component.scss']
 })
-export class ManagerComponent {
+export class ManagerComponent implements OnInit {
+
+  /* ===== Data ===== */
   listOfDisplayData: Manager[] = [];
+  allManagers: Manager[] = [];
   totalManagers = 0;
   totalActiveManagers = 0;
   totalInActiveManagers = 0;
-  currentEditingManagerId: string | null = null;
-  managerForm!: FormGroup;
-  isManagerDrawerVisible = false;
   searchValue = '';
+  isLoading = false;
+
+  /* ===== Inline Editing ===== */
+  currentEditingManagerId: string | null = null;
+  editingField: string | null = null;
+
+  /* ===== Drawer State ===== */
+  isManagerDrawerVisible = false;
+  managerForm!: FormGroup;
+
+  /* ===== Saving State ===== */
+  isSaving = false;
 
   constructor(
     private managerService: ManagerService,
     private fb: FormBuilder,
     private message: NzMessageService,
-    private modal: NzModalService,
+    private modal: NzModalService
   ) {
     this.initForm();
   }
 
-  get managerDrawerTitle(): string {
-    return this.currentEditingManagerId ? 'Update Manager' : 'Create Manager';
-  }
-
+  /* -------------------- Lifecycle -------------------- */
   ngOnInit(): void {
     this.loadManagers();
   }
 
-  openManagerDrawer(): void {
-    this.isManagerDrawerVisible = true;
-    this.currentEditingManagerId = null;
-    this.managerForm.reset({status: 'ACTIVO'});
+  get managerDrawerTitle(): string {
+    return this.currentEditingManagerId ? 'Atualizar Manager' : 'Criar Manager';
   }
 
-  closeManagerDrawer(): void {
-    this.isManagerDrawerVisible = false;
-    this.managerForm.reset({status: 'ACTIVO'});
-    this.currentEditingManagerId = null;
+  /* -------------------- Filters -------------------- */
+  filterByStatus(status: 'ACTIVO' | 'INACTIVO'): void {
+    this.listOfDisplayData = this.allManagers.filter(m => m.status === status);
   }
 
-  submitManager(): void {
-    if (this.managerForm.valid) {
-      const managerData = this.managerForm.value;
-      if (this.currentEditingManagerId) {
-        this.managerService.updateManager(this.currentEditingManagerId, managerData).subscribe({
-            next: () => {
-              this.loadManagers();
-              this.closeManagerDrawer();
-              this.message.success('Manager successfully updated! ✅');
-            },
-            error: () => {
-              this.message.error('An error occurred Updating Manager.');
-            }
-          }
-        )
-
-      } else {
-        this.managerService.addManager(managerData).subscribe({
-          next: () => {
-            this.loadManagers();
-            this.closeManagerDrawer();
-            this.message.success('Manager successfully added! <UNK>');
-          },
-          error: () => {
-            this.message.error('An error occurred Saving Manager.');
-          }
-        })
-      }
-    }
-  }
-
-  deleteManager(manager: Manager): void {
-    this.modal.confirm({
-      nzTitle: 'Are you sure?',
-      nzContent: `Manager: <strong>${manager.name}</strong>`,
-      nzOkText: 'Yes',
-      nzCancelText: 'Cancel',
-      nzOkType: 'primary',
-      nzOnOk: () => this.managerService.deleteManager(manager.id).subscribe({
-        next: () => {
-          this.loadManagers();
-          this.message.success('Manager successfully deleted!');
-        },
-        error: () => {
-          this.message.error('An error occurred Deleting Manager.');
-        }
-      })
-    })
+  showAll(): void {
+    this.listOfDisplayData = [...this.allManagers];
   }
 
   search(): void {
-    // Implementar filtro de pesquisa se necessário
+    const val = this.searchValue.toLowerCase();
+    if (!val) {
+      this.showAll();
+      return;
+    }
+    this.listOfDisplayData = this.allManagers.filter(manager =>
+      manager.name.toLowerCase().includes(val) ||
+      manager.contact.toLowerCase().includes(val) ||
+      manager.address.toLowerCase().includes(val)
+    );
+  }
+
+  /* -------------------- Inline Edit -------------------- */
+  startInlineEdit(manager: Manager, field: string): void {
+    this.currentEditingManagerId = manager.id;
+    this.editingField = field;
+  }
+
+  saveInlineEdit(manager: Manager, field: string): void {
+    if (!this.currentEditingManagerId) return;
+
+    const updated = { ...manager, [field]: (manager as any)[field] };
+    this.managerService.updateManager(manager.id, updated).subscribe({
+      next: () => {
+        Object.assign(manager, updated);
+        this.message.success(`Campo ${field} atualizado ✅`);
+        this.resetInlineEdit();
+      },
+      error: () => {
+        this.message.error('Erro ao atualizar 🚫');
+        this.resetInlineEdit();
+      }
+    });
+  }
+
+  /* -------------------- Drawer Control -------------------- */
+  openManagerDrawer(): void {
+    this.isManagerDrawerVisible = true;
+    this.currentEditingManagerId = null;
+    this.managerForm.reset({ status: 'ACTIVO' });
   }
 
   editManager(manager: Manager): void {
     this.currentEditingManagerId = manager.id;
     this.managerForm.patchValue({
-      address: manager.address,
-      status: manager.status,
-      contact: manager.contact,
       name: manager.name,
-
-    })
+      contact: manager.contact,
+      address: manager.address,
+      status: manager.status
+    });
     this.isManagerDrawerVisible = true;
   }
 
+  closeManagerDrawer(): void {
+    this.isManagerDrawerVisible = false;
+    this.managerForm.reset({ status: 'ACTIVO' });
+    this.currentEditingManagerId = null;
+  }
+
+  /* -------------------- Submit -------------------- */
+  submitManager(): void {
+    if (!this.managerForm.valid) return;
+
+    const managerData = this.managerForm.value;
+    this.isSaving = true;
+
+    const request$ = this.currentEditingManagerId
+      ? this.managerService.updateManager(this.currentEditingManagerId, managerData)
+      : this.managerService.addManager(managerData);
+
+    request$.subscribe({
+      next: () => {
+        this.loadManagers();
+        this.closeManagerDrawer();
+        this.message.success(this.currentEditingManagerId ? 'Manager atualizado ✅' : 'Manager criado ✅');
+        this.isSaving = false;
+      },
+      error: () => {
+        this.message.error(this.currentEditingManagerId ? 'Erro ao atualizar 🚫' : 'Erro ao criar 🚫');
+        this.isSaving = false;
+      }
+    });
+  }
+
+  /* -------------------- Delete -------------------- */
+  deleteManager(manager: Manager): void {
+    this.modal.confirm({
+      nzTitle: 'Tens certeza?',
+      nzContent: `Manager: <strong>${manager.name}</strong>`,
+      nzOkText: 'Sim',
+      nzCancelText: 'Não',
+      nzOnOk: () => {
+        this.managerService.deleteManager(manager.id).subscribe({
+          next: () => {
+            this.loadManagers();
+            this.message.success('Manager deletado ✅');
+          },
+          error: () => this.message.error('Erro ao deletar 🚫')
+        });
+      }
+    });
+  }
+
+  /* -------------------- Load Data -------------------- */
   private loadManagers(): void {
-    this.managerService.getManagers().subscribe(managers => {
-      this.listOfDisplayData = managers;
-      this.totalManagers = managers.length;
-      this.totalActiveManagers = managers.filter(m => m.status === 'ACTIVO').length;
-      this.totalInActiveManagers = managers.filter(m => m.status === 'INACTIVO').length;
+    this.isLoading = true;
+    this.managerService.getManagers().subscribe({
+      next: (managers) => {
+        this.listOfDisplayData = [...managers];
+        this.allManagers = [...managers];
+        this.totalManagers = managers.length;
+        this.totalActiveManagers = managers.filter(m => m.status === 'ACTIVO').length;
+        this.totalInActiveManagers = managers.filter(m => m.status === 'INACTIVO').length;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.message.error('Erro ao carregar managers 🚫');
+      }
     });
   }
 
@@ -131,8 +188,13 @@ export class ManagerComponent {
       name: ['', Validators.required],
       contact: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       address: ['', Validators.required],
-      status: ['Active', Validators.required]
+      status: ['ACTIVO', Validators.required]
     });
+  }
+
+  private resetInlineEdit(): void {
+    this.currentEditingManagerId = null;
+    this.editingField = null;
   }
 
 }
