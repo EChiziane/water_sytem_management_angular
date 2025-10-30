@@ -196,7 +196,7 @@ export class CustomerComponent implements OnInit {
         console.log('Pagamento adicionado com sucesso:', newPayment);
         this.paymentForm.reset({confirmed: false});
         this.closePaymentDrawer();
-        ;
+
         this.message.success('Pagamento registrado com sucesso! 💰');
       },
       error: () => {

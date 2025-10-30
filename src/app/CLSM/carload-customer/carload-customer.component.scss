@@ -68,22 +68,35 @@
 }
 
 /* ===== Filters ===== */
+/* === Painel de Filtros === */
 .filters-panel {
   display: flex;
-  margin-bottom: 16px;
-  gap: 8px;
-  flex-shrink: 0;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px; /* <── adiciona esta linha */
 
-  input {
-    flex: 1;
-    max-width: 300px;
+  input[nz-input] {
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: 0.3s;
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+    }
   }
 
-  button {
-    height: 38px;
-    border-radius: 6px;
+  button[nz-button] {
+    border-radius: 8px;
+    font-weight: 500;
   }
 }
+
 
 /* ===== Table ===== */
 .table-wrapper {
@@ -218,5 +231,25 @@ textarea[nz-input] {
 
   p {
     color: #3b82f6;
+  }
+}
+
+/* ===============================
+   DRAWER BUTTONS
+================================*/
+.btn-cancel {
+  color: #555;
+  border-radius: 8px;
+}
+
+.btn-save {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
   }
 }

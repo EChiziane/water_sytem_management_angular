@@ -33,3 +33,18 @@
   margin-bottom: 15px;
   display: block;
 }
+
+.forgot-password,
+.register-link a {
+  color: #007bff;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #ff6600;
+    text-decoration: underline;
+  }
+}
+
+.response-container nz-alert {
+  border-radius: 8px;
+}

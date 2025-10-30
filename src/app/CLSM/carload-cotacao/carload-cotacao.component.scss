@@ -1,6 +1,4 @@
-/* =========================================================
-   LAYOUT STRUCTURE
-========================================================= */
+/* === Layout === */
 .content-wrapper {
   padding: 24px;
   background: #f5f5f5;
@@ -10,9 +8,7 @@
   overflow: hidden;
 }
 
-/* =========================================================
-   PAGE HEADER
-========================================================= */
+/* === Page Header === */
 .page-header {
   margin-bottom: 14px;
   flex-shrink: 0;
@@ -24,30 +20,38 @@
   }
 }
 
-
-/* =========================================================
-   FILTERS PANEL
-========================================================= */
+/* === Filters Panel === */
+/* === Painel de Filtros === */
 .filters-panel {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 12px;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px; /* <── adiciona esta linha */
 
-  input {
-    flex: 1;
-    max-width: 300px;
+  input[nz-input] {
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: 0.3s;
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+    }
   }
 
-  button {
-    height: 38px;
-    border-radius: 6px;
+  button[nz-button] {
+    border-radius: 8px;
+    font-weight: 500;
   }
 }
 
-/* =========================================================
-   TABLE WRAPPER
-========================================================= */
+
+/* === Table Wrapper === */
 .table-wrapper {
   flex: 1;
   min-height: 0;
@@ -74,9 +78,7 @@
   }
 }
 
-/* =========================================================
-   TABLE COLUMN STYLES
-========================================================= */
+/* === Table Columns === */
 .file-name-column {
   min-width: 400px;
   max-width: 600px;
@@ -100,18 +102,14 @@
   }
 }
 
-/* =========================================================
-   DRAWER FORM STRUCTURE
-========================================================= */
+/* === Drawer Form === */
 .drawer-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* =========================================================
-   DRAWER SECTIONS
-========================================================= */
+/* === Drawer Sections === */
 .drawer-section {
   background: #fafafa;
   border-radius: 10px;
@@ -126,9 +124,7 @@
   }
 }
 
-/* =========================================================
-   INVOICE ITEMS LIST
-========================================================= */
+/* === Invoice Items === */
 .items-list {
   display: flex;
   flex-direction: column;
@@ -155,25 +151,20 @@
   align-self: center;
 }
 
-/* Add Item Button */
 .add-item-btn {
   width: 100%;
   margin-top: 8px;
   font-weight: 500;
 }
 
-/* =========================================================
-   TOTALS SECTION
-========================================================= */
+/* === Totals Section === */
 .totals-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
 }
 
-/* =========================================================
-   DRAWER FOOTER
-========================================================= */
+/* === Drawer Footer === */
 .drawer-footer {
   display: flex;
   justify-content: flex-end;
@@ -195,9 +186,7 @@
   }
 }
 
-/* =========================================================
-   RESPONSIVE DESIGN
-========================================================= */
+/* === Responsive === */
 @media (max-width: 768px) {
   .filters-panel {
     flex-direction: column;
@@ -211,4 +200,15 @@
   .item-row-flex {
     flex-direction: column;
   }
+}
+
+/* === Form Fields === */
+input[nz-input],
+textarea[nz-input],
+nz-select {
+  border-radius: 8px;
+}
+
+textarea[nz-input] {
+  resize: none;
 }

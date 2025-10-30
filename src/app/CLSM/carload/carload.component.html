@@ -360,7 +360,11 @@
   <!-- Footer -->
   <ng-template #drawerFooterTemplate>
     <div class="drawer-footer">
-      <button (click)="closeCarloadDrawer()" class="btn-cancel" nz-button nzType="default">Cancel</button>
+      <button (click)="closeCarloadDrawer()"
+              class="btn-cancel"
+              nz-button nzType=
+                "default">Cancel
+      </button>
       <button
         (click)="submitCarload()"
         [disabled]="carloadForm.invalid || savingCarload"

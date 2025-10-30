@@ -22,7 +22,7 @@ import {ClassroomComponent} from './classroom/classroom.component';
 import {ReciboComponent} from './recibo/recibo.component';
 import {CarloadInvoiceComponent} from './CLSM/carload-invoice/carload-invoice.component';
 import {CarloadCustomerComponent} from './CLSM/carload-customer/carload-customer.component';
-import {CarloadCotacaoComponent} from './carload-cotacao/carload-cotacao.component';
+import {CarloadCotacaoComponent} from './CLSM/carload-cotacao/carload-cotacao.component';
 
 
 const routes: Routes = [

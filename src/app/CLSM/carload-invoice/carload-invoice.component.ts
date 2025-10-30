@@ -200,47 +200,8 @@ export class CarloadInvoiceComponent implements OnInit {
     });
   }
 
-  // ===================== FILTROS E PESQUISA =====================
-  filterByCustomer(): void {
-    if (!this.selectedCustomerId) {
-      this.invoices = this.allInvoices;
-    } else {
-      this.invoices = this.allInvoices.filter(inv => inv.carloadCustomerId === this.selectedCustomerId);
-    }
-    this.filterByDateRange();
-    this.search();
-  }
 
-  filterByDateRange(): void {
-    if (!this.dateRange || this.dateRange.length !== 2) {
-      this.invoices = this.allInvoices;
-      this.search();
-      return;
-    }
 
-    const [start, end] = this.dateRange;
-    const startDate = new Date(start).setHours(0, 0, 0, 0);
-    const endDate = new Date(end).setHours(23, 59, 59, 999);
-
-    this.invoices = this.allInvoices.filter(inv => {
-      const createdAt = new Date(inv.createdAt).getTime();
-      return createdAt >= startDate && createdAt <= endDate;
-    });
-
-    this.search();
-  }
-
-  search(): void {
-    const val = this.searchValue.toLowerCase();
-    if (!val) {
-      this.loadInvoices();
-      return;
-    }
-    this.invoices = this.invoices.filter(inv =>
-      inv.invoiceCode.toLowerCase().includes(val) ||
-      inv.items.some((it: any) => it.description.toLowerCase().includes(val))
-    );
-  }
 
   // ===================== DOWNLOAD =====================
   downloadInvoice(invoice: CarloadInvoice) {
@@ -252,6 +213,10 @@ export class CarloadInvoiceComponent implements OnInit {
       a.click();
       window.URL.revokeObjectURL(url);
     });
+  }
+  onCustomerChange(value: string | null): void {
+    this.selectedCustomerId = value; // garante que a variável está atualizada
+    this.applyFilters();
   }
 
   openDrawer(): void {
@@ -331,4 +296,49 @@ export class CarloadInvoiceComponent implements OnInit {
 
     this.invoiceForm.patchValue({subtotal, tax, total}, {emitEvent: false});
   }
+
+  applyFilters(): void {
+    let filtered = [...this.allInvoices];
+
+    // Filtro por cliente
+    if (this.selectedCustomerId) {
+      filtered = filtered.filter(inv => inv.carloadCustomerId === this.selectedCustomerId);
+    }
+
+    // Filtro por intervalo de datas
+    if (this.dateRange && this.dateRange.length === 2) {
+      const [start, end] = this.dateRange;
+      const startDate = new Date(start).setHours(0, 0, 0, 0);
+      const endDate = new Date(end).setHours(23, 59, 59, 999);
+      filtered = filtered.filter(inv => {
+        const createdAt = new Date(inv.createdAt).getTime();
+        return createdAt >= startDate && createdAt <= endDate;
+      });
+    }
+
+    // Filtro de pesquisa
+    const val = this.searchValue.toLowerCase();
+    if (val) {
+      filtered = filtered.filter(inv =>
+        inv.invoiceCode.toLowerCase().includes(val) ||
+        inv.items.some((it: any) => it.description.toLowerCase().includes(val))
+      );
+    }
+
+    this.invoices = filtered;
+  }
+
+  filterByCustomer(): void {
+    this.applyFilters();
+  }
+
+  filterByDateRange(): void {
+    this.applyFilters();
+  }
+
+  search(): void {
+    this.applyFilters();
+  }
+
+
 }

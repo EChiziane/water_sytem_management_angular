@@ -10,7 +10,9 @@
       (ngModelChange)="search()"
       [(ngModel)]="searchValue"
       nz-input
-      placeholder="Search..."/>
+      placeholder="Search..."
+      type="text"
+    />
 
     <!-- Botão Nova Fatura -->
     <button (click)="openDrawer()" nz-button nzType="primary">
@@ -19,16 +21,17 @@
 
     <!-- Seletor de cliente -->
     <nz-select
-      (ngModelChange)="filterByCustomer()"
+      [nzAllowClear]="true"
+      nzPlaceHolder="Select customer"
       [(ngModel)]="selectedCustomerId"
-      nzAllowClear
-      nzPlaceHolder="Select customer">
+      (ngModelChange)="onCustomerChange($event)">
       <nz-option
         *ngFor="let customer of dataCustomer"
         [nzLabel]="customer.name"
         [nzValue]="customer.id">
       </nz-option>
     </nz-select>
+
 
     <!-- Date Range Picker -->
     <nz-range-picker
@@ -43,7 +46,6 @@
   <!-- ====================== TABLE ====================== -->
   <div class="table-wrapper">
     <div class="table-scroll">
-
       <nz-spin
         [nzSpinning]="isLoading"
         nzSize="large"
