@@ -57,7 +57,8 @@
 
             <!-- Editable Customer Code -->
             <td>
-              <ng-container *ngIf="editingCustomer?.id === customer.id && editingField === 'customerCode'; else viewCode">
+              <ng-container
+                *ngIf="editingCustomer?.id === customer.id && editingField === 'customerCode'; else viewCode">
                 <input
                   (blur)="saveInlineEdit(customer, 'customerCode')"
                   (keyup.enter)="saveInlineEdit(customer, 'customerCode')"
@@ -112,56 +113,56 @@
       <nz-form-item>
         <nz-form-label nzRequired>Nome</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="name" placeholder="Nome do cliente"/>
+          <input formControlName="name" nz-input placeholder="Nome do cliente"/>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label nzRequired>Telefone</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="phoneNumber" placeholder="Número de Telefone"/>
+          <input formControlName="phoneNumber" nz-input placeholder="Número de Telefone"/>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label>Código</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="customerCode" placeholder="Ex. CUST001"/>
+          <input formControlName="customerCode" nz-input placeholder="Ex. CUST001"/>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label>NUIT</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="nuitNumber" placeholder="Ex. 123456789"/>
+          <input formControlName="nuitNumber" nz-input placeholder="Ex. 123456789"/>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label>Morada</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="streetAddress" placeholder="Ex. Rua Principal"/>
+          <input formControlName="streetAddress" nz-input placeholder="Ex. Rua Principal"/>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label>Cidade</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="city" placeholder="Ex. Maputo Cidade"/>
+          <input formControlName="city" nz-input placeholder="Ex. Maputo Cidade"/>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label>Zip Code</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="zipCode" placeholder="Ex. 12345"/>
+          <input formControlName="zipCode" nz-input placeholder="Ex. 12345"/>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label>Email</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="emailAddress" placeholder="Ex. customer@gmail.com"/>
+          <input formControlName="emailAddress" nz-input placeholder="Ex. customer@gmail.com"/>
         </nz-form-control>
       </nz-form-item>
     </div>
@@ -169,7 +170,10 @@
 
   <ng-template #drawerFooter>
     <button (click)="closeDrawer()" nz-button>Cancelar</button>
-    <button (click)="submitCustomer()" [disabled]="!customerForm.get('name')?.valid || !customerForm.get('phoneNumber')?.valid" nz-button nzType="primary">Salvar</button>
+    <button (click)="submitCustomer()"
+            [disabled]="!customerForm.get('name')?.valid || !customerForm.get('phoneNumber')?.valid" nz-button
+            nzType="primary">Salvar
+    </button>
   </ng-template>
 </nz-drawer>
 

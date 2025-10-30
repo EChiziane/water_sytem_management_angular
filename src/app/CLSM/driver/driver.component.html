@@ -213,7 +213,9 @@
   <ng-template #driverDrawerFooter>
     <div class="drawer-footer">
       <button (click)="closeDriverDrawer()" class="btn-cancelar" nz-button nzType="default">Cancelar</button>
-      <button (click)="submitDriver()" [disabled]="!driverForm.valid" class="btn-salvar" nz-button nzType="primary">Salvar</button>
+      <button (click)="submitDriver()" [disabled]="!driverForm.valid" class="btn-salvar" nz-button nzType="primary">
+        Salvar
+      </button>
     </div>
   </ng-template>
 </nz-drawer>

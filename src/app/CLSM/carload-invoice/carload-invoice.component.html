@@ -49,65 +49,65 @@
         nzSize="large"
         nzTip="A carregar invoices..."
       >
-    <nz-table
-      #nzTable
-      [nzData]="invoices"
-      [nzScroll]="{ x: '1400px', y: '500px' }"
-      nzTableLayout="fixed">
-      <thead>
-      <tr>
-        <th>Customer Own</th>
-        <th>Invoice Code</th>
-        <th class="file-name-column">File Name</th>
-        <th>Created At</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let invoice of nzTable.data">
-        <td>{{ invoice.carloadCustomerName }}</td>
-        <td>{{ invoice.invoiceCode }}</td>
-        <td class="file-name-cell">
-          <a
-            (click)="downloadInvoice(invoice)"
-            class="file-link"
-            target="_blank">
-            {{ invoice.fileName }}
-          </a>
-        </td>
-        <td>{{ invoice.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
-        <td class="action-buttons">
-          <button
-            (click)="downloadInvoice(invoice)"
-            nz-button
-            nz-tooltip="Download"
-            nzSize="small"
-            nzType="link">
-            <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
-          </button>
+        <nz-table
+          #nzTable
+          [nzData]="invoices"
+          [nzScroll]="{ x: '1400px', y: '500px' }"
+          nzTableLayout="fixed">
+          <thead>
+          <tr>
+            <th>Customer Own</th>
+            <th>Invoice Code</th>
+            <th class="file-name-column">File Name</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let invoice of nzTable.data">
+            <td>{{ invoice.carloadCustomerName }}</td>
+            <td>{{ invoice.invoiceCode }}</td>
+            <td class="file-name-cell">
+              <a
+                (click)="downloadInvoice(invoice)"
+                class="file-link"
+                target="_blank">
+                {{ invoice.fileName }}
+              </a>
+            </td>
+            <td>{{ invoice.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
+            <td class="action-buttons">
+              <button
+                (click)="downloadInvoice(invoice)"
+                nz-button
+                nz-tooltip="Download"
+                nzSize="small"
+                nzType="link">
+                <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
+              </button>
 
-          <button
-            (click)="editInvoice(invoice)"
-            nz-button
-            nz-tooltip="Edit"
-            nzSize="small"
-            nzType="link">
-            <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
-          </button>
+              <button
+                (click)="editInvoice(invoice)"
+                nz-button
+                nz-tooltip="Edit"
+                nzSize="small"
+                nzType="link">
+                <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
+              </button>
 
-          <button
-            (click)="deleteInvoice(invoice)"
-            nz-button
-            nz-tooltip="Delete"
-            nzDanger
-            nzSize="small"
-            nzType="link">
-            <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
+              <button
+                (click)="deleteInvoice(invoice)"
+                nz-button
+                nz-tooltip="Delete"
+                nzDanger
+                nzSize="small"
+                nzType="link">
+                <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
       </nz-spin>
     </div>
   </div>

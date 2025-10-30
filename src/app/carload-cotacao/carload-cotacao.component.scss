@@ -14,15 +14,16 @@
    PAGE HEADER
 ========================================================= */
 .page-header {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
+  flex-shrink: 0;
 
   p {
-    font-size: 22px;
-    font-weight: 600;
-    color: #333;
+    font-size: 16px;
+    font-weight: 300;
     margin: 0;
   }
 }
+
 
 /* =========================================================
    FILTERS PANEL
@@ -30,12 +31,12 @@
 .filters-panel {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-bottom: 16px;
 
   input {
     flex: 1;
-    max-width: 320px;
+    max-width: 300px;
   }
 
   button {

@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { CarloadCustomerService } from '../../services/carload-customer.service';
-import { CarloadCustomer } from '../../models/CSM/carload-customer';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {CarloadCustomerService} from '../../services/carload-customer.service';
+import {CarloadCustomer} from '../../models/CSM/carload-customer';
 
 @Component({
   selector: 'app-carload-customer',
@@ -21,6 +21,15 @@ export class CarloadCustomerComponent implements OnInit {
   editingCustomer?: CarloadCustomer | null = null;
   editingField?: string | null = null;
   isLoading = false;
+  // Default fictitious data
+  private defaultCustomerData = {
+    customerCode: 'CUST001',
+    nuitNumber: '123456789',
+    streetAddress: 'Rua Principal',
+    city: 'Maputo Cidade',
+    zipCode: '12345',
+    emailAddress: 'customer@gmail.com',
+  };
 
   constructor(
     private customerService: CarloadCustomerService,
@@ -52,11 +61,9 @@ export class CarloadCustomerComponent implements OnInit {
     this.currentEditingCustomerId = null;
   }
 
-
-
   editCustomer(customer: CarloadCustomer): void {
     this.currentEditingCustomerId = customer.id;
-    this.customerForm.patchValue({ ...customer });
+    this.customerForm.patchValue({...customer});
     this.isDrawerVisible = true;
   }
 
@@ -80,14 +87,14 @@ export class CarloadCustomerComponent implements OnInit {
 
   /* -------------------- Inline Edit -------------------- */
   startInlineEdit(customer: CarloadCustomer, field: string): void {
-    this.editingCustomer = { ...customer };
+    this.editingCustomer = {...customer};
     this.editingField = field;
   }
 
   saveInlineEdit(original: CarloadCustomer, field: string): void {
     if (!this.editingCustomer) return;
 
-    const updated = { ...original, [field]: (this.editingCustomer as any)[field] };
+    const updated = {...original, [field]: (this.editingCustomer as any)[field]};
     this.customerService.updateCustomer(original.id, updated).subscribe({
       next: () => {
         Object.assign(original, updated);
@@ -99,11 +106,6 @@ export class CarloadCustomerComponent implements OnInit {
         this.resetInlineEdit();
       },
     });
-  }
-
-  private resetInlineEdit(): void {
-    this.editingCustomer = null;
-    this.editingField = null;
   }
 
   search(): void {
@@ -121,24 +123,11 @@ export class CarloadCustomerComponent implements OnInit {
     );
   }
 
-
-  // Default fictitious data
-  private defaultCustomerData = {
-    customerCode: 'CUST001',
-    nuitNumber: '123456789',
-    streetAddress: 'Rua Principal',
-    city: 'Maputo Cidade',
-    zipCode: '12345',
-    emailAddress: 'customer@gmail.com',
-  };
-
   submitCustomer(): void {
     if (!this.customerForm.get('name')?.valid || !this.customerForm.get('phoneNumber')?.valid) return;
 
     // Copia os valores do formulário
-    const customerData = { ...this.customerForm.value };
-
-
+    const customerData = {...this.customerForm.value};
 
 
 // Preenche dados fictícios para campos vazios
@@ -170,7 +159,10 @@ export class CarloadCustomerComponent implements OnInit {
     }
   }
 
-
+  private resetInlineEdit(): void {
+    this.editingCustomer = null;
+    this.editingField = null;
+  }
 
   private loadCustomers(): void {
     this.isLoading = true;
@@ -189,7 +181,6 @@ export class CarloadCustomerComponent implements OnInit {
   }
 
 
-
   private initForm(): void {
     this.customerForm = this.fb.group({
       name: ['', Validators.required],
@@ -202,7 +193,6 @@ export class CarloadCustomerComponent implements OnInit {
       emailAddress: [''],
     });
   }
-
 
 
 }

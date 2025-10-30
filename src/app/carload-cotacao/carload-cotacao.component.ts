@@ -115,14 +115,7 @@ export class CarloadCotacaoComponent implements OnInit {
     this.updateItemAmount(itemGroup);
   }
 
-  // ===================== DRAWER =====================
-  openDrawer(): void {
-    this.isDrawerVisible = true;
-    this.currentCotacaoId = null;
-    this.cotacaoForm.reset({taxRate: 0.16});
-    this.items.clear();
-    this.addItem();
-  }
+
 
   closeDrawer(): void {
     this.isDrawerVisible = false;
@@ -156,6 +149,35 @@ export class CarloadCotacaoComponent implements OnInit {
       });
     }
   }
+
+  openDrawer(): void {
+    this.isDrawerVisible = true;
+    this.currentCotacaoId = null;
+    this.cotacaoForm.reset({taxRate: 0.16});
+    this.items.clear();
+    this.addItem();
+
+    // Gerar próximo código automaticamente
+    const nextCode = this.generateNextCotacaoCode();
+
+    // Preencher o campo e deixar readonly
+    this.cotacaoForm.patchValue({cotacaoCode: nextCode.toString()});
+    this.cotacaoForm.get('cotacaoCode')?.disable();
+  }
+
+
+  private generateNextCotacaoCode(): number {
+    if (!this.allCotacoes || this.allCotacoes.length === 0) {
+      return 1001; // primeiro código
+    }
+
+    const lastCode = Math.max(
+      ...this.allCotacoes.map(c => Number(c.cotacaoCode) || 0)
+    );
+
+    return lastCode + 1;
+  }
+
 
   editCotacao(cotacao: CarloadCotacao) {
     this.currentCotacaoId = cotacao.id;

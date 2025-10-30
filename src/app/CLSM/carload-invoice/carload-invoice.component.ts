@@ -116,7 +116,6 @@ export class CarloadInvoiceComponent implements OnInit {
   }
 
 
-
   closeDrawer(): void {
     this.isDrawerVisible = false;
     this.invoiceForm.reset({taxRate: 0.16});
@@ -255,6 +254,21 @@ export class CarloadInvoiceComponent implements OnInit {
     });
   }
 
+  openDrawer(): void {
+    this.isDrawerVisible = true;
+    this.currentInvoiceId = null;
+    this.invoiceForm.reset({taxRate: 0.16});
+    this.items.clear();
+    this.addItem();
+
+    // Gerar o próximo código automaticamente
+    const nextCode = this.generateNextInvoiceCode();
+
+    // Preencher o campo no formulário e torná-lo não editável
+    this.invoiceForm.patchValue({invoiceCode: nextCode.toString()});
+    this.invoiceForm.get('invoiceCode')?.disable();
+  }
+
   // ===================== INICIALIZAÇÃO =====================
   private initForm() {
     this.invoiceForm = this.fb.group({
@@ -293,24 +307,6 @@ export class CarloadInvoiceComponent implements OnInit {
     // Incrementa e devolve o próximo
     return lastCode + 1;
   }
-
-
-  openDrawer(): void {
-    this.isDrawerVisible = true;
-    this.currentInvoiceId = null;
-    this.invoiceForm.reset({taxRate: 0.16});
-    this.items.clear();
-    this.addItem();
-
-    // Gerar o próximo código automaticamente
-    const nextCode = this.generateNextInvoiceCode();
-
-    // Preencher o campo no formulário e torná-lo não editável
-    this.invoiceForm.patchValue({ invoiceCode: nextCode.toString() });
-    this.invoiceForm.get('invoiceCode')?.disable();
-  }
-
-
 
   private loadCustomers() {
     this.customerService.getCustomers().subscribe(data => this.dataCustomer = data);

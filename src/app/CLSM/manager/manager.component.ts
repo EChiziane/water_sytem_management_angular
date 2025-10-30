@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { Manager } from '../../models/WSM/manager';
-import { ManagerService } from '../../services/manager.service';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {Manager} from '../../models/WSM/manager';
+import {ManagerService} from '../../services/manager.service';
 
 @Component({
   selector: 'app-manager',
-  standalone:false,
+  standalone: false,
   templateUrl: './manager.component.html',
   styleUrls: ['./manager.component.scss']
 })
@@ -42,13 +42,13 @@ export class ManagerComponent implements OnInit {
     this.initForm();
   }
 
+  get managerDrawerTitle(): string {
+    return this.currentEditingManagerId ? 'Atualizar Manager' : 'Criar Manager';
+  }
+
   /* -------------------- Lifecycle -------------------- */
   ngOnInit(): void {
     this.loadManagers();
-  }
-
-  get managerDrawerTitle(): string {
-    return this.currentEditingManagerId ? 'Atualizar Manager' : 'Criar Manager';
   }
 
   /* -------------------- Filters -------------------- */
@@ -82,7 +82,7 @@ export class ManagerComponent implements OnInit {
   saveInlineEdit(manager: Manager, field: string): void {
     if (!this.currentEditingManagerId) return;
 
-    const updated = { ...manager, [field]: (manager as any)[field] };
+    const updated = {...manager, [field]: (manager as any)[field]};
     this.managerService.updateManager(manager.id, updated).subscribe({
       next: () => {
         Object.assign(manager, updated);
@@ -100,7 +100,7 @@ export class ManagerComponent implements OnInit {
   openManagerDrawer(): void {
     this.isManagerDrawerVisible = true;
     this.currentEditingManagerId = null;
-    this.managerForm.reset({ status: 'ACTIVO' });
+    this.managerForm.reset({status: 'ACTIVO'});
   }
 
   editManager(manager: Manager): void {
@@ -116,7 +116,7 @@ export class ManagerComponent implements OnInit {
 
   closeManagerDrawer(): void {
     this.isManagerDrawerVisible = false;
-    this.managerForm.reset({ status: 'ACTIVO' });
+    this.managerForm.reset({status: 'ACTIVO'});
     this.currentEditingManagerId = null;
   }
 
@@ -164,6 +164,26 @@ export class ManagerComponent implements OnInit {
     });
   }
 
+  /* -------------------- Update Status Inline -------------------- */
+  updateStatusManager(manager: Manager, newStatus: 'ACTIVO' | 'INACTIVO'): void {
+    if (manager.status === newStatus) return;
+
+    const updated = {...manager, status: newStatus};
+
+    // Se quiser, pode adicionar confirmação para INACTIVO
+    if (newStatus === 'INACTIVO') {
+      this.modal.confirm({
+        nzTitle: 'Inativar Manager',
+        nzContent: `Tem certeza que deseja inativar o manager <strong>${manager.name}</strong>?`,
+        nzOkText: 'Sim',
+        nzCancelText: 'Não',
+        nzOnOk: () => this.changeManagerStatus(manager, updated, newStatus)
+      });
+    } else {
+      this.changeManagerStatus(manager, updated, newStatus);
+    }
+  }
+
   /* -------------------- Load Data -------------------- */
   private loadManagers(): void {
     this.isLoading = true;
@@ -195,26 +215,6 @@ export class ManagerComponent implements OnInit {
   private resetInlineEdit(): void {
     this.currentEditingManagerId = null;
     this.editingField = null;
-  }
-
-  /* -------------------- Update Status Inline -------------------- */
-  updateStatusManager(manager: Manager, newStatus: 'ACTIVO' | 'INACTIVO'): void {
-    if (manager.status === newStatus) return;
-
-    const updated = { ...manager, status: newStatus };
-
-    // Se quiser, pode adicionar confirmação para INACTIVO
-    if (newStatus === 'INACTIVO') {
-      this.modal.confirm({
-        nzTitle: 'Inativar Manager',
-        nzContent: `Tem certeza que deseja inativar o manager <strong>${manager.name}</strong>?`,
-        nzOkText: 'Sim',
-        nzCancelText: 'Não',
-        nzOnOk: () => this.changeManagerStatus(manager, updated, newStatus)
-      });
-    } else {
-      this.changeManagerStatus(manager, updated, newStatus);
-    }
   }
 
   private changeManagerStatus(manager: Manager, updated: Manager, newStatus: 'ACTIVO' | 'INACTIVO'): void {

@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzMessageService} from 'ng-zorro-antd/message';
 
-import { DriverService } from '../../services/driver.service';
-import { Driver } from '../../models/CSM/driver';
+import {DriverService} from '../../services/driver.service';
+import {Driver} from '../../models/CSM/driver';
 
 @Component({
   selector: 'app-driver',
@@ -71,14 +71,14 @@ export class DriverComponent implements OnInit {
 
   /* ==================== Inline Edit ==================== */
   startInlineEdit(driver: Driver, field: string): void {
-    this.editingDriver = { ...driver };
+    this.editingDriver = {...driver};
     this.editingField = field;
   }
 
   saveInlineEdit(original: Driver, field: string): void {
     if (!this.editingDriver) return;
 
-    const updated = { ...original, [field]: (this.editingDriver as any)[field] };
+    const updated = {...original, [field]: (this.editingDriver as any)[field]};
     this.isSaving = true;
 
     this.driverService.updateDriver(original.id, updated).subscribe({
@@ -100,7 +100,7 @@ export class DriverComponent implements OnInit {
   openDriverDrawer(): void {
     this.isDriverDrawerVisible = true;
     this.currentEditingDriverId = null;
-    this.driverForm.reset({ status: 'ACTIVO' });
+    this.driverForm.reset({status: 'ACTIVO'});
   }
 
   editDriver(driver: Driver): void {
@@ -116,7 +116,7 @@ export class DriverComponent implements OnInit {
 
   closeDriverDrawer(): void {
     this.isDriverDrawerVisible = false;
-    this.driverForm.reset({ status: 'ACTIVO' });
+    this.driverForm.reset({status: 'ACTIVO'});
     this.currentEditingDriverId = null;
   }
 
@@ -157,7 +157,7 @@ export class DriverComponent implements OnInit {
   updateStatus(driver: Driver, newStatus: string): void {
     if (driver.status === newStatus) return;
 
-    const updated = { ...driver, status: newStatus };
+    const updated = {...driver, status: newStatus};
 
     if (newStatus === 'INACTIVO') {
       this.modal.confirm({

@@ -172,11 +172,11 @@
 
 <!-- ===== Component: Manager Drawer ===== -->
 <nz-drawer
+  (nzOnClose)="closeManagerDrawer()"
+  [nzFooter]="managerDrawerFooter"
   [nzTitle]="managerDrawerTitle"
   [nzVisible]="isManagerDrawerVisible"
   [nzWidth]="480"
-  [nzFooter]="managerDrawerFooter"
-  (nzOnClose)="closeManagerDrawer()"
 >
   <form *nzDrawerContent [formGroup]="managerForm" class="drawer-form" nz-form>
 
@@ -231,7 +231,9 @@
   <ng-template #managerDrawerFooter>
     <div class="drawer-footer">
       <button (click)="closeManagerDrawer()" class="btn-cancelar" nz-button nzType="default">Cancel</button>
-      <button (click)="submitManager()" [disabled]="!managerForm.valid" class="btn-salvar" nz-button nzType="primary">Save</button>
+      <button (click)="submitManager()" [disabled]="!managerForm.valid" class="btn-salvar" nz-button nzType="primary">
+        Save
+      </button>
     </div>
   </ng-template>
 

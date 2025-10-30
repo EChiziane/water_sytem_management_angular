@@ -152,8 +152,6 @@ export class CarloadComponent {
   }
 
 
-
-
   onStatusChange(status: string): void {
     if (status === 'SCHEDULED') {
       this.showDeliveryDateField = true;
