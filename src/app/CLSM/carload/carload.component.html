@@ -149,7 +149,8 @@
             <td>
               <button [nzDropdownMenu]="menu" nz-button nz-dropdown nzTrigger="click">
                 <nz-tag
-                  [nzColor]="carload.deliveryStatus === 'DELIVERED' ? 'green' : carload.deliveryStatus === 'PENDING' ? 'orange' : 'blue'">
+                  [nzColor]=
+                    "carload.deliveryStatus === 'DELIVERED' ? 'green' : carload.deliveryStatus === 'PENDING' ? 'orange' : 'blue' ">
                   {{ carload.deliveryStatus }}
                 </nz-tag>
               </button>
@@ -158,6 +159,7 @@
                   <li (click)="updateCarloadStatus(carload, 'DELIVERED')" nz-menu-item>Delivered</li>
                   <li (click)="updateCarloadStatus(carload, 'PENDING')" nz-menu-item>Pending</li>
                   <li (click)="updateCarloadStatus(carload, 'SCHEDULED')" nz-menu-item>Scheduled</li>
+                  <li (click)="updateCarloadStatus(carload, 'CANCELLED')" nz-menu-item>Canceled</li>
                 </ul>
               </nz-dropdown-menu>
             </td>
@@ -330,6 +332,7 @@
                 <nz-option nzLabel="Delivered" nzValue="DELIVERED"></nz-option>
                 <nz-option nzLabel="Pending" nzValue="PENDING"></nz-option>
                 <nz-option nzLabel="Scheduled" nzValue="SCHEDULED"></nz-option>
+                <nz-option nzLabel="Canceled" nzValue="CANCELED"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>

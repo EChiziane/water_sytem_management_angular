@@ -33,6 +33,7 @@ export class CarloadComponent {
   totalAgendados = 0;
   totalEntregue = 0;
   totalPendente = 0;
+  totalCancelado = 0;
 
 
   showBatchField = true;
@@ -56,7 +57,7 @@ export class CarloadComponent {
   editingField?: string | null = null;
 // Variáveis para o filtro por datas
   dateRange: [Date | null, Date | null] = [null, null];
-  filterMode: 'ALL' | 'SCHEDULED' | 'DELIVERED' | 'PENDING' = 'ALL';
+  filterMode: 'ALL' | 'SCHEDULED' | 'DELIVERED' | 'PENDING'|'CANCELLED' = 'ALL';
 
   constructor(private carloadService: CarloadService,
               private driverService: DriverService,
@@ -277,14 +278,16 @@ export class CarloadComponent {
       next: () => {
         carload.deliveryStatus = status;
         this.message.success(`Status atualizado para ${status} ✅`);
+        this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
         this.totalPendente = this.listOfDisplayData.filter(s => s.deliveryStatus === 'PENDING').length;
+        this.totalCancelado=this.listOfDisplayData.filter(s => s.deliveryStatus === 'CANCELLED').length;
         this.totalEntregue = this.listOfDisplayData.filter(s => s.deliveryStatus === 'DELIVERED').length;
       },
       error: () => this.message.error('Erro ao atualizar status 🚫')
     });
   }
 
-  setFilterMode(mode: 'ALL' | 'SCHEDULED' | 'DELIVERED' | 'PENDING'): void {
+  setFilterMode(mode: 'ALL' | 'SCHEDULED' | 'DELIVERED' | 'PENDING'|'CANCELLED'): void {
     this.filterMode = mode;
     this.applyFilter();
   }
@@ -304,6 +307,9 @@ export class CarloadComponent {
         break;
       case 'PENDING':
         filtered = filtered.filter(c => c.deliveryStatus === 'PENDING');
+        break;
+      case 'CANCELLED':
+        filtered = filtered.filter(c => c.deliveryStatus === 'CANCELLED');
         break;
     }
 
@@ -330,6 +336,7 @@ export class CarloadComponent {
     this.totalCarloads = this.listOfDisplayData.length;
     this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
     this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
+    this.totalCancelado=this.listOfDisplayData.filter(s => s.deliveryStatus === 'CANCELLED').length;
     this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
   }
 
@@ -351,6 +358,7 @@ export class CarloadComponent {
         this.totalCarloads = this.allCarloads.length;
         this.totalAgendados = this.allCarloads.filter(c => c.deliveryStatus === 'SCHEDULED').length;
         this.totalEntregue = this.allCarloads.filter(c => c.deliveryStatus === 'DELIVERED').length;
+        this.totalCancelado=this.listOfDisplayData.filter(s => s.deliveryStatus === 'CANCELLED').length;
         this.totalPendente = this.allCarloads.filter(c => c.deliveryStatus === 'PENDING').length;
 
         this.applyFilter();

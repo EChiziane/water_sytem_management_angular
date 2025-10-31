@@ -255,15 +255,27 @@
         </nz-form-item>
       </div>
     </div>
+
+    <!-- ===== UI: Saving Spinner ===== -->
+    <div *ngIf="isSaving" class="drawer-spinner">
+      <nz-spin nzSize="large"></nz-spin>
+      <br/>
+      <p>Saving Invoice... Please wait.</p>
+    </div>
+
+
   </form>
 
   <!-- ====================== FOOTER ====================== -->
   <ng-template #drawerFooter>
     <div class="drawer-footer">
-      <button (click)="closeDrawer()" nz-button>Cancelar</button>
+      <button (click)="closeDrawer()"
+              class="btn-cancel"
+              nz-button>Cancelar</button>
       <button
         (click)="submitInvoice()"
         [disabled]="!invoiceForm.valid"
+        class="btn-save"
         nz-button
         nzType="primary">
         Salvar

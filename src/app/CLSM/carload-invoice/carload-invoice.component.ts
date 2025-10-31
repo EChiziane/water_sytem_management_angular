@@ -31,34 +31,39 @@ export class CarloadInvoiceComponent implements OnInit {
   selectedCustomerId: string | null = null;
 
   itemsOptions: string[] = [
-    "M4_AREIA_GROSSA", "M4_PEDRA_3_4", "M4_PEDRA_SARRISCA", "M4_PO_DE_PEDRA", "M4_AREIA_FINA",
-    "M7_AREIA_GROSSA", "M7_PEDRA_3_4", "M7_PEDRA_SARRISCA", "M7_PO_DE_PEDRA", "M7_AREIA_FINA",
-    "M18_AREIA_GROSSA", "M18_PEDRA_3_4", "M18_PEDRA_SARRISCA", "M18_PO_DE_PEDRA", "M18_AREIA_FINA",
-    "M20_AREIA_GROSSA", "M20_PEDRA_3_4", "M20_PEDRA_SARRISCA", "M20_PO_DE_PEDRA", "M20_AREIA_FINA",
-    "M22_AREIA_GROSSA", "M22_PEDRA_3_4", "M22_PEDRA_SARRISCA", "M22_PO_DE_PEDRA", "M22_AREIA_FINA"
+    "M4_AREIA_GROSSA", "M4_AREIA_VERMELHA","M4_PEDRA_3_4", "M4_PEDRA_SARRISCA", "M4_PO_DE_PEDRA", "M4_AREIA_FINA",
+    "M7_AREIA_GROSSA","M7_AREIA_VERMELHA", "M7_PEDRA_3_4", "M7_PEDRA_SARRISCA", "M7_PO_DE_PEDRA", "M7_AREIA_FINA",
+    "M18_AREIA_GROSSA","M18_AREIA_VERMELHA", "M18_PEDRA_3_4", "M18_PEDRA_SARRISCA", "M18_PO_DE_PEDRA", "M18_AREIA_FINA",
+    "M20_AREIA_GROSSA","M20_AREIA_VERMELHA", "M20_PEDRA_3_4", "M20_PEDRA_SARRISCA", "M20_PO_DE_PEDRA", "M20_AREIA_FINA",
+    "M22_AREIA_GROSSA","M22_AREIA_VERMELHA", "M22_PEDRA_3_4", "M22_PEDRA_SARRISCA", "M22_PO_DE_PEDRA", "M22_AREIA_FINA"
   ];
 
   itemsPrices: { [key: string]: number } = {
     "M4_AREIA_GROSSA": 5000,
+    "M4_AREIA_VERMELHA": 3000,
     "M4_PEDRA_3_4": 5500,
     "M4_PEDRA_SARRISCA": 5500,
     "M4_PO_DE_PEDRA": 4500,
     "M4_AREIA_FINA": 4500,
     "M7_AREIA_GROSSA": 7500,
+    "M7_AREIA_VERMELHA": 4000,
     "M7_PEDRA_3_4": 8000,
     "M7_PEDRA_SARRISCA": 800,
     "M7_PO_DE_PEDRA": 7500,
     "M7_AREIA_FINA": 6500,
     "M18_AREIA_GROSSA": 17000,
+    "M18_AREIA_VERMELHA": 8000,
     "M18_PEDRA_3_4": 18000,
     "M18_PEDRA_SARRISCA": 18000,
     "M18_PO_DE_PEDRA": 16000,
     "M18_AREIA_FINA": 12000,
     "M20_AREIA_GROSSA": 20000,
+    "M20_AREIA_VERMELHA": 9000,
     "M20_PEDRA_3_4": 22000,
     "M20_PEDRA_SARRISCA": 22000,
     "M20_PO_DE_PEDRA": 19000,
     "M20_AREIA_FINA": 14000,
+    "M22_AREIA_VERMELHA": 11000,
     "M22_AREIA_GROSSA": 22000,
     "M22_PEDRA_3_4": 25000,
     "M22_PEDRA_SARRISCA": 25000,
@@ -122,9 +127,11 @@ export class CarloadInvoiceComponent implements OnInit {
     this.items.clear();
     this.currentInvoiceId = null;
   }
+  isSaving = false;
 
   // ===================== CRUD DE INVOICES =====================
   submitInvoice(): void {
+   this.isSaving = true;
     if (!this.invoiceForm.valid) return;
 
     // Reativar temporariamente para incluir no getRawValue()
@@ -137,20 +144,27 @@ export class CarloadInvoiceComponent implements OnInit {
       this.invoiceService.updateInvoice(this.currentInvoiceId, invoiceData).subscribe({
         next: () => {
           this.loadInvoices();
+          this.isSaving = false; // desativa spinner
           this.closeDrawer();
           this.message.success('Invoice updated ✅');
         },
-        error: () => this.message.error('Error updating invoice 🚫')
+        error: () =>{ this.message.error('Error updating invoice 🚫');
+          this.isSaving = false; // desativa spinner
+        }
       });
     } else {
       // create
       this.invoiceService.addInvoice(invoiceData).subscribe({
         next: () => {
           this.loadInvoices();
+          this.isSaving = false; // desativa spinner
           this.closeDrawer();
           this.message.success('Invoice created ✅');
         },
-        error: () => this.message.error('Error creating invoice 🚫')
+        error: () => {
+          this.message.error('Error creating invoice 🚫');
+          this.isSaving = false; // desativa spinner
+        }
       });
     }
   }

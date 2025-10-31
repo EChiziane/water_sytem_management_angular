@@ -39,7 +39,7 @@ export class CarloadCotacaoComponent implements OnInit {
     "M20_AREIA_GROSSA","M20_AREIA_VERMELHA", "M20_PEDRA_3_4", "M20_PEDRA_SARRISCA", "M20_PO_DE_PEDRA", "M20_AREIA_FINA",
     "M22_AREIA_GROSSA","M22_AREIA_VERMELHA", "M22_PEDRA_3_4", "M22_PEDRA_SARRISCA", "M22_PO_DE_PEDRA", "M22_AREIA_FINA"
   ];
-
+  isSaving = false;
   itemsPrices: { [key: string]: number } = {
     "M4_AREIA_GROSSA": 5000,
     "M4_AREIA_VERMELHA": 3000,
@@ -132,6 +132,7 @@ export class CarloadCotacaoComponent implements OnInit {
 
   // ===================== CRUD DE INVOICES =====================
   submitCotacao(): void {
+    this.isSaving = false; // desativa spinner
     if (!this.cotacaoForm.valid) return;
     const cotacaoData = this.cotacaoForm.getRawValue();
 
@@ -140,9 +141,11 @@ export class CarloadCotacaoComponent implements OnInit {
         next: () => {
           this.loadCotacoes();
           this.closeDrawer();
+          this.isSaving = false; // desativa spinner
           this.message.success('Cotacao updated ✅');
         },
         error: () => this.message.error('Error updating cotacao 🚫')
+
       });
     } else {
       this.cotacaoService.addCotacao(cotacaoData).subscribe({
