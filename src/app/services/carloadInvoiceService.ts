@@ -22,6 +22,7 @@ export class CarloadInvoiceService {
   }
 
   addInvoice(invoice: CarloadInvoice): Observable<CarloadInvoice> {
+    console.log(invoice);
     return this.http.post<CarloadInvoice>(this.baseURL, invoice).pipe(take(1));
   }
 
