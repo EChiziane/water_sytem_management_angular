@@ -21,12 +21,14 @@ export class CustomerComponent implements OnInit {
   activeCustomers = 0;
   inactiveCustomers = 0;
 
+  isLoading = false;
+
   searchValue = '';
   visible = false;
-  visible1 = false;
+  isCustomerDrawerVisible = false;
 
   isEditMode = false;
-  drawerTitle = 'Criar Cliente';
+  customerDrawerTitle = 'Criar Cliente';
   selectedCustomerId: any | null = null;
 
   customerForm = new FormGroup({
@@ -61,8 +63,10 @@ export class CustomerComponent implements OnInit {
   }
 
   getCustomers() {
+    this.isLoading = true;
     this.customerService.getCustomers().subscribe((customers: Customer[]) => {
       this.dataSource = customers;
+      this.isLoading = false;
       this.dataCostumers = customers;
       this.listOfDisplayData = [...this.dataSource];
       this.calculateCustomerStats();
@@ -89,17 +93,17 @@ export class CustomerComponent implements OnInit {
 
   open(): void {
     this.isEditMode = false;
-    this.drawerTitle = 'Criar Cliente';
+    this. customerDrawerTitle = 'Criar Cliente';
     this.customerForm.reset({status: 'ATIVO', valve: 10, monthsInDebt: 1});
-    this.visible1 = true;
+    this.  isCustomerDrawerVisible= true;
   }
 
   openPaymentDrawer(): void {
     this.paymentDrawerVisible = true;
   }
 
-  close(): void {
-    this.visible1 = false;
+  closeCustomerDrawer(): void {
+    this.  isCustomerDrawerVisible = false;
     this.customerForm.reset();
     this.selectedCustomerId = null;
   }
@@ -119,7 +123,7 @@ export class CustomerComponent implements OnInit {
       this.customerService.updateCustomer(this.selectedCustomerId, this.customerForm.value).subscribe({
         next: (updatedCustomer) => {
           this.getCustomers();
-          this.close();
+          this.closeCustomerDrawer();
           this.message.success('Cliente atualizado com sucesso! ✅');
         },
         error: () => {
@@ -133,7 +137,7 @@ export class CustomerComponent implements OnInit {
           this.listOfDisplayData = [...this.dataSource];
           this.calculateCustomerStats();
           this.customerForm.reset({status: 'ATIVO', valve: 10, monthsInDebt: 1});
-          this.close();
+          this.closeCustomerDrawer();
           this.message.success('Cliente criado com sucesso! ✅');
         },
         error: () => {
@@ -145,9 +149,9 @@ export class CustomerComponent implements OnInit {
 
   editCustomer(customer: Customer): void {
     this.isEditMode = true;
-    this.drawerTitle = 'Editar Cliente';
+    this. customerDrawerTitle = 'Editar Cliente';
     this.selectedCustomerId = customer.id;
-    this.visible1 = true;
+    this.  isCustomerDrawerVisible = true;
 
     this.customerForm.patchValue({
       name: customer.name,

@@ -23,6 +23,7 @@ import {ReciboComponent} from './recibo/recibo.component';
 import {CarloadInvoiceComponent} from './CLSM/carload-invoice/carload-invoice.component';
 import {CarloadCustomerComponent} from './CLSM/carload-customer/carload-customer.component';
 import {CarloadCotacaoComponent} from './CLSM/carload-cotacao/carload-cotacao.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
 
 
 const routes: Routes = [
@@ -48,6 +49,7 @@ const routes: Routes = [
   {path: 'carload-cotacao', component: CarloadCotacaoComponent},
   {path: 'carload-customer', component: CarloadCustomerComponent},
   {path: 'recibo', component: ReciboComponent},
+  {path: 'dasboard', component: DashboardComponent},
   {path: 'welcome', loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)}
 ];
 

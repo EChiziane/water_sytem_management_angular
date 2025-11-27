@@ -4,7 +4,7 @@ export interface Customer {
   name: string;
   contact: string;
   address: string;
-  status: 'ATIVO' | 'INATIVO';
+  status: string;
   valve: number;
   monthsInDebt: number;
   createdAt: string;

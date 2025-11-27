@@ -68,6 +68,7 @@ import {CarloadCustomerComponent} from './CLSM/carload-customer/carload-customer
 import {CarloadCotacaoComponent} from './CLSM/carload-cotacao/carload-cotacao.component';
 import {NzSpinComponent} from 'ng-zorro-antd/spin';
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {DashboardComponent} from './dashboard/dashboard.component';
 
 
 registerLocaleData(en);
@@ -91,6 +92,7 @@ registerLocaleData(en);
     DriverComponent,
     SprintDetailsComponent,
     PaymentComponent,
+    DashboardComponent,
     CarloadInvoiceComponent,
     CarloadCustomerComponent,
     PaymentDetailsComponent,
