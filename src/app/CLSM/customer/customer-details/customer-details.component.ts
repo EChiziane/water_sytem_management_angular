@@ -5,6 +5,7 @@ import {Payment} from '../../../models/WSM/payment';
 import {Customer} from '../../../models/CSM/customer';
 import {CustomerService} from '../../../services/customer.service';
 import {PaymentService} from '../../../services/payment.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 
 @Component({
@@ -19,16 +20,25 @@ export class CustomerDetailsComponent implements OnInit {
   debtMonths: string[] = [];
   paymentDataSource: Payment[] = [];
   listOfDisplayData: Payment[] = [];
+  isPaymentDrawerVisible = false;
+  paymentForm!: FormGroup;
+  paymentDrawerTitle = "Novo Pagamento";
 
   constructor(private http: HttpClient,
               private route: ActivatedRoute,
+              private fb: FormBuilder,
               private customerService: CustomerService,
               private paymentService: PaymentService) {
 
 
   }
-
   ngOnInit(): void {
+    this.paymentForm = this.fb.group({
+      amount: ['', Validators.required],
+      referenceMonth: ['', Validators.required],
+      paymentMethod: ['', Validators.required]
+    });
+
     this.route.params.subscribe(params => {
       this.customerId = params['id'];
     });
@@ -47,6 +57,7 @@ export class CustomerDetailsComponent implements OnInit {
   getCustomerPayments() {
     this.paymentService.getCustomerPayments(this.customerId).subscribe((payments: Payment[]) => {
       this.paymentDataSource = payments;
+      console.log(payments)
       this.listOfDisplayData = [...this.paymentDataSource]; // Atualiza após receber os dados
     });
   }
@@ -54,7 +65,16 @@ export class CustomerDetailsComponent implements OnInit {
   printPayment(data: Payment) {
 
   }
+  // === Abrir Drawer ===
+  openPaymentDrawer() {
+    this.isPaymentDrawerVisible = true;
+  }
 
+  // === Fechar Drawer ===
+  closePaymentDrawer() {
+    this.isPaymentDrawerVisible = false;
+    this.paymentForm.reset();
+  }
   deletePayment(data: Payment) {
 
   }
@@ -87,4 +107,23 @@ export class CustomerDetailsComponent implements OnInit {
       this.debtMonths.push(monthNames[monthIndex]);
     }
   }
+
+
+  // === Guardar Pagamento ===
+  savePayment() {
+    if (this.paymentForm.invalid) return;
+
+    const payload = {
+      ...this.paymentForm.value,
+      customerId: this.customerId
+    };
+
+    this.paymentService.addPayment(payload).subscribe({
+      next: () => {
+        this.getCustomerPayments();
+        this.closePaymentDrawer();
+      }
+    });
+  }
+
 }

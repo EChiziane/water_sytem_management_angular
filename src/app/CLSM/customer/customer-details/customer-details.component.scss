@@ -1,78 +1,235 @@
-.main-content {
-  display: flex;
-  flex-direction: column;
-  height: 100vh; /* Ocupa 100% da altura da janela */
+.customer-details-container {
   padding: 20px;
-  box-sizing: border-box;
-}
-
-.header {
-  flex: 0 0 5%; /* Header ocupa 10% da altura */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f1f1f1;
-}
-
-.details-wrapper {
-  flex: 0 0 30%; /* Details ocupa 30% da altura */
-  display: flex;
-  gap: 20px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-
-.details-card, .debt-card {
-  flex: 1 1 calc(50% - 20px);
-  min-width: 300px;
-  height: 100%; /* Garante que ambas as divs tenham a mesma altura */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-
-.debt-cards-wrapper {
-  display: flex;
   gap: 20px;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  height: 100%;
 }
 
-.debt-summary-card {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%; /* Faz com que os cards dentro da wrapper tenham a mesma altura */
+.page-header {
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  text-align: center;
+
+  h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #333;
+  }
 }
 
-.debt-summary-content {
-  font-size: 36px;
+/* ===== SECTION WRAPPER ===== */
+.info-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+/* ===== MODERN SECTIONS ===== */
+.section {
+  background: #fff;
+  padding: 18px 22px;
+  border-radius: 10px;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 14px;
+  border-left: 4px solid #007bff;
+  padding-left: 10px;
+}
+
+/* ===== GRID CLEAN ===== */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 20px;
+
+  .item {
+    font-size: 14px;
+    strong {
+      color: #444;
+      margin-right: 6px;
+    }
+  }
+}
+
+/* ===== DEBT SECTION ===== */
+.debt-grid {
+  display: grid;
+  grid-template-columns: 160px auto;
+  gap: 20px;
+}
+
+.debt-box {
+  background: #f8f9fa;
+  padding: 14px 16px;
+  border-radius: 8px;
+}
+
+.debt-label {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.debt-number {
+  font-size: 28px;
   font-weight: bold;
   color: #007bff;
-  background-color: #f1f1f1;
-  padding: 20px;
+  margin: 0;
+}
+
+.debt-months-inline {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  color: #444;
+}
+
+
+.info-card,
+.debt-card {
+  border-radius: 10px !important;
+  padding-bottom: 10px;
+}
+
+/* GRID interno compacto */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+  gap: 8px 20px; /* vertical / horizontal */
+
+  .item {
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+
+    strong {
+      color: #444;
+      margin-right: 8px;
+    }
+  }
+}
+
+/* ===== Debt Section ===== */
+.debt-grid {
+  display: grid;
+  grid-template-columns: 120px auto;
+  gap: 15px;
+  align-items: start;
+}
+
+.debt-box {
+  background: #f8f9fa;
+  padding: 10px 14px;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 10px 0;
 }
 
-.debt-summary-content-txt {
-  padding: 20px;
+.debt-label {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
 }
 
-.table {
-  flex: 0 0 50%; /* Table ocupa 50% da altura */
-  margin-top: 20px;
-  overflow: auto;
+.debt-number {
+  font-size: 26px;
+  font-weight: bold;
+  color: #007bff;
+  margin: 0;
 }
 
-.actions {
-  flex: 0 0 10%; /* Actions ocupa 10% da altura */
+.debt-months {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
 
+  li {
+    font-size: 13px;
+    padding: 2px 0;
+    border-bottom: 1px dotted #eee;
+  }
+}
+
+
+.info-row {
   display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f1f1;
 
+  strong {
+    color: #555;
+  }
+
+  span {
+    font-weight: 500;
+    color: #333;
+  }
+}
+
+.status-tag {
+  font-size: 14px;
+  padding: 6px 14px;
+}
+
+.debt-summary {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  .mini-card {
+    flex: 1;
+    text-align: center;
+
+    .mini-value {
+      font-size: 32px;
+      font-weight: bold;
+      margin-top: 10px;
+      color: #007bff;
+    }
+
+    .month-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        padding: 4px 0;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.payment-card {
+  border-radius: 14px !important;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 4px;
+
+  button {
+    padding: 0;
+  }
+}
+
+.action-footer {
+  display: flex;
   justify-content: flex-end;
+  gap: 10px;
+  padding-top: 10px;
 }
