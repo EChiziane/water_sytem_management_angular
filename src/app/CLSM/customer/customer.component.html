@@ -290,8 +290,14 @@
   <!-- Drawer Footer -->
   <ng-template #customerDrawerFooter>
     <div class="drawer-footer">
-      <button nz-button (click)="closeCustomerDrawer()" style="margin-right: 8px;">Cancelar</button>
-      <button nz-button nzType="primary" (click)="createCustomer()">
+      <button (click)="closeCustomerDrawer()"
+              class="btn-cancel"
+              nz-button nzType=
+                "default">Cancelar</button>
+
+      <button nz-button nzType="primary" (click)="createCustomer()"
+              [disabled]= "customerForm.invalid"
+              class="btn-save">
         {{ isEditMode ? 'Salvar' : 'Criar' }}
       </button>
     </div>

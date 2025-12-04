@@ -208,26 +208,26 @@ textarea[nz-input] {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  padding: 12px 24px;
+  padding: 12px 0;
   background: #f8f9fa;
-  border-top: 1px solid #e9ecef;
-}
-
-.btn-cancelar {
-  color: #555;
-  border-radius: 8px;
-}
-
-.btn-salvar {
-  background-color: #007bff;
-  border: none;
-  color: #fff;
-  border-radius: 8px;
-  transition: 0.3s;
-
-  &:hover {
-    background-color: #0056b3;
+  /* === Botões do Drawer === */
+  .btn-cancel {
+    color: #555;
+    border-radius: 8px;
   }
+
+  .btn-save {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    transition: background 0.3s;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+
 }
 
 [nz-button] {
