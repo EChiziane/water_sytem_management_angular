@@ -34,10 +34,13 @@ export class CustomerDetailsComponent implements OnInit {
 
 
   }
+
+
+
   ngOnInit(): void {
     this.paymentForm = this.fb.group({
       amount: ['', Validators.required],
-      referenceMonth: ['', Validators.required],
+      numMonths: [1, [Validators.required, Validators.min(1)]],
       paymentMethod: ['', Validators.required]
     });
 
@@ -47,6 +50,24 @@ export class CustomerDetailsComponent implements OnInit {
     this.getCustomerPayments();
     this.getCustomer();
   }
+
+  selectedMonths: string[] = [];
+
+  onNumMonthsChange() {
+    const num = this.paymentForm.get('numMonths')?.value || 1;
+    const maxMonths = this.customer?.monthsInDebt || 1;
+
+    if (num < 1) {
+      this.paymentForm.get('numMonths')?.setValue(1);
+      this.selectedMonths = this.debtMonths.slice(0, 1);
+    } else if (num > maxMonths) {
+      this.paymentForm.get('numMonths')?.setValue(maxMonths);
+      this.selectedMonths = this.debtMonths.slice(0, maxMonths);
+    } else {
+      this.selectedMonths = this.debtMonths.slice(0, num);
+    }
+  }
+
 
   goBack() {
     window.history.back();

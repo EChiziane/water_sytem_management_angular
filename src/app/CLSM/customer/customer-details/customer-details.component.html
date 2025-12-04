@@ -158,20 +158,24 @@
   [nzVisible]="isPaymentDrawerVisible"
   (nzOnClose)="closePaymentDrawer()"
   [nzTitle]="paymentDrawerTitle"
-  [nzWidth]="520"
+  [nzWidth]="720"
+  [nzBodyStyle]="{ overflow: 'auto' }"
   [nzMaskClosable]="false"
   [nzFooter]="paymentDrawerFooter"
 >
 
   <!-- Drawer Content -->
-  <form *nzDrawerContent nz-form [formGroup]="paymentForm" class="drawer-form">
+  <form
+    *nzDrawerContent
+    nz-form [formGroup]="paymentForm"
+    class="drawer-form">
 
     <!-- ==== Informações do Pagamento ==== -->
     <div class="drawer-section">
 
       <h3 class="section-title">Informações do Pagamento</h3>
 
-      <div nz-row nzGutter="16">
+      <div nz-row [nzGutter]="16">
 
         <div nz-col nzSpan="12">
           <nz-form-item>
@@ -186,22 +190,38 @@
 
         <div nz-col nzSpan="12">
           <nz-form-item>
-            <nz-form-label>Mês de Referência</nz-form-label>
+            <nz-form-label>Número de Meses</nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="referenceMonth" nzPlaceHolder="Selecione o mês">
-                <nz-option
-                  *ngFor="let m of debtMonths"
-                  [nzLabel]="m"
-                  [nzValue]="m">
-                </nz-option>
-              </nz-select>
+              <input
+                nz-input
+                type="number"
+                formControlName="numMonths"
+                [min]="0"
+                [max]="customer.monthsInDebt"
+                (change)="onNumMonthsChange()"
+                placeholder="Digite o número de meses"
+              />
             </nz-form-control>
           </nz-form-item>
         </div>
 
+        <div nz-col nzSpan="12" *ngIf="selectedMonths.length > 0">
+          <nz-form-item>
+            <nz-form-label>Meses de Referência</nz-form-label>
+            <nz-form-control>
+              <p class="debt-months-inline">
+        <span *ngFor="let m of selectedMonths; let last = last">
+          {{ m }}<span *ngIf="!last">, </span><span *ngIf="last">.</span>
+        </span>
+              </p>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+
       </div>
 
-      <div nz-row nzGutter="16">
+      <div nz-row [nzGutter]="16">
 
         <div nz-col nzSpan="24">
           <nz-form-item>
@@ -224,8 +244,14 @@
   <!-- Drawer Footer -->
   <ng-template #paymentDrawerFooter>
     <div class="drawer-footer">
-      <button nz-button (click)="closePaymentDrawer()">Cancelar</button>
-      <button nz-button nzType="primary" (click)="savePayment()">Confirmar Pagamento</button>
+      <button (click)="closePaymentDrawer()"
+              class="btn-cancel"
+              nz-button nzType=
+                "default">Cancelar</button>
+      <button nz-button nzType="primary" (click)="savePayment()"
+      [disabled]="paymentForm.invalid"
+              class="btn-save">
+        Confirmar Pagamento</button>
     </div>
   </ng-template>
 
