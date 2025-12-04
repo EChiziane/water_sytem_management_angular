@@ -188,6 +188,11 @@ export class CustomerComponent implements OnInit {
     });
   }
 
+
+  onBack() {
+    window.history.back();
+  }
+
   public createPayment() {
     if (this.paymentForm.invalid) {
       this.message.warning('Preencha todos os campos obrigatórios do pagamento!');

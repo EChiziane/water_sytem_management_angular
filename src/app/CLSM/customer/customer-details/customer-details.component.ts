@@ -20,6 +20,8 @@ export class CustomerDetailsComponent implements OnInit {
   debtMonths: string[] = [];
   paymentDataSource: Payment[] = [];
   listOfDisplayData: Payment[] = [];
+
+  isLoading = false;
   isPaymentDrawerVisible = false;
   paymentForm!: FormGroup;
   paymentDrawerTitle = "Novo Pagamento";
@@ -55,9 +57,11 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   getCustomerPayments() {
-    this.paymentService.getCustomerPayments(this.customerId).subscribe((payments: Payment[]) => {
+    this.isLoading = true;
+    this.paymentService.getCustomerPayments(this.customerId).
+    subscribe((payments: Payment[]) => {
       this.paymentDataSource = payments;
-      console.log(payments)
+      this.isLoading = false;
       this.listOfDisplayData = [...this.paymentDataSource]; // Atualiza após receber os dados
     });
   }
@@ -125,5 +129,21 @@ export class CustomerDetailsComponent implements OnInit {
       }
     });
   }
+  visible = false;
+  searchValue = '';
+  search(): void {
+    this.visible = false;
+    this.listOfDisplayData = this.listOfDisplayData.filter(
+      (item: Payment) => item.customerName.toLowerCase().includes(this.searchValue.toLowerCase())
+    );
+  }
 
+  reset(): void {
+    this.searchValue = '';
+    this.search();
+  }
+
+  onBack() {
+    window.history.back();
+  }
 }
