@@ -5,80 +5,90 @@
             nzBreakpoint="md"
             nzCollapsible
             nzWidth="256px">
+
     <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
+      <a>
         <img alt="logo" src="https://ng.ant.design/assets/img/logo.svg">
-        <h1>Transporte Chiziane</h1>
+        <h1>AGUA'S Chiziane</h1>
       </a>
     </div>
-    <ul [nzInlineCollapsed]="isCollapsed" nz-menu nzMode="inline" nzTheme="dark">
 
+    <ul nz-menu nzMode="inline" nzTheme="dark" [nzInlineCollapsed]="isCollapsed">
 
-      <li nz-submenu nzIcon="dashboard" nzOpen nzTitle="WSM">
+      <!-- WSM -->
+      <li nz-submenu nzIcon="appstore" nzOpen nzTitle="WSM">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/customer">Customer</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/payment">Payment</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/recibo">Recibo</a>
+            <a routerLink="/customer">
+              <span nz-icon nzType="team"></span> Clientes
+            </a>
           </li>
 
-
-        </ul>
-      </li>
-
-
-
-      <li nz-submenu nzIcon="dashboard" nzOpen nzTitle="CALENDAR">
-        <ul>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/calendar">Calendar</a>
+            <a routerLink="/payment">
+              <span nz-icon nzType="credit-card"></span> Pagamentos
+            </a>
           </li>
 
-
-        </ul>
-      </li>
-      <li nz-submenu nzIcon="user" nzOpen nzTitle="Account">
-        <ul>
-
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/users">Users</a>
+            <a routerLink="/recibo">
+              <span nz-icon nzType="file-done"></span> Recibos
+            </a>
           </li>
         </ul>
       </li>
 
+      <!-- CALENDAR -->
+      <li nz-submenu nzIcon="calendar" nzOpen nzTitle="Calendário">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/calendar">
+              <span nz-icon nzType="calendar"></span> Calendário
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- ACCOUNT -->
+      <li nz-submenu nzIcon="user" nzOpen nzTitle="Conta">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/users">
+              <span nz-icon nzType="user"></span> Utilizadores
+            </a>
+          </li>
+        </ul>
+      </li>
 
     </ul>
   </nz-sider>
+
   <nz-layout>
     <nz-header>
       <div class="app-header">
         <span (click)="isCollapsed = !isCollapsed" class="header-trigger">
-            <span [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-                  class="trigger"
-                  nz-icon>
-            </span>
+          <span nz-icon class="trigger"
+                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'">
+          </span>
         </span>
-        <div class="user-menu">
-          <a [nzDropdownMenu]="userMenu" nz-dropdown>
-            <span class="user-icon" nz-icon nzType="user"></span>
-            <span class="username">{{ username }}</span>
-            <nz-icon nzType="down"></nz-icon>
-          </a>
-          <nz-dropdown-menu #userMenu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item>
-                <a routerLink="/profile">Perfil</a>
-              </li>
-              <li (click)="logout()" nz-menu-item>Logout</li>
-            </ul>
-          </nz-dropdown-menu>
+
+        <div class="user-menu" nz-dropdown [nzDropdownMenu]="userMenu">
+          <span class="user-icon" nz-icon nzType="user"></span>
+          <span class="username">{{ username }}</span>
+          <nz-icon nzType="down"></nz-icon>
         </div>
+
+        <nz-dropdown-menu #userMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item>
+              <a routerLink="/profile">Perfil</a>
+            </li>
+            <li nz-menu-item (click)="logout()">Logout</li>
+          </ul>
+        </nz-dropdown-menu>
       </div>
     </nz-header>
+
     <nz-content>
       <div class="inner-content">
         <router-outlet></router-outlet>

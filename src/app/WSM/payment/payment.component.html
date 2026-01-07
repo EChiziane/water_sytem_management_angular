@@ -1,239 +1,236 @@
-<div class="main-content">
-  <div class="header">
+<div class="content-wrapper">
+  <div class="page-header">
     <p> Lista de Pagamentos</p>
+
+
+    <span (click)="onBack()" class="back-arrow">
+      <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
+    </span>
   </div>
 
-  <div class="dash">
-    <div style="background: #ECECEC;">
+  <div class="summary-section">
+    <div class="summary-background">
       <div [nzGutter]="8" nz-row>
+
+
         <div [nzSpan]="8" nz-col>
           <nz-card nzTitle="Total Payments">
             <p>{{ totalPayments }}</p>
           </nz-card>
         </div>
+
+
         <div [nzSpan]="8" nz-col>
           <nz-card nzTitle="Confirmed Payments">
             <p>{{ confirmedPayments }}</p>
           </nz-card>
         </div>
+
+
         <div [nzSpan]="8" nz-col>
           <nz-card nzTitle="Unconfirmed Payments">
             <p>{{ unconfirmedPayments }}</p>
           </nz-card>
         </div>
+
       </div>
     </div>
   </div>
 
   <!-- Filtro (Campo de pesquisa e botão "Adicionar") -->
-  <div class="filter">
-    <input (input)="filterData()" [(ngModel)]="searchValue" class="input-flex" nz-input placeholder="Search by amount"
-           type="text"/>
+  <div class="filters-panel">
+    <input
+      (ngModelChange)="filterData()"
+      [(ngModel)]="searchValue"
+      class="input-flex"
+      nz-input
+      placeholder="Search by code"
+      type="text"/>
 
-    <button (click)="open()" nz-button nzType="primary">Adicionar</button>
-    <button (click)="openCustomerDrawer()" nz-button nzType="primary">Customer</button>
+    <button (click)="openPaymentDrawer()" nz-button nzType="primary">Adicionar</button>
+
   </div>
 
-  <div class="table">
-    <nz-table #nzTable [nzData]="listOfDisplayData" [nzScroll]="{ x: '1150px', y: '340px' }" nzTableLayout="fixed">
-      <thead>
-      <tr>
-        <th>Client Name</th>
-        <th>Amount</th>
-        <th>Reference Month</th>
-        <th>Payment Method</th>
-        <th>Confirmed</th>
-        <th>Created At</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let data of nzTable.data;">
-        <td>{{ data.customerName }}</td>
-        <td>{{ data.amount }}</td>
-        <td>{{ data.referenceMonth }}</td>
-        <td>{{ data.paymentMethod }}</td>
-        <td>{{ data.confirmed ? 'Yes' : 'No' }}</td>
-        <td>{{ data.paymentDate | date: 'dd MM yyyy - HH:mm' }}</td>
-        <td>
+  <div class="table-wrapper">
+    <div class="table-scroll">
+      <nz-spin
+        [nzSpinning]="isLoading"
+        nzSize="large"
+        nzTip="A carregar Payment...">
 
-          <button (click)="viewPayment(data)" [routerLink]="['/payment-detail', data.id]" nz-button nzSize="small"
-                  nzType="link">
-            <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
-          </button>
-          <button (click)="   createRecibo(data)" nz-button nzSize="small" nzType="link">
-            <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
-          </button>
-          <button (click)="deletePayment(data)" nz-button nzDanger nzSize="small" nzType="link">
-            <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
+
+
+      <nz-table
+        #nzTable
+        [nzData]="listOfDisplayData"
+        [nzScroll]="{ x: '1150px', y: '300px' }"
+        nzTableLayout="fixed">
+        <thead>
+        <tr>
+          <th>Client Name</th>
+          <th>Amount</th>
+          <th>Reference Month</th>
+          <th>Payment Method</th>
+          <th>Confirmed</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of nzTable.data;">
+          <td>{{ data.customerName }}</td>
+          <td>{{ data.amount }}</td>
+          <td>{{ data.referenceMonth }}</td>
+          <td>{{ data.paymentMethod }}</td>
+          <td>{{ data.confirmed ? 'Yes' : 'No' }}</td>
+          <td>{{ data.paymentDate | date: 'dd MM yyyy - HH:mm' }}</td>
+          <td>
+
+            <button (click)="viewPayment(data)" [routerLink]="['/payment-detail', data.id]" nz-button nzSize="small"
+                    nzType="link">
+              <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
+            </button>
+            <button (click)="    createCustomerPaymentInvoice(data.id)" nz-button nzSize="small" nzType="link">
+              <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
+            </button>
+            <button (click)="deletePayment(data)" nz-button nzDanger nzSize="small" nzType="link">
+              <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+      </nz-spin>
+    </div>
+
+
   </div>
 </div>
 
+
+<!-- ===== Payment Drawer ===== -->
 <nz-drawer
-  (nzOnClose)="close()"
+  (nzOnClose)="closePaymentDrawer()"
   [nzBodyStyle]="{ overflow: 'auto' }"
-  [nzFooter]="footerTpl"
+  [nzFooter]="paymentDrawerFooter"
   [nzMaskClosable]="false"
-  [nzVisible]="visible1"
+  [nzTitle]="paymentDrawerTitle"
+  [nzVisible]="isPaymentDrawerVisible"
   [nzWidth]="720"
-  nzTitle="Create Payment"
 >
-  <form (ngSubmit)="createPayment()" *nzDrawerContent [formGroup]="paymentForm" nz-form>
-    <div [nzGutter]="16" nz-row>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Amount</nz-form-label>
-          <nz-form-control>
-            <input formControlName="amount" nz-input placeholder="Enter payment amount" type="number"/>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Payment Method</nz-form-label>
-          <nz-form-control>
-            <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o método de pagamento">
-              <nz-option nzLabel="EMOLA" nzValue="EMOLA"></nz-option>
-              <nz-option nzLabel="MPESA" nzValue="MPESA"></nz-option>
-              <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
-              <nz-option nzLabel="NUMERARIO" nzValue="NUMERARIO"></nz-option>
-            </nz-select>
-          </nz-form-control>
 
-        </nz-form-item>
-      </div>
-    </div>
+  <!-- Drawer Content -->
+  <form
+    *nzDrawerContent
+    [formGroup]="paymentForm" class="drawer-form"
+    nz-form>
 
-    <div [nzGutter]="16" nz-row>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Months</nz-form-label>
-          <nz-form-control>
-            <input formControlName="numMonths" nz-input placeholder="Enter number of months"/>
-          </nz-form-control>
-        </nz-form-item>
+    <!-- ==== Informações do Pagamento ==== -->
+    <div class="drawer-section">
+
+      <h3 class="section-title">Informações do Pagamento</h3>
+
+      <div [nzGutter]="16" nz-row>
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label>Cliente</nz-form-label>
+            <nz-form-control>
+              <nz-select
+                (ngModelChange)="onCustomerSelect($event)"
+                formControlName="customerId"
+                nzPlaceHolder="Selecione o Cliente"
+              >
+                <nz-option
+                  *ngFor="let c of allCustomers"
+                  [nzLabel]="c.name"
+                  [nzValue]="c.id">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
       </div>
 
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Customer</nz-form-label>
-          <nz-form-control>
-            <nz-select formControlName="customerId" nzPlaceHolder="Select Customer">
-              <nz-option *ngFor="let customer of dataCostumers" [nzLabel]="customer.name"
-                         [nzValue]="customer.id"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
-
-    <div [nzGutter]="16" nz-row>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Confirmed</nz-form-label>
-          <nz-form-control>
-            <nz-switch formControlName="confirmed"></nz-switch>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
-  </form>
-
-  <ng-template #footerTpl>
-    <div style="float: right">
-      <button (click)="close()" nz-button style="margin-right: 8px;">Cancel</button>
-      <button (click)="createPayment()" nz-button nzType="primary">Submit</button>
-    </div>
-  </ng-template>
-</nz-drawer>
+      <div [nzGutter]="16" nz-row>
 
 
-<nz-drawer
-  (nzOnClose)="closeCustomerDrawer()"
-  [nzBodyStyle]="{ overflow: 'auto' }"
-  [nzFooter]="footerTpl"
-  [nzMaskClosable]="false"
-  [nzVisible]="visible1CustomerDrawer"
-  [nzWidth]="720"
-  nzTitle="Create Customer">
+        <div nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label>Montante</nz-form-label>
+            <nz-form-control>
+              <nz-input-group nzAddOnBefore="MZN">
+                <input formControlName="amount" nz-input placeholder="Digite o valor" type="number">
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
 
-  <form (ngSubmit)="createCustomer()" *nzDrawerContent [formGroup]="customerForm" nz-form>
-    <div [nzGutter]="16" nz-row>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Nome</nz-form-label>
-          <nz-form-control>
-            <input formControlName="name" nz-input placeholder="Digite o nome do cliente"/>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Contato</nz-form-label>
-          <nz-form-control>
-            <nz-input-group nzAddOnBefore="+258">
-              <input formControlName="contact" nz-input placeholder="Digite o contato"/>
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
+        <div nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label>Número de Meses</nz-form-label>
+            <nz-form-control>
+              <input
+                (change)="onNumMonthsChange()"
+                [max]="10"
+                [min]="0"
+                formControlName="numMonths"
+                nz-input
+                placeholder="Digite o número de meses"
+                type="number"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
 
-    <div [nzGutter]="16" nz-row>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Endereço</nz-form-label>
-          <nz-form-control>
-            <input formControlName="address" nz-input placeholder="Digite o endereço"/>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Status</nz-form-label>
-          <nz-form-control>
-            <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
-              <nz-option nzLabel="ATIVO" nzValue="ATIVO"></nz-option>
-              <nz-option nzLabel="INATIVO" nzValue="INATIVO"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-    </div>
+        <div *ngIf="selectedMonths.length > 0" nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label>Meses de Referência</nz-form-label>
+            <nz-form-control>
+              <p class="debt-months-inline">
+        <span *ngFor="let m of selectedMonths; let last = last">
+          {{ m }}<span *ngIf="!last">, </span><span *ngIf="last">.</span>
+        </span>
+              </p>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
 
-    <div [nzGutter]="16" nz-row>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Valve</nz-form-label>
-          <nz-form-control>
-            <nz-input-group nzAddOnBefore="MZN">
-              <input formControlName="valve" nz-input placeholder="Digite a válvula" type="number"/>
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
       </div>
-      <div nz-col nzSpan="12">
-        <nz-form-item>
-          <nz-form-label>Meses em Dívida</nz-form-label>
-          <nz-form-control>
-            <input formControlName="monthsInDebt" nz-input placeholder="Digite os meses" type="number"/>
-          </nz-form-control>
-        </nz-form-item>
+
+      <div [nzGutter]="16" nz-row>
+
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label>Método de Pagamento</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o método">
+                <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
+                <nz-option nzLabel="Depósito Bancário" nzValue="BANK"></nz-option>
+                <nz-option nzLabel="Dinheiro" nzValue="CASH"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
       </div>
+
     </div>
   </form>
 
-  <ng-template #footerTpl>
-    <div style="float: right">
-      <button (click)="close()" nz-button style="margin-right: 8px;">Cancelar</button>
-      <button (click)="createCustomer()" nz-button nzType="primary">
-        'Salvar'
+  <!-- Drawer Footer -->
+  <ng-template #paymentDrawerFooter>
+    <div class="drawer-footer">
+      <button (click)="closePaymentDrawer()"
+              class="btn-cancel"
+              nz-button nzType=
+                "default">Cancelar
+      </button>
+      <button (click)="savePayment()" [disabled]="paymentForm.invalid" class="btn-save"
+              nz-button
+              nzType="primary">
+        Confirmar Pagamento
       </button>
     </div>
   </ng-template>
+
 </nz-drawer>

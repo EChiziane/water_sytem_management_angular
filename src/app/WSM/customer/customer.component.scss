@@ -1,6 +1,6 @@
-/* Layout */
+/* layout */
 .content-wrapper {
-  padding: 24px;
+  padding: 18px;
   background: #f5f5f5;
   height: 100%;
   display: flex;
@@ -8,9 +8,9 @@
   overflow: hidden;
 }
 
-/* Header */
+/* header */
 .page-header {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
@@ -28,7 +28,7 @@
     cursor: pointer;
     padding: 6px 10px;
     border-radius: 6px;
-    transition: 0.2s ease-in-out;
+    transition: 0.2s;
 
     &:hover {
       background: rgba(0, 123, 255, 0.1);
@@ -40,11 +40,11 @@
   }
 }
 
-/* Summary Cards */
+/* summary cards */
 .summary-section {
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   flex-shrink: 0;
-  padding: 8px 0;
+  padding: 4px 0;
 
   nz-row {
     display: flex;
@@ -64,6 +64,8 @@
     transition: 0.25s;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     height: 100%;
+    padding: 8px !important;
+    min-height: 60px !important;
 
     &:hover {
       transform: translateY(-4px);
@@ -73,21 +75,26 @@
     ::ng-deep .ant-card-head {
       border-bottom: none;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 13px !important;
       color: #333;
       letter-spacing: 0.5px;
+      padding: 6px 12px !important;
+    }
+
+    ::ng-deep .ant-card-body {
+      padding: 6px 12px !important;
     }
 
     p {
-      font-size: 28px;
+      font-size: 18px;
       font-weight: 600;
-      margin: 8px 0 4px;
+      margin: 0;
       color: #333;
     }
   }
 }
 
-/* <!-- Table Filter Dropdown --> */
+/* filters */
 .filters-panel {
   display: flex;
   align-items: center;
@@ -116,9 +123,10 @@
   }
 }
 
-/* Table */
+/* table */
 .table-wrapper {
   flex: 1;
+  height: calc(100vh - 130px);
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -141,11 +149,11 @@
   .table-scroll {
     flex: 1;
     overflow: auto;
+    max-height: 100%;
   }
 }
 
-
-/* Spinner */
+/* spinner */
 .spinner-container {
   display: flex;
   justify-content: center;
@@ -160,10 +168,10 @@
   white-space: nowrap;
 }
 
-/* Drawer */
+/* drawer */
 .drawer-form {
   padding: 8px 16px 24px;
-  background-color: #fff;
+  background: #fff;
 }
 
 .drawer-section {
@@ -201,31 +209,30 @@ textarea[nz-input] {
   resize: none;
 }
 
-/* Drawer Footer */
+/* drawer footer */
 .drawer-footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   padding: 12px 0;
   background: #f8f9fa;
-  /* === Botões do Drawer === */
+
   .btn-cancel {
     color: #555;
     border-radius: 8px;
   }
 
   .btn-save {
-    background-color: #007bff;
+    background: #007bff;
     border: none;
     color: #fff;
     border-radius: 8px;
-    transition: background 0.3s;
+    transition: 0.3s;
 
     &:hover {
-      background-color: #0056b3;
+      background: #0056b3;
     }
   }
-
 }
 
 [nz-button] {
@@ -236,7 +243,7 @@ textarea[nz-input] {
   }
 }
 
-/* Drawer Spinner */
+/* drawer spinner */
 .drawer-spinner {
   display: flex;
   flex-direction: column;
