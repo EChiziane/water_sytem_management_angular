@@ -36,6 +36,9 @@ export class CustomerComponent implements OnInit {
   customerDrawerTitle = 'Criar Cliente';
   selectedCustomerId: any | null = null;
 
+  drawerWidth: string | number = 720;
+  drawerPlacement: 'right' | 'bottom' = 'right';
+
   // ========= Forms =========
   customerForm = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -61,8 +64,20 @@ export class CustomerComponent implements OnInit {
   // ========= Init =========
   ngOnInit(): void {
     this.getCustomers();
+    this.updateDrawer();
+    window.addEventListener('resize', () => this.updateDrawer());
   }
 
+
+  updateDrawer() {
+    if (window.innerWidth <= 768) {
+      this.drawerWidth = '100%';
+      this.drawerPlacement = 'bottom';
+    } else {
+      this.drawerWidth = 720;
+      this.drawerPlacement = 'right';
+    }
+  }
   // ========= Customer Logic =========
   getCustomers() {
     this.isLoading = true;

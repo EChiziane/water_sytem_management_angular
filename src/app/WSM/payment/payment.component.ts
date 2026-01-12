@@ -29,10 +29,10 @@ export class PaymentComponent implements OnInit {
 
   paymentForm!: FormGroup;
 
-
+  drawerWidth: string | number = 720;
+  drawerPlacement: 'right' | 'bottom' = 'right';
   searchValue = '';
-  visible = false;
-  visiblePaymentDrawer = false;
+
   selectedCustomer: Customer | null = null;
 
 
@@ -70,13 +70,27 @@ export class PaymentComponent implements OnInit {
 
 
     this.getPayments();
+
+    this.updateDrawer();
+    window.addEventListener('resize', () => this.updateDrawer());
 // Carrega os clientes
+  }
+
+  updateDrawer() {
+    if (window.innerWidth <= 768) {
+      this.drawerWidth = '100%';
+      this.drawerPlacement = 'bottom';
+    } else {
+      this.drawerWidth = 720;
+      this.drawerPlacement = 'right';
+    }
   }
 
   // === Abrir Drawer ===
   openPaymentDrawer() {
     this.isPaymentDrawerVisible = true;
   }
+
 
   // === Fechar Drawer ===
   closePaymentDrawer() {

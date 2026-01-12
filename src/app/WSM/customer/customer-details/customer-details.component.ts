@@ -30,6 +30,9 @@ export class CustomerDetailsComponent implements OnInit {
   visible = false;
   searchValue = '';
 
+  drawerWidth: string | number = 720;
+  drawerPlacement: 'right' | 'bottom' = 'right';
+
   constructor(private http: HttpClient,
               private route: ActivatedRoute,
               private fb: FormBuilder,
@@ -54,6 +57,18 @@ export class CustomerDetailsComponent implements OnInit {
     });
     this.getCustomerPayments();
     this.getCustomer();
+    this.updateDrawer();
+    window.addEventListener('resize', () => this.updateDrawer());
+  }
+
+  updateDrawer() {
+    if (window.innerWidth <= 768) {
+      this.drawerWidth = '100%';
+      this.drawerPlacement = 'bottom';
+    } else {
+      this.drawerWidth = 720;
+      this.drawerPlacement = 'right';
+    }
   }
 
   onNumMonthsChange() {

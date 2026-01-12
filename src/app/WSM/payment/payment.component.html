@@ -116,7 +116,7 @@
   [nzMaskClosable]="false"
   [nzTitle]="paymentDrawerTitle"
   [nzVisible]="isPaymentDrawerVisible"
-  [nzWidth]="720"
+  [nzWidth]="drawerWidth"
 >
 
   <!-- Drawer Content -->
@@ -154,7 +154,7 @@
       <div [nzGutter]="16" nz-row>
 
 
-        <div nz-col nzSpan="12">
+        <div nz-col nzXs="24" nzSm="24" nzMd="12">
           <nz-form-item>
             <nz-form-label>Montante</nz-form-label>
             <nz-form-control>
@@ -165,7 +165,7 @@
           </nz-form-item>
         </div>
 
-        <div nz-col nzSpan="12">
+        <div nz-col nzXs="24" nzSm="24" nzMd="12">
           <nz-form-item>
             <nz-form-label>Número de Meses</nz-form-label>
             <nz-form-control>
@@ -182,7 +182,7 @@
           </nz-form-item>
         </div>
 
-        <div *ngIf="selectedMonths.length > 0" nz-col nzSpan="12">
+        <div *ngIf="selectedMonths.length > 0" nz-col nzXs="24" nzSm="24" nzMd="12">
           <nz-form-item>
             <nz-form-label>Meses de Referência</nz-form-label>
             <nz-form-control>
