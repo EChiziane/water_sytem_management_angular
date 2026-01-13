@@ -309,3 +309,21 @@ textarea[nz-input] {
   margin: 0;
   color: #333;
 }
+/* search input with icon */
+.search-input {
+  width: 250px;
+}
+
+.search-input ::ng-deep .ant-input {
+  border-radius: 8px;
+}
+
+.search-input ::ng-deep .ant-input-affix-wrapper {
+  border-radius: 8px;
+  height: 40px;
+}
+
+
+.filters-panel button nz-icon {
+  margin-right: 6px;
+}

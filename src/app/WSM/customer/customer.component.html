@@ -69,15 +69,26 @@
 
   <!-- ===== Filters Panel ===== -->
   <div class="filters-panel">
-    <input
-      (ngModelChange)="search()"
-      [(ngModel)]="searchValue"
-      nz-input
-      placeholder="Search name"
-      type="text"
-    />
 
-    <button (click)="openCustomerDrawer()" nz-button nzType="primary">Novo Customer</button>
+      <input
+
+        nz-input
+        type="text"
+        placeholder="Search name"
+        [(ngModel)]="searchValue"
+        (ngModelChange)="search()"
+      />
+
+
+
+
+    <button
+      (click)="openCustomerDrawer()"
+      nz-button
+      nzType="primary">
+      <nz-icon nzType="user-add" nzTheme="outline"></nz-icon>
+      Novo Customer
+    </button>
   </div>
 
   <!-- ===== Table Wrapper ===== -->
