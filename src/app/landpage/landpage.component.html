@@ -1,21 +1,21 @@
 <nz-layout class="layout">
 
-  <!-- ===== HEADER ===== -->
-  <!-- ===== HEADER FIXO ===== -->
-  <nz-header class="header fixed-header">
+  <!-- ================= HEADER FIXO ================= -->
+  <nz-header class="header">
     <div class="header-content">
 
-      <!-- LOGO (NÃO QUEBRA) -->
+      <!-- LOGO -->
       <div class="logo">
         Águas&nbsp;Chiziane
       </div>
 
       <!-- MENU DESKTOP -->
-      <ul nz-menu nzMode="horizontal" class="menu desktop-menu">
-        <li nz-menu-item>Início</li>
-        <li nz-menu-item>Quem Somos</li>
-        <li nz-menu-item>Serviços</li>
-        <li nz-menu-item>Contacto</li>
+      <ul nz-menu nzMode="horizontal" class="desktop-menu">
+        <li nz-menu-item><a href="#inicio">Início</a></li>
+        <li nz-menu-item><a href="#quem-somos">Quem Somos</a></li>
+        <li nz-menu-item><a href="#servicos">Serviços</a></li>
+        <li nz-menu-item><a href="#contactos">Contactos</a></li>
+        <li nz-menu-item><a href="#localizacao">Onde Estamos</a></li>
       </ul>
 
       <!-- BOTÃO MOBILE -->
@@ -24,94 +24,142 @@
         nzType="text"
         class="mobile-menu-btn"
         (click)="menuVisible = true">
-        <span nz-icon nzType="menu" nzTheme="outline"></span>
+        <span nz-icon nzType="menu"></span>
       </button>
 
     </div>
   </nz-header>
 
-  <!-- ===== DRAWER MOBILE ===== -->
+  <!-- ================= DRAWER MOBILE ================= -->
   <nz-drawer
     nzPlacement="right"
     nzTitle="Menu"
     [nzVisible]="menuVisible"
-    (nzOnClose)="menuVisible = false"
-
-  >
+    (nzOnClose)="menuVisible = false">
 
     <ul nz-menu nzMode="vertical" *nzDrawerContent>
-      <li nz-menu-item (click)="menuVisible = false">Início</li>
-      <li nz-menu-item (click)="menuVisible = false">Quem Somos</li>
-      <li nz-menu-item (click)="menuVisible = false">Serviços</li>
-      <li nz-menu-item (click)="menuVisible = false">Contacto</li>
+      <li nz-menu-item (click)="menuVisible = false"><a href="#inicio">Início</a></li>
+      <li nz-menu-item (click)="menuVisible = false"><a href="#quem-somos">Quem Somos</a></li>
+      <li nz-menu-item (click)="menuVisible = false"><a href="#servicos">Serviços</a></li>
+      <li nz-menu-item (click)="menuVisible = false"><a href="#contactos">Contactos</a></li>
+      <li nz-menu-item (click)="menuVisible = false"><a href="#localizacao">Onde Estamos</a></li>
     </ul>
 
   </nz-drawer>
 
-  <!-- ===== HERO SLIDE ===== -->
+  <!-- ================= CONTEÚDO ================= -->
   <nz-content>
 
-    <nz-carousel nzAutoPlay class="hero">
-      <div nz-carousel-content class="hero-slide">
-        <h1>Pureza que vem da natureza</h1>
-        <p>Água tratada com qualidade e confiança</p>
-        <button nz-button nzType="primary" nzSize="large">
-          Saber mais
-        </button>
-      </div>
+    <!-- ===== HERO ===== -->
+    <section id="inicio">
+      <nz-carousel nzAutoPlay class="hero">
+        <div nz-carousel-content class="hero-slide">
+          <h1>Água canalizada em casa por apenas <span class="highlight">750 MT/mês</span></h1>
+          <p>Uso ilimitado e contínuo – confiança e qualidade para sua família!</p>
+          <button nz-button nzType="primary" nzSize="large" class="whatsapp-btn">
+            Fale connosco no WhatsApp
+          </button>
+        </div>
 
-      <div nz-carousel-content class="hero-slide second">
-        <h1>Compromisso com a sua saúde</h1>
-        <p>Distribuição segura e sustentável</p>
-      </div>
-    </nz-carousel>
+        <div nz-carousel-content class="hero-slide second">
+          <h1>Pureza que vem da natureza</h1>
+          <p>Distribuição segura, moderna e sustentável.</p>
+        </div>
+      </nz-carousel>
+    </section>
 
     <!-- ===== QUEM SOMOS ===== -->
-    <section class="section">
+    <section class="section" id="quem-somos">
       <h2>Quem Somos</h2>
       <p class="section-text">
-        A <strong>Águas Chiziane</strong> dedica-se à produção e distribuição
-        de água de qualidade, garantindo saúde, confiança e excelência
-        para famílias e empresas.
+        A <strong>Águas Chiziane</strong> é uma empresa familiar, iniciada em 2010, dedicada à produção e distribuição de água potável de qualidade. Nosso objetivo é fornecer água segura e acessível, garantindo a satisfação da comunidade e a confiança de famílias, empresas e escolas.
       </p>
     </section>
 
     <!-- ===== SERVIÇOS ===== -->
-    <section class="section light">
+    <section class="section light" id="servicos">
       <h2>Nossos Serviços</h2>
 
       <div nz-row nzGutter="16">
         <div nz-col nzXs="24" nzMd="8">
           <nz-card nzHoverable class="service-card">
             <span nz-icon nzType="experiment"></span>
-            <h3>Água Purificada</h3>
-            <p>Processos modernos de purificação e controlo de qualidade.</p>
+            <h3>Água Mineral</h3>
+            <p>Água potável purificada, certificada pelo regulador local.</p>
           </nz-card>
         </div>
 
         <div nz-col nzXs="24" nzMd="8">
           <nz-card nzHoverable class="service-card">
             <span nz-icon nzType="truck"></span>
-            <h3>Distribuição</h3>
-            <p>Entrega rápida e segura para residências e empresas.</p>
+            <h3>Água Canalizada</h3>
+            <p>Fornecimento diário de água canalizada diretamente em sua casa ou empresa, mediante taxa mensal fixa de 750 MT. Uso ilimitado!</p>
           </nz-card>
         </div>
 
         <div nz-col nzXs="24" nzMd="8">
           <nz-card nzHoverable class="service-card">
             <span nz-icon nzType="safety"></span>
-            <h3>Qualidade Garantida</h3>
-            <p>Conformidade com padrões nacionais de saúde.</p>
+            <h3>Instalação</h3>
+            <p>Instalação mediante taxa de 500 MT. O cliente fornece tubo de 3", T 3" e torneira. Comprimento do tubo varia conforme distância do ponto de ligação.</p>
           </nz-card>
         </div>
       </div>
     </section>
 
+    <!-- ===== CONTACTOS ===== -->
+    <section class="section light" id="contactos">
+      <h2>Contactos</h2>
+
+      <div nz-row nzGutter="16" class="contact-grid">
+        <div nz-col nzXs="24" nzMd="8">
+          <nz-card nzHoverable>
+            <span nz-icon nzType="phone"></span>
+            <h3>Telefone</h3>
+            <p>+258 84 123 1234 / +258 87 123 4123</p>
+          </nz-card>
+        </div>
+
+        <div nz-col nzXs="24" nzMd="8">
+          <nz-card nzHoverable>
+            <span nz-icon nzType="mail"></span>
+            <h3>Email</h3>
+            <p>aguaschizianeAgmail.com</p>
+          </nz-card>
+        </div>
+
+        <div nz-col nzXs="24" nzMd="8">
+          <nz-card nzHoverable>
+            <span nz-icon nzType="clock-circle"></span>
+            <h3>Horário</h3>
+            <p>Seg – Sex: 08h–16h | Sáb: 08h–12h</p>
+          </nz-card>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ONDE ESTAMOS ===== -->
+    <section class="section" id="localizacao">
+      <h2>Onde Estamos</h2>
+
+      <nz-card class="map-card">
+        <span nz-icon nzType="environment"></span>
+        <p>Rua da Esquadra, nº 524, Bairro Cumbeza, Maputo – Moçambique</p>
+
+        <div class="map-container">
+          <iframe
+            src="https://maps.google.com/maps?q=Maputo&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            loading="lazy">
+          </iframe>
+        </div>
+      </nz-card>
+    </section>
+
   </nz-content>
 
-  <!-- ===== FOOTER ===== -->
+  <!-- ================= FOOTER ================= -->
   <nz-footer class="footer">
-    <p>© 2026 Águas Chiziane · Todos os direitos reservados</p>
+    © 2026 Águas Chiziane · Todos os direitos reservados
   </nz-footer>
 
 </nz-layout>

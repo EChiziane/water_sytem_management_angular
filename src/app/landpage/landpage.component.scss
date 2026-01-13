@@ -7,7 +7,7 @@
 }
 
 /* =====================================================
-   HEADER (FIXO + RESPONSIVO)
+   HEADER FIXO + RESPONSIVO
 ===================================================== */
 .header {
   position: fixed;
@@ -29,7 +29,6 @@
   justify-content: space-between;
 }
 
-/* Logo sem quebra */
 .logo {
   font-size: 20px;
   font-weight: 600;
@@ -37,18 +36,15 @@
   white-space: nowrap;
 }
 
-/* Menu desktop */
 .desktop-menu {
   background: transparent;
   border: none;
 }
 
-/* Botão hamburguer (mobile) */
 .mobile-menu-btn {
   display: none;
 }
 
-/* Espaço para não sobrepor o conteúdo */
 nz-content {
   margin-top: 64px;
 }
@@ -65,17 +61,29 @@ nz-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: start;
     padding: 0 10%;
     color: #0d47a1;
 
     h1 {
-      font-size: 40px;
+      font-size: 36px;
       margin-bottom: 12px;
     }
 
     p {
       font-size: 18px;
       margin-bottom: 24px;
+    }
+
+    .highlight {
+      color: #ff6f00;
+      font-weight: bold;
+    }
+
+    .whatsapp-btn {
+      background-color: #25d366;
+      border-color: #25d366;
+      color: #fff;
     }
   }
 
@@ -128,9 +136,44 @@ nz-content {
     color: #0d47a1;
   }
 
+  p {
+    font-size: 14px;
+  }
+
   &:hover {
     transform: translateY(-6px);
   }
+}
+
+/* =====================================================
+   CONTACTOS
+===================================================== */
+.contact-grid span[nz-icon] {
+  font-size: 28px;
+  color: #1e88e5;
+  margin-bottom: 12px;
+}
+
+/* =====================================================
+   MAPA
+===================================================== */
+.map-card {
+  text-align: center;
+  padding: 24px;
+  border-radius: 16px;
+}
+
+.map-container {
+  margin-top: 16px;
+  height: 300px;
+  width: 100%;
+}
+
+.map-container iframe {
+  border: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
 }
 
 /* =====================================================
@@ -140,10 +183,11 @@ nz-content {
   text-align: center;
   background: #e3f2fd;
   color: #0d47a1;
+  padding: 24px 0;
 }
 
 /* =====================================================
-   MOBILE (iPhone 12)
+   RESPONSIVO (iPhone 12)
 ===================================================== */
 @media (max-width: 768px) {
 
@@ -159,12 +203,10 @@ nz-content {
     font-size: 18px;
   }
 
-  /* Esconde menu desktop */
   .desktop-menu {
     display: none;
   }
 
-  /* Mostra botão hamburguer */
   .mobile-menu-btn {
     display: inline-flex;
     font-size: 22px;
