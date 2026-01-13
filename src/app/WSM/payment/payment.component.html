@@ -86,7 +86,7 @@
           <td>{{ data.paymentDate | date: 'dd MM yyyy - HH:mm' }}</td>
           <td>
 
-            <button (click)="viewPayment(data)" [routerLink]="['/payment-detail', data.id]" nz-button nzSize="small"
+            <button (click)="viewPayment(data)" [routerLink]="['/app/payment-detail', data.id]" nz-button nzSize="small"
                     nzType="link">
               <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
             </button>
