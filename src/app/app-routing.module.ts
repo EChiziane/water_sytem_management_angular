@@ -10,25 +10,45 @@ import {CustomerComponent} from './WSM/customer/customer.component';
 import {CalendarComponent} from './calendar/calendar.component';
 import {ReciboComponent} from './WSM/recibo/recibo.component';
 import {LandingPageComponent} from './landpage/landingpage.component';
+import {MainLayoutComponent} from './main-layout/main-layout.component';
+import {AuthGuard} from './services/auth.guard';
 
 
 
 const routes: Routes = [
-  // Alterar o redirecionamento para 'login' como a rota inicial
-  {path: '', pathMatch: 'full', redirectTo: '/landing-page'},
-  {path:'',component: LandingPageComponent},
-  {path:'landing-page',component: LandingPageComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'register', component: SigninComponent},
-  {path: 'users', component: ListuserComponent},
-  {path: 'customer-detail/:id', component: CustomerDetailsComponent},
-  {path: 'payment-detail/:id', component: PaymentDetailsComponent},
-  {path: 'payment', component: PaymentComponent},
-  {path: 'customer', component: CustomerComponent},
-  {path: 'calendar', component: CalendarComponent},
-  {path: 'recibo', component: ReciboComponent},
-  {path: 'welcome', loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)}
+
+  // 🌍 Público
+  { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
+  { path: 'landing-page', component: LandingPageComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: SigninComponent },
+
+  // 🔐 Sistema protegido
+  {
+    path: 'app',
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+
+      { path: 'customer', component: CustomerComponent },
+      { path: 'customer-detail/:id', component: CustomerDetailsComponent },
+
+      { path: 'payment', component: PaymentComponent },
+      { path: 'payment-detail/:id', component: PaymentDetailsComponent },
+
+      { path: 'calendar', component: CalendarComponent },
+      { path: 'recibo', component: ReciboComponent },
+      { path: 'users', component: ListuserComponent },
+
+      // rota default do sistema
+      { path: '', redirectTo: 'customer', pathMatch: 'full' }
+    ]
+  },
+
+  // fallback
+  { path: '**', redirectTo: 'landing-page' }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
