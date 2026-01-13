@@ -1,0 +1,117 @@
+<nz-layout class="layout">
+
+  <!-- ===== HEADER ===== -->
+  <!-- ===== HEADER FIXO ===== -->
+  <nz-header class="header fixed-header">
+    <div class="header-content">
+
+      <!-- LOGO (NÃO QUEBRA) -->
+      <div class="logo">
+        Águas&nbsp;Chiziane
+      </div>
+
+      <!-- MENU DESKTOP -->
+      <ul nz-menu nzMode="horizontal" class="menu desktop-menu">
+        <li nz-menu-item>Início</li>
+        <li nz-menu-item>Quem Somos</li>
+        <li nz-menu-item>Serviços</li>
+        <li nz-menu-item>Contacto</li>
+      </ul>
+
+      <!-- BOTÃO MOBILE -->
+      <button
+        nz-button
+        nzType="text"
+        class="mobile-menu-btn"
+        (click)="menuVisible = true">
+        <span nz-icon nzType="menu" nzTheme="outline"></span>
+      </button>
+
+    </div>
+  </nz-header>
+
+  <!-- ===== DRAWER MOBILE ===== -->
+  <nz-drawer
+    nzPlacement="right"
+    nzTitle="Menu"
+    [nzVisible]="menuVisible"
+    (nzOnClose)="menuVisible = false"
+
+  >
+
+    <ul nz-menu nzMode="vertical" *nzDrawerContent>
+      <li nz-menu-item (click)="menuVisible = false">Início</li>
+      <li nz-menu-item (click)="menuVisible = false">Quem Somos</li>
+      <li nz-menu-item (click)="menuVisible = false">Serviços</li>
+      <li nz-menu-item (click)="menuVisible = false">Contacto</li>
+    </ul>
+
+  </nz-drawer>
+
+  <!-- ===== HERO SLIDE ===== -->
+  <nz-content>
+
+    <nz-carousel nzAutoPlay class="hero">
+      <div nz-carousel-content class="hero-slide">
+        <h1>Pureza que vem da natureza</h1>
+        <p>Água tratada com qualidade e confiança</p>
+        <button nz-button nzType="primary" nzSize="large">
+          Saber mais
+        </button>
+      </div>
+
+      <div nz-carousel-content class="hero-slide second">
+        <h1>Compromisso com a sua saúde</h1>
+        <p>Distribuição segura e sustentável</p>
+      </div>
+    </nz-carousel>
+
+    <!-- ===== QUEM SOMOS ===== -->
+    <section class="section">
+      <h2>Quem Somos</h2>
+      <p class="section-text">
+        A <strong>Águas Chiziane</strong> dedica-se à produção e distribuição
+        de água de qualidade, garantindo saúde, confiança e excelência
+        para famílias e empresas.
+      </p>
+    </section>
+
+    <!-- ===== SERVIÇOS ===== -->
+    <section class="section light">
+      <h2>Nossos Serviços</h2>
+
+      <div nz-row nzGutter="16">
+        <div nz-col nzXs="24" nzMd="8">
+          <nz-card nzHoverable class="service-card">
+            <span nz-icon nzType="experiment"></span>
+            <h3>Água Purificada</h3>
+            <p>Processos modernos de purificação e controlo de qualidade.</p>
+          </nz-card>
+        </div>
+
+        <div nz-col nzXs="24" nzMd="8">
+          <nz-card nzHoverable class="service-card">
+            <span nz-icon nzType="truck"></span>
+            <h3>Distribuição</h3>
+            <p>Entrega rápida e segura para residências e empresas.</p>
+          </nz-card>
+        </div>
+
+        <div nz-col nzXs="24" nzMd="8">
+          <nz-card nzHoverable class="service-card">
+            <span nz-icon nzType="safety"></span>
+            <h3>Qualidade Garantida</h3>
+            <p>Conformidade com padrões nacionais de saúde.</p>
+          </nz-card>
+        </div>
+      </div>
+    </section>
+
+  </nz-content>
+
+  <!-- ===== FOOTER ===== -->
+  <nz-footer class="footer">
+    <p>© 2026 Águas Chiziane · Todos os direitos reservados</p>
+  </nz-footer>
+
+</nz-layout>

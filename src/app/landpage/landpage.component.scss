@@ -1,0 +1,185 @@
+/* =====================================================
+   LAYOUT BASE
+===================================================== */
+.layout {
+  min-height: 100vh;
+  background: #f5faff;
+}
+
+/* =====================================================
+   HEADER (FIXO + RESPONSIVO)
+===================================================== */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+
+  padding: 0 24px;
+}
+
+.header-content {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo sem quebra */
+.logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e88e5;
+  white-space: nowrap;
+}
+
+/* Menu desktop */
+.desktop-menu {
+  background: transparent;
+  border: none;
+}
+
+/* Botão hamburguer (mobile) */
+.mobile-menu-btn {
+  display: none;
+}
+
+/* Espaço para não sobrepor o conteúdo */
+nz-content {
+  margin-top: 64px;
+}
+
+/* =====================================================
+   HERO / SLIDER
+===================================================== */
+.hero {
+  height: 70vh;
+
+  .hero-slide {
+    height: 70vh;
+    background: linear-gradient(to right, #e3f2fd, #bbdefb);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 10%;
+    color: #0d47a1;
+
+    h1 {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 24px;
+    }
+  }
+
+  .second {
+    background: linear-gradient(to right, #b3e5fc, #e1f5fe);
+  }
+}
+
+/* =====================================================
+   SECTIONS
+===================================================== */
+.section {
+  padding: 64px 10%;
+  text-align: center;
+
+  h2 {
+    font-size: 32px;
+    color: #1565c0;
+    margin-bottom: 16px;
+  }
+
+  .section-text {
+    max-width: 700px;
+    margin: auto;
+    font-size: 16px;
+    color: #555;
+  }
+
+  &.light {
+    background: #ffffff;
+  }
+}
+
+/* =====================================================
+   SERVICES
+===================================================== */
+.service-card {
+  text-align: center;
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+
+  span[nz-icon] {
+    font-size: 32px;
+    color: #1e88e5;
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    margin-top: 12px;
+    color: #0d47a1;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+  }
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+.footer {
+  text-align: center;
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+/* =====================================================
+   MOBILE (iPhone 12)
+===================================================== */
+@media (max-width: 768px) {
+
+  .header {
+    padding: 0 16px;
+  }
+
+  .header-content {
+    height: 56px;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  /* Esconde menu desktop */
+  .desktop-menu {
+    display: none;
+  }
+
+  /* Mostra botão hamburguer */
+  .mobile-menu-btn {
+    display: inline-flex;
+    font-size: 22px;
+    color: #1e88e5;
+  }
+
+  nz-content {
+    margin-top: 56px;
+  }
+
+  .hero .hero-slide h1 {
+    font-size: 26px;
+  }
+
+  .hero .hero-slide p {
+    font-size: 15px;
+  }
+}

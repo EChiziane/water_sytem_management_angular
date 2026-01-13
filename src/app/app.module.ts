@@ -62,6 +62,8 @@ import {ReciboComponent} from './WSM/recibo/recibo.component';
 
 import {NzSpinComponent} from 'ng-zorro-antd/spin';
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {LandpageComponent} from './landpage/landpage.component';
+import {NzCarouselComponent, NzCarouselContentDirective} from 'ng-zorro-antd/carousel';
 
 
 registerLocaleData(en);
@@ -79,7 +81,8 @@ registerLocaleData(en);
     PaymentComponent,
     PaymentDetailsComponent,
     CustomerDetailsComponent,
-    ReciboComponent
+    ReciboComponent,
+    LandpageComponent
   ],
   imports: [
     BrowserModule,
@@ -176,7 +179,9 @@ registerLocaleData(en);
     MatOption,
     MatButton,
     NzSpinComponent,
-    NzTooltipDirective
+    NzTooltipDirective,
+    NzCarouselComponent,
+    NzCarouselContentDirective
 
   ],
   providers: [
