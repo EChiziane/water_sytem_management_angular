@@ -16,6 +16,12 @@
         <li nz-menu-item><a href="#servicos">Serviços</a></li>
         <li nz-menu-item><a href="#contactos">Contactos</a></li>
         <li nz-menu-item><a href="#localizacao">Onde Estamos</a></li>
+        <!-- LOGIN -->
+        <li nz-menu-item class="login-menu-item">
+          <button nz-button nzType="primary" nzSize="small" (click)="goToLogin()">
+            Login
+          </button>
+        </li>
       </ul>
 
       <!-- BOTÃO MOBILE -->
@@ -43,6 +49,16 @@
       <li nz-menu-item (click)="menuVisible = false"><a href="#servicos">Serviços</a></li>
       <li nz-menu-item (click)="menuVisible = false"><a href="#contactos">Contactos</a></li>
       <li nz-menu-item (click)="menuVisible = false"><a href="#localizacao">Onde Estamos</a></li>
+      <!-- LOGIN MOBILE -->
+      <li nz-menu-item>
+        <button
+          nz-button
+          nzType="primary"
+          nzBlock
+          (click)="goToLogin(); menuVisible = false">
+          Login
+        </button>
+      </li>
     </ul>
 
   </nz-drawer>
@@ -205,6 +221,10 @@
         class="whatsapp-btn-footer">
         Fale connosco no WhatsApp
       </a>
+
+      <button nz-button nzType="default" (click)="goToLogin()">
+        Área do Sistema
+      </button>
     </div>
   </nz-footer>
 

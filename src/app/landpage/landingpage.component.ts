@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-landingpage',
@@ -8,4 +9,10 @@ import { Component } from '@angular/core';
 })
 export class LandingPageComponent {
   menuVisible = false;
+
+  constructor(private router: Router) {}
+
+  goToLogin(): void {
+    this.router.navigate(['/login']);
+  }
 }
