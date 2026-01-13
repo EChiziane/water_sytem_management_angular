@@ -1,7 +1,7 @@
 <nz-layout class="layout">
 
   <!-- ================= HEADER FIXO ================= -->
-  <nz-header class="header">
+  <nz-header class="header fixed-header">
     <div class="header-content">
 
       <!-- LOGO -->
@@ -54,16 +54,20 @@
     <section id="inicio">
       <nz-carousel nzAutoPlay class="hero">
         <div nz-carousel-content class="hero-slide">
-          <h1>Água canalizada em casa por apenas <span class="highlight">750 MT/mês</span></h1>
-          <p>Uso ilimitado e contínuo – confiança e qualidade para sua família!</p>
-          <button nz-button nzType="primary" nzSize="large" class="whatsapp-btn">
+          <h1>Pureza que vem da natureza</h1>
+          <p>Água tratada com qualidade, segura e acessível para todos</p>
+          <a
+            href="https://wa.me/258841231234?text=Olá%2C%20gostaria%20de%20mais%20informações%20sobre%20Águas%20Chiziane"
+            target="_blank"
+            class="whatsapp-btn"
+            nz-button nzType="primary" nzSize="large">
             Fale connosco no WhatsApp
-          </button>
+          </a>
         </div>
 
         <div nz-carousel-content class="hero-slide second">
-          <h1>Pureza que vem da natureza</h1>
-          <p>Distribuição segura, moderna e sustentável.</p>
+          <h1>Compromisso com a sua saúde</h1>
+          <p>Distribuição segura e sustentável desde 2010</p>
         </div>
       </nz-carousel>
     </section>
@@ -72,7 +76,9 @@
     <section class="section" id="quem-somos">
       <h2>Quem Somos</h2>
       <p class="section-text">
-        A <strong>Águas Chiziane</strong> é uma empresa familiar, iniciada em 2010, dedicada à produção e distribuição de água potável de qualidade. Nosso objetivo é fornecer água segura e acessível, garantindo a satisfação da comunidade e a confiança de famílias, empresas e escolas.
+        A <strong>Águas Chiziane</strong> é uma empresa familiar que começou em 2010,
+        dedicada à produção e distribuição de água potável de qualidade.
+        Nosso objetivo é fornecer água segura e acessível, garantindo a satisfação da comunidade.
       </p>
     </section>
 
@@ -84,24 +90,42 @@
         <div nz-col nzXs="24" nzMd="8">
           <nz-card nzHoverable class="service-card">
             <span nz-icon nzType="experiment"></span>
-            <h3>Água Mineral</h3>
-            <p>Água potável purificada, certificada pelo regulador local.</p>
+            <h3>Água Purificada</h3>
+            <p>Processos modernos de purificação e controlo de qualidade.</p>
+            <a
+              href="https://wa.me/258841231234?text=Olá%2C%20quero%20saber%20mais%20sobre%20Água%20Purificada"
+              target="_blank"
+              class="service-btn">
+              Peça Agora
+            </a>
           </nz-card>
         </div>
 
         <div nz-col nzXs="24" nzMd="8">
           <nz-card nzHoverable class="service-card">
             <span nz-icon nzType="truck"></span>
-            <h3>Água Canalizada</h3>
-            <p>Fornecimento diário de água canalizada diretamente em sua casa ou empresa, mediante taxa mensal fixa de 750 MT. Uso ilimitado!</p>
+            <h3>Distribuição</h3>
+            <p>Entrega rápida e segura para residências, empresas e escolas.</p>
+            <a
+              href="https://wa.me/258841231234?text=Olá%2C%20quero%20saber%20mais%20sobre%20Distribuição"
+              target="_blank"
+              class="service-btn">
+              Peça Agora
+            </a>
           </nz-card>
         </div>
 
         <div nz-col nzXs="24" nzMd="8">
           <nz-card nzHoverable class="service-card">
             <span nz-icon nzType="safety"></span>
-            <h3>Instalação</h3>
-            <p>Instalação mediante taxa de 500 MT. O cliente fornece tubo de 3", T 3" e torneira. Comprimento do tubo varia conforme distância do ponto de ligação.</p>
+            <h3>Qualidade Garantida</h3>
+            <p>Certificação do regulador local garantindo conformidade e segurança.</p>
+            <a
+              href="https://wa.me/258841231234?text=Olá%2C%20quero%20saber%20mais%20sobre%20Qualidade"
+              target="_blank"
+              class="service-btn">
+              Peça Agora
+            </a>
           </nz-card>
         </div>
       </div>
@@ -116,7 +140,7 @@
           <nz-card nzHoverable>
             <span nz-icon nzType="phone"></span>
             <h3>Telefone</h3>
-            <p>+258 84 123 1234 / +258 87 123 4123</p>
+            <p>+258 841231234</p>
           </nz-card>
         </div>
 
@@ -124,7 +148,7 @@
           <nz-card nzHoverable>
             <span nz-icon nzType="mail"></span>
             <h3>Email</h3>
-            <p>aguaschizianeAgmail.com</p>
+            <p>aguaschiziane&#64;gmail.com</p>
           </nz-card>
         </div>
 
@@ -132,9 +156,20 @@
           <nz-card nzHoverable>
             <span nz-icon nzType="clock-circle"></span>
             <h3>Horário</h3>
-            <p>Seg – Sex: 08h–16h | Sáb: 08h–12h</p>
+            <p>Seg–Sex: 08h às 17h | Sáb: 08h às 12h</p>
           </nz-card>
         </div>
+      </div>
+
+      <!-- FORMULÁRIO DE CONTACTO -->
+      <div class="contact-form">
+        <h3>Envie-nos uma mensagem</h3>
+        <form>
+          <input type="text" placeholder="Seu Nome" required>
+          <input type="email" placeholder="Seu Email" required>
+          <textarea placeholder="Sua Mensagem" required></textarea>
+          <button type="submit" nz-button nzType="primary">Enviar</button>
+        </form>
       </div>
     </section>
 
@@ -144,11 +179,14 @@
 
       <nz-card class="map-card">
         <span nz-icon nzType="environment"></span>
-        <p>Rua da Esquadra, nº 524, Bairro Cumbeza, Maputo – Moçambique</p>
+        <p>
+          Av. de Moçambique, nº 534<br />
+          Bairro Cumbeza, Maputo – Moçambique
+        </p>
 
         <div class="map-container">
           <iframe
-            src="https://maps.google.com/maps?q=Maputo&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            src="https://maps.google.com/maps?q=Maputo&t=&z=15&ie=UTF8&iwloc=&output=embed"
             loading="lazy">
           </iframe>
         </div>
@@ -159,7 +197,15 @@
 
   <!-- ================= FOOTER ================= -->
   <nz-footer class="footer">
-    © 2026 Águas Chiziane · Todos os direitos reservados
+    <div class="footer-content">
+      <p>© 2026 Águas Chiziane · Todos os direitos reservados</p>
+      <a
+        href="https://wa.me/258841231234?text=Olá%2C%20gostaria%20de%20mais%20informações%20sobre%20Águas%20Chiziane"
+        target="_blank"
+        class="whatsapp-btn-footer">
+        Fale connosco no WhatsApp
+      </a>
+    </div>
   </nz-footer>
 
 </nz-layout>
