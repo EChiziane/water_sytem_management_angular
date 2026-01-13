@@ -10,28 +10,56 @@
   </div>
 
   <!-- ===== Summary Section ===== -->
+  <!-- ===== Summary Section ===== -->
   <div class="summary-section">
     <div class="summary-background">
       <div [nzGutter]="8" nz-row>
 
         <!-- Total Customers -->
         <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small" nzTitle="Total Customers">
-            <p>{{ totalCustomers }}</p>
+          <nz-card nzSize="small">
+            <div class="summary-card">
+              <div class="icon-wrapper total">
+                <nz-icon nzType="team" nzTheme="outline"></nz-icon>
+              </div>
+
+              <div class="summary-content">
+                <span class="title">Total Customers</span>
+                <p>{{ totalCustomers }}</p>
+              </div>
+            </div>
           </nz-card>
         </div>
 
         <!-- Active Customers -->
         <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small" nzTitle="Active Customers">
-            <p>{{ activeCustomers }}</p>
+          <nz-card nzSize="small">
+            <div class="summary-card">
+              <div class="icon-wrapper active">
+                <nz-icon nzType="check-circle" nzTheme="outline"></nz-icon>
+              </div>
+
+              <div class="summary-content">
+                <span class="title">Active Customers</span>
+                <p>{{ activeCustomers }}</p>
+              </div>
+            </div>
           </nz-card>
         </div>
 
         <!-- Inactive Customers -->
         <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small" nzTitle="Inactive Customers">
-            <p>{{ inactiveCustomers }}</p>
+          <nz-card nzSize="small">
+            <div class="summary-card">
+              <div class="icon-wrapper inactive">
+                <nz-icon nzType="stop" nzTheme="outline"></nz-icon>
+              </div>
+
+              <div class="summary-content">
+                <span class="title">Inactive Customers</span>
+                <p>{{ inactiveCustomers }}</p>
+              </div>
+            </div>
           </nz-card>
         </div>
 
