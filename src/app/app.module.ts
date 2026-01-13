@@ -65,6 +65,7 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 import {NzCarouselComponent, NzCarouselContentDirective} from 'ng-zorro-antd/carousel';
 import {LandingPageComponent} from './landpage/landingpage.component';
+import {NzBreadCrumbComponent, NzBreadCrumbItemComponent} from "ng-zorro-antd/breadcrumb";
 
 
 registerLocaleData(en);
@@ -183,7 +184,9 @@ registerLocaleData(en);
     NzSpinComponent,
     NzTooltipDirective,
     NzCarouselComponent,
-    NzCarouselContentDirective
+    NzCarouselContentDirective,
+    NzBreadCrumbItemComponent,
+    NzBreadCrumbComponent
 
   ],
   providers: [
