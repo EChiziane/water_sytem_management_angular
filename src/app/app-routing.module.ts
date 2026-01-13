@@ -9,10 +9,15 @@ import {PaymentComponent} from './WSM/payment/payment.component';
 import {CustomerComponent} from './WSM/customer/customer.component';
 import {CalendarComponent} from './calendar/calendar.component';
 import {ReciboComponent} from './WSM/recibo/recibo.component';
+import {LandingPageComponent} from './landpage/landingpage.component';
+
+
 
 const routes: Routes = [
   // Alterar o redirecionamento para 'login' como a rota inicial
-  {path: '', pathMatch: 'full', redirectTo: '/login'},
+  {path: '', pathMatch: 'full', redirectTo: '/landing-page'},
+  {path:'',component: LandingPageComponent},
+  {path:'landing-page',component: LandingPageComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: SigninComponent},
   {path: 'users', component: ListuserComponent},
