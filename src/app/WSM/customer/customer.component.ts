@@ -21,8 +21,8 @@ export class CustomerComponent implements OnInit {
   dataCostumers: Customer[] = [];
 
   totalCustomers = 0;
-  activeCustomers = 0;
-  inactiveCustomers = 0;
+  debtorsCustomers = 0;
+  regularCustomers = 0;
   isLoading = false;
 
   // ========= UI State =========
@@ -30,6 +30,9 @@ export class CustomerComponent implements OnInit {
   visible = false;
   isCustomerDrawerVisible = false;
   paymentDrawerVisible = false;
+
+  // ===== Debt Filter =====
+  debtFilter: 'ALL' | 'DEBT' | 'CLEAR' = 'ALL';
 
   // ========= Edit State =========
   isEditMode = false;
@@ -90,11 +93,52 @@ export class CustomerComponent implements OnInit {
     });
   }
 
+  applyFilters() {
+    let data = [...this.dataSource];
+
+    // --- Filter by name ---
+    if (this.searchValue) {
+      data = data.filter(item =>
+        item.name.toLowerCase().includes(this.searchValue.toLowerCase())
+      );
+    }
+
+    // --- Filter by debt ---
+    if (this.debtFilter === 'DEBT') {
+      data = data.filter(item => item.monthsInDebt > 0);
+    }
+
+    if (this.debtFilter === 'CLEAR') {
+      data = data.filter(item => item.monthsInDebt === 0);
+    }
+
+    this.listOfDisplayData = data;
+  }
+
+
   calculateCustomerStats() {
     this.totalCustomers = this.dataSource.length;
-    this.activeCustomers = this.dataSource.filter(c => c.status === 'ATIVO').length;
-    this.inactiveCustomers = this.dataSource.filter(c => c.status === 'INATIVO').length;
+
+    this.debtorsCustomers = this.dataSource.filter(
+      c => c.monthsInDebt && c.monthsInDebt > 0
+    ).length;
+
+    this.regularCustomers = this.dataSource.filter(
+      c => !c.monthsInDebt || c.monthsInDebt === 0
+    ).length;
   }
+
+  search() {
+    this.visible = false;
+    this.applyFilters();
+  }
+
+  filterByDebt(value: 'ALL' | 'DEBT' | 'CLEAR') {
+    this.debtFilter = value;
+    this.applyFilters();
+  }
+
+
 
   editCustomer(customer: Customer) {
     this.isEditMode = true;
@@ -185,12 +229,6 @@ export class CustomerComponent implements OnInit {
     this.search();
   }
 
-  search() {
-    this.visible = false;
-    this.listOfDisplayData = this.dataSource.filter(item =>
-      item.name.toLowerCase().includes(this.searchValue.toLowerCase())
-    );
-  }
 
   // ========= Drawer Controls =========
   openCustomerDrawer() {
