@@ -7,6 +7,8 @@ import {CustomerService} from '../../../services/customer.service';
 import {PaymentService} from '../../../services/payment.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CustomerPaymentInvoiceService} from '../../../services/customer-payment-invoice.service';
+import {NzMessageService} from "ng-zorro-antd/message";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 
 @Component({
@@ -33,12 +35,14 @@ export class CustomerDetailsComponent implements OnInit {
   drawerWidth: string | number = 720;
   drawerPlacement: 'right' | 'bottom' = 'right';
 
-  constructor(private http: HttpClient,
-              private route: ActivatedRoute,
-              private fb: FormBuilder,
-              private customerService: CustomerService,
-              private customerPaymentInvoiceService: CustomerPaymentInvoiceService,
-              private paymentService: PaymentService) {
+  constructor(  private http: HttpClient,
+                private route: ActivatedRoute,
+                private fb: FormBuilder,
+                private customerService: CustomerService,
+                private customerPaymentInvoiceService: CustomerPaymentInvoiceService,
+                private paymentService: PaymentService,
+                private modal: NzModalService,
+                private message: NzMessageService) {
 
 
   }
@@ -127,7 +131,24 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   deletePayment(data: Payment) {
-
+    this.modal.confirm({
+      nzTitle: 'Confirmar eliminação',
+      nzContent: `Tem a certeza que deseja eliminar este pagamento de <strong>${data.customerName}</strong>?`,
+      nzOkText: 'Sim, eliminar',
+      nzOkDanger: true,
+      nzCancelText: 'Cancelar',
+      nzOnOk: () => {
+        this.paymentService.deletePayment(data.id).subscribe({
+          next: () => {
+            this.message.success('Pagamento eliminado com sucesso ✅');
+            this.getCustomerPayments();
+          },
+          error: () => {
+            this.message.error('Erro ao eliminar o pagamento 🚫');
+          }
+        });
+      }
+    });
   }
 
   viewPayment(data: Payment) {

@@ -208,6 +208,7 @@ export class CustomerComponent implements OnInit {
       nzContent: `Cliente: <strong>${data.name}</strong>`,
       nzOkText: 'Sim',
       nzOkType: 'primary',
+      nzOkDanger: true,
       nzCancelText: 'Não',
       nzOnOk: () =>
         this.customerService.deleteCustomer(data.id).subscribe({
