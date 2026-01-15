@@ -1,5 +1,20 @@
 <div class="content-wrapper">
 
+    <!-- ===== Breadcrumb ===== -->
+    <nz-breadcrumb class="page-breadcrumb">
+        <nz-breadcrumb-item>
+            <a routerLink="/app">Home</a>
+        </nz-breadcrumb-item>
+
+        <nz-breadcrumb-item>
+            <a routerLink="/app/customer">Customers</a>
+        </nz-breadcrumb-item>
+
+        <nz-breadcrumb-item>
+           Detalhes do Cliente
+        </nz-breadcrumb-item>
+    </nz-breadcrumb>
+
   <!-- ===== Page Header ===== -->
   <div class="page-header">
     <p>Detalhes do Cliente</p>
@@ -71,7 +86,10 @@
     />
 
     <button (click)="openPaymentDrawer()" nz-button nzType="primary">
-      Novo Payment
+        <nz-icon nzType="plus-circle" nzTheme="outline"></nz-icon>
+
+
+        Novo Payment
     </button>
   </div>
 
