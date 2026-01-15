@@ -197,3 +197,151 @@
     </div>
   </div>
 </div>
+
+<nz-drawer
+        (nzOnClose)="closeCustomerDrawer()"
+        [nzBodyStyle]="{ overflow: 'auto' }"
+        [nzFooter]="customerDrawerFooter"
+        [nzMaskClosable]="false"
+        [nzTitle]="customerDrawerTitle"
+        [nzVisible]="isCustomerDrawerVisible"
+        [nzWidth]="drawerWidth">
+
+    <form
+            *nzDrawerContent
+            [formGroup]="customerForm"
+            class="drawer-form"
+            nz-form>
+
+        <!-- ===== Section: Basic Information ===== -->
+        <div class="drawer-section">
+            <h3 class="section-title">Basic Information</h3>
+
+            <div [nzGutter]="16" nz-row>
+
+                <!-- Name -->
+                <div nz-col nzXs="24" nzSm="24" nzMd="12">
+                    <nz-form-item>
+                        <nz-form-label>Nome</nz-form-label>
+                        <nz-form-control>
+                            <input formControlName="name" nz-input placeholder="Digite o nome do cliente"/>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <!-- Contact -->
+                <div nz-col nzXs="24" nzSm="24" nzMd="12">
+                    <nz-form-item>
+                        <nz-form-label>Contato</nz-form-label>
+                        <nz-form-control>
+                            <nz-input-group nzAddOnBefore="+258">
+                                <input
+                                        formControlName="contact"
+                                        nz-input
+                                        placeholder="Digite o contato"/>
+                            </nz-input-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+            </div>
+
+            <div [nzGutter]="16" nz-row>
+
+                <!-- Address -->
+                <div nz-col nzXs="24" nzSm="24" nzMd="12">
+                    <nz-form-item>
+                        <nz-form-label>Endereço</nz-form-label>
+                        <nz-form-control>
+                            <input formControlName="address" nz-input placeholder="Digite o endereço"/>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <!-- Status -->
+                <div nz-col nzXs="24" nzSm="24" nzMd="12">
+                    <nz-form-item>
+                        <nz-form-label>Status</nz-form-label>
+                        <nz-form-control>
+                            <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
+                                <nz-option nzLabel="ATIVO" nzValue="ATIVO"></nz-option>
+                                <nz-option nzLabel="INATIVO" nzValue="INATIVO"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+            </div>
+
+            <div [nzGutter]="16" nz-row>
+
+                <!-- Valve -->
+                <div nz-col nzXs="24" nzSm="24" nzMd="12">
+                    <nz-form-item>
+                        <nz-form-label>Valve</nz-form-label>
+                        <nz-form-control>
+                            <nz-input-group nzAddOnBefore="MZN">
+                                <input
+                                        formControlName="valve"
+                                        nz-input
+                                        placeholder="Digite a válvula"
+                                        type="number"/>
+                            </nz-input-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <!-- Months in Debt -->
+                <div nz-col nzXs="24" nzSm="24" nzMd="12">
+                    <nz-form-item>
+                        <nz-form-label>Meses em Dívida</nz-form-label>
+                        <nz-form-control>
+                            <input
+                                    formControlName="monthsInDebt"
+                                    nz-input
+                                    placeholder="Digite os meses"
+                                    type="number"/>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <!-- Monthly Fee -->
+                <div nz-col nzXs="24" nzSm="24" nzMd="12">
+                    <nz-form-item>
+                        <nz-form-label>Monthly Fee</nz-form-label>
+                        <nz-form-control>
+                            <nz-input-group nzAddOnBefore="MZN">
+                                <input
+                                        formControlName="monthlyFee"
+                                        nz-input
+                                        placeholder="750"
+                                        type="number"/>
+                            </nz-input-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+
+            </div>
+
+        </div>
+    </form>
+
+    <!-- Drawer Footer -->
+    <ng-template #customerDrawerFooter>
+        <div class="drawer-footer">
+            <button (click)="closeCustomerDrawer()"
+                    class="btn-cancel"
+                    nz-button nzType=
+                            "default">Cancelar
+            </button>
+
+            <button (click)="createCustomer()" [disabled]="customerForm.invalid" class="btn-save"
+                    nz-button
+                    nzType="primary">
+                {{ isEditMode ? 'Salvar' : 'Criar' }}
+            </button>
+        </div>
+    </ng-template>
+
+</nz-drawer>
