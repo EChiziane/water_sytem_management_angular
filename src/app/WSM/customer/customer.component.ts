@@ -20,6 +20,9 @@ export class CustomerComponent implements OnInit {
   listOfDisplayData: Customer[] = [];
   dataCostumers: Customer[] = [];
 
+  isSaving = false;
+
+
   totalCustomers = 0;
   debtorsCustomers = 0;
   regularCustomers = 0;
@@ -163,43 +166,41 @@ export class CustomerComponent implements OnInit {
       return;
     }
 
-    const formData = this.customerForm.value;
+    this.isSaving = true; // 🔄 START SPINNER
 
-    // --- Garantir Contacto +258 ---
+    const formData = { ...this.customerForm.value };
+
     const rawContact = formData.contact?.trim();
     formData.contact = rawContact!.startsWith('+258')
-      ? rawContact
-      : `+258 ${rawContact}`;
+        ? rawContact
+        : `+258 ${rawContact}`;
 
-    // --- Garantir Monthly Fee Default ---
-    if (!formData.monthlyFee || formData.monthlyFee === null) {
+    if (!formData.monthlyFee) {
       formData.monthlyFee = 750;
     }
 
-    if (this.isEditMode && this.selectedCustomerId) {
-      this.customerService.updateCustomer(this.selectedCustomerId, formData).subscribe({
-        next: () => {
-          this.getCustomers();
-          this.closeCustomerDrawer();
-          this.message.success('Cliente atualizado com sucesso! ✅');
-        },
-        error: () => this.message.error('Erro ao atualizar cliente. 🚫')
-      });
-      return;
-    }
+    const request$ = this.isEditMode && this.selectedCustomerId
+        ? this.customerService.updateCustomer(this.selectedCustomerId, formData)
+        : this.customerService.addCustomer(formData);
 
-    this.customerService.addCustomer(formData).subscribe({
-      next: (newCustomer) => {
-        this.dataSource = [...this.dataSource, newCustomer];
-        this.listOfDisplayData = [...this.dataSource];
-        this.calculateCustomerStats();
-        this.customerForm.reset({ status: 'ATIVO', valve: 10, monthsInDebt: 1, monthlyFee: 750 });
+    request$.subscribe({
+      next: () => {
+        this.getCustomers();
         this.closeCustomerDrawer();
-        this.message.success('Cliente criado com sucesso! 🎉');
+        this.message.success(
+            this.isEditMode
+                ? 'Cliente atualizado com sucesso! ✅'
+                : 'Cliente criado com sucesso! 🎉'
+        );
+        this.isSaving = false; // ✅ STOP SPINNER
       },
-      error: () => this.message.error('Erro ao criar cliente. 🚫')
+      error: () => {
+        this.message.error('Erro ao gravar cliente. 🚫');
+        this.isSaving = false; // ❌ STOP SPINNER
+      }
     });
   }
+
 
   deleteCustomer(data: Customer) {
     this.modal.confirm({

@@ -207,8 +207,12 @@
         [nzVisible]="isCustomerDrawerVisible"
         [nzWidth]="drawerWidth">
 
+
+    <nz-spin  *nzDrawerContent
+            [nzSpinning]="isSaving"
+            nzTip="A gravar cliente...">
     <form
-            *nzDrawerContent
+
             [formGroup]="customerForm"
             class="drawer-form"
             nz-form>
@@ -326,21 +330,38 @@
 
         </div>
     </form>
+    </nz-spin>
 
     <!-- Drawer Footer -->
     <ng-template #customerDrawerFooter>
         <div class="drawer-footer">
-            <button (click)="closeCustomerDrawer()"
-                    class="btn-cancel"
-                    nz-button nzType=
-                            "default">Cancelar
+            <button
+                    (click)="closeCustomerDrawer()"
+                    nz-button
+                    nzType="default"
+                    [disabled]="isSaving"
+                    class="btn-cancel">
+                Cancelar
             </button>
 
-            <button (click)="createCustomer()" [disabled]="customerForm.invalid" class="btn-save"
+            <button
+                    (click)="createCustomer()"
+                    [disabled]="customerForm.invalid || isSaving"
+                    class="btn-save"
                     nz-button
                     nzType="primary">
-                {{ isEditMode ? 'Salvar' : 'Criar' }}
+
+                <ng-container *ngIf="!isSaving; else savingTpl">
+                    {{ isEditMode ? 'Salvar' : 'Criar' }}
+                </ng-container>
+
+                <ng-template #savingTpl>
+                    <nz-spin nzSize="small"></nz-spin>
+                    A gravar...
+                </ng-template>
+
             </button>
+
         </div>
     </ng-template>
 
