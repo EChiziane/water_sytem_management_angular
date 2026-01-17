@@ -1,4 +1,17 @@
 <div class="content-wrapper">
+
+  <!-- ===== Breadcrumb ===== -->
+  <nz-breadcrumb class="page-breadcrumb">
+    <nz-breadcrumb-item>
+      <a routerLink="/app">Home</a>
+    </nz-breadcrumb-item>
+
+    <nz-breadcrumb-item>
+      Lista de Pagamentos
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+
+
   <div class="page-header">
     <p> Lista de Pagamentos</p>
 
@@ -12,27 +25,46 @@
     <div class="summary-background">
       <div [nzGutter]="8" nz-row>
 
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Total Payments">
-            <p>{{ totalPayments }}</p>
+        <div  nz-col [nzSpan]="8">
+          <nz-card nzSize="small">
+            <div class="summary-card">
+              <div class="icon-wrapper total">
+                <nz-icon nzType="team" nzTheme="outline"></nz-icon>
+              </div>
+              <div class="summary-content">
+                <span class="title">Total Payments</span>
+                <p>{{ totalPayments }}</p>
+              </div>
+            </div>
           </nz-card>
         </div>
-
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Confirmed Payments">
-            <p>{{ confirmedPayments }}</p>
+        <!-- Debtors -->
+        <div nz-col [nzSpan]="8">
+          <nz-card nzSize="small">
+            <div class="summary-card">
+              <div class="icon-wrapper inactive">
+                <nz-icon nzType="warning" nzTheme="outline"></nz-icon>
+              </div>
+              <div class="summary-content">
+                <span class="title">Unconfirmed</span>
+                <p>{{ unconfirmedPayments }}</p>
+              </div>
+            </div>
           </nz-card>
         </div>
-
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzTitle="Unconfirmed Payments">
-            <p>{{ unconfirmedPayments }}</p>
+        <div nz-col [nzSpan]="8">
+          <nz-card nzSize="small">
+            <div class="summary-card">
+              <div class="icon-wrapper active">
+                <nz-icon nzType="check-circle" nzTheme="outline"></nz-icon>
+              </div>
+              <div class="summary-content">
+                <span class="title">confirmed</span>
+                <p>{{ confirmedPayments }}</p>
+              </div>
+            </div>
           </nz-card>
         </div>
-
       </div>
     </div>
   </div>
@@ -47,7 +79,9 @@
       placeholder="Search by code"
       type="text"/>
 
-    <button (click)="openPaymentDrawer()" nz-button nzType="primary">Adicionar</button>
+    <button (click)="openPaymentDrawer()" nz-button nzType="primary">
+      <nz-icon nzType="plus-circle" nzTheme="outline"></nz-icon>
+      Adicionar</button>
 
   </div>
 
