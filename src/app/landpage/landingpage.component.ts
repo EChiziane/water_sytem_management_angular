@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 
 @Component({
@@ -10,7 +10,8 @@ import {Router} from '@angular/router';
 export class LandingPageComponent {
   menuVisible = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+  }
 
   goToLogin(): void {
     this.router.navigate(['/login']);

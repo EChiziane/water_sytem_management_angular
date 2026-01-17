@@ -1,44 +1,44 @@
 <div class="login-page">
 
   <nz-card class="login-card" nzTitle="Área do Sistema">
-    <form [formGroup]="userForm" (ngSubmit)="login()">
+    <form (ngSubmit)="login()" [formGroup]="userForm">
 
       <!-- USER -->
-      <nz-input-group nzAddOnBeforeIcon="user" class="form-field">
+      <nz-input-group class="form-field" nzAddOnBeforeIcon="user">
         <input
+          formControlName="login"
           nz-input
-          type="text"
           placeholder="Usuário"
-          formControlName="login" />
+          type="text"/>
       </nz-input-group>
 
       <!-- PASSWORD -->
-      <nz-input-group nzAddOnBeforeIcon="lock" class="form-field">
+      <nz-input-group class="form-field" nzAddOnBeforeIcon="lock">
         <input
+          formControlName="password"
           nz-input
-          type="password"
           placeholder="Senha"
-          formControlName="password" />
+          type="password"/>
       </nz-input-group>
 
       <!-- OPTIONS -->
       <div class="options">
-        <label nz-checkbox formControlName="rememberMe">
+        <label formControlName="rememberMe" nz-checkbox>
           Lembrar-me
         </label>
 
-        <a class="forgot-password" (click)="openForgotPasswordModal()">
+        <a (click)="openForgotPasswordModal()" class="forgot-password">
           Esqueceu a senha?
         </a>
       </div>
 
       <!-- BUTTON -->
       <button
-        nz-button
-        nzType="primary"
-        nzBlock
-        class="login-button"
         [disabled]="isLoading"
+        class="login-button"
+        nz-button
+        nzBlock
+        nzType="primary"
         type="submit">
 
         <span *ngIf="!isLoading">Entrar</span>
@@ -57,10 +57,10 @@
       <!-- ERROR -->
       <nz-alert
         *ngIf="responseMessage"
-        nzType="error"
-        nzShowIcon
         [nzMessage]="responseMessage"
-        class="error-alert">
+        class="error-alert"
+        nzShowIcon
+        nzType="error">
       </nz-alert>
 
     </form>

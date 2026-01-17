@@ -1,193 +1,193 @@
 <div class="content-wrapper">
 
-  <!-- ===== Breadcrumb ===== -->
-  <nz-breadcrumb class="page-breadcrumb">
-    <nz-breadcrumb-item>
-      <a routerLink="/app">Home</a>
-    </nz-breadcrumb-item>
+    <!-- ===== Breadcrumb ===== -->
+    <nz-breadcrumb class="page-breadcrumb">
+        <nz-breadcrumb-item>
+            <a routerLink="/app">Home</a>
+        </nz-breadcrumb-item>
 
-    <nz-breadcrumb-item>
-      Lista dos Clientes
-    </nz-breadcrumb-item>
-  </nz-breadcrumb>
+        <nz-breadcrumb-item>
+            Lista dos Clientes
+        </nz-breadcrumb-item>
+    </nz-breadcrumb>
 
-  <!-- ===== Page Header ===== -->
-  <div class="page-header">
-    <p>Lista dos Clientes</p>
+    <!-- ===== Page Header ===== -->
+    <div class="page-header">
+        <p>Lista dos Clientes</p>
 
-    <span class="back-arrow" (click)="onBack()">
-      <nz-icon nzType="arrow-left" nzTheme="outline"></nz-icon>
+        <span (click)="onBack()" class="back-arrow">
+      <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
     </span>
-  </div>
-
-  <!-- ===== Summary Section ===== -->
-  <div class="summary-section">
-    <div class="summary-background">
-      <div nz-row [nzGutter]="8">
-        <!-- Total Customers -->
-        <div nz-col [nzSpan]="8">
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper total">
-                <nz-icon nzType="team" nzTheme="outline"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Total Customers</span>
-                <p>{{ totalCustomers }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-        <!-- Debtors -->
-        <div nz-col [nzSpan]="8">
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper inactive">
-                <nz-icon nzType="warning" nzTheme="outline"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Clientes Devedores</span>
-                <p>{{ debtorsCustomers }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-        <!-- Regular -->
-        <div nz-col [nzSpan]="8">
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper active">
-                <nz-icon nzType="check-circle" nzTheme="outline"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Clientes Regulares</span>
-                <p>{{ regularCustomers }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- ===== Filters Panel ===== -->
-  <div class="filters-panel">
-    <input
-      nz-input
-      type="text"
-      placeholder="Search name"
-      [(ngModel)]="searchValue"
-      (ngModelChange)="search()"
-    />
-
-    <button nz-button nzType="primary" (click)="openCustomerDrawer()">
-      <nz-icon nzType="user-add" nzTheme="outline"></nz-icon>
-      Novo Customer
-    </button>
-  </div>
-
-  <!-- ===== Table ===== -->
-  <div class="table-wrapper">
-    <div class="table-scroll">
-
-      <nz-spin
-        nzSize="large"
-        nzTip="A carregar Customer..."
-        [nzSpinning]="isLoading">
-
-        <nz-table
-          #nzTable
-          nzTableLayout="fixed"
-          [nzData]="listOfDisplayData"
-          [nzScroll]="{ x: '1150px', y: '340px' }">
-
-          <!-- ===== Table Head ===== -->
-          <thead>
-          <tr>
-            <th nzCustomFilter>
-              Name
-              <nz-filter-trigger
-                [(nzVisible)]="visible"
-                [nzActive]="searchValue.length > 0"
-                [nzDropdownMenu]="menu">
-                <nz-icon nzType="search"></nz-icon>
-              </nz-filter-trigger>
-            </th>
-            <th>Valve</th>
-            <th>Contact</th>
-            <th>Debt Status</th>
-            <th>Months</th>
-            <th>Monthly Fee</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-
-          <!-- ===== Table Body ===== -->
-          <tbody>
-          <tr *ngFor="let data of nzTable.data">
-            <td>{{ data.name }}</td>
-            <td>{{ data.valve }}</td>
-            <td>{{ data.contact }}</td>
-
-            <td>
-              <nz-tag [nzColor]="data.monthsInDebt > 0 ? 'red' : 'green'">
-                {{ data.monthsInDebt > 0 ? 'Em Dívida' : 'Em Dia' }}
-              </nz-tag>
-            </td>
-            <td>{{ data.monthsInDebt }}</td>
-
-            <td>{{ data.monthlyFee | number:'1.2-2' }} Mts</td>
-
-            <td>
-              <nz-tag [nzColor]="data.status === 'ATIVO' ? 'green' : 'red'">
-                {{ data.status }}
-              </nz-tag>
-            </td>
-
-            <td>
-              <button nz-button nzType="link" nzSize="small"
-                      (click)="viewCustomer(data)"
-                      [routerLink]="['/app/customer-detail', data.id]">
-                <nz-icon nzType="eye" nzTheme="outline"></nz-icon>
-              </button>
-
-              <button nz-button nzType="link" nzSize="small"
-                      (click)="editCustomer(data)">
-                <nz-icon nzType="edit" nzTheme="outline"></nz-icon>
-              </button>
-
-              <button nz-button nzType="link" nzSize="small" nzDanger
-                      (click)="deleteCustomer(data)">
-                <nz-icon nzType="delete" nzTheme="outline"></nz-icon>
-              </button>
-            </td>
-          </tr>
-          </tbody>
-
-        </nz-table>
-      </nz-spin>
-
-      <!-- ===== Filter Dropdown ===== -->
-      <nz-dropdown-menu #menu="nzDropdownMenu">
-        <div class="ant-table-filter-dropdown">
-          <div class="search-box">
-            <input
-              nz-input
-              type="text"
-              placeholder="Search name"
-              [(ngModel)]="searchValue"
-              (ngModelChange)="search()"
-            />
-
-            <button nz-button nzSize="small" nzType="primary" (click)="search()">Search</button>
-            <button nz-button nzSize="small" (click)="reset()">Reset</button>
-          </div>
+    <!-- ===== Summary Section ===== -->
+    <div class="summary-section">
+        <div class="summary-background">
+            <div [nzGutter]="8" nz-row>
+                <!-- Total Customers -->
+                <div [nzSpan]="8" nz-col>
+                    <nz-card nzSize="small">
+                        <div class="summary-card">
+                            <div class="icon-wrapper total">
+                                <nz-icon nzTheme="outline" nzType="team"></nz-icon>
+                            </div>
+                            <div class="summary-content">
+                                <span class="title">Total Customers</span>
+                                <p>{{ totalCustomers }}</p>
+                            </div>
+                        </div>
+                    </nz-card>
+                </div>
+                <!-- Debtors -->
+                <div [nzSpan]="8" nz-col>
+                    <nz-card nzSize="small">
+                        <div class="summary-card">
+                            <div class="icon-wrapper inactive">
+                                <nz-icon nzTheme="outline" nzType="warning"></nz-icon>
+                            </div>
+                            <div class="summary-content">
+                                <span class="title">Clientes Devedores</span>
+                                <p>{{ debtorsCustomers }}</p>
+                            </div>
+                        </div>
+                    </nz-card>
+                </div>
+                <!-- Regular -->
+                <div [nzSpan]="8" nz-col>
+                    <nz-card nzSize="small">
+                        <div class="summary-card">
+                            <div class="icon-wrapper active">
+                                <nz-icon nzTheme="outline" nzType="check-circle"></nz-icon>
+                            </div>
+                            <div class="summary-content">
+                                <span class="title">Clientes Regulares</span>
+                                <p>{{ regularCustomers }}</p>
+                            </div>
+                        </div>
+                    </nz-card>
+                </div>
+            </div>
         </div>
-      </nz-dropdown-menu>
-
     </div>
-  </div>
+
+    <!-- ===== Filters Panel ===== -->
+    <div class="filters-panel">
+        <input
+                (ngModelChange)="search()"
+                [(ngModel)]="searchValue"
+                nz-input
+                placeholder="Search name"
+                type="text"
+        />
+
+        <button (click)="openCustomerDrawer()" nz-button nzType="primary">
+            <nz-icon nzTheme="outline" nzType="user-add"></nz-icon>
+            Novo Customer
+        </button>
+    </div>
+
+    <!-- ===== Table ===== -->
+    <div class="table-wrapper">
+        <div class="table-scroll">
+
+            <nz-spin
+                    [nzSpinning]="isLoading"
+                    nzSize="large"
+                    nzTip="A carregar Customer...">
+
+                <nz-table
+                    #nzTable
+                    [nzData]="listOfDisplayData"
+                    [nzScroll]="{ x: '1150px', y: '340px' }"
+                    nzTableLayout="fixed">
+
+                    <!-- ===== Table Head ===== -->
+                    <thead>
+                    <tr>
+                        <th nzCustomFilter>
+                            Name
+                            <nz-filter-trigger
+                                    [(nzVisible)]="visible"
+                                    [nzActive]="searchValue.length > 0"
+                                    [nzDropdownMenu]="menu">
+                                <nz-icon nzType="search"></nz-icon>
+                            </nz-filter-trigger>
+                        </th>
+                        <th>Valve</th>
+                        <th>Contact</th>
+                        <th>Debt Status</th>
+                        <th>Months</th>
+                        <th>Monthly Fee</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <!-- ===== Table Body ===== -->
+                    <tbody>
+                    <tr *ngFor="let data of nzTable.data">
+                        <td>{{ data.name }}</td>
+                        <td>{{ data.valve }}</td>
+                        <td>{{ data.contact }}</td>
+
+                        <td>
+                            <nz-tag [nzColor]="data.monthsInDebt > 0 ? 'red' : 'green'">
+                                {{ data.monthsInDebt > 0 ? 'Em Dívida' : 'Em Dia' }}
+                            </nz-tag>
+                        </td>
+                        <td>{{ data.monthsInDebt }}</td>
+
+                        <td>{{ data.monthlyFee | number:'1.2-2' }} Mts</td>
+
+                        <td>
+                            <nz-tag [nzColor]="data.status === 'ATIVO' ? 'green' : 'red'">
+                                {{ data.status }}
+                            </nz-tag>
+                        </td>
+
+                        <td>
+                            <button (click)="viewCustomer(data)" [routerLink]="['/app/customer-detail', data.id]" nz-button
+                                    nzSize="small"
+                                    nzType="link">
+                                <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
+                            </button>
+
+                            <button (click)="editCustomer(data)" nz-button nzSize="small"
+                                    nzType="link">
+                                <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
+                            </button>
+
+                            <button (click)="deleteCustomer(data)" nz-button nzDanger nzSize="small"
+                                    nzType="link">
+                                <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </nz-table>
+            </nz-spin>
+
+            <!-- ===== Filter Dropdown ===== -->
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+                <div class="ant-table-filter-dropdown">
+                    <div class="search-box">
+                        <input
+                                (ngModelChange)="search()"
+                                [(ngModel)]="searchValue"
+                                nz-input
+                                placeholder="Search name"
+                                type="text"
+                        />
+
+                        <button (click)="search()" nz-button nzSize="small" nzType="primary">Search</button>
+                        <button (click)="reset()" nz-button nzSize="small">Reset</button>
+                    </div>
+                </div>
+            </nz-dropdown-menu>
+
+        </div>
+    </div>
 </div>
 
 <nz-drawer
@@ -200,128 +200,128 @@
         [nzWidth]="drawerWidth">
 
 
-    <nz-spin  *nzDrawerContent
-            [nzSpinning]="isSaving"
-            nzTip="A gravar cliente...">
-    <form
+    <nz-spin *nzDrawerContent
+             [nzSpinning]="isSaving"
+             nzTip="A gravar cliente...">
+        <form
 
-            [formGroup]="customerForm"
-            class="drawer-form"
-            nz-form>
+                [formGroup]="customerForm"
+                class="drawer-form"
+                nz-form>
 
-        <!-- ===== Section: Basic Information ===== -->
-        <div class="drawer-section">
-            <h3 class="section-title">Basic Information</h3>
+            <!-- ===== Section: Basic Information ===== -->
+            <div class="drawer-section">
+                <h3 class="section-title">Basic Information</h3>
 
-            <div [nzGutter]="16" nz-row>
+                <div [nzGutter]="16" nz-row>
 
-                <!-- Name -->
-                <div nz-col nzXs="24" nzSm="24" nzMd="12">
-                    <nz-form-item>
-                        <nz-form-label>Nome</nz-form-label>
-                        <nz-form-control>
-                            <input formControlName="name" nz-input placeholder="Digite o nome do cliente"/>
-                        </nz-form-control>
-                    </nz-form-item>
+                    <!-- Name -->
+                    <div nz-col nzMd="12" nzSm="24" nzXs="24">
+                        <nz-form-item>
+                            <nz-form-label>Nome</nz-form-label>
+                            <nz-form-control>
+                                <input formControlName="name" nz-input placeholder="Digite o nome do cliente"/>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+
+                    <!-- Contact -->
+                    <div nz-col nzMd="12" nzSm="24" nzXs="24">
+                        <nz-form-item>
+                            <nz-form-label>Contato</nz-form-label>
+                            <nz-form-control>
+                                <nz-input-group nzAddOnBefore="+258">
+                                    <input
+                                            formControlName="contact"
+                                            nz-input
+                                            placeholder="Digite o contato"/>
+                                </nz-input-group>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+
                 </div>
 
-                <!-- Contact -->
-                <div nz-col nzXs="24" nzSm="24" nzMd="12">
-                    <nz-form-item>
-                        <nz-form-label>Contato</nz-form-label>
-                        <nz-form-control>
-                            <nz-input-group nzAddOnBefore="+258">
+                <div [nzGutter]="16" nz-row>
+
+                    <!-- Address -->
+                    <div nz-col nzMd="12" nzSm="24" nzXs="24">
+                        <nz-form-item>
+                            <nz-form-label>Endereço</nz-form-label>
+                            <nz-form-control>
+                                <input formControlName="address" nz-input placeholder="Digite o endereço"/>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+
+                    <!-- Status -->
+                    <div nz-col nzMd="12" nzSm="24" nzXs="24">
+                        <nz-form-item>
+                            <nz-form-label>Status</nz-form-label>
+                            <nz-form-control>
+                                <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
+                                    <nz-option nzLabel="ATIVO" nzValue="ATIVO"></nz-option>
+                                    <nz-option nzLabel="INATIVO" nzValue="INATIVO"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+
+                </div>
+
+                <div [nzGutter]="16" nz-row>
+
+                    <!-- Valve -->
+                    <div nz-col nzMd="12" nzSm="24" nzXs="24">
+                        <nz-form-item>
+                            <nz-form-label>Valve</nz-form-label>
+                            <nz-form-control>
+                                <nz-input-group nzAddOnBefore="MZN">
+                                    <input
+                                            formControlName="valve"
+                                            nz-input
+                                            placeholder="Digite a válvula"
+                                            type="number"/>
+                                </nz-input-group>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+
+                    <!-- Months in Debt -->
+                    <div nz-col nzMd="12" nzSm="24" nzXs="24">
+                        <nz-form-item>
+                            <nz-form-label>Meses em Dívida</nz-form-label>
+                            <nz-form-control>
                                 <input
-                                        formControlName="contact"
+                                        formControlName="monthsInDebt"
                                         nz-input
-                                        placeholder="Digite o contato"/>
-                            </nz-input-group>
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-
-            </div>
-
-            <div [nzGutter]="16" nz-row>
-
-                <!-- Address -->
-                <div nz-col nzXs="24" nzSm="24" nzMd="12">
-                    <nz-form-item>
-                        <nz-form-label>Endereço</nz-form-label>
-                        <nz-form-control>
-                            <input formControlName="address" nz-input placeholder="Digite o endereço"/>
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-
-                <!-- Status -->
-                <div nz-col nzXs="24" nzSm="24" nzMd="12">
-                    <nz-form-item>
-                        <nz-form-label>Status</nz-form-label>
-                        <nz-form-control>
-                            <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
-                                <nz-option nzLabel="ATIVO" nzValue="ATIVO"></nz-option>
-                                <nz-option nzLabel="INATIVO" nzValue="INATIVO"></nz-option>
-                            </nz-select>
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-
-            </div>
-
-            <div [nzGutter]="16" nz-row>
-
-                <!-- Valve -->
-                <div nz-col nzXs="24" nzSm="24" nzMd="12">
-                    <nz-form-item>
-                        <nz-form-label>Valve</nz-form-label>
-                        <nz-form-control>
-                            <nz-input-group nzAddOnBefore="MZN">
-                                <input
-                                        formControlName="valve"
-                                        nz-input
-                                        placeholder="Digite a válvula"
+                                        placeholder="Digite os meses"
                                         type="number"/>
-                            </nz-input-group>
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
 
-                <!-- Months in Debt -->
-                <div nz-col nzXs="24" nzSm="24" nzMd="12">
-                    <nz-form-item>
-                        <nz-form-label>Meses em Dívida</nz-form-label>
-                        <nz-form-control>
-                            <input
-                                    formControlName="monthsInDebt"
-                                    nz-input
-                                    placeholder="Digite os meses"
-                                    type="number"/>
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
+                    <!-- Monthly Fee -->
+                    <div nz-col nzMd="12" nzSm="24" nzXs="24">
+                        <nz-form-item>
+                            <nz-form-label>Monthly Fee</nz-form-label>
+                            <nz-form-control>
+                                <nz-input-group nzAddOnBefore="MZN">
+                                    <input
+                                            formControlName="monthlyFee"
+                                            nz-input
+                                            placeholder="750"
+                                            type="number"/>
+                                </nz-input-group>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
 
-                <!-- Monthly Fee -->
-                <div nz-col nzXs="24" nzSm="24" nzMd="12">
-                    <nz-form-item>
-                        <nz-form-label>Monthly Fee</nz-form-label>
-                        <nz-form-control>
-                            <nz-input-group nzAddOnBefore="MZN">
-                                <input
-                                        formControlName="monthlyFee"
-                                        nz-input
-                                        placeholder="750"
-                                        type="number"/>
-                            </nz-input-group>
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
 
+                </div>
 
             </div>
-
-        </div>
-    </form>
+        </form>
     </nz-spin>
 
     <!-- Drawer Footer -->
@@ -329,10 +329,10 @@
         <div class="drawer-footer">
             <button
                     (click)="closeCustomerDrawer()"
-                    nz-button
-                    nzType="default"
                     [disabled]="isSaving"
-                    class="btn-cancel">
+                    class="btn-cancel"
+                    nz-button
+                    nzType="default">
                 Cancelar
             </button>
 

@@ -12,8 +12,9 @@ export class MainLayoutComponent {
   username?: string | null; // default caso não haja user
 
 
-   constructor(private router: Router) {
-   }
+  constructor(private router: Router) {
+  }
+
   ngOnInit(): void {
     // Supondo que guardaste os dados do user em localStorage
     const userJson = localStorage.getItem('user');

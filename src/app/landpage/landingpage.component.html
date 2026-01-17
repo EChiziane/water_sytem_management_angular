@@ -10,15 +10,15 @@
       </div>
 
       <!-- MENU DESKTOP -->
-      <ul nz-menu nzMode="horizontal" class="desktop-menu">
+      <ul class="desktop-menu" nz-menu nzMode="horizontal">
         <li nz-menu-item><a href="#inicio">Início</a></li>
         <li nz-menu-item><a href="#quem-somos">Quem Somos</a></li>
         <li nz-menu-item><a href="#servicos">Serviços</a></li>
         <li nz-menu-item><a href="#contactos">Contactos</a></li>
         <li nz-menu-item><a href="#localizacao">Onde Estamos</a></li>
         <!-- LOGIN -->
-        <li nz-menu-item class="login-menu-item">
-          <button nz-button nzType="primary" nzSize="small" (click)="goToLogin()">
+        <li class="login-menu-item" nz-menu-item>
+          <button (click)="goToLogin()" nz-button nzSize="small" nzType="primary">
             Login
           </button>
         </li>
@@ -26,10 +26,10 @@
 
       <!-- BOTÃO MOBILE -->
       <button
-        nz-button
-        nzType="text"
+        (click)="menuVisible = true"
         class="mobile-menu-btn"
-        (click)="menuVisible = true">
+        nz-button
+        nzType="text">
         <span nz-icon nzType="menu"></span>
       </button>
 
@@ -38,24 +38,24 @@
 
   <!-- ================= DRAWER MOBILE ================= -->
   <nz-drawer
-    nzPlacement="right"
-    nzTitle="Menu"
+    (nzOnClose)="menuVisible = false"
     [nzVisible]="menuVisible"
-    (nzOnClose)="menuVisible = false">
+    nzPlacement="right"
+    nzTitle="Menu">
 
-    <ul nz-menu nzMode="vertical" *nzDrawerContent>
-      <li nz-menu-item (click)="menuVisible = false"><a href="#inicio">Início</a></li>
-      <li nz-menu-item (click)="menuVisible = false"><a href="#quem-somos">Quem Somos</a></li>
-      <li nz-menu-item (click)="menuVisible = false"><a href="#servicos">Serviços</a></li>
-      <li nz-menu-item (click)="menuVisible = false"><a href="#contactos">Contactos</a></li>
-      <li nz-menu-item (click)="menuVisible = false"><a href="#localizacao">Onde Estamos</a></li>
+    <ul *nzDrawerContent nz-menu nzMode="vertical">
+      <li (click)="menuVisible = false" nz-menu-item><a href="#inicio">Início</a></li>
+      <li (click)="menuVisible = false" nz-menu-item><a href="#quem-somos">Quem Somos</a></li>
+      <li (click)="menuVisible = false" nz-menu-item><a href="#servicos">Serviços</a></li>
+      <li (click)="menuVisible = false" nz-menu-item><a href="#contactos">Contactos</a></li>
+      <li (click)="menuVisible = false" nz-menu-item><a href="#localizacao">Onde Estamos</a></li>
       <!-- LOGIN MOBILE -->
       <li nz-menu-item>
         <button
+          (click)="goToLogin(); menuVisible = false"
           nz-button
-          nzType="primary"
           nzBlock
-          (click)="goToLogin(); menuVisible = false">
+          nzType="primary">
           Login
         </button>
       </li>
@@ -68,20 +68,20 @@
 
     <!-- ===== HERO ===== -->
     <section id="inicio">
-      <nz-carousel nzAutoPlay class="hero">
-        <div nz-carousel-content class="hero-slide">
+      <nz-carousel class="hero" nzAutoPlay>
+        <div class="hero-slide" nz-carousel-content>
           <h1>Pureza que vem da natureza</h1>
           <p>Água tratada com qualidade, segura e acessível para todos</p>
           <a
-            href="https://wa.me/258841231234?text=Olá%2C%20gostaria%20de%20mais%20informações%20sobre%20Águas%20Chiziane"
-            target="_blank"
             class="whatsapp-btn"
-            nz-button nzType="primary" nzSize="large">
+            href="https://wa.me/258841231234?text=Olá%2C%20gostaria%20de%20mais%20informações%20sobre%20Águas%20Chiziane"
+            nz-button
+            nzSize="large" nzType="primary" target="_blank">
             Fale connosco no WhatsApp
           </a>
         </div>
 
-        <div nz-carousel-content class="hero-slide second">
+        <div class="hero-slide second" nz-carousel-content>
           <h1>Compromisso com a sua saúde</h1>
           <p>Distribuição segura e sustentável desde 2010</p>
         </div>
@@ -103,43 +103,43 @@
       <h2>Nossos Serviços</h2>
 
       <div nz-row nzGutter="16">
-        <div nz-col nzXs="24" nzMd="8">
-          <nz-card nzHoverable class="service-card">
+        <div nz-col nzMd="8" nzXs="24">
+          <nz-card class="service-card" nzHoverable>
             <span nz-icon nzType="experiment"></span>
             <h3>Água Purificada</h3>
             <p>Processos modernos de purificação e controlo de qualidade.</p>
             <a
+              class="service-btn"
               href="https://wa.me/258841231234?text=Olá%2C%20quero%20saber%20mais%20sobre%20Água%20Purificada"
-              target="_blank"
-              class="service-btn">
+              target="_blank">
               Peça Agora
             </a>
           </nz-card>
         </div>
 
-        <div nz-col nzXs="24" nzMd="8">
-          <nz-card nzHoverable class="service-card">
+        <div nz-col nzMd="8" nzXs="24">
+          <nz-card class="service-card" nzHoverable>
             <span nz-icon nzType="truck"></span>
             <h3>Distribuição</h3>
             <p>Entrega rápida e segura para residências, empresas e escolas.</p>
             <a
+              class="service-btn"
               href="https://wa.me/258841231234?text=Olá%2C%20quero%20saber%20mais%20sobre%20Distribuição"
-              target="_blank"
-              class="service-btn">
+              target="_blank">
               Peça Agora
             </a>
           </nz-card>
         </div>
 
-        <div nz-col nzXs="24" nzMd="8">
-          <nz-card nzHoverable class="service-card">
+        <div nz-col nzMd="8" nzXs="24">
+          <nz-card class="service-card" nzHoverable>
             <span nz-icon nzType="safety"></span>
             <h3>Qualidade Garantida</h3>
             <p>Certificação do regulador local garantindo conformidade e segurança.</p>
             <a
+              class="service-btn"
               href="https://wa.me/258841231234?text=Olá%2C%20quero%20saber%20mais%20sobre%20Qualidade"
-              target="_blank"
-              class="service-btn">
+              target="_blank">
               Peça Agora
             </a>
           </nz-card>
@@ -151,8 +151,8 @@
     <section class="section light" id="contactos">
       <h2>Contactos</h2>
 
-      <div nz-row nzGutter="16" class="contact-grid">
-        <div nz-col nzXs="24" nzMd="8">
+      <div class="contact-grid" nz-row nzGutter="16">
+        <div nz-col nzMd="8" nzXs="24">
           <nz-card nzHoverable>
             <span nz-icon nzType="phone"></span>
             <h3>Telefone</h3>
@@ -160,7 +160,7 @@
           </nz-card>
         </div>
 
-        <div nz-col nzXs="24" nzMd="8">
+        <div nz-col nzMd="8" nzXs="24">
           <nz-card nzHoverable>
             <span nz-icon nzType="mail"></span>
             <h3>Email</h3>
@@ -168,7 +168,7 @@
           </nz-card>
         </div>
 
-        <div nz-col nzXs="24" nzMd="8">
+        <div nz-col nzMd="8" nzXs="24">
           <nz-card nzHoverable>
             <span nz-icon nzType="clock-circle"></span>
             <h3>Horário</h3>
@@ -181,10 +181,10 @@
       <div class="contact-form">
         <h3>Envie-nos uma mensagem</h3>
         <form>
-          <input type="text" placeholder="Seu Nome" required>
-          <input type="email" placeholder="Seu Email" required>
+          <input placeholder="Seu Nome" required type="text">
+          <input placeholder="Seu Email" required type="email">
           <textarea placeholder="Sua Mensagem" required></textarea>
-          <button type="submit" nz-button nzType="primary">Enviar</button>
+          <button nz-button nzType="primary" type="submit">Enviar</button>
         </form>
       </div>
     </section>
@@ -196,14 +196,14 @@
       <nz-card class="map-card">
         <span nz-icon nzType="environment"></span>
         <p>
-          Av. de Moçambique, nº 534<br />
+          Av. de Moçambique, nº 534<br/>
           Bairro Cumbeza, Maputo – Moçambique
         </p>
 
         <div class="map-container">
           <iframe
-            src="https://maps.google.com/maps?q=Maputo&t=&z=15&ie=UTF8&iwloc=&output=embed"
-            loading="lazy">
+            loading="lazy"
+            src="https://maps.google.com/maps?q=Maputo&t=&z=15&ie=UTF8&iwloc=&output=embed">
           </iframe>
         </div>
       </nz-card>
@@ -216,13 +216,13 @@
     <div class="footer-content">
       <p>© 2026 Águas Chiziane · Todos os direitos reservados</p>
       <a
+        class="whatsapp-btn-footer"
         href="https://wa.me/258841231234?text=Olá%2C%20gostaria%20de%20mais%20informações%20sobre%20Águas%20Chiziane"
-        target="_blank"
-        class="whatsapp-btn-footer">
+        target="_blank">
         Fale connosco no WhatsApp
       </a>
 
-      <button nz-button nzType="default" (click)="goToLogin()">
+      <button (click)="goToLogin()" nz-button nzType="default">
         Área do Sistema
       </button>
     </div>

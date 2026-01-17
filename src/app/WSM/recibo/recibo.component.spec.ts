@@ -3,21 +3,21 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ReciboComponent} from './recibo.component';
 
 describe('ReciboComponent', () => {
-  let component: ReciboComponent;
-  let fixture: ComponentFixture<ReciboComponent>;
+    let component: ReciboComponent;
+    let fixture: ComponentFixture<ReciboComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ReciboComponent]
-    })
-      .compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [ReciboComponent]
+        })
+            .compileComponents();
 
-    fixture = TestBed.createComponent(ReciboComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(ReciboComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -14,14 +14,13 @@ import {MainLayoutComponent} from './main-layout/main-layout.component';
 import {AuthGuard} from './services/auth.guard';
 
 
-
 const routes: Routes = [
 
   // 🌍 Público
-  { path: '', redirectTo: 'landing-page', pathMatch: 'full' },
-  { path: 'landing-page', component: LandingPageComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: SigninComponent },
+  {path: '', redirectTo: 'landing-page', pathMatch: 'full'},
+  {path: 'landing-page', component: LandingPageComponent},
+  {path: 'login', component: LoginComponent},
+  {path: 'register', component: SigninComponent},
 
   // 🔐 Sistema protegido
   {
@@ -30,23 +29,23 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
 
-      { path: 'customer', component: CustomerComponent },
-      { path: 'customer-detail/:id', component: CustomerDetailsComponent },
+      {path: 'customer', component: CustomerComponent},
+      {path: 'customer-detail/:id', component: CustomerDetailsComponent},
 
-      { path: 'payment', component: PaymentComponent },
-      { path: 'payment-detail/:id', component: PaymentDetailsComponent },
+      {path: 'payment', component: PaymentComponent},
+      {path: 'payment-detail/:id', component: PaymentDetailsComponent},
 
-      { path: 'calendar', component: CalendarComponent },
-      { path: 'recibo', component: ReciboComponent },
-      { path: 'users', component: ListuserComponent },
+      {path: 'calendar', component: CalendarComponent},
+      {path: 'recibo', component: ReciboComponent},
+      {path: 'users', component: ListuserComponent},
 
       // rota default do sistema
-      { path: '', redirectTo: 'customer', pathMatch: 'full' }
+      {path: '', redirectTo: 'customer', pathMatch: 'full'}
     ]
   },
 
   // fallback
-  { path: '**', redirectTo: 'landing-page' }
+  {path: '**', redirectTo: 'landing-page'}
 ];
 
 

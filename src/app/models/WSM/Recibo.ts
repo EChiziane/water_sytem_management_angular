@@ -3,7 +3,7 @@ import {Payment} from './payment';
 export interface Recibo {
   id: string;
   invoiceCode: string;
-  payment:Payment;
+  payment: Payment;
   customerName: string;
   paymentId: string;
   fileName: string;

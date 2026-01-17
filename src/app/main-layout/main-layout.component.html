@@ -13,7 +13,7 @@
       </a>
     </div>
 
-    <ul nz-menu nzMode="inline" nzTheme="dark" [nzInlineCollapsed]="isCollapsed">
+    <ul [nzInlineCollapsed]="isCollapsed" nz-menu nzMode="inline" nzTheme="dark">
 
       <!-- WSM -->
       <li nz-submenu nzIcon="appstore" nzOpen nzTitle="WSM">
@@ -67,12 +67,12 @@
     <nz-header>
       <div class="app-header">
         <span (click)="isCollapsed = !isCollapsed" class="header-trigger">
-          <span nz-icon class="trigger"
-                [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'">
+          <span [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" class="trigger"
+                nz-icon>
           </span>
         </span>
 
-        <div class="user-menu" nz-dropdown [nzDropdownMenu]="userMenu">
+        <div [nzDropdownMenu]="userMenu" class="user-menu" nz-dropdown>
           <span class="user-icon" nz-icon nzType="user"></span>
           <span class="username">{{ username }}</span>
           <nz-icon nzType="down"></nz-icon>
@@ -83,7 +83,7 @@
             <li nz-menu-item>
               <a routerLink="/profile">Perfil</a>
             </li>
-            <li nz-menu-item (click)="logout()">Logout</li>
+            <li (click)="logout()" nz-menu-item>Logout</li>
           </ul>
         </nz-dropdown-menu>
       </div>
