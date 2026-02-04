@@ -28,6 +28,7 @@ export class ListuserComponent {
   userForm!: FormGroup;
   currentEditingUserId: string | null = null;
   isUserDrawerVisible = false;
+  isSaving = false;
 
   constructor(
     private http: HttpClient,
@@ -39,9 +40,9 @@ export class ListuserComponent {
     this.initForms();
   }
 
-
-
-  isSaving = false;
+  get userDrawerTitle(): string {
+    return this.currentEditingUserId ? 'Editar Utilizador' : 'Criar Utilizador';
+  }
 
   onBack() {
     window.history.back();
@@ -105,24 +106,15 @@ export class ListuserComponent {
     }
   }
 
-
-
-
-  get userDrawerTitle(): string {
-    return this.currentEditingUserId ? 'Editar Utilizador' : 'Criar Utilizador';
-  }
-
   ngOnInit(): void {
     this.loadUsers();
   }
-
 
 
   reset(): void {
     this.searchValue = '';
     this.search();
   }
-
 
 
   open(): void {
@@ -161,7 +153,6 @@ export class ListuserComponent {
     this.currentEditingUserId = null;
     this.userForm.reset({status: 'CREATED'});
   }
-
 
 
   deleteUser(user: User): void {

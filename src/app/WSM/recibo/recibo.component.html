@@ -23,9 +23,9 @@
   <!-- ===== Summary Section (igual ao customer) ===== -->
   <div class="summary-section">
     <div class="summary-background">
-      <div nz-row [nzGutter]="8">
+      <div [nzGutter]="8" nz-row>
 
-        <div nz-col [nzSpan]="8">
+        <div [nzSpan]="8" nz-col>
           <nz-card nzSize="small">
             <div class="summary-card">
               <div class="icon-wrapper total">
@@ -39,7 +39,7 @@
           </nz-card>
         </div>
 
-        <div nz-col [nzSpan]="8">
+        <div [nzSpan]="8" nz-col>
           <nz-card nzSize="small">
             <div class="summary-card">
               <div class="icon-wrapper active">
@@ -53,7 +53,7 @@
           </nz-card>
         </div>
 
-        <div nz-col [nzSpan]="8">
+        <div [nzSpan]="8" nz-col>
           <nz-card nzSize="small">
             <div class="summary-card">
               <div class="icon-wrapper inactive">
@@ -74,11 +74,11 @@
   <!-- ===== Filters Panel ===== -->
   <div class="filters-panel">
     <input
-      nz-input
-      type="text"
-      placeholder="Pesquisar recibo ou cliente"
-      [(ngModel)]="searchValue"
       (ngModelChange)="search()"
+      [(ngModel)]="searchValue"
+      nz-input
+      placeholder="Pesquisar recibo ou cliente"
+      type="text"
     />
   </div>
 
@@ -101,7 +101,7 @@
           <tr>
             <th nzWidth="120px">Código</th>
 
-            <th nzWidth="220px" nzCustomFilter>
+            <th nzCustomFilter nzWidth="220px">
               Cliente
               <nz-filter-trigger
                 [(nzVisible)]="visible"
@@ -127,11 +127,11 @@
             <td>{{ data.monthDescription }}</td>
             <td>{{ data.total }}</td>
 
-            <td class="cell-ellipsis" [title]="data.fileName">
+            <td [title]="data.fileName" class="cell-ellipsis">
               {{ data.fileName }}
             </td>
 
-            <td class="cell-ellipsis" [title]="data.filePath">
+            <td [title]="data.filePath" class="cell-ellipsis">
               <a (click)="getDownloadUrl(data)" target="_blank">
                 {{ data.filePath }}
               </a>
