@@ -49,12 +49,40 @@ export class ReciboComponent implements OnInit {
         this.getPayments();
     }
 
-    getRecibos() {
-        this.customerPaymentInvoice.getCustomerPaymentInvoice().subscribe((recibos: Recibo[]) => {
-            this.dataSource = recibos;
-            this.listOfDisplayData = [...this.dataSource];
-        });
-    }
+
+
+  totalRecibos = 0;
+  recibosComFicheiro = 0;
+  recibosSemCaminho = 0;
+
+  private calcStats() {
+    this.totalRecibos = this.dataSource.length;
+    this.recibosComFicheiro = this.dataSource.filter(r => !!r.fileName).length;
+    this.recibosSemCaminho = this.dataSource.filter(r => !r.filePath).length;
+  }
+
+  getRecibos() {
+    this.customerPaymentInvoice.getCustomerPaymentInvoice().subscribe((recibos: Recibo[]) => {
+      this.dataSource = recibos;
+      this.listOfDisplayData = [...this.dataSource];
+      this.calcStats();
+    });
+  }
+
+  search(): void {
+    this.visible = false;
+
+    const q = this.searchValue.toLowerCase().trim();
+    this.listOfDisplayData = this.dataSource.filter((item: Recibo) =>
+      item.customerName?.toLowerCase().includes(q) ||
+      item.fileName?.toLowerCase().includes(q) ||
+      item.invoiceCode?.toLowerCase?.().includes?.(q)
+    );
+  }
+
+
+
+
 
     getPayments() {
         this.isLoading = true;
@@ -69,14 +97,7 @@ export class ReciboComponent implements OnInit {
         this.search();
     }
 
-    search(): void {
-        this.visible = false;
-        this.listOfDisplayData = this.dataSource.filter(
-            (item: Recibo) =>
-                item.customerName.toLowerCase().includes(this.searchValue.toLowerCase()) ||
-                item.fileName.toLowerCase().includes(this.searchValue.toLowerCase())
-        );
-    }
+
 
     open(): void {
         this.isEditMode = false;
