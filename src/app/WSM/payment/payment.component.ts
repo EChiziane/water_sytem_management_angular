@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Payment} from '../../models/WSM/payment';
 import {CustomerService} from '../../services/customer.service';
 import {PaymentService} from '../../services/payment.service';
 import {Customer} from '../../models/WSM/customer';
@@ -9,6 +8,10 @@ import {ReciboService} from '../../services/recibo.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CustomerPaymentInvoiceService} from '../../services/customer-payment-invoice.service';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import {Payment} from '../../models/WSM/payment';
+import {PaymentInvoiceService} from '../../services/payment-invoice.service';
 
 
 @Component({
@@ -50,7 +53,8 @@ export class PaymentComponent implements OnInit {
     private reciboService: ReciboService,
     private message: NzMessageService,
     private fb: FormBuilder,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private  paymentInvoiceService:PaymentInvoiceService
   ) {
   }
 
@@ -58,6 +62,7 @@ export class PaymentComponent implements OnInit {
 
     this.customerService.getCustomers().subscribe(customers => {
       this.allCustomers = customers;
+      console.log(customers)
     });
 
 
@@ -74,6 +79,22 @@ export class PaymentComponent implements OnInit {
     this.updateDrawer();
     window.addEventListener('resize', () => this.updateDrawer());
 // Carrega os clientes
+  }
+
+  download(payment: Payment) {
+    this.paymentInvoiceService.downloadPaymentInvoice(payment);
+  }
+  onCustomerSelect(customerId: string) {
+
+    if (!customerId || customerId === 'null') {
+      return; // 🔥 evita chamada inválida
+    }
+
+    this.customerService.getCustomerById(customerId).subscribe(c => {
+      this.selectedCustomer = c;
+      this.buildDebtMonths();
+      this.onNumMonthsChange();
+    });
   }
 
   updateDrawer() {
@@ -93,16 +114,19 @@ export class PaymentComponent implements OnInit {
 
 
   // === Fechar Drawer ===
+
+
   closePaymentDrawer() {
     this.isPaymentDrawerVisible = false;
-    this.paymentForm.reset();
-  }
 
-  onCustomerSelect(customerId: string) {
-    this.customerService.getCustomerById(customerId).subscribe(c => {
-      this.selectedCustomer = c;
-      this.buildDebtMonths();
-      this.onNumMonthsChange();
+    this.selectedCustomer = null;
+    this.selectedMonths = [];
+
+    this.paymentForm.reset({
+      customerId: null,
+      amount: null,
+      numMonths: 1,
+      paymentMethod: null
     });
   }
 
@@ -122,16 +146,37 @@ export class PaymentComponent implements OnInit {
     }
   }
 
-  getPayments() {
+  savePayment() {
+    if (this.paymentForm.invalid) {
+      this.message.warning('Preencha todos os campos corretamente ⚠️');
+      return;
+    }
+
+    const payload = {
+      ...this.paymentForm.value,
+      months: this.selectedMonths
+    };
+
     this.isLoading = true;
-    this.paymentService.getPayments().subscribe((payments: Payment[]) => {
-      this.dataSource = payments;
-      console.log(payments)
-      this.isLoading = false;
-      this.listOfDisplayData = [...this.dataSource]; // Atualiza após receber os dados
-      this.calculatePaymentStats();
+
+    this.paymentService.addPayment(payload).subscribe({
+
+      next: () => {
+        this.message.success('Pagamento registado com sucesso! 💧💰');
+        this.getPayments();
+        this.closePaymentDrawer();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error(err);
+
+        this.message.error('Erro ao processar o pagamento ❌');
+
+        this.isLoading = false;
+      }
     });
   }
+
 
   calculatePaymentStats() {
     this.totalPayments = this.dataSource.length;
@@ -148,93 +193,40 @@ export class PaymentComponent implements OnInit {
     this.filterData();
   }
 
-  filterData(): void {
-    this.listOfDisplayData = this.dataSource.filter((item: Payment) => {
-      const customer = this.dataSource.find(c => c.id === item.customerId);
-      return customer?.customer.name.toLowerCase().includes(this.searchValue.toLowerCase());
-    });
-  }
+
 
   // ========= Navigation =========
   onBack() {
     window.history.back();
   }
 
-  printPayment(payment: Payment): void {
-    this.paymentService.printInvoice(payment.id).subscribe({})
+  filterData(): void {
+    const search = this.searchValue.toLowerCase();
+
+    this.listOfDisplayData = this.dataSource.filter((item: Payment) =>
+      (item.customerName || '').toLowerCase().includes(search)
+    );
   }
 
-  getDownloadUrl(recibo: Recibo) {
-    this.reciboService.downloadRecibo(recibo.id).subscribe((fileBlob: Blob) => {
-      const url = window.URL.createObjectURL(fileBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = recibo.fileName; // ou qualquer nome
-      a.click();
-      window.URL.revokeObjectURL(url);
+
+  getPayments() {
+    this.isLoading = true;
+
+    this.paymentService.getPayments().subscribe((payments: any[]) => {
+
+      this.dataSource = payments.map(p => ({
+        ...p,
+        confirmed: p.confirmed ?? p.status,
+        numMonths: Number(p.numMonths)
+      }));
+
+      this.listOfDisplayData = [...this.dataSource];
+      this.calculatePaymentStats();
+      this.isLoading = false;
     });
   }
 
-  createRecibo(payment: Payment) {
 
-    {
-      this.reciboService.addRecibo(payment.id).subscribe({
-        next: (newRecibo) => {
-          this.message.success('Recibo criado com sucesso! ✅');
-        },
-        error: () => {
-          this.message.error('Erro ao criar recibo. 🚫');
-        }
-      });
-    }
-  }
-
-  public createPayment() {
-    if (this.paymentForm.invalid) {
-      console.error('Erro: O formulário contém campos inválidos.');
-      return;
-    }
-
-    this.paymentService.addPayment(this.paymentForm.value).subscribe({
-      next: (newPayment) => {
-        console.log('Form Data:', this.paymentForm.value);
-        console.log('Pagamento adicionado com sucesso:', newPayment);
-        this.getPayments();
-        this.dataSource = [...this.dataSource, newPayment];
-        this.listOfDisplayData = [...this.dataSource]; // Atualiza a tabela
-        this.calculatePaymentStats(); // Atualiza os dados estatísticos
-        this.paymentForm.reset({confirmed: false}); // Reseta o formulário
-        this.closePaymentDrawer(); // Fecha o modal
-      },
-      error: (err) => {
-        console.error('Erro ao adicionar pagamento:', err);
-      },
-    });
-  }
-
-  deletePayment(data: Payment) {
-  }
-
-  createCustomerPaymentInvoice(payment: any) {
-    this.customerPaymentInvoiceService.createCustomerPaymentInvoice(payment).subscribe(
-      {}
-    )
-  }
-
-  // ===================== DOWNLOAD =====================
-  downloadCustomerPaymentInvoice(invoice: any) {
-    this.customerPaymentInvoiceService.downloadRecibo(invoice.id).subscribe((fileBlob: Blob) => {
-      const url = window.URL.createObjectURL(fileBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = invoice.fileName || 'invoice.xlsx';
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
-  }
-
-  editPayment(data: Payment) {
-  }
 
   viewPayment(data: Payment) {
   }
@@ -254,22 +246,26 @@ export class PaymentComponent implements OnInit {
     }
   }
 
-  // === Guardar Pagamento ===
-  savePayment() {
-    if (this.paymentForm.invalid) return;
 
-    const payload = {
-      ...this.paymentForm.value,
-      months: this.selectedMonths
-    };
 
-    this.paymentService.addPayment(payload).subscribe(() => {
-      this.getPayments();
-      this.closePaymentDrawer();
-    });
+
+
+  private formatDateOnly(value: string): string {
+    const date = new Date(value);
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  }
+
+  private formatMoney(value: number): string {
+    return Number(value || 0).toFixed(2);
   }
 
 
+  deletePayment(data: Payment) {
+
+  }
 }
 
 

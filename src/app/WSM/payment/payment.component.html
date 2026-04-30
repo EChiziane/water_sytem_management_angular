@@ -101,17 +101,24 @@
           nzTableLayout="fixed">
           <thead>
           <tr>
+            <th>Code</th>
             <th>Client Name</th>
             <th>Amount</th>
             <th>Reference Month</th>
             <th>Payment Method</th>
             <th>Confirmed</th>
+            <th nzColumnKey="createdBy">Criado por</th>
             <th>Created At</th>
             <th>Actions</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let data of nzTable.data;">
+            <td>
+            <nz-tag nzColor="blue">
+              {{ data.referenceCode|| 'NONE' }}
+            </nz-tag>
+            </td>
             <td>{{ data.customerName }}</td>
             <td>
   <span class="amount">
@@ -127,7 +134,7 @@
                 {{ data.confirmed ? 'Confirmed' : 'Unconfirmed' }}
               </nz-tag>
             </td>
-
+            <td>{{ data.createdBy|| 'Sistema' }}</td>
             <td>{{ data.paymentDate | date: 'dd MM yyyy - HH:mm' }}</td>
             <td>
 
@@ -136,7 +143,7 @@
                       nzType="link">
                 <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
               </button>
-              <button (click)="downloadCustomerPaymentInvoice(data.id)" nz-button nzSize="small" nzType="link">
+              <button (click)="  download(data)" nz-button nzSize="small" nzType="link">
                 <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
               </button>
               <button (click)="deletePayment(data)" nz-button nzDanger nzSize="small" nzType="link">

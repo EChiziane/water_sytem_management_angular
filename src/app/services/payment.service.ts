@@ -28,6 +28,7 @@ export class PaymentService {
   }
 
   public addPayment(payment: any): Observable<Payment> {
+    console.log(payment)
     return this.http.post<Payment>(this.baseURL, payment).pipe(take(1));
   }
 

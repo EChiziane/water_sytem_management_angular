@@ -37,7 +37,7 @@ import {MainLayoutComponent} from './main-layout/main-layout.component';
 import {NzModalModule} from 'ng-zorro-antd/modal';
 import {NzAvatarModule} from 'ng-zorro-antd/avatar';
 
-import {ListuserComponent} from './UASM/listuser/listuser.component';
+
 import {SigninComponent} from './UASM/signin/signin.component';
 import {NzStatisticComponent} from 'ng-zorro-antd/statistic';
 
@@ -66,6 +66,7 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {NzCarouselComponent, NzCarouselContentDirective} from 'ng-zorro-antd/carousel';
 import {LandingPageComponent} from './landpage/landingpage.component';
 import {NzBreadCrumbComponent, NzBreadCrumbItemComponent} from "ng-zorro-antd/breadcrumb";
+import {ListuserComponent} from './UASM/listuser/listuser.component';
 
 
 registerLocaleData(en);

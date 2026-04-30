@@ -3,6 +3,7 @@ import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {isPlatformBrowser} from '@angular/common';
+import {NzMessageService} from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-login',
@@ -19,31 +20,38 @@ export class LoginComponent implements OnInit {
     rememberMe: new FormControl(false)
   });
 
-  forgotPasswordForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email])
-  });
-
-  validateForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required]),
-    checkPassword: new FormControl('', [Validators.required]),
-    nickname: new FormControl('', [Validators.required]),
-    phoneNumberPrefix: new FormControl('+258'),
-    phoneNumber: new FormControl('', [Validators.required]),
-    website: new FormControl('', [Validators.required]),
-    agree: new FormControl(false, Validators.requiredTrue)
-  });
-
-  isForgotPasswordVisible = false;
   isRegisterVisible = false;
   responseMessage: string | null = null;
-  visible1 = false;
-  isLoading = false; // <=== estado do spinner
+  isLoading = false;
+
+  // show/hide login password
+  isPasswordVisible = false;
+
+  // ===== Recovery Modal =====
+  isForgotPasswordVisible = false;
+  recoveryStep: 0 | 1 | 2 = 0;
+  recoveryLoading = false;
+
+  recoveryPreview: { maskedName: string; maskedEmail: string; maskedPhone: string } | null = null;
+
+  forgotPasswordForm = new FormGroup({
+    phoneWhatsApp: new FormControl('', [Validators.required])
+  });
+
+  resetPasswordForm = new FormGroup({
+    otpCode: new FormControl('', [Validators.required, Validators.minLength(4)]),
+    newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    confirmPassword: new FormControl('', [Validators.required])
+  });
+
+  isResetPasswordVisible = false;
+  isResetConfirmVisible = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: object
+    @Inject(PLATFORM_ID) private platformId: object,
+    private msg: NzMessageService
   ) {
   }
 
@@ -55,48 +63,49 @@ export class LoginComponent implements OnInit {
     localStorage.removeItem('token');
   }
 
-  login() {
-    if (this.userForm.valid) {
-      this.isLoading = true; // mostra o spinner
-      this.responseMessage = null;
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
 
-      this.authService.login(this.userForm.value.login!, this.userForm.value.password!).subscribe({
-        next: (response) => {
-          this.isLoading = false; // esconde o spinner
-          if (response && response.token && isPlatformBrowser(this.platformId)) {
-            localStorage.setItem('token', response.token);
-            this.loginSuccess.emit();
-            this.router.navigate(['/app/customer']);
-          } else {
-            this.responseMessage = 'Erro ao receber o token da API.';
-          }
-        },
-        error: err => {
-          this.isLoading = false; // esconde o spinner
-          console.error('Erro no login', err);
-          this.responseMessage = 'Usuário ou senha inválidos.';
-        }
-      });
-    } else {
-      this.responseMessage = 'Preencha todos os campos corretamente.';
+  isInvalid(controlName: 'login' | 'password'): boolean {
+    const c = this.userForm.get(controlName);
+    return !!c && c.invalid && (c.touched || c.dirty);
+  }
+
+  login(): void {
+    if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
+      return;
     }
-  }
 
-  openForgotPasswordModal(): void {
-    this.isForgotPasswordVisible = true;
-  }
+    const loginValue = this.userForm.get('login')?.value;
+    const passwordValue = this.userForm.get('password')?.value;
 
-  closeForgotPasswordModal(): void {
-    this.isForgotPasswordVisible = false;
-  }
+    const login = (loginValue ?? '').toString().trim();
+    const password = (passwordValue ?? '').toString();
 
-  recoverPassword(): void {
-    if (this.forgotPasswordForm.valid) {
-      console.log('Recuperação de senha:', this.forgotPasswordForm.value);
-      this.closeForgotPasswordModal();
+    if (!login || !password) {
+      this.userForm.markAllAsTouched();
+      return;
     }
+
+    this.isLoading = true;
+
+    this.authService.login(login, password).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigate(['/app/customer']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.responseMessage = 'Login inválido';
+        console.error(err);
+      }
+    });
   }
 
+
+  // ===== Register Modal =====
   openRegisterModal(): void {
     this.isRegisterVisible = true;
   }
@@ -105,35 +114,113 @@ export class LoginComponent implements OnInit {
     this.isRegisterVisible = false;
   }
 
-  registerUser(): void {
-    if (this.validateForm.valid) {
-      console.log('Usuário registrado:', this.validateForm.value);
-      this.closeRegisterModal();
+  // ===== Recovery Modal =====
+  openForgotPasswordModal(): void {
+    this.isForgotPasswordVisible = true;
+    this.recoveryStep = 0;
+    this.recoveryPreview = null;
+    this.forgotPasswordForm.reset();
+    this.resetPasswordForm.reset();
+  }
+
+  closeForgotPasswordModal(): void {
+    this.isForgotPasswordVisible = false;
+  }
+
+  toggleResetPasswordVisibility(): void {
+    this.isResetPasswordVisible = !this.isResetPasswordVisible;
+  }
+
+  toggleResetConfirmVisibility(): void {
+    this.isResetConfirmVisible = !this.isResetConfirmVisible;
+  }
+
+  requestRecovery(): void {
+    if (this.forgotPasswordForm.invalid) {
+      Object.values(this.forgotPasswordForm.controls).forEach(c => c.markAsTouched());
+      this.msg.error('Informe o número de WhatsApp.');
+      return;
     }
+
+    const phone = this.normalizeMzPhoneToE164(this.forgotPasswordForm.value.phoneWhatsApp!);
+    this.recoveryLoading = true;
+
+    this.authService.requestPasswordReset(phone).subscribe({
+      next: (preview) => {
+        this.recoveryLoading = false;
+        this.recoveryPreview = preview;
+        this.recoveryStep = 1;
+      },
+      error: (err) => {
+        this.recoveryLoading = false;
+        console.error(err);
+        this.msg.error('Não foi possível localizar a conta com esse WhatsApp.');
+      }
+    });
   }
 
-  close(): void {
-    this.visible1 = false;
+  confirmRecovery(): void {
+    const phone = this.normalizeMzPhoneToE164(this.forgotPasswordForm.value.phoneWhatsApp!);
+    this.recoveryLoading = true;
+
+    this.authService.confirmPasswordReset(phone).subscribe({
+      next: () => {
+        this.recoveryLoading = false;
+        this.recoveryStep = 2;
+        this.msg.success('Enviámos um código para o WhatsApp e email associados.');
+      },
+      error: (err) => {
+        this.recoveryLoading = false;
+        console.error(err);
+        this.msg.error('Não foi possível iniciar o envio do código.');
+      }
+    });
   }
 
-  open(): void {
-    this.visible1 = true;
+  backRecovery(): void {
+    if (this.recoveryStep === 2) this.recoveryStep = 1;
+    else if (this.recoveryStep === 1) this.recoveryStep = 0;
   }
 
-  confirmPasswordValidator(form: FormGroup): { [key: string]: boolean } | null {
-    const password = form.get('password')?.value;
-    const checkPassword = form.get('checkPassword')?.value;
-    if (password && checkPassword && password !== checkPassword) {
-      return {confirm: true};
+  submitResetPassword(): void {
+    if (this.resetPasswordForm.invalid) {
+      Object.values(this.resetPasswordForm.controls).forEach(c => c.markAsTouched());
+      this.msg.error('Preencha o código e a nova senha.');
+      return;
     }
-    return null;
+
+    const v = this.resetPasswordForm.value;
+
+    if (v.newPassword !== v.confirmPassword) {
+      this.msg.error('As senhas não coincidem.');
+      return;
+    }
+
+    const phone = this.normalizeMzPhoneToE164(this.forgotPasswordForm.value.phoneWhatsApp!);
+    this.recoveryLoading = true;
+
+    this.authService.resetPassword(phone, v.otpCode!, v.newPassword!).subscribe({
+      next: () => {
+        this.recoveryLoading = false;
+        this.msg.success('Senha alterada com sucesso. Já pode entrar.');
+        this.closeForgotPasswordModal();
+      },
+      error: (err) => {
+        this.recoveryLoading = false;
+        console.error(err);
+        this.msg.error('Código inválido ou expirado.');
+      }
+    });
   }
 
-  submitForm(): void {
-    if (this.validateForm.valid) {
-      console.log('Form submitted successfully:', this.validateForm.value);
-    } else {
-      console.log('Form is invalid!');
-    }
+  private markAllTouched(): void {
+    Object.values(this.userForm.controls).forEach(c => c.markAsTouched());
+  }
+
+  private normalizeMzPhoneToE164(raw: string): string {
+    const digits = (raw ?? '').toString().replace(/\D/g, '');
+    if (!digits) return '';
+    if (digits.startsWith('258')) return `+${digits}`;
+    return `+258${digits}`;
   }
 }

@@ -13,9 +13,13 @@
 /* =========================================================
    PAGE HEADER
 ========================================================= */
+/* =========================================================
+   PAGE HEADER (UPDATED)
+========================================================= */
 .page-header {
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* 🔥 centraliza o título */
   align-items: center;
   margin-bottom: 10px;
   flex-shrink: 0;
@@ -24,9 +28,12 @@
     margin: 0;
     font-size: 16px;
     font-weight: 300;
+    text-align: center;
   }
 
   .back-arrow {
+    position: absolute;
+    left: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,6 +46,25 @@
 
     &:hover {
       background: rgba(0, 123, 255, 0.1);
+    }
+  }
+
+  .download-arrow {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    font-size: 18px;
+    color: #28a745;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s ease-in-out;
+
+    &:hover {
+      background: rgba(40, 167, 69, 0.1);
     }
   }
 }

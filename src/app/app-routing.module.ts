@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './UASM/login/login.component';
 import {SigninComponent} from './UASM/signin/signin.component';
-import {ListuserComponent} from './UASM/listuser/listuser.component';
+
 import {CustomerDetailsComponent} from './WSM/customer/customer-details/customer-details.component';
 import {PaymentDetailsComponent} from './WSM/payment/payment-details/payment-details.component';
 import {PaymentComponent} from './WSM/payment/payment.component';
@@ -12,6 +12,7 @@ import {ReciboComponent} from './WSM/recibo/recibo.component';
 import {LandingPageComponent} from './landpage/landingpage.component';
 import {MainLayoutComponent} from './main-layout/main-layout.component';
 import {AuthGuard} from './services/auth.guard';
+import {ListuserComponent} from './UASM/listuser/listuser.component';
 
 
 const routes: Routes = [

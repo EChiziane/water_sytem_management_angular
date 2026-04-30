@@ -1,73 +1,96 @@
-<div class="content-wrapper">
+<div class="content-wrapper" *ngIf="payment">
 
-  <!-- ===== Breadcrumb ===== -->
+  <!-- Breadcrumb -->
   <nz-breadcrumb class="page-breadcrumb">
     <nz-breadcrumb-item>
       <a routerLink="/app">Home</a>
     </nz-breadcrumb-item>
-
     <nz-breadcrumb-item>
       <a routerLink="/app/payment">Lista de Pagamentos</a>
     </nz-breadcrumb-item>
-
     <nz-breadcrumb-item>
       Detalhes do Pagamento
     </nz-breadcrumb-item>
   </nz-breadcrumb>
 
-
-  <!-- ===== Page Header ===== -->
+  <!-- Header -->
   <div class="page-header">
+
+    <!-- VOLTAR (ESQUERDA) -->
+    <span (click)="goBack()" class="back-arrow">
+    <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
+  </span>
+
+    <!-- TÍTULO -->
     <p>Detalhes do Pagamento</p>
 
-
-    <span class="back-arrow">
-
-<nz-icon nzTheme="outline" nzType="vertical-align-bottom"/>
-    </span>
-    <span (click)="goBack()" class="back-arrow">
-
-      <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
-    </span>
-
+    <!-- DOWNLOAD (CENTRO TOP) -->
+    <span (click)="download()" class="download-arrow">
+    <nz-icon nzTheme="outline" nzType="download"></nz-icon>
+  </span>
 
   </div>
 
   <div class="info-section">
 
-    <!-- ==== Informações do Cliente ==== -->
+    <!-- CLIENTE -->
     <section class="section">
       <h3 class="section-title">Informações do Cliente</h3>
-      <div *ngIf="payment?.customer" class="info-grid">
-        <div class="item"><strong>Nome:</strong> {{ payment.customer.name }}</div>
-        <div class="item"><strong>Contato:</strong> {{ payment.customer.contact }}</div>
-        <div class="item"><strong>Endereço:</strong> {{ payment.customer.address }}</div>
+
+      <div class="info-grid">
+        <div class="item"><strong>Nome:</strong> {{ payment.customerName }}</div>
+        <div class="item"><strong>Contacto:</strong> {{ payment.customerContact }}</div>
+        <div class="item"><strong>Endereço:</strong> {{ payment.customerAddress }}</div>
+
         <div class="item">
-          <strong>Status:</strong>
-          <nz-tag [nzColor]="payment.customer.status === 'ATIVO' ? 'green' : 'volcano'">
-            {{ payment.customer.status }}
+          <strong>Estado:</strong>
+          <nz-tag [nzColor]="payment.confirmed ? 'green' : 'volcano'">
+            {{ payment.confirmed ? 'Confirmado' : 'Pendente' }}
           </nz-tag>
         </div>
-        <div class="item"><strong>Valor:</strong> {{ payment.customer.valve }} MT</div>
-        <div class="item">
-          <strong>Criação:</strong> {{ payment.customer.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-        </div>
+
+        <div class="item"><strong>Válvula:</strong> {{ payment.customerValve }}</div>
+        <div class="item"><strong>Taxa Mensal:</strong> {{ payment.monthlyFee }} MT</div>
       </div>
     </section>
 
-    <!-- ==== Informações do Pagamento ==== -->
+    <!-- PAGAMENTO -->
     <section class="section">
       <h3 class="section-title">Informações do Pagamento</h3>
 
       <div class="debt-grid">
+
+        <!-- REFERÊNCIA -->
+        <div class="debt-box highlight">
+          <p class="debt-label">Código de Referência</p>
+          <p class="debt-number">{{ payment.referenceCode }}</p>
+        </div>
+
+
+
         <div class="debt-box">
           <p class="debt-label">Montante Pago</p>
-          <p class="debt-number">{{ payment.amount }} MT</p>
+          <p class="debt-number">{{ payment.amount | number:'1.2-2' }} MT</p>
+        </div>
+
+        <div class="debt-box">
+          <p class="debt-label">IVA</p>
+          <p>{{ payment.tax | number:'1.2-2' }} MT</p>
+        </div>
+
+        <div class="debt-box">
+          <p class="debt-label">Preço Unitário</p>
+          <p>{{ payment.unitPrice | number:'1.2-2' }} MT</p>
+        </div>
+
+        <div class="debt-box">
+          <p class="debt-label">Meses Pagos</p>
+          <p>{{ payment.numMonths }}</p>
         </div>
 
         <div class="debt-box">
           <p class="debt-label">Mês de Referência</p>
-          <p class="debt-months-inline">{{ payment.referenceMonth }}</p>
+          <p>{{ payment.referenceMonth }}</p>
         </div>
 
         <div class="debt-box">
@@ -86,6 +109,13 @@
           <p class="debt-label">Data do Pagamento</p>
           <p>{{ payment.paymentDate | date: 'dd/MM/yyyy HH:mm' }}</p>
         </div>
+
+        <!-- CRIADO POR -->
+        <div class="debt-box">
+          <p class="debt-label">Criado por</p>
+          <p>{{ payment.createdBy|| 'Sistema' }}</p>
+        </div>
+
       </div>
     </section>
 

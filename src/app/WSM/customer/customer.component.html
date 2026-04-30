@@ -104,6 +104,7 @@
           <!-- ===== Table Head ===== -->
           <thead>
           <tr>
+            <th>Code</th>
             <th nzCustomFilter>
               Name
               <nz-filter-trigger
@@ -126,6 +127,7 @@
           <!-- ===== Table Body ===== -->
           <tbody>
           <tr *ngFor="let data of nzTable.data">
+            <td><strong>{{ data.code }}</strong></td>
             <td>{{ data.name }}</td>
             <td>{{ data.valve }}</td>
             <td>{{ data.contact }}</td>

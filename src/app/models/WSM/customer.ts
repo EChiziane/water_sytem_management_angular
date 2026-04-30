@@ -1,6 +1,7 @@
 export interface Customer {
 
   id: string;
+  code: string;
   name: string;
   contact: string;
   address: string;

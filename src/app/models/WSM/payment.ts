@@ -1,17 +1,24 @@
-import {Customer} from './customer';
-
 export interface Payment {
   id: string;
+  referenceCode: string; // 👈 NOVO
+
   customerId: string;
   customerName: string;
+  customerContact: string;
+  customerAddress: string;
+  customerValve: number;
+  monthlyFee: number;
+
   amount: number;
-  numMonths: number;
-  referenceMonth: string;
-  paymentMethod: 'EMOLA,MPESA,BCI,NUMERARIO';
+  tax: number;
+  unitPrice: number;
+
   confirmed: boolean;
-  customer: Customer;
+
+  referenceMonth: string;
+  numMonths: number;
+  createdBy: string;
+
   paymentDate: string;
+  paymentMethod: string;
 }
-
-
-

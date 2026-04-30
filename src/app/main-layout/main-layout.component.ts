@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
+import {User} from '../models/user';
 
 @Component({
   selector: 'app-main-layout',
@@ -9,26 +10,27 @@ import {Router} from '@angular/router';
 })
 export class MainLayoutComponent {
   isCollapsed = false;
-  username?: string | null; // default caso não haja user
 
+  username: string = 'Utilizador';
 
   constructor(private router: Router) {
   }
 
   ngOnInit(): void {
-    // Supondo que guardaste os dados do user em localStorage
     const userJson = localStorage.getItem('user');
+    if (!userJson) return;
 
-
-    this.username = userJson;
-    console.log(userJson)// pega o nome do user
-
+    try {
+      const user = JSON.parse(userJson) as Partial<User>;
+      this.username = user.name ?? user.login ?? 'Utilizador';
+    } catch {
+      this.username = 'Utilizador';
+    }
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-
     this.router.navigate(['/landing-page']);
   }
 }

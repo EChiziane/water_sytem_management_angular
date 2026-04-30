@@ -17,6 +17,7 @@ export class CustomerService {
 
   public getCustomers(): Observable<Customer[]> {
     return this.http.get<Customer[]>(this.baseURL)
+
   }
 
   public deleteCustomer(id: any): Observable<Customer> {
