@@ -18,6 +18,7 @@ export interface Payment {
   referenceMonth: string;
   numMonths: number;
   createdBy: string;
+  createdByName: string;
 
   paymentDate: string;
   paymentMethod: string;

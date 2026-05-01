@@ -168,7 +168,7 @@
                 <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
               </button>
 
-              <button (click)="printPayment(data)" nz-button nzSize="small" nzType="link">
+              <button (click)="download(data)" nz-button nzSize="small" nzType="link">
                 <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
               </button>
 
@@ -232,7 +232,7 @@
             <nz-form-label>Número de Meses</nz-form-label>
             <nz-form-control>
               <input
-                (change)="onNumMonthsChange()"
+                (input)="onNumMonthsChange()"
                 [max]="customer.monthsInDebt"
                 [min]="0"
                 formControlName="numMonths"
@@ -267,9 +267,17 @@
             <nz-form-label>Método de Pagamento</nz-form-label>
             <nz-form-control>
               <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o método">
+
+                <nz-option nzLabel="Numerário" nzValue="CASH"></nz-option>
+
                 <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
-                <nz-option nzLabel="Depósito Bancário" nzValue="BANK"></nz-option>
-                <nz-option nzLabel="Dinheiro" nzValue="CASH"></nz-option>
+
+                <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
+
+                <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
+
+                <nz-option nzLabel="BIM" nzValue="BIM"></nz-option>
+
               </nz-select>
             </nz-form-control>
           </nz-form-item>

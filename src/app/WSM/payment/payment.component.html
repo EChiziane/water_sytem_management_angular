@@ -134,7 +134,7 @@
                 {{ data.confirmed ? 'Confirmed' : 'Unconfirmed' }}
               </nz-tag>
             </td>
-            <td>{{ data.createdBy|| 'Sistema' }}</td>
+            <td>{{ data.createdByName || 'Sistema' }}</td>
             <td>{{ data.paymentDate | date: 'dd MM yyyy - HH:mm' }}</td>
             <td>
 
@@ -223,7 +223,7 @@
             <nz-form-label>Número de Meses</nz-form-label>
             <nz-form-control>
               <input
-                (change)="onNumMonthsChange()"
+                (input)="onNumMonthsChange()"
                 [max]="10"
                 [min]="0"
                 formControlName="numMonths"
@@ -257,10 +257,18 @@
             <nz-form-label>Método de Pagamento</nz-form-label>
             <nz-form-control>
               <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o método">
-                <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
-                <nz-option nzLabel="Depósito Bancário" nzValue="BANK"></nz-option>
-                <nz-option nzLabel="Dinheiro" nzValue="CASH"></nz-option>
-              </nz-select>
+
+              <nz-option nzLabel="Numerário" nzValue="CASH"></nz-option>
+
+              <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
+
+              <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
+
+              <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
+
+              <nz-option nzLabel="BIM" nzValue="BIM"></nz-option>
+
+            </nz-select>
             </nz-form-control>
           </nz-form-item>
         </div>

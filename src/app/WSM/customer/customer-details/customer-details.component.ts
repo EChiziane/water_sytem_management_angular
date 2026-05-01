@@ -9,6 +9,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CustomerPaymentInvoiceService} from '../../../services/customer-payment-invoice.service';
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzModalService} from "ng-zorro-antd/modal";
+import {PaymentInvoiceService} from '../../../services/payment-invoice.service';
 
 
 @Component({
@@ -42,6 +43,7 @@ export class CustomerDetailsComponent implements OnInit {
                 private customerPaymentInvoiceService: CustomerPaymentInvoiceService,
                 private paymentService: PaymentService,
                 private modal: NzModalService,
+                private paymentInvoiceService: PaymentInvoiceService,
                 private message: NzMessageService) {
 
 
@@ -64,6 +66,10 @@ export class CustomerDetailsComponent implements OnInit {
         this.updateDrawer();
         window.addEventListener('resize', () => this.updateDrawer());
     }
+
+  download(payment: Payment) {
+    this.paymentInvoiceService.downloadPaymentInvoice(payment);
+  }
 
     updateDrawer() {
         if (window.innerWidth <= 768) {
@@ -107,16 +113,28 @@ export class CustomerDetailsComponent implements OnInit {
         });
     }
 
-    printPayment(data: Payment) {
-        this.customerPaymentInvoiceService.downloadRecibo(data.id).subscribe((fileBlob: Blob) => {
-            const url = window.URL.createObjectURL(fileBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = data.customerName || 'invoice.xlsx';
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-    }
+    // === Guardar Pagamento ===
+  savePayment() {
+    if (this.paymentForm.invalid) return;
+
+    const payload = {
+      ...this.paymentForm.value,
+      customerId: this.customerId
+    };
+
+    this.paymentService.addPayment(payload).subscribe({
+      next: () => {
+
+        // 🔥 ORDEM IMPORTA
+        this.getCustomer();          // atualiza dívida primeiro
+        this.getCustomerPayments();  // depois tabela
+
+        this.closePaymentDrawer();
+
+        this.message.success('Pagamento realizado com sucesso 💧');
+      }
+    });
+  }
 
     // === Abrir Drawer ===
     openPaymentDrawer() {
@@ -154,22 +172,17 @@ export class CustomerDetailsComponent implements OnInit {
 
     }
 
-    // === Guardar Pagamento ===
-    savePayment() {
-        if (this.paymentForm.invalid) return;
+  private getCustomer() {
+    this.customerService.getCustomerById(this.customerId).subscribe({
+      next: (customer: Customer) => {
+        this.customer = customer;
+        this.calculateDebtMonths();
 
-        const payload = {
-            ...this.paymentForm.value,
-            customerId: this.customerId
-        };
-        console.log(payload)
-        this.paymentService.addPayment(payload).subscribe({
-            next: () => {
-                this.getCustomerPayments();
-                this.closePaymentDrawer();
-            }
-        });
-    }
+        // ✅ ADICIONADO (única alteração)
+        this.onNumMonthsChange();
+      }
+    })
+  }
 
     search(): void {
         this.visible = false;
@@ -187,16 +200,7 @@ export class CustomerDetailsComponent implements OnInit {
         window.history.back();
     }
 
-    private getCustomer() {
-        this.customerService.getCustomerById(this.customerId).subscribe({
-            next: (customer: Customer) => {
-                this.customer = customer;
-                this.calculateDebtMonths();
-            }
-        })
-    }
-
-    private calculateDebtMonths() {
+  private calculateDebtMonths() {
         if (!this.customer || !this.customer.monthsInDebt) return;
 
         const currentMonth = new Date().getMonth();

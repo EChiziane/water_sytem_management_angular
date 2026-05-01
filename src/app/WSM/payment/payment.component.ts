@@ -3,13 +3,10 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CustomerService} from '../../services/customer.service';
 import {PaymentService} from '../../services/payment.service';
 import {Customer} from '../../models/WSM/customer';
-import {Recibo} from '../../models/WSM/Recibo';
 import {ReciboService} from '../../services/recibo.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CustomerPaymentInvoiceService} from '../../services/customer-payment-invoice.service';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import {Payment} from '../../models/WSM/payment';
 import {PaymentInvoiceService} from '../../services/payment-invoice.service';
 
@@ -62,7 +59,6 @@ export class PaymentComponent implements OnInit {
 
     this.customerService.getCustomers().subscribe(customers => {
       this.allCustomers = customers;
-      console.log(customers)
     });
 
 
@@ -133,15 +129,23 @@ export class PaymentComponent implements OnInit {
   buildDebtMonths() {
     if (!this.selectedCustomer || !this.selectedCustomer.monthsInDebt) return;
 
-    const currentMonth = new Date().getMonth();
+    const today = new Date();
+    const currentMonth = today.getMonth();
+
+    const monthsInDebt = this.selectedCustomer.monthsInDebt;
+
     const monthNames = [
       'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
 
     this.debtMonths = [];
-    for (let i = this.selectedCustomer.monthsInDebt; i > 0; i--) {
-      let index = (currentMonth - i + 12) % 12;
+
+    // ✅ CORRETO (sem +1)
+    const startIndex = (currentMonth - monthsInDebt + 12) % 12;
+
+    for (let i = 0; i < monthsInDebt; i++) {
+      const index = (startIndex + i) % 12;
       this.debtMonths.push(monthNames[index]);
     }
   }
@@ -219,7 +223,7 @@ export class PaymentComponent implements OnInit {
         confirmed: p.confirmed ?? p.status,
         numMonths: Number(p.numMonths)
       }));
-
+      console.log(this.dataSource)
       this.listOfDisplayData = [...this.dataSource];
       this.calculatePaymentStats();
       this.isLoading = false;
