@@ -10,7 +10,7 @@ import {CustomerPaymentInvoiceService} from '../../../services/customer-payment-
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {PaymentInvoiceService} from '../../../services/payment-invoice.service';
-
+import {CustomerDetailPdfService} from '../../../services/customer-detail-pdf.service';
 
 @Component({
   selector: 'app-customer-details',
@@ -48,6 +48,12 @@ export class CustomerDetailsComponent implements OnInit {
 
   drawerPlacement: 'right' | 'bottom' = 'right';
 
+  totalDebtAmount = 0;
+
+  totalPayments = 0;
+
+  lastPaymentDate = '';
+
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
@@ -57,6 +63,7 @@ export class CustomerDetailsComponent implements OnInit {
     private paymentService: PaymentService,
     private modal: NzModalService,
     private paymentInvoiceService: PaymentInvoiceService,
+    private customerDetailPdfService: CustomerDetailPdfService,
     private message: NzMessageService
   ) {}
 
@@ -67,7 +74,7 @@ export class CustomerDetailsComponent implements OnInit {
       unitPrice: [200],
       taxRate: [300],
       numMonths: [1, [Validators.required, Validators.min(1)]],
-      paymentMethod: ['', Validators.required]
+      paymentMethod: ['CASH', Validators.required]
     });
 
     this.route.params.subscribe(params => {
@@ -101,6 +108,41 @@ export class CustomerDetailsComponent implements OnInit {
 
       this.drawerPlacement = 'right';
     }
+  }
+
+  downloadCustomerInfo(): void {
+
+    this.modal.confirm({
+
+      nzTitle: 'Incluir pagamentos no PDF?',
+
+      nzContent:
+        'Deseja incluir o histórico completo de pagamentos neste documento?',
+
+      nzOkText: 'Sim, incluir',
+
+      nzCancelText: 'Não incluir',
+
+      nzOnOk: () => {
+
+        this.customerDetailPdfService
+          .downloadCustomerReport(
+            this.customer,
+            this.paymentDataSource,
+            true
+          );
+      },
+
+      nzOnCancel: () => {
+
+        this.customerDetailPdfService
+          .downloadCustomerReport(
+            this.customer,
+            this.paymentDataSource,
+            false
+          );
+      }
+    });
   }
 
   onNumMonthsChange() {
@@ -148,9 +190,16 @@ export class CustomerDetailsComponent implements OnInit {
 
         this.paymentDataSource = payments;
 
-        this.isLoading = false;
-
         this.listOfDisplayData = [...this.paymentDataSource];
+
+        this.totalPayments = payments.length;
+
+        if (payments.length > 0) {
+
+          this.lastPaymentDate = payments[0].paymentDate;
+        }
+
+        this.isLoading = false;
       });
   }
 
@@ -187,7 +236,8 @@ export class CustomerDetailsComponent implements OnInit {
     this.isPaymentDrawerVisible = false;
 
     this.paymentForm.reset({
-      numMonths: 1
+      numMonths: 1,
+      paymentMethod: 'CASH'
     });
 
     this.selectedMonths = [];
@@ -243,6 +293,8 @@ export class CustomerDetailsComponent implements OnInit {
 
           this.calculateDebtMonths();
 
+          this.calculateDebtAmount();
+
           this.onNumMonthsChange();
         }
       });
@@ -283,6 +335,13 @@ export class CustomerDetailsComponent implements OnInit {
     this.debtMonths = this.customer.unpaidMonths.map(
       month => this.formatMonth(month)
     );
+  }
+
+  private calculateDebtAmount() {
+
+    this.totalDebtAmount =
+      this.customer.monthsInDebt *
+      this.customer.monthlyFee;
   }
 
   formatMonth(month: string): string {

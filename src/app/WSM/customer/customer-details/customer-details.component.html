@@ -40,6 +40,14 @@
       <div class="info-grid">
 
         <div class="item">
+          <strong>Código:</strong>
+
+          <nz-tag nzColor="blue">
+            {{ customer.code }}
+          </nz-tag>
+        </div>
+
+        <div class="item">
           <strong>Nome:</strong>
           {{ customer.name }}
         </div>
@@ -68,13 +76,24 @@
         </div>
 
         <div class="item">
-          <strong>Valor:</strong>
-          {{ customer.valve }} MT
+          <strong>Válvula:</strong>
+
+          <nz-tag nzColor="cyan">
+            Nº {{ customer.valve }}
+          </nz-tag>
+        </div>
+
+        <div class="item">
+          <strong>Taxa Mensal:</strong>
+
+          <span class="highlight-value">
+            {{ customer.monthlyFee | number:'1.2-2' }} MT
+          </span>
         </div>
 
         <div class="item">
 
-          <strong>Criação:</strong>
+          <strong>Cliente Desde:</strong>
 
           {{ customer.createdAt | date: 'dd/MM/yyyy HH:mm' }}
 
@@ -88,7 +107,7 @@
     <section class="section">
 
       <h3 class="section-title">
-        Dívidas
+        Auditoria Financeira
       </h3>
 
       <div class="debt-grid">
@@ -96,7 +115,7 @@
         <div class="debt-box">
 
           <p class="debt-label">
-            Meses
+            Meses em Dívida
           </p>
 
           <p class="debt-number">
@@ -105,25 +124,69 @@
 
         </div>
 
-        <div class="debt-box">
+        <div class="debt-box debt-danger">
 
           <p class="debt-label">
-            Meses Correspondentes
+            Total em Dívida
           </p>
 
-          <p class="debt-months-inline">
+          <p class="debt-number debt-number-danger">
+            {{ totalDebtAmount | number:'1.2-2' }} MT
+          </p>
 
-            <span *ngFor="let m of debtMonths; let last = last">
+        </div>
 
-              {{ m }}
+      </div>
 
-              <span *ngIf="!last">, </span>
+      <div class="audit-grid">
 
-              <span *ngIf="last">.</span>
+        <div class="audit-card">
 
-            </span>
+          <span class="audit-title">
+            Total de Pagamentos
+          </span>
+
+          <p class="audit-value">
+            {{ totalPayments }}
+          </p>
+
+        </div>
+
+        <div class="audit-card">
+
+          <span class="audit-title">
+            Último Pagamento
+          </span>
+
+          <p class="audit-value small">
+
+            {{
+              lastPaymentDate
+                ? (lastPaymentDate | date:'dd/MM/yyyy HH:mm')
+                : 'Sem pagamentos'
+            }}
 
           </p>
+
+        </div>
+
+      </div>
+
+      <div class="months-section">
+
+        <p class="months-title">
+          Meses Correspondentes
+        </p>
+
+        <div class="months-tags">
+
+          <nz-tag
+            *ngFor="let m of debtMonths"
+            nzColor="volcano">
+
+            {{ m }}
+
+          </nz-tag>
 
         </div>
 
@@ -143,6 +206,20 @@
       placeholder="Search name"
       type="text"
     />
+
+    <button
+      (click)="downloadCustomerInfo()"
+      nz-button
+      nzType="default">
+
+      <nz-icon
+        nzTheme="outline"
+        nzType="download">
+      </nz-icon>
+
+      Download Cliente
+
+    </button>
 
     <button
       (click)="openPaymentDrawer()"
@@ -184,11 +261,11 @@
 
             <th>Client Name</th>
 
-            <th>Amount</th>
+            <th class="col-montante">Amount</th>
 
             <th>Reference Month</th>
 
-            <th>Payment Method</th>
+            <th class="col-metodo">Payment Method</th>
 
             <th>Confirmed</th>
 
@@ -216,14 +293,9 @@
 
             <td>{{ data.customerName }}</td>
 
-            <td>
+            <td class="col-montante">
 
               <span class="amount">
-
-                <nz-icon
-                  nzTheme="outline"
-                  nzType="dollar">
-                </nz-icon>
 
                 {{ data.amount | number:'1.2-2' }}
 
@@ -233,7 +305,13 @@
 
             <td>{{ data.referenceMonth }}</td>
 
-            <td>{{ data.paymentMethod }}</td>
+            <td class="col-metodo">
+
+              <nz-tag nzColor="purple">
+                {{ data.paymentMethod }}
+              </nz-tag>
+
+            </td>
 
             <td>
 
@@ -247,50 +325,54 @@
             </td>
 
             <td>
-              {{ data.paymentDate | date: 'dd MM yyyy - HH:mm' }}
+              {{ data.paymentDate | date: 'dd/MM/yyyy - HH:mm' }}
             </td>
 
             <td>
 
-              <button
-                [routerLink]="['/app/payment-detail', data.id]"
-                nz-button
-                nzSize="small"
-                nzType="link">
+              <div class="action-buttons">
 
-                <nz-icon
-                  nzTheme="outline"
-                  nzType="eye">
-                </nz-icon>
+                <button
+                  [routerLink]="['/app/payment-detail', data.id]"
+                  nz-button
+                  nzSize="small"
+                  nzType="link">
 
-              </button>
+                  <nz-icon
+                    nzTheme="outline"
+                    nzType="eye">
+                  </nz-icon>
 
-              <button
-                (click)="download(data)"
-                nz-button
-                nzSize="small"
-                nzType="link">
+                </button>
 
-                <nz-icon
-                  nzTheme="outline"
-                  nzType="printer">
-                </nz-icon>
+                <button
+                  (click)="download(data)"
+                  nz-button
+                  nzSize="small"
+                  nzType="link">
 
-              </button>
+                  <nz-icon
+                    nzTheme="outline"
+                    nzType="printer">
+                  </nz-icon>
 
-              <button
-                (click)="deletePayment(data)"
-                nz-button
-                nzDanger
-                nzSize="small"
-                nzType="link">
+                </button>
 
-                <nz-icon
-                  nzTheme="outline"
-                  nzType="delete">
-                </nz-icon>
+                <button
+                  (click)="deletePayment(data)"
+                  nz-button
+                  nzDanger
+                  nzSize="small"
+                  nzType="link">
 
-              </button>
+                  <nz-icon
+                    nzTheme="outline"
+                    nzType="delete">
+                  </nz-icon>
+
+                </button>
+
+              </div>
 
             </td>
 
@@ -307,7 +389,7 @@
   </div>
 
 </div>
-
+<!-- ===== Payment Drawer ===== -->
 <!-- ===== Payment Drawer ===== -->
 
 <nz-drawer
@@ -315,6 +397,7 @@
   [nzBodyStyle]="{ overflow: 'auto' }"
   [nzFooter]="paymentDrawerFooter"
   [nzMaskClosable]="false"
+  [nzPlacement]="drawerPlacement"
   [nzTitle]="paymentDrawerTitle"
   [nzVisible]="isPaymentDrawerVisible"
   [nzWidth]="drawerWidth"
@@ -326,7 +409,102 @@
     class="drawer-form"
     nz-form>
 
-    <!-- ==== Informações do Pagamento ==== -->
+    <!-- ===== CUSTOMER INFO ===== -->
+
+    <div class="drawer-customer-card">
+
+      <div class="customer-main">
+
+        <div class="customer-avatar">
+
+          {{ customer?.name?.charAt(0) }}
+
+        </div>
+
+        <div class="customer-details">
+
+          <h3>
+            {{ customer?.name }}
+          </h3>
+
+          <p>
+
+            <nz-icon nzType="phone"></nz-icon>
+
+            {{ customer?.contact }}
+
+          </p>
+
+          <p>
+
+            <nz-icon nzType="environment"></nz-icon>
+
+            {{ customer?.address }}
+
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="customer-tags">
+
+        <nz-tag nzColor="blue">
+          {{ customer?.code }}
+        </nz-tag>
+
+        <nz-tag nzColor="cyan">
+          Válvula {{ customer?.valve }}
+        </nz-tag>
+
+        <nz-tag
+          [nzColor]="customer?.monthsInDebt ? 'volcano' : 'green'">
+
+          {{ customer?.monthsInDebt }} Meses em Dívida
+
+        </nz-tag>
+
+      </div>
+
+    </div>
+
+    <!-- ===== FINANCIAL SUMMARY ===== -->
+
+    <div class="drawer-summary-grid">
+
+      <div class="summary-card">
+
+        <span class="summary-label">
+          Taxa Mensal
+        </span>
+
+        <h2>
+          {{ customer?.monthlyFee | number:'1.2-2' }} MT
+        </h2>
+
+      </div>
+
+      <div class="summary-card debt">
+
+        <span class="summary-label">
+          Total em Dívida
+        </span>
+
+        <h2>
+
+          {{
+            (customer?.monthlyFee || 0) *
+            (customer?.monthsInDebt || 0)
+              | number:'1.2-2'
+          }} MT
+
+        </h2>
+
+      </div>
+
+    </div>
+
+    <!-- ===== PAYMENT FORM ===== -->
 
     <div class="drawer-section">
 
@@ -335,6 +513,8 @@
       </h3>
 
       <div [nzGutter]="16" nz-row>
+
+        <!-- ===== AMOUNT ===== -->
 
         <div nz-col nzMd="12" nzSm="24" nzXs="24">
 
@@ -362,6 +542,8 @@
 
         </div>
 
+        <!-- ===== MONTHS ===== -->
+
         <div nz-col nzMd="12" nzSm="24" nzXs="24">
 
           <nz-form-item>
@@ -388,40 +570,43 @@
 
         </div>
 
-        <div
-          *ngIf="selectedMonths.length > 0"
-          nz-col
-          nzMd="24"
-          nzSm="24"
-          nzXs="24">
+      </div>
 
-          <nz-form-item>
+      <!-- ===== SELECTED MONTHS ===== -->
 
-            <nz-form-label>
-              Meses de Referência
-            </nz-form-label>
+      <div
+        *ngIf="selectedMonths.length > 0"
+        class="selected-months-wrapper">
 
-            <nz-form-control>
+        <div class="selected-months-header">
 
-              <div class="selected-months">
+          <span>
+            Meses Selecionados
+          </span>
 
-                <nz-tag
-                  *ngFor="let m of selectedMonths"
-                  nzColor="volcano">
+          <nz-tag nzColor="processing">
 
-                  {{ formatMonth(m) }}
+            {{ selectedMonths.length }} mês(es)
 
-                </nz-tag>
+          </nz-tag>
 
-              </div>
+        </div>
 
-            </nz-form-control>
+        <div class="selected-months">
 
-          </nz-form-item>
+          <nz-tag
+            *ngFor="let m of selectedMonths"
+            nzColor="volcano">
+
+            {{ formatMonth(m) }}
+
+          </nz-tag>
 
         </div>
 
       </div>
+
+      <!-- ===== PAYMENT METHOD ===== -->
 
       <div [nzGutter]="16" nz-row>
 
@@ -439,21 +624,87 @@
                 formControlName="paymentMethod"
                 nzPlaceHolder="Selecione o método">
 
-                <nz-option nzLabel="Numerário" nzValue="CASH"></nz-option>
+                <nz-option
+                  nzLabel="Numerário"
+                  nzValue="CASH">
+                </nz-option>
 
-                <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
+                <nz-option
+                  nzLabel="M-Pesa"
+                  nzValue="MPESA">
+                </nz-option>
 
-                <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
+                <nz-option
+                  nzLabel="e-Mola"
+                  nzValue="EMOLA">
+                </nz-option>
 
-                <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
+                <nz-option
+                  nzLabel="BCI"
+                  nzValue="BCI">
+                </nz-option>
 
-                <nz-option nzLabel="BIM" nzValue="BIM"></nz-option>
+                <nz-option
+                  nzLabel="BIM"
+                  nzValue="BIM">
+                </nz-option>
 
               </nz-select>
 
             </nz-form-control>
 
           </nz-form-item>
+
+        </div>
+
+      </div>
+
+      <!-- ===== PAYMENT PREVIEW ===== -->
+
+      <div
+        *ngIf="paymentForm.valid"
+        class="payment-preview">
+
+        <div class="preview-row">
+
+          <span>
+            Valor por mês
+          </span>
+
+          <strong>
+            {{ customer?.monthlyFee | number:'1.2-2' }} MT
+          </strong>
+
+        </div>
+
+        <div class="preview-row">
+
+          <span>
+            Quantidade de meses
+          </span>
+
+          <strong>
+            {{ paymentForm.get('numMonths')?.value || 0 }}
+          </strong>
+
+        </div>
+
+        <div class="preview-row total">
+
+          <span>
+            Total
+          </span>
+
+          <strong>
+
+            {{
+              (
+                (customer?.monthlyFee || 0) *
+                (paymentForm.get('numMonths')?.value || 0)
+              ) | number:'1.2-2'
+            }} MT
+
+          </strong>
 
         </div>
 
@@ -485,6 +736,8 @@
         class="btn-save"
         nz-button
         nzType="primary">
+
+        <nz-icon nzType="check-circle"></nz-icon>
 
         Confirmar Pagamento
 
