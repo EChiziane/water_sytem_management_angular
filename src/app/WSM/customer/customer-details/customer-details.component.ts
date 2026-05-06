@@ -13,108 +13,149 @@ import {PaymentInvoiceService} from '../../../services/payment-invoice.service';
 
 
 @Component({
-    selector: 'app-customer-details',
-    standalone: false,
-    templateUrl: './customer-details.component.html',
-    styleUrl: './customer-details.component.scss'
+  selector: 'app-customer-details',
+  standalone: false,
+  templateUrl: './customer-details.component.html',
+  styleUrl: './customer-details.component.scss'
 })
 export class CustomerDetailsComponent implements OnInit {
-    @Input() customerId!: string;
-    customer!: Customer;
-    debtMonths: string[] = [];
-    paymentDataSource: Payment[] = [];
-    listOfDisplayData: Payment[] = [];
 
-    isLoading = false;
-    isPaymentDrawerVisible = false;
-    paymentForm!: FormGroup;
-    paymentDrawerTitle = "Novo Pagamento";
-    selectedMonths: string[] = [];
-    visible = false;
-    searchValue = '';
+  @Input() customerId!: string;
 
-    drawerWidth: string | number = 720;
-    drawerPlacement: 'right' | 'bottom' = 'right';
+  customer!: Customer;
 
-    constructor(private http: HttpClient,
-                private route: ActivatedRoute,
-                private fb: FormBuilder,
-                private customerService: CustomerService,
-                private customerPaymentInvoiceService: CustomerPaymentInvoiceService,
-                private paymentService: PaymentService,
-                private modal: NzModalService,
-                private paymentInvoiceService: PaymentInvoiceService,
-                private message: NzMessageService) {
+  debtMonths: string[] = [];
 
+  paymentDataSource: Payment[] = [];
 
-    }
+  listOfDisplayData: Payment[] = [];
 
-    ngOnInit(): void {
-        this.paymentForm = this.fb.group({
-            amount: ['', Validators.required],
-            unitPrice: [200],
-            taxRate: [300],
-            numMonths: [1, [Validators.required, Validators.min(1)]],
-            paymentMethod: ['', Validators.required]
-        });
+  isLoading = false;
 
-        this.route.params.subscribe(params => {
-            this.customerId = params['id'];
-        });
-        this.getCustomerPayments();
-        this.getCustomer();
-        this.updateDrawer();
-        window.addEventListener('resize', () => this.updateDrawer());
-    }
+  isPaymentDrawerVisible = false;
+
+  paymentForm!: FormGroup;
+
+  paymentDrawerTitle = "Novo Pagamento";
+
+  selectedMonths: string[] = [];
+
+  visible = false;
+
+  searchValue = '';
+
+  drawerWidth: string | number = 720;
+
+  drawerPlacement: 'right' | 'bottom' = 'right';
+
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private customerService: CustomerService,
+    private customerPaymentInvoiceService: CustomerPaymentInvoiceService,
+    private paymentService: PaymentService,
+    private modal: NzModalService,
+    private paymentInvoiceService: PaymentInvoiceService,
+    private message: NzMessageService
+  ) {}
+
+  ngOnInit(): void {
+
+    this.paymentForm = this.fb.group({
+      amount: ['', Validators.required],
+      unitPrice: [200],
+      taxRate: [300],
+      numMonths: [1, [Validators.required, Validators.min(1)]],
+      paymentMethod: ['', Validators.required]
+    });
+
+    this.route.params.subscribe(params => {
+      this.customerId = params['id'];
+    });
+
+    this.getCustomerPayments();
+
+    this.getCustomer();
+
+    this.updateDrawer();
+
+    window.addEventListener('resize', () => this.updateDrawer());
+  }
 
   download(payment: Payment) {
     this.paymentInvoiceService.downloadPaymentInvoice(payment);
   }
 
-    updateDrawer() {
-        if (window.innerWidth <= 768) {
-            this.drawerWidth = '100%';
-            this.drawerPlacement = 'bottom';
-        } else {
-            this.drawerWidth = 720;
-            this.drawerPlacement = 'right';
-        }
+  updateDrawer() {
+
+    if (window.innerWidth <= 768) {
+
+      this.drawerWidth = '100%';
+
+      this.drawerPlacement = 'bottom';
+
+    } else {
+
+      this.drawerWidth = 720;
+
+      this.drawerPlacement = 'right';
+    }
+  }
+
+  onNumMonthsChange() {
+
+    const num = this.paymentForm.get('numMonths')?.value || 1;
+
+    if (!this.customer?.unpaidMonths?.length) {
+      this.selectedMonths = [];
+      return;
     }
 
-    onNumMonthsChange() {
-        const num = this.paymentForm.get('numMonths')?.value || 1;
-        const maxMonths = this.customer?.monthsInDebt || 1;
+    const maxMonths = this.customer.unpaidMonths.length;
 
-        if (num < 1) {
-            this.paymentForm.get('numMonths')?.setValue(1);
-            this.selectedMonths = this.debtMonths.slice(0, 1);
-        } else if (num > maxMonths) {
-            this.paymentForm.get('numMonths')?.setValue(maxMonths);
-            this.selectedMonths = this.debtMonths.slice(0, maxMonths);
-        } else {
-            this.selectedMonths = this.debtMonths.slice(0, num);
-        }
+    if (num < 1) {
+
+      this.paymentForm.get('numMonths')?.setValue(1);
+
+      this.selectedMonths = this.customer.unpaidMonths.slice(0, 1);
+
+    } else if (num > maxMonths) {
+
+      this.paymentForm.get('numMonths')?.setValue(maxMonths);
+
+      this.selectedMonths = this.customer.unpaidMonths.slice(0, maxMonths);
+
+    } else {
+
+      this.selectedMonths = this.customer.unpaidMonths.slice(0, num);
     }
+  }
 
-    goBack() {
-        window.history.back();
-    }
+  goBack() {
+    window.history.back();
+  }
 
-    editCustomer() {
+  editCustomer() {}
 
-    }
+  getCustomerPayments() {
 
-    getCustomerPayments() {
-        this.isLoading = true;
-        this.paymentService.getCustomerPayments(this.customerId).subscribe((payments: Payment[]) => {
-            this.paymentDataSource = payments;
-            this.isLoading = false;
-            this.listOfDisplayData = [...this.paymentDataSource]; // Atualiza após receber os dados
-        });
-    }
+    this.isLoading = true;
 
-    // === Guardar Pagamento ===
+    this.paymentService
+      .getCustomerPayments(this.customerId)
+      .subscribe((payments: Payment[]) => {
+
+        this.paymentDataSource = payments;
+
+        this.isLoading = false;
+
+        this.listOfDisplayData = [...this.paymentDataSource];
+      });
+  }
+
   savePayment() {
+
     if (this.paymentForm.invalid) return;
 
     const payload = {
@@ -123,11 +164,12 @@ export class CustomerDetailsComponent implements OnInit {
     };
 
     this.paymentService.addPayment(payload).subscribe({
+
       next: () => {
 
-        // 🔥 ORDEM IMPORTA
-        this.getCustomer();          // atualiza dívida primeiro
-        this.getCustomerPayments();  // depois tabela
+        this.getCustomer();
+
+        this.getCustomerPayments();
 
         this.closePaymentDrawer();
 
@@ -136,83 +178,134 @@ export class CustomerDetailsComponent implements OnInit {
     });
   }
 
-    // === Abrir Drawer ===
-    openPaymentDrawer() {
-        this.isPaymentDrawerVisible = true;
-    }
-
-    // === Fechar Drawer ===
-    closePaymentDrawer() {
-        this.isPaymentDrawerVisible = false;
-        this.paymentForm.reset();
-    }
-
-    deletePayment(data: Payment) {
-        this.modal.confirm({
-            nzTitle: 'Confirmar eliminação',
-            nzContent: `Tem a certeza que deseja eliminar este pagamento de <strong>${data.customerName}</strong>?`,
-            nzOkText: 'Sim, eliminar',
-            nzOkDanger: true,
-            nzCancelText: 'Cancelar',
-            nzOnOk: () => {
-                this.paymentService.deletePayment(data.id).subscribe({
-                    next: () => {
-                        this.message.success('Pagamento eliminado com sucesso ✅');
-                        this.getCustomerPayments();
-                    },
-                    error: () => {
-                        this.message.error('Erro ao eliminar o pagamento 🚫');
-                    }
-                });
-            }
-        });
-    }
-
-    viewPayment(data: Payment) {
-
-    }
-
-  private getCustomer() {
-    this.customerService.getCustomerById(this.customerId).subscribe({
-      next: (customer: Customer) => {
-        this.customer = customer;
-        this.calculateDebtMonths();
-
-        // ✅ ADICIONADO (única alteração)
-        this.onNumMonthsChange();
-      }
-    })
+  openPaymentDrawer() {
+    this.isPaymentDrawerVisible = true;
   }
 
-    search(): void {
-        this.visible = false;
-        this.listOfDisplayData = this.listOfDisplayData.filter(
-            (item: Payment) => item.customerName.toLowerCase().includes(this.searchValue.toLowerCase())
-        );
-    }
+  closePaymentDrawer() {
 
-    reset(): void {
-        this.searchValue = '';
-        this.search();
-    }
+    this.isPaymentDrawerVisible = false;
 
-    onBack() {
-        window.history.back();
-    }
+    this.paymentForm.reset({
+      numMonths: 1
+    });
+
+    this.selectedMonths = [];
+  }
+
+  deletePayment(data: Payment) {
+
+    this.modal.confirm({
+
+      nzTitle: 'Confirmar eliminação',
+
+      nzContent: `Tem a certeza que deseja eliminar este pagamento de <strong>${data.customerName}</strong>?`,
+
+      nzOkText: 'Sim, eliminar',
+
+      nzOkDanger: true,
+
+      nzCancelText: 'Cancelar',
+
+      nzOnOk: () => {
+
+        this.paymentService.deletePayment(data.id).subscribe({
+
+          next: () => {
+
+            this.message.success('Pagamento eliminado com sucesso ✅');
+
+            this.getCustomerPayments();
+
+            this.getCustomer();
+          },
+
+          error: () => {
+
+            this.message.error('Erro ao eliminar o pagamento 🚫');
+          }
+        });
+      }
+    });
+  }
+
+  viewPayment(data: Payment) {}
+
+  private getCustomer() {
+
+    this.customerService
+      .getCustomerById(this.customerId)
+      .subscribe({
+
+        next: (customer: Customer) => {
+
+          this.customer = customer;
+
+          this.calculateDebtMonths();
+
+          this.onNumMonthsChange();
+        }
+      });
+  }
+
+  search(): void {
+
+    this.visible = false;
+
+    this.listOfDisplayData = this.paymentDataSource.filter(
+      (item: Payment) =>
+        item.customerName
+          .toLowerCase()
+          .includes(this.searchValue.toLowerCase())
+    );
+  }
+
+  reset(): void {
+
+    this.searchValue = '';
+
+    this.search();
+  }
+
+  onBack() {
+    window.history.back();
+  }
 
   private calculateDebtMonths() {
-        if (!this.customer || !this.customer.monthsInDebt) return;
 
-        const currentMonth = new Date().getMonth();
-        const monthNames = [
-            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-        ];
+    if (!this.customer?.unpaidMonths?.length) {
 
-        this.debtMonths = [];
-        for (let i = this.customer.monthsInDebt; i > 0; i--) {
-            let monthIndex = (currentMonth - i + 12) % 12;
-            this.debtMonths.push(monthNames[monthIndex]);
-        }
+      this.debtMonths = [];
+
+      return;
     }
+
+    this.debtMonths = this.customer.unpaidMonths.map(
+      month => this.formatMonth(month)
+    );
+  }
+
+  formatMonth(month: string): string {
+
+    if (!month) return '';
+
+    const [year, monthNumber] = month.split('-');
+
+    const monthNames = [
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro'
+    ];
+
+    return `${monthNames[Number(monthNumber) - 1]} ${year}`;
+  }
 }

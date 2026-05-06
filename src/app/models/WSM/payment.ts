@@ -1,6 +1,7 @@
 export interface Payment {
   id: string;
-  referenceCode: string; // 👈 NOVO
+
+  referenceCode: string;
 
   customerId: string;
   customerName: string;
@@ -17,9 +18,10 @@ export interface Payment {
 
   referenceMonth: string;
   numMonths: number;
-  createdBy: string;
-  createdByName: string;
 
   paymentDate: string;
   paymentMethod: string;
+
+  createdBy: string;
+  createdByName: string;
 }

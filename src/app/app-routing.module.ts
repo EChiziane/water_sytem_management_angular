@@ -13,6 +13,7 @@ import {LandingPageComponent} from './landpage/landingpage.component';
 import {MainLayoutComponent} from './main-layout/main-layout.component';
 import {AuthGuard} from './services/auth.guard';
 import {ListuserComponent} from './UASM/listuser/listuser.component';
+import {MonthlyChargeComponent} from './WSM/monthly-charge/monthly-charge.component';
 
 
 const routes: Routes = [
@@ -37,6 +38,7 @@ const routes: Routes = [
       {path: 'payment-detail/:id', component: PaymentDetailsComponent},
 
       {path: 'calendar', component: CalendarComponent},
+      {path: 'monthly', component:MonthlyChargeComponent},
       {path: 'recibo', component: ReciboComponent},
       {path: 'users', component: ListuserComponent},
 

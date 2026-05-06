@@ -311,3 +311,15 @@ textarea[nz-input] {
   width: 120px !important;
   white-space: nowrap;
 }
+.selected-months {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.selected-months .ant-tag {
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+}

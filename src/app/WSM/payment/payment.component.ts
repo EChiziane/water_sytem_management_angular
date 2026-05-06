@@ -1,15 +1,19 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CustomerService} from '../../services/customer.service';
-import {PaymentService} from '../../services/payment.service';
-import {Customer} from '../../models/WSM/customer';
-import {ReciboService} from '../../services/recibo.service';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {CustomerPaymentInvoiceService} from '../../services/customer-payment-invoice.service';
-import {Payment} from '../../models/WSM/payment';
-import {PaymentInvoiceService} from '../../services/payment-invoice.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { CustomerService } from '../../services/customer.service';
+import { PaymentService } from '../../services/payment.service';
+
+import { Customer } from '../../models/WSM/customer';
+import { Payment } from '../../models/WSM/payment';
+
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+
+import { PaymentInvoiceService } from '../../services/payment-invoice.service';
+
+import { MonthlyChargeService } from '../../services/monthly-charge.service';
+import { MonthlyCharge } from '../../models/monthly-charge';
 
 @Component({
   selector: 'app-payment',
@@ -19,48 +23,51 @@ import {PaymentInvoiceService} from '../../services/payment-invoice.service';
 })
 export class PaymentComponent implements OnInit {
 
-  dataSource: Payment[] = []; // Inicializado como array vazio
+  dataSource: Payment[] = [];
   listOfDisplayData: Payment[] = [];
 
   totalPayments = 0;
   confirmedPayments = 0;
   unconfirmedPayments = 0;
+
   isPaymentDrawerVisible = false;
 
   paymentForm!: FormGroup;
 
   drawerWidth: string | number = 720;
   drawerPlacement: 'right' | 'bottom' = 'right';
+
   searchValue = '';
 
   selectedCustomer: Customer | null = null;
 
-
   paymentDrawerTitle = "Novo Pagamento";
-  customer!: Customer;
-  debtMonths: string[] = [];
+
   isLoading = false;
-  selectedMonths: string[] = [];
+
   allCustomers: Customer[] = [];
+
+  // 🔥 NOVO
+  customerUnpaidMonths: MonthlyCharge[] = [];
+
+  // 🔥 NOVO
+  selectedMonths: string[] = [];
 
   constructor(
     private paymentService: PaymentService,
     private customerService: CustomerService,
-    private customerPaymentInvoiceService: CustomerPaymentInvoiceService,
-    private reciboService: ReciboService,
+    private monthlyChargeService: MonthlyChargeService,
     private message: NzMessageService,
     private fb: FormBuilder,
     private modal: NzModalService,
-    private  paymentInvoiceService:PaymentInvoiceService
-  ) {
-  }
+    private paymentInvoiceService: PaymentInvoiceService
+  ) {}
 
   ngOnInit(): void {
 
     this.customerService.getCustomers().subscribe(customers => {
       this.allCustomers = customers;
     });
-
 
     this.paymentForm = this.fb.group({
       customerId: ['', Validators.required],
@@ -69,27 +76,35 @@ export class PaymentComponent implements OnInit {
       paymentMethod: ['', Validators.required]
     });
 
-
     this.getPayments();
 
     this.updateDrawer();
+
     window.addEventListener('resize', () => this.updateDrawer());
-// Carrega os clientes
   }
 
   download(payment: Payment) {
     this.paymentInvoiceService.downloadPaymentInvoice(payment);
   }
+
   onCustomerSelect(customerId: string) {
 
     if (!customerId || customerId === 'null') {
-      return; // 🔥 evita chamada inválida
+      return;
     }
 
     this.customerService.getCustomerById(customerId).subscribe(c => {
+
       this.selectedCustomer = c;
-      this.buildDebtMonths();
-      this.onNumMonthsChange();
+
+      this.monthlyChargeService
+        .getCustomerUnpaidMonths(customerId)
+        .subscribe(months => {
+
+          this.customerUnpaidMonths = months;
+
+          this.onNumMonthsChange();
+        });
     });
   }
 
@@ -103,20 +118,19 @@ export class PaymentComponent implements OnInit {
     }
   }
 
-  // === Abrir Drawer ===
   openPaymentDrawer() {
     this.isPaymentDrawerVisible = true;
   }
 
-
-  // === Fechar Drawer ===
-
-
   closePaymentDrawer() {
+
     this.isPaymentDrawerVisible = false;
 
     this.selectedCustomer = null;
+
     this.selectedMonths = [];
+
+    this.customerUnpaidMonths = [];
 
     this.paymentForm.reset({
       customerId: null,
@@ -126,39 +140,15 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  buildDebtMonths() {
-    if (!this.selectedCustomer || !this.selectedCustomer.monthsInDebt) return;
-
-    const today = new Date();
-    const currentMonth = today.getMonth();
-
-    const monthsInDebt = this.selectedCustomer.monthsInDebt;
-
-    const monthNames = [
-      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-    ];
-
-    this.debtMonths = [];
-
-    // ✅ CORRETO (sem +1)
-    const startIndex = (currentMonth - monthsInDebt + 12) % 12;
-
-    for (let i = 0; i < monthsInDebt; i++) {
-      const index = (startIndex + i) % 12;
-      this.debtMonths.push(monthNames[index]);
-    }
-  }
-
   savePayment() {
+
     if (this.paymentForm.invalid) {
       this.message.warning('Preencha todos os campos corretamente ⚠️');
       return;
     }
 
     const payload = {
-      ...this.paymentForm.value,
-      months: this.selectedMonths
+      ...this.paymentForm.value
     };
 
     this.isLoading = true;
@@ -166,12 +156,18 @@ export class PaymentComponent implements OnInit {
     this.paymentService.addPayment(payload).subscribe({
 
       next: () => {
-        this.message.success('Pagamento registado com sucesso! 💧💰');
+
+        this.message.success('Pagamento registado com sucesso 💧💰');
+
         this.getPayments();
+
         this.closePaymentDrawer();
+
         this.isLoading = false;
       },
+
       error: (err) => {
+
         console.error(err);
 
         this.message.error('Erro ao processar o pagamento ❌');
@@ -181,12 +177,14 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-
   calculatePaymentStats() {
+
     this.totalPayments = this.dataSource.length;
+
     this.confirmedPayments = this.dataSource.filter(
       (payment) => payment.confirmed
     ).length;
+
     this.unconfirmedPayments = this.dataSource.filter(
       (payment) => !payment.confirmed
     ).length;
@@ -197,14 +195,12 @@ export class PaymentComponent implements OnInit {
     this.filterData();
   }
 
-
-
-  // ========= Navigation =========
   onBack() {
     window.history.back();
   }
 
   filterData(): void {
+
     const search = this.searchValue.toLowerCase();
 
     this.listOfDisplayData = this.dataSource.filter((item: Payment) =>
@@ -212,8 +208,8 @@ export class PaymentComponent implements OnInit {
     );
   }
 
-
   getPayments() {
+
     this.isLoading = true;
 
     this.paymentService.getPayments().subscribe((payments: any[]) => {
@@ -223,55 +219,46 @@ export class PaymentComponent implements OnInit {
         confirmed: p.confirmed ?? p.status,
         numMonths: Number(p.numMonths)
       }));
-      console.log(this.dataSource)
+
       this.listOfDisplayData = [...this.dataSource];
+
       this.calculatePaymentStats();
+
       this.isLoading = false;
     });
   }
 
-
-
-  viewPayment(data: Payment) {
-  }
+  viewPayment(data: Payment) {}
 
   onNumMonthsChange() {
+
     const num = this.paymentForm.get('numMonths')?.value || 1;
-    const max = this.selectedCustomer?.monthsInDebt || 1;
+
+    const max = this.customerUnpaidMonths.length || 1;
 
     if (num < 1) {
+
       this.paymentForm.get('numMonths')?.setValue(1);
-      this.selectedMonths = this.debtMonths.slice(0, 1);
+
+      this.selectedMonths = this.customerUnpaidMonths
+        .slice(0, 1)
+        .map(m => m.referenceMonth);
+
     } else if (num > max) {
+
       this.paymentForm.get('numMonths')?.setValue(max);
-      this.selectedMonths = this.debtMonths.slice(0, max);
+
+      this.selectedMonths = this.customerUnpaidMonths
+        .slice(0, max)
+        .map(m => m.referenceMonth);
+
     } else {
-      this.selectedMonths = this.debtMonths.slice(0, num);
+
+      this.selectedMonths = this.customerUnpaidMonths
+        .slice(0, num)
+        .map(m => m.referenceMonth);
     }
   }
 
-
-
-
-
-  private formatDateOnly(value: string): string {
-    const date = new Date(value);
-    const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yyyy = date.getFullYear();
-    return `${dd}/${mm}/${yyyy}`;
-  }
-
-  private formatMoney(value: number): string {
-    return Number(value || 0).toFixed(2);
-  }
-
-
-  deletePayment(data: Payment) {
-
-  }
+  deletePayment(data: Payment) {}
 }
-
-
-/* No HTML, adicione o evento (input) ao campo de pesquisa: */
-// <input class="input-flex" nz-input placeholder="Search by customer name" type="text" [(ngModel)]="searchValue" (input)="filterData()"/>

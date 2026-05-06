@@ -1,0 +1,68 @@
+<div class="content-wrapper">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <p>Meses de Cobrança</p>
+
+    <span (click)="generateMonth()" class="download-arrow">
+      <nz-icon nzTheme="outline" nzType="calendar"></nz-icon>
+    </span>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filters-panel">
+    <input
+      nz-input
+      placeholder="Buscar cliente"
+      [(ngModel)]="searchValue"
+      (input)="filterData()"
+    />
+
+    <button nz-button nzType="primary" (click)="generateMonth()">
+      <nz-icon nzType="plus"></nz-icon>
+      Gerar Mês
+    </button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <nz-spin [nzSpinning]="isLoading">
+
+      <nz-table
+        [nzData]="listOfDisplayData"
+        [nzScroll]="{ x: '900px', y: '400px' }">
+
+        <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Mês</th>
+          <th>Estado</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let data of listOfDisplayData">
+
+          <td>{{ data.customerName }}</td>
+
+          <td>
+            <nz-tag nzColor="blue">
+              {{ data.referenceMonth }}
+            </nz-tag>
+          </td>
+
+          <td>
+            <nz-tag [nzColor]="data.paid ? 'green' : 'red'">
+              {{ data.paid ? 'Pago' : 'Em dívida' }}
+            </nz-tag>
+          </td>
+
+        </tr>
+        </tbody>
+
+      </nz-table>
+
+    </nz-spin>
+  </div>
+
+</div>

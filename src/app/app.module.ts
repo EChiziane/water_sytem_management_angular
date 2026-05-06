@@ -67,6 +67,8 @@ import {NzCarouselComponent, NzCarouselContentDirective} from 'ng-zorro-antd/car
 import {LandingPageComponent} from './landpage/landingpage.component';
 import {NzBreadCrumbComponent, NzBreadCrumbItemComponent} from "ng-zorro-antd/breadcrumb";
 import {ListuserComponent} from './UASM/listuser/listuser.component';
+import {MonthlyChargeComponent} from './WSM/monthly-charge/monthly-charge.component';
+import {NzEmptyComponent} from 'ng-zorro-antd/empty';
 
 
 registerLocaleData(en);
@@ -80,6 +82,7 @@ registerLocaleData(en);
     MainLayoutComponent,
     SigninComponent,
     ListuserComponent,
+    MonthlyChargeComponent,
     CalendarComponent,
     PaymentComponent,
     PaymentDetailsComponent,
@@ -187,7 +190,8 @@ registerLocaleData(en);
     NzCarouselComponent,
     NzCarouselContentDirective,
     NzBreadCrumbItemComponent,
-    NzBreadCrumbComponent
+    NzBreadCrumbComponent,
+    NzEmptyComponent
 
   ],
   providers: [
