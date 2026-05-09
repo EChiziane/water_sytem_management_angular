@@ -25,6 +25,7 @@ export class CustomerService {
   }
 
   public addCustomer(customer: any): Observable<Customer> {
+    console.log(customer)
     return this.http.post<Customer>(this.baseURL, customer).pipe(take(1))
   }
 
