@@ -62,7 +62,7 @@ export class MonthlyChargeComponent implements OnInit {
     const search = this.searchValue.toLowerCase();
 
     this.listOfDisplayData = this.dataSource.filter(item =>
-      (item.customerName || '').toLowerCase().includes(search)
+      (item.customerNameSnapshot || '').toLowerCase().includes(search)
     );
   }
 }

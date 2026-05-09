@@ -1,19 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  Component,
+  HostListener,
+  Input,
+  OnInit
+} from '@angular/core';
 
-import { CustomerService } from '../../services/customer.service';
-import { PaymentService } from '../../services/payment.service';
-
-import { Customer } from '../../models/WSM/customer';
-import { Payment } from '../../models/WSM/payment';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { PaymentInvoiceService } from '../../services/payment-invoice.service';
+import { Customer } from '../../models/WSM/customer';
+import { Payment } from '../../models/WSM/payment';
 
-import { MonthlyChargeService } from '../../services/monthly-charge.service';
-import { MonthlyCharge } from '../../models/monthly-charge';
+import { CustomerService } from '../../services/customer.service';
+import { PaymentInvoiceService } from '../../services/payment-invoice.service';
+import { PaymentService } from '../../services/payment.service';
 
 @Component({
   selector: 'app-payment',
@@ -23,106 +29,209 @@ import { MonthlyCharge } from '../../models/monthly-charge';
 })
 export class PaymentComponent implements OnInit {
 
-  dataSource: Payment[] = [];
-  listOfDisplayData: Payment[] = [];
-
-  totalPayments = 0;
-  confirmedPayments = 0;
-  unconfirmedPayments = 0;
-
-  isPaymentDrawerVisible = false;
+  @Input() customerId!: string;
 
   paymentForm!: FormGroup;
 
-  drawerWidth: string | number = 720;
-  drawerPlacement: 'right' | 'bottom' = 'right';
+  dataSource: Payment[] = [];
 
-  searchValue = '';
-
-  selectedCustomer: Customer | null = null;
-
-  paymentDrawerTitle = "Novo Pagamento";
-
-  isLoading = false;
+  listOfDisplayData: Payment[] = [];
 
   allCustomers: Customer[] = [];
 
-  // 🔥 NOVO
-  customerUnpaidMonths: MonthlyCharge[] = [];
+  selectedCustomer: Customer | null = null;
 
-  // 🔥 NOVO
   selectedMonths: string[] = [];
+
+  searchValue = '';
+
+  totalPayments = 0;
+
+  confirmedPayments = 0;
+
+  unconfirmedPayments = 0;
+
+  isLoading = false;
+
+  isSaving = false;
+
+  isPaymentDrawerVisible = false;
+
+  paymentDrawerTitle = 'Novo Pagamento';
+
+  drawerWidth: string | number = 720;
+
+  drawerPlacement: 'right' | 'bottom' = 'right';
+
+  private readonly MOBILE_BREAKPOINT = 768;
+
+  private readonly DEFAULT_PAYMENT_METHOD = 'CASH';
 
   constructor(
     private paymentService: PaymentService,
     private customerService: CustomerService,
-    private monthlyChargeService: MonthlyChargeService,
+    private paymentInvoiceService: PaymentInvoiceService,
     private message: NzMessageService,
-    private fb: FormBuilder,
     private modal: NzModalService,
-    private paymentInvoiceService: PaymentInvoiceService
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
 
-    this.customerService.getCustomers().subscribe(customers => {
-      this.allCustomers = customers;
-    });
+    this.createForm();
 
-    this.paymentForm = this.fb.group({
-      customerId: ['', Validators.required],
-      amount: ['', Validators.required],
-      numMonths: [1, [Validators.required, Validators.min(1)]],
-      paymentMethod: ['', Validators.required]
-    });
+    this.loadCustomers();
 
     this.getPayments();
 
     this.updateDrawer();
-
-    window.addEventListener('resize', () => this.updateDrawer());
   }
 
-  download(payment: Payment) {
-    this.paymentInvoiceService.downloadPaymentInvoice(payment);
+  @HostListener('window:resize')
+  onResize(): void {
+
+    this.updateDrawer();
   }
 
-  onCustomerSelect(customerId: string) {
+  createForm(): void {
+
+    this.paymentForm = this.fb.group({
+
+      customerId: [
+        null,
+        Validators.required
+      ],
+
+      amount: [
+        0,
+        Validators.required
+      ],
+
+      numMonths: [
+        1,
+        [
+          Validators.required,
+          Validators.min(1)
+        ]
+      ],
+
+      paymentMethod: [
+        this.DEFAULT_PAYMENT_METHOD,
+        Validators.required
+      ]
+    });
+  }
+
+  loadCustomers(): void {
+
+    this.customerService
+      .getCustomers()
+      .subscribe(customers => {
+
+        this.allCustomers =
+          customers.filter(customer =>
+
+            (customer.monthsInDebt || 0) > 0
+          );
+      });
+  }
+
+  onCustomerSelect(customerId: string): void {
 
     if (!customerId || customerId === 'null') {
       return;
     }
 
-    this.customerService.getCustomerById(customerId).subscribe(c => {
+    this.customerService
+      .getCustomerById(customerId)
+      .subscribe(customer => {
 
-      this.selectedCustomer = c;
+        this.selectedCustomer = customer;
 
-      this.monthlyChargeService
-        .getCustomerUnpaidMonths(customerId)
-        .subscribe(months => {
+        if (!customer.unpaidMonths?.length) {
 
-          this.customerUnpaidMonths = months;
+          this.message.warning(
+            'Cliente sem dívida'
+          );
 
-          this.onNumMonthsChange();
+          return;
+        }
+
+        this.paymentForm.patchValue({
+
+          numMonths: 1,
+
+          amount: customer.monthlyFee || 0
         });
-    });
+
+        this.onNumMonthsChange();
+      });
   }
 
-  updateDrawer() {
-    if (window.innerWidth <= 768) {
-      this.drawerWidth = '100%';
-      this.drawerPlacement = 'bottom';
-    } else {
-      this.drawerWidth = 720;
-      this.drawerPlacement = 'right';
+  onNumMonthsChange(): void {
+
+    if (!this.selectedCustomer?.unpaidMonths?.length) {
+
+      this.selectedMonths = [];
+
+      return;
     }
+
+    let numMonths = Number(
+      this.paymentForm.get('numMonths')?.value || 1
+    );
+
+    const maxMonths =
+      this.selectedCustomer.unpaidMonths.length;
+
+// ===== MIN =====
+
+    if (numMonths < 1) {
+      this.paymentForm.get('numMonths')?.setValue(1);
+
+      this.selectedMonths = this.selectedCustomer.unpaidMonths.slice(0, 1);
+      numMonths = 1;
+    } else if (numMonths > maxMonths)
+    {
+      this.paymentForm.get('numMonths')?.setValue(maxMonths);
+
+      this.selectedMonths = this.selectedCustomer.unpaidMonths.slice(0, maxMonths);
+    }else {
+
+      this.selectedMonths = this.selectedCustomer.unpaidMonths.slice(0, numMonths);
+    }
+
+// ===== MAX =====
+
+    if (numMonths > maxMonths) {
+
+      numMonths = maxMonths;
+
+      this.message.warning(
+        `O cliente possui apenas ${maxMonths} mês(es) em dívida, mas foram informados ${numMonths}.`
+      );
+    }
+
   }
 
-  openPaymentDrawer() {
+  updateDrawer(): void {
+
+    const isMobile =
+      window.innerWidth <= this.MOBILE_BREAKPOINT;
+
+    this.drawerWidth =
+      isMobile ? '100%' : 720;
+
+    this.drawerPlacement =
+      isMobile ? 'bottom' : 'right';
+  }
+
+  openPaymentDrawer(): void {
+
     this.isPaymentDrawerVisible = true;
   }
 
-  closePaymentDrawer() {
+  closePaymentDrawer(): void {
 
     this.isPaymentDrawerVisible = false;
 
@@ -130,135 +239,217 @@ export class PaymentComponent implements OnInit {
 
     this.selectedMonths = [];
 
-    this.customerUnpaidMonths = [];
-
     this.paymentForm.reset({
+
       customerId: null,
-      amount: null,
+
+      amount: 0,
+
       numMonths: 1,
-      paymentMethod: null
+
+      paymentMethod: this.DEFAULT_PAYMENT_METHOD
     });
   }
 
-  savePayment() {
+  savePayment(): void {
 
     if (this.paymentForm.invalid) {
-      this.message.warning('Preencha todos os campos corretamente ⚠️');
+
+      this.message.warning(
+        'Preencha todos os campos corretamente ⚠️'
+      );
+
+      return;
+    }
+
+    if (!this.selectedCustomer?.id) {
+
+      this.message.warning(
+        'Selecione um cliente'
+      );
+
       return;
     }
 
     const payload = {
-      ...this.paymentForm.value
+
+      ...this.paymentForm.value,
+
+      customerId: this.selectedCustomer.id
     };
 
     this.isLoading = true;
 
-    this.paymentService.addPayment(payload).subscribe({
+    this.isSaving = true;
 
-      next: () => {
+    this.paymentService
+      .addPayment(payload)
+      .subscribe({
 
-        this.message.success('Pagamento registado com sucesso 💧💰');
+        next: () => {
 
-        this.getPayments();
+          this.message.success(
+            'Pagamento registado com sucesso 💧💰'
+          );
 
-        this.closePaymentDrawer();
+          this.getPayments();
 
-        this.isLoading = false;
-      },
+          this.closePaymentDrawer();
 
-      error: (err) => {
+          this.stopLoading();
+        },
 
-        console.error(err);
+        error: (err) => {
 
-        this.message.error('Erro ao processar o pagamento ❌');
+          console.error(err);
 
-        this.isLoading = false;
-      }
-    });
+          this.message.error(
+            'Erro ao processar o pagamento ❌'
+          );
+
+          this.stopLoading();
+        }
+      });
   }
 
-  calculatePaymentStats() {
+  stopLoading(): void {
 
-    this.totalPayments = this.dataSource.length;
+    this.isLoading = false;
 
-    this.confirmedPayments = this.dataSource.filter(
-      (payment) => payment.confirmed
-    ).length;
+    this.isSaving = false;
+  }
 
-    this.unconfirmedPayments = this.dataSource.filter(
-      (payment) => !payment.confirmed
-    ).length;
+  calculatePaymentStats(): void {
+
+    this.totalPayments =
+      this.dataSource.length;
+
+    this.confirmedPayments =
+      this.dataSource.filter(
+        payment => payment.confirmed
+      ).length;
+
+    this.unconfirmedPayments =
+      this.dataSource.filter(
+        payment => !payment.confirmed
+      ).length;
   }
 
   reset(): void {
+
     this.searchValue = '';
+
     this.filterData();
   }
 
-  onBack() {
+  onBack(): void {
+
     window.history.back();
   }
 
   filterData(): void {
 
-    const search = this.searchValue.toLowerCase();
+    const search =
+      this.searchValue.toLowerCase();
 
-    this.listOfDisplayData = this.dataSource.filter((item: Payment) =>
-      (item.customerName || '').toLowerCase().includes(search)
-    );
+    this.listOfDisplayData =
+      this.dataSource.filter((item: Payment) =>
+
+        (item.customerName || '')
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        (item.referenceCode || '')
+          .toLowerCase()
+          .includes(search)
+      );
   }
 
-  getPayments() {
+  getPayments(): void {
 
     this.isLoading = true;
 
-    this.paymentService.getPayments().subscribe((payments: any[]) => {
+    this.paymentService
+      .getPayments()
+      .subscribe((payments: any[]) => {
 
-      this.dataSource = payments.map(p => ({
-        ...p,
-        confirmed: p.confirmed ?? p.status,
-        numMonths: Number(p.numMonths)
-      }));
+        this.dataSource = payments.map(payment => ({
 
-      this.listOfDisplayData = [...this.dataSource];
+          ...payment,
 
-      this.calculatePaymentStats();
+          confirmed:
+            payment.confirmed ?? payment.status,
 
-      this.isLoading = false;
-    });
+          numMonths:
+            Number(payment.numMonths)
+        }));
+
+        this.listOfDisplayData = [
+          ...this.dataSource
+        ];
+
+        this.calculatePaymentStats();
+
+        this.isLoading = false;
+      });
   }
 
-  viewPayment(data: Payment) {}
+  viewPayment(data: Payment): void {}
 
-  onNumMonthsChange() {
+  deletePayment(data: Payment): void {}
 
-    const num = this.paymentForm.get('numMonths')?.value || 1;
+  download(payment: Payment): void {
 
-    const max = this.customerUnpaidMonths.length || 1;
+    this.paymentInvoiceService
+      .downloadPaymentInvoice(payment);
+  }
 
-    if (num < 1) {
+  getFormattedReferenceMonths(
+    reference: string
+  ): string[] {
 
-      this.paymentForm.get('numMonths')?.setValue(1);
-
-      this.selectedMonths = this.customerUnpaidMonths
-        .slice(0, 1)
-        .map(m => m.referenceMonth);
-
-    } else if (num > max) {
-
-      this.paymentForm.get('numMonths')?.setValue(max);
-
-      this.selectedMonths = this.customerUnpaidMonths
-        .slice(0, max)
-        .map(m => m.referenceMonth);
-
-    } else {
-
-      this.selectedMonths = this.customerUnpaidMonths
-        .slice(0, num)
-        .map(m => m.referenceMonth);
+    if (!reference) {
+      return [];
     }
+
+    return reference
+      .split('|')
+      .map(month =>
+        this.formatMonth(month.trim())
+      );
   }
 
-  deletePayment(data: Payment) {}
+  formatMonth(month: string): string {
+
+    if (!month) {
+      return '';
+    }
+
+    const [year, monthNumber] =
+      month.split('-');
+
+    const monthNames = [
+
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro'
+    ];
+
+    return `${
+      monthNames[
+      Number(monthNumber) - 1
+        ]
+    } ${year}`;
+  }
 }
