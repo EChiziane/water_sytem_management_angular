@@ -1,198 +1,145 @@
+import {registerLocaleData} from '@angular/common';
+import en from '@angular/common/locales/en';
+import {HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi} from '@angular/common/http';
 import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatButton} from '@angular/material/button';
+import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatOption, MatSelect} from '@angular/material/select';
 import {BrowserModule, provideClientHydration, withEventReplay} from '@angular/platform-browser';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import {NzAlertComponent} from 'ng-zorro-antd/alert';
+import {NzAvatarModule} from 'ng-zorro-antd/avatar';
+import {NzBreadCrumbComponent, NzBreadCrumbItemComponent} from 'ng-zorro-antd/breadcrumb';
+import {NzButtonComponent, NzButtonModule} from 'ng-zorro-antd/button';
+import {NzCalendarComponent} from 'ng-zorro-antd/calendar';
+import {NzCardComponent} from 'ng-zorro-antd/card';
+import {NzCarouselComponent, NzCarouselContentDirective} from 'ng-zorro-antd/carousel';
+import {NzCheckboxComponent} from 'ng-zorro-antd/checkbox';
+import {NzDatePickerComponent, NzDatePickerModule, NzRangePickerComponent} from 'ng-zorro-antd/date-picker';
+import {NzDescriptionsComponent, NzDescriptionsItemComponent} from 'ng-zorro-antd/descriptions';
+import {NzDividerComponent} from 'ng-zorro-antd/divider';
+import {NzDrawerComponent, NzDrawerContentDirective, NzDrawerModule} from 'ng-zorro-antd/drawer';
+import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
+import {NzEmptyComponent} from 'ng-zorro-antd/empty';
+import {NzFormModule} from 'ng-zorro-antd/form';
+import {NzColDirective, NzRowDirective} from 'ng-zorro-antd/grid';
+import {en_US, provideNzI18n} from 'ng-zorro-antd/i18n';
+import {NzAutosizeDirective, NzInputDirective, NzInputGroupComponent, NzInputModule} from 'ng-zorro-antd/input';
+import {NzLayoutModule} from 'ng-zorro-antd/layout';
+import {NzMenuModule} from 'ng-zorro-antd/menu';
+import {NzModalModule} from 'ng-zorro-antd/modal';
+import {NzPageHeaderComponent, NzPageHeaderContentDirective} from 'ng-zorro-antd/page-header';
+import {NzSelectComponent, NzSelectModule} from 'ng-zorro-antd/select';
+import {NzSpaceComponent, NzSpaceItemDirective} from 'ng-zorro-antd/space';
+import {NzSpinComponent} from 'ng-zorro-antd/spin';
+import {NzStatisticComponent} from 'ng-zorro-antd/statistic';
+import {NzSwitchComponent, NzSwitchModule} from 'ng-zorro-antd/switch';
+import {NzTableModule, NzFilterTriggerComponent, NzThAddOnComponent} from 'ng-zorro-antd/table';
+import {NzTagComponent} from 'ng-zorro-antd/tag';
+import {NzTooltipDirective} from 'ng-zorro-antd/tooltip';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+import {CalendarComponent} from './calendar/calendar.component';
 import {IconsProviderModule} from './icons-provider.module';
-import {NzLayoutModule} from 'ng-zorro-antd/layout';
-import {NzMenuModule} from 'ng-zorro-antd/menu';
-import {en_US, provideNzI18n} from 'ng-zorro-antd/i18n';
-import {registerLocaleData} from '@angular/common';
-import en from '@angular/common/locales/en';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
-import {HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient, withFetch} from '@angular/common/http';
-
-import {NzAutosizeDirective, NzInputDirective, NzInputGroupComponent, NzInputModule} from 'ng-zorro-antd/input';
-import {NzButtonComponent, NzButtonModule} from 'ng-zorro-antd/button';
-import {NzDatePickerComponent, NzDatePickerModule, NzRangePickerComponent} from 'ng-zorro-antd/date-picker';
-import {NzCardComponent} from 'ng-zorro-antd/card';
-import {NzFilterTriggerComponent, NzTableModule, NzThAddOnComponent} from 'ng-zorro-antd/table';
-
-import {NzDrawerComponent, NzDrawerContentDirective, NzDrawerModule} from 'ng-zorro-antd/drawer';
-import {NzSelectComponent, NzSelectModule} from 'ng-zorro-antd/select';
-import {NzFormDirective, NzFormModule} from 'ng-zorro-antd/form';
-import {NzColDirective, NzRowDirective} from 'ng-zorro-antd/grid';
-import {NzDividerComponent} from 'ng-zorro-antd/divider';
-
-import {NzSwitchComponent, NzSwitchModule} from 'ng-zorro-antd/switch';
-
-import {NzTagComponent} from 'ng-zorro-antd/tag';
 import {AuthInterceptor} from './interceptors/auth-interceptor';
-import {LoginComponent} from './UASM/login/login.component';
-import {NzAlertComponent} from 'ng-zorro-antd/alert';
-import {NzCheckboxComponent} from 'ng-zorro-antd/checkbox';
-import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
+import {LandingPageComponent} from './landpage/landingpage.component';
 import {MainLayoutComponent} from './main-layout/main-layout.component';
-import {NzModalModule} from 'ng-zorro-antd/modal';
-import {NzAvatarModule} from 'ng-zorro-antd/avatar';
-
-
+import {ListuserComponent} from './UASM/listuser/listuser.component';
+import {LoginComponent} from './UASM/login/login.component';
 import {SigninComponent} from './UASM/signin/signin.component';
-import {NzStatisticComponent} from 'ng-zorro-antd/statistic';
-
-import {NzPageHeaderComponent, NzPageHeaderContentDirective} from 'ng-zorro-antd/page-header';
-import {NzSpaceComponent, NzSpaceItemDirective} from 'ng-zorro-antd/space';
-import {NzDescriptionsComponent, NzDescriptionsItemComponent} from 'ng-zorro-antd/descriptions';
 import {CustomerDetailsComponent} from './WSM/customer/customer-details/customer-details.component';
 import {CustomerComponent} from './WSM/customer/customer.component';
-
-import {PaymentComponent} from './WSM/payment/payment.component';
-import {PaymentDetailsComponent} from './WSM/payment/payment-details/payment-details.component';
-
-import {NzCalendarComponent} from 'ng-zorro-antd/calendar';
-import {CalendarComponent} from './calendar/calendar.component';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
-import {MatOption, MatSelect} from '@angular/material/select';
-import {MatButton} from '@angular/material/button';
-
-import {ReciboComponent} from './WSM/recibo/recibo.component';
-
-import {NzSpinComponent} from 'ng-zorro-antd/spin';
-import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
-
-import {NzCarouselComponent, NzCarouselContentDirective} from 'ng-zorro-antd/carousel';
-import {LandingPageComponent} from './landpage/landingpage.component';
-import {NzBreadCrumbComponent, NzBreadCrumbItemComponent} from "ng-zorro-antd/breadcrumb";
-import {ListuserComponent} from './UASM/listuser/listuser.component';
 import {MonthlyChargeComponent} from './WSM/monthly-charge/monthly-charge.component';
-import {NzEmptyComponent} from 'ng-zorro-antd/empty';
-
+import {PaymentDetailsComponent} from './WSM/payment/payment-details/payment-details.component';
+import {PaymentComponent} from './WSM/payment/payment.component';
+import {ReciboComponent} from './WSM/recibo/recibo.component';
 
 registerLocaleData(en);
 
 @NgModule({
   declarations: [
     AppComponent,
-    CustomerDetailsComponent,
+    CalendarComponent,
     CustomerComponent,
+    CustomerDetailsComponent,
+    LandingPageComponent,
+    ListuserComponent,
     LoginComponent,
     MainLayoutComponent,
-    SigninComponent,
-    ListuserComponent,
     MonthlyChargeComponent,
-    CalendarComponent,
     PaymentComponent,
     PaymentDetailsComponent,
-    CustomerDetailsComponent,
     ReciboComponent,
-    LandingPageComponent
-
+    SigninComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     IconsProviderModule,
-    HttpClientModule,
-    NzLayoutModule,
-    NzDropDownModule,
-    NzMenuModule,
     FormsModule,
-    NzInputDirective,
-    NzButtonComponent,
-    NzDividerComponent,
-    NzTableModule,
-    NzLayoutModule,
-    NzDropDownModule,
-    NzMenuModule,
-    FormsModule,
-    NzInputDirective,
-    NzButtonComponent,
-    NzDividerComponent,
-    NzTableModule,
-    NzFilterTriggerComponent,
-    NzThAddOnComponent,
-    NzRowDirective,
-    NzColDirective,
-    NzCardComponent,
-    NzDrawerComponent,
-    NzFormDirective,
-    NzInputGroupComponent,
-    NzSelectComponent,
-    NzRangePickerComponent,
-    NzAutosizeDirective,
-    NzDrawerContentDirective,
-    NzDatePickerComponent,
-    NzButtonModule,
-    NzDrawerModule,
-    NzDatePickerModule,
-    NzFormModule,
-    NzInputModule,
-    NzSelectModule,
     ReactiveFormsModule,
-    NzSwitchComponent,
-    NzTagComponent,
+
     NzAlertComponent,
-    NzCheckboxComponent,
-    NzModalModule,
-    NzAvatarModule,
-    NzSwitchModule,
-    NzStatisticComponent,
-    NzCalendarComponent,
-    NzFilterTriggerComponent,
-    NzThAddOnComponent,
-    NzRowDirective,
-    NzColDirective,
-    NzCardComponent,
-    NzDrawerComponent,
-    NzFormDirective,
-    NzInputGroupComponent,
-    NzSelectComponent,
-    NzRangePickerComponent,
     NzAutosizeDirective,
-    NzDrawerContentDirective,
-    NzDatePickerComponent,
-    NzButtonModule,
-    NzDrawerModule,
-    NzDatePickerModule,
-    NzFormModule,
-    NzInputModule,
-    NzSelectModule,
-    ReactiveFormsModule,
-    NzSwitchComponent,
-    NzTagComponent,
-    NzAlertComponent,
-    NzCheckboxComponent,
-    NzModalModule,
     NzAvatarModule,
-    NzSwitchModule,
-    NzStatisticComponent,
+    NzBreadCrumbComponent,
+    NzBreadCrumbItemComponent,
+    NzButtonComponent,
+    NzButtonModule,
     NzCalendarComponent,
-    NzPageHeaderComponent,
-    NzSpaceComponent,
-    NzPageHeaderContentDirective,
-    NzSpaceItemDirective,
-    NzDescriptionsComponent,
-    NzDescriptionsItemComponent,
-    MatLabel,
-    MatInput,
-    MatFormField,
-    MatDatepickerInput,
-    MatDatepickerToggle,
-    MatDatepicker,
-    MatSelect,
-    MatOption,
-    MatButton,
-    NzSpinComponent,
-    NzTooltipDirective,
+    NzCardComponent,
     NzCarouselComponent,
     NzCarouselContentDirective,
-    NzBreadCrumbItemComponent,
-    NzBreadCrumbComponent,
-    NzEmptyComponent
+    NzCheckboxComponent,
+    NzColDirective,
+    NzDatePickerComponent,
+    NzDatePickerModule,
+    NzDescriptionsComponent,
+    NzDescriptionsItemComponent,
+    NzDividerComponent,
+    NzDrawerComponent,
+    NzDrawerContentDirective,
+    NzDrawerModule,
+    NzDropDownModule,
+    NzEmptyComponent,
+    NzFilterTriggerComponent,
+    NzFormModule,
+    NzInputDirective,
+    NzInputGroupComponent,
+    NzInputModule,
+    NzLayoutModule,
+    NzMenuModule,
+    NzModalModule,
+    NzPageHeaderComponent,
+    NzPageHeaderContentDirective,
+    NzRangePickerComponent,
+    NzRowDirective,
+    NzSelectComponent,
+    NzSelectModule,
+    NzSpaceComponent,
+    NzSpaceItemDirective,
+    NzSpinComponent,
+    NzStatisticComponent,
+    NzSwitchComponent,
+    NzSwitchModule,
+    NzTableModule,
+    NzTagComponent,
+    NzThAddOnComponent,
+    NzTooltipDirective,
 
+    MatButton,
+    MatDatepicker,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatOption,
+    MatSelect
   ],
   providers: [
     {
@@ -203,9 +150,7 @@ registerLocaleData(en);
     provideClientHydration(withEventReplay()),
     provideNzI18n(en_US),
     provideAnimationsAsync(),
-    provideHttpClient(withFetch()),
-
-
+    provideHttpClient(withFetch(), withInterceptorsFromDi())
   ],
   bootstrap: [AppComponent]
 })

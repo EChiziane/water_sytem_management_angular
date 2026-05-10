@@ -1,231 +1,220 @@
-<nz-layout class="layout">
+<nz-layout class="landing-shell">
+  <nz-header class="site-header">
+    <div class="header-content">
+      <a class="brand" href="#inicio" aria-label="Águas Chiziane">
+        <span class="brand-mark">AC</span>
+        <span>Águas Chiziane</span>
+      </a>
 
-    <!-- ================= HEADER FIXO ================= -->
-    <nz-header class="header fixed-header">
-        <div class="header-content">
+      <nav class="desktop-nav" aria-label="Navegação principal">
+        <a href="#quem-somos">Quem Somos</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#contactos">Contactos</a>
+        <a href="#localizacao">Onde Estamos</a>
+      </nav>
 
-            <!-- LOGO -->
-            <div class="logo">
-                Águas&nbsp;Chiziane
-            </div>
+      <div class="header-actions">
+        <a
+          class="whatsapp-link"
+          href="https://wa.me/258841231234?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20%C3%81guas%20Chiziane"
+          target="_blank"
+          rel="noopener">
+          WhatsApp
+        </a>
 
-            <!-- MENU DESKTOP -->
-            <ul class="desktop-menu" nz-menu nzMode="horizontal">
-                <li nz-menu-item><a href="#inicio">Início</a></li>
-                <li nz-menu-item><a href="#quem-somos">Quem Somos</a></li>
-                <li nz-menu-item><a href="#servicos">Serviços</a></li>
-                <li nz-menu-item><a href="#contactos">Contactos</a></li>
-                <li nz-menu-item><a href="#localizacao">Onde Estamos</a></li>
-                <!-- LOGIN -->
-                <li class="login-menu-item" nz-menu-item>
-                    <button (click)="goToLogin()" nz-button nzSize="small" nzType="primary">
-                        Login
-                    </button>
-                </li>
-            </ul>
+        <button
+          (click)="goToLogin()"
+          class="login-button"
+          nz-button
+          nzType="primary">
+          Área do Sistema
+        </button>
 
-            <!-- BOTÃO MOBILE -->
-            <button
-                    (click)="menuVisible = true"
-                    class="mobile-menu-btn"
-                    nz-button
-                    nzType="text">
-                <span nz-icon nzType="menu"></span>
-            </button>
+        <button
+          (click)="menuVisible = true"
+          class="mobile-menu-btn"
+          nz-button
+          nzType="text"
+          aria-label="Abrir menu">
+          <span nz-icon nzType="menu"></span>
+        </button>
+      </div>
+    </div>
+  </nz-header>
 
+  <nz-drawer
+    (nzOnClose)="menuVisible = false"
+    [nzVisible]="menuVisible"
+    nzPlacement="right"
+    nzTitle="Águas Chiziane">
+    <nav *nzDrawerContent class="mobile-nav" aria-label="Navegação móvel">
+      <a (click)="menuVisible = false" href="#quem-somos">Quem Somos</a>
+      <a (click)="menuVisible = false" href="#servicos">Serviços</a>
+      <a (click)="menuVisible = false" href="#contactos">Contactos</a>
+      <a (click)="menuVisible = false" href="#localizacao">Onde Estamos</a>
+
+      <a
+        (click)="menuVisible = false"
+        class="mobile-whatsapp"
+        href="https://wa.me/258841231234?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20%C3%81guas%20Chiziane"
+        target="_blank"
+        rel="noopener">
+        Falar no WhatsApp
+      </a>
+
+      <button
+        (click)="goToLogin(); menuVisible = false"
+        nz-button
+        nzBlock
+        nzType="primary">
+        Área do Sistema
+      </button>
+    </nav>
+  </nz-drawer>
+
+  <nz-content>
+    <section id="inicio" class="hero-section">
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content">
+        <p class="hero-kicker">Água potável com entrega local</p>
+        <h1>Águas Chiziane</h1>
+        <p class="hero-copy">
+          Distribuição de água segura, tratada e acessível para famílias, escolas e empresas em Maputo.
+        </p>
+
+        <div class="hero-actions">
+          <a
+            class="primary-cta"
+            href="https://wa.me/258841231234?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20%C3%81guas%20Chiziane"
+            target="_blank"
+            rel="noopener">
+            Pedir informação
+            <span nz-icon nzType="arrow-right"></span>
+          </a>
+
+          <button
+            (click)="goToLogin()"
+            class="secondary-cta"
+            nz-button>
+            Entrar no sistema
+          </button>
         </div>
-    </nz-header>
+      </div>
 
-    <!-- ================= DRAWER MOBILE ================= -->
-    <nz-drawer
-            (nzOnClose)="menuVisible = false"
-            [nzVisible]="menuVisible"
-            nzPlacement="right"
-            nzTitle="Menu">
-
-        <ul *nzDrawerContent nz-menu nzMode="vertical">
-            <li (click)="menuVisible = false" nz-menu-item><a href="#inicio">Início</a></li>
-            <li (click)="menuVisible = false" nz-menu-item><a href="#quem-somos">Quem Somos</a></li>
-            <li (click)="menuVisible = false" nz-menu-item><a href="#servicos">Serviços</a></li>
-            <li (click)="menuVisible = false" nz-menu-item><a href="#contactos">Contactos</a></li>
-            <li (click)="menuVisible = false" nz-menu-item><a href="#localizacao">Onde Estamos</a></li>
-            <!-- LOGIN MOBILE -->
-            <li nz-menu-item>
-                <button
-                        (click)="goToLogin(); menuVisible = false"
-                        nz-button
-                        nzBlock
-                        nzType="primary">
-                    Login
-                </button>
-            </li>
-        </ul>
-
-    </nz-drawer>
-
-    <!-- ================= CONTEÚDO ================= -->
-    <nz-content>
-
-        <!-- ===== HERO ===== -->
-        <section id="inicio">
-            <nz-carousel class="hero" nzAutoPlay>
-                <div class="hero-slide" nz-carousel-content>
-                    <h1>Pureza que vem da natureza</h1>
-                    <p>Água tratada com qualidade, segura e acessível para todos</p>
-                    <a
-                            class="whatsapp-btn"
-                            href="https://wa.me/258841231234?text=Olá%2C%20gostaria%20de%20mais%20informações%20sobre%20Águas%20Chiziane"
-                            nz-button
-                            nzSize="large" nzType="primary" target="_blank">
-                        Fale connosco no WhatsApp
-                    </a>
-                </div>
-
-                <div class="hero-slide second" nz-carousel-content>
-                    <h1>Compromisso com a sua saúde</h1>
-                    <p>Distribuição segura e sustentável desde 2010</p>
-                </div>
-            </nz-carousel>
-        </section>
-
-        <!-- ===== QUEM SOMOS ===== -->
-        <section class="section" id="quem-somos">
-            <h2>Quem Somos</h2>
-            <p class="section-text">
-                A <strong>Águas Chiziane</strong> é uma empresa familiar que começou em 2010,
-                dedicada à produção e distribuição de água potável de qualidade.
-                Nosso objetivo é fornecer água segura e acessível, garantindo a satisfação da comunidade.
-            </p>
-        </section>
-
-        <!-- ===== SERVIÇOS ===== -->
-        <section class="section light" id="servicos">
-            <h2>Nossos Serviços</h2>
-
-            <div nz-row nzGutter="16">
-                <div nz-col nzMd="8" nzXs="24">
-                    <nz-card class="service-card" nzHoverable>
-                        <span nz-icon nzType="experiment"></span>
-                        <h3>Água Purificada</h3>
-                        <p>Processos modernos de purificação e controlo de qualidade.</p>
-                        <a
-                                class="service-btn"
-                                href="https://wa.me/258841231234?text=Olá%2C%20quero%20saber%20mais%20sobre%20Água%20Purificada"
-                                target="_blank">
-                            Peça Agora
-                        </a>
-                    </nz-card>
-                </div>
-
-                <div nz-col nzMd="8" nzXs="24">
-                    <nz-card class="service-card" nzHoverable>
-                        <span nz-icon nzType="truck"></span>
-                        <h3>Distribuição</h3>
-                        <p>Entrega rápida e segura para residências, empresas e escolas.</p>
-                        <a
-                                class="service-btn"
-                                href="https://wa.me/258841231234?text=Olá%2C%20quero%20saber%20mais%20sobre%20Distribuição"
-                                target="_blank">
-                            Peça Agora
-                        </a>
-                    </nz-card>
-                </div>
-
-                <div nz-col nzMd="8" nzXs="24">
-                    <nz-card class="service-card" nzHoverable>
-                        <span nz-icon nzType="safety"></span>
-                        <h3>Qualidade Garantida</h3>
-                        <p>Certificação do regulador local garantindo conformidade e segurança.</p>
-                        <a
-                                class="service-btn"
-                                href="https://wa.me/258841231234?text=Olá%2C%20quero%20saber%20mais%20sobre%20Qualidade"
-                                target="_blank">
-                            Peça Agora
-                        </a>
-                    </nz-card>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== CONTACTOS ===== -->
-        <section class="section light" id="contactos">
-            <h2>Contactos</h2>
-
-            <div class="contact-grid" nz-row nzGutter="16">
-                <div nz-col nzMd="8" nzXs="24">
-                    <nz-card nzHoverable>
-                        <span nz-icon nzType="phone"></span>
-                        <h3>Telefone</h3>
-                        <p>+258 841231234</p>
-                    </nz-card>
-                </div>
-
-                <div nz-col nzMd="8" nzXs="24">
-                    <nz-card nzHoverable>
-                        <span nz-icon nzType="mail"></span>
-                        <h3>Email</h3>
-                        <p>aguaschiziane&#64;gmail.com</p>
-                    </nz-card>
-                </div>
-
-                <div nz-col nzMd="8" nzXs="24">
-                    <nz-card nzHoverable>
-                        <span nz-icon nzType="clock-circle"></span>
-                        <h3>Horário</h3>
-                        <p>Seg–Sex: 08h às 17h | Sáb: 08h às 12h</p>
-                    </nz-card>
-                </div>
-            </div>
-
-            <!-- FORMULÁRIO DE CONTACTO -->
-            <div class="contact-form">
-                <h3>Envie-nos uma mensagem</h3>
-                <form>
-                    <input placeholder="Seu Nome" required type="text">
-                    <input placeholder="Seu Email" required type="email">
-                    <textarea placeholder="Sua Mensagem" required></textarea>
-                    <button nz-button nzType="primary" type="submit">Enviar</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- ===== ONDE ESTAMOS ===== -->
-        <section class="section" id="localizacao">
-            <h2>Onde Estamos</h2>
-
-            <nz-card class="map-card">
-                <span nz-icon nzType="environment"></span>
-                <p>
-                    Av. de Moçambique, nº 534<br/>
-                    Bairro Cumbeza, Maputo – Moçambique
-                </p>
-
-                <div class="map-container">
-                    <iframe
-                            loading="lazy"
-                            src="https://maps.google.com/maps?q=Maputo&t=&z=15&ie=UTF8&iwloc=&output=embed">
-                    </iframe>
-                </div>
-            </nz-card>
-        </section>
-
-    </nz-content>
-
-    <!-- ================= FOOTER ================= -->
-    <nz-footer class="footer">
-        <div class="footer-content">
-            <p>© 2026 Águas Chiziane · Todos os direitos reservados</p>
-            <a
-                    class="whatsapp-btn-footer"
-                    href="https://wa.me/258841231234?text=Olá%2C%20gostaria%20de%20mais%20informações%20sobre%20Águas%20Chiziane"
-                    target="_blank">
-                Fale connosco no WhatsApp
-            </a>
-
-            <button (click)="goToLogin()" nz-button nzType="default">
-                Área do Sistema
-            </button>
+      <div class="hero-metrics" aria-label="Indicadores de serviço">
+        <div>
+          <strong>2010</strong>
+          <span>Desde</span>
         </div>
-    </nz-footer>
+        <div>
+          <strong>08h-17h</strong>
+          <span>Atendimento</span>
+        </div>
+        <div>
+          <strong>+258</strong>
+          <span>Suporte local</span>
+        </div>
+      </div>
+    </section>
 
+    <section id="quem-somos" class="intro-band">
+      <div class="section-grid">
+        <div>
+          <span class="section-label">Quem Somos</span>
+          <h2>Serviço próximo, água segura e operação cuidada.</h2>
+        </div>
+
+        <p>
+          A Águas Chiziane é uma empresa familiar dedicada à produção e distribuição de água potável. O foco é manter um serviço confiável, com acompanhamento próximo aos clientes e atenção à qualidade em cada entrega.
+        </p>
+      </div>
+    </section>
+
+    <section id="servicos" class="services-band">
+      <div class="section-heading">
+        <span class="section-label">Serviços</span>
+        <h2>Soluções simples para o consumo diário de água.</h2>
+      </div>
+
+      <div class="service-grid">
+        <article class="service-card">
+          <span class="service-icon" nz-icon nzType="safety-certificate"></span>
+          <h3>Água purificada</h3>
+          <p>Tratamento e controlo de qualidade para consumo seguro.</p>
+        </article>
+
+        <article class="service-card">
+          <span class="service-icon" nz-icon nzType="car"></span>
+          <h3>Distribuição</h3>
+          <p>Entrega organizada para residências, empresas e instituições.</p>
+        </article>
+
+        <article class="service-card">
+          <span class="service-icon" nz-icon nzType="customer-service"></span>
+          <h3>Atendimento</h3>
+          <p>Comunicação direta para pedidos, dúvidas e acompanhamento.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="contactos" class="contact-band">
+      <div class="contact-content">
+        <span class="section-label">Contactos</span>
+        <h2>Fale connosco para pedidos e informações.</h2>
+
+        <div class="contact-list">
+          <a href="tel:+258841231234">
+            <span nz-icon nzType="phone"></span>
+            +258 841 231 234
+          </a>
+          <a href="mailto:aguaschiziane@gmail.com">
+            <span nz-icon nzType="mail"></span>
+            aguaschiziane&#64;gmail.com
+          </a>
+          <span>
+            <span nz-icon nzType="clock-circle"></span>
+            Seg-Sex: 08h às 17h | Sáb: 08h às 12h
+          </span>
+        </div>
+      </div>
+
+      <form class="message-panel">
+        <label>
+          Nome
+          <input placeholder="O seu nome" type="text">
+        </label>
+        <label>
+          Contacto
+          <input placeholder="+258" type="tel">
+        </label>
+        <label>
+          Mensagem
+          <textarea placeholder="Como podemos ajudar?"></textarea>
+        </label>
+        <button nz-button nzType="primary" type="submit">Enviar mensagem</button>
+      </form>
+    </section>
+
+    <section id="localizacao" class="location-band">
+      <div class="location-copy">
+        <span class="section-label">Onde Estamos</span>
+        <h2>Bairro Cumbeza, Maputo</h2>
+        <p>Av. de Moçambique, nº 534, Maputo, Moçambique.</p>
+      </div>
+
+      <div class="map-frame">
+        <iframe
+          title="Localização da Águas Chiziane"
+          loading="lazy"
+          src="https://maps.google.com/maps?q=Maputo&t=&z=15&ie=UTF8&iwloc=&output=embed">
+        </iframe>
+      </div>
+    </section>
+  </nz-content>
+
+  <nz-footer class="footer">
+    <span>© 2026 Águas Chiziane. Todos os direitos reservados.</span>
+    <button (click)="goToLogin()" nz-button nzType="default">Área do Sistema</button>
+  </nz-footer>
 </nz-layout>

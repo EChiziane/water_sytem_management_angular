@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {PaymentService} from '../../../services/payment.service';
 import {Payment} from '../../../models/WSM/payment';
 import {PaymentInvoiceService} from '../../../services/payment-invoice.service';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'app-payment-details',
@@ -61,29 +62,24 @@ export class PaymentDetailsComponent implements OnInit {
 
     this.paymentService
       .getPaymentById(this.paymentId)
+      .pipe(finalize(() => this.isLoading = false))
       .subscribe({
 
-        next: (payment: any) => {
-
-          console.log(payment);
+        next: (payment: Payment) => {
 
           this.payment = {
 
             ...payment,
 
             confirmed:
-              payment.confirmed ?? payment.status,
+              payment.confirmed,
 
             numMonths:
               Number(payment.numMonths)
           };
-
-          this.isLoading = false;
         },
 
         error: () => {
-
-          this.isLoading = false;
         }
       });
   }

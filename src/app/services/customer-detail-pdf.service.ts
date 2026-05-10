@@ -260,7 +260,10 @@ export class CustomerDetailPdfService {
     return Number(value || 0).toFixed(2);
   }
 
-  private formatDate(value: any): string {
+  private formatDate(value: string | number | Date | null | undefined): string {
+    if (!value) {
+      return '-';
+    }
 
     const date = new Date(value);
 

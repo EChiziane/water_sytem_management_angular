@@ -94,14 +94,15 @@
         <nz-table
           #nzTable
           [nzData]="listOfDisplayData"
-          [nzScroll]="{ x: '1300px', y: '340px' }"
+          [nzScroll]="{ y: 'calc(100vh - 360px)' }"
+          nzSize="middle"
           nzTableLayout="fixed">
 
           <thead>
           <tr>
-            <th nzWidth="120px">Código</th>
+            <th>Código</th>
 
-            <th nzCustomFilter nzWidth="220px">
+            <th nzCustomFilter>
               Cliente
               <nz-filter-trigger
                 [(nzVisible)]="visible"
@@ -111,12 +112,12 @@
               </nz-filter-trigger>
             </th>
 
-            <th nzWidth="140px">Mês/Ref.</th>
-            <th nzWidth="120px">Total</th>
-            <th nzWidth="220px">Nome do Ficheiro</th>
-            <th nzWidth="320px">Caminho do Ficheiro</th>
-            <th nzWidth="190px">Data de Criação</th>
-            <th nzWidth="120px">Ações</th>
+            <th>Mês/Ref.</th>
+            <th>Total</th>
+            <th>Nome do Ficheiro</th>
+            <th>Caminho do Ficheiro</th>
+            <th>Data de Criação</th>
+            <th>Ações</th>
           </tr>
           </thead>
 

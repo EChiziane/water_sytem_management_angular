@@ -2,6 +2,9 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import {User} from '../../models/user';
+
+type SigninPayload = Pick<User, 'name' | 'email' | 'phone' | 'login' | 'password' | 'role'>;
 
 @Component({
   selector: 'app-signin',
@@ -60,15 +63,14 @@ export class SigninComponent {
         this.msg.success('Utilizador registado com sucesso!');
         this.signinForm.reset({role: 'USER'});
       },
-      error: (err) => {
+      error: () => {
         this.isLoading = false;
-        console.error('Erro ao registrar usuário:', err);
         this.msg.error('Falha ao registar utilizador.');
       }
     });
   }
 
-  private buildPayload(): any {
+  private buildPayload(): SigninPayload {
     const v = this.signinForm.value;
 
     const phoneDigits = (v.phone ?? '').toString().replace(/\D/g, '');

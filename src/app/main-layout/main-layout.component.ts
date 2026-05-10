@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
-import {User} from '../models/user';
+import {AuthSessionService} from '../services/auth-session.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -13,24 +13,22 @@ export class MainLayoutComponent {
 
   username: string = 'Utilizador';
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private session: AuthSessionService
+  ) {
   }
 
   ngOnInit(): void {
-    const userJson = localStorage.getItem('user');
-    if (!userJson) return;
+    const user = this.session.getUser();
 
-    try {
-      const user = JSON.parse(userJson) as Partial<User>;
+    if (user) {
       this.username = user.name ?? user.login ?? 'Utilizador';
-    } catch {
-      this.username = 'Utilizador';
     }
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    this.session.clear();
     this.router.navigate(['/landing-page']);
   }
 }

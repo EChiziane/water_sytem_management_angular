@@ -4,38 +4,34 @@ import {HttpClient} from '@angular/common/http';
 import {Observable, take} from 'rxjs';
 import {Customer} from '../models/WSM/customer';
 
+export type CustomerPayload = Partial<Omit<Customer, 'id' | 'code' | 'createdAt' | 'unpaidMonths'>>;
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
-
-  private baseURL = environment.baseURL + "/customers";
+  private baseURL = environment.baseURL + '/customers';
 
   constructor(private http: HttpClient) {
   }
 
-  public getCustomers(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.baseURL)
-
+  getCustomers(): Observable<Customer[]> {
+    return this.http.get<Customer[]>(this.baseURL);
   }
 
-  public deleteCustomer(id: any): Observable<Customer> {
-    return this.http.delete<Customer>(`${this.baseURL}/${id}`)
+  deleteCustomer(id: string): Observable<Customer> {
+    return this.http.delete<Customer>(`${this.baseURL}/${id}`);
   }
 
-  public addCustomer(customer: any): Observable<Customer> {
-    console.log(customer)
-    return this.http.post<Customer>(this.baseURL, customer).pipe(take(1))
+  addCustomer(customer: CustomerPayload): Observable<Customer> {
+    return this.http.post<Customer>(this.baseURL, customer).pipe(take(1));
   }
 
-  public getCustomerById(id: any): Observable<Customer> {
+  getCustomerById(id: string): Observable<Customer> {
     return this.http.get<Customer>(`${this.baseURL}/${id}`);
   }
 
-  public updateCustomer(id: any, customer: any): Observable<Customer> {
-    return this.http.put<Customer>(`${this.baseURL}/${id}`, customer).pipe(take(1))
+  updateCustomer(id: string, customer: CustomerPayload): Observable<Customer> {
+    return this.http.put<Customer>(`${this.baseURL}/${id}`, customer).pipe(take(1));
   }
-
-
 }

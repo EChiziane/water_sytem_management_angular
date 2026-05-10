@@ -8,3 +8,133 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+/* Section: Responsive tables */
+.table-wrapper,
+.timeline-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.table-scroll,
+.timeline-table-wrapper {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+  overflow-y: visible;
+}
+
+.table-wrapper nz-table,
+.timeline-table-wrapper nz-table {
+  width: 100%;
+  min-width: 0;
+}
+
+.table-wrapper .ant-table,
+.timeline-table-wrapper .ant-table {
+  width: 100%;
+}
+
+.table-wrapper .ant-table table,
+.timeline-table-wrapper .ant-table table {
+  width: 100%;
+}
+
+.table-wrapper .ant-table-thead > tr > th,
+.timeline-table-wrapper .ant-table-thead > tr > th {
+  padding: 12px 14px;
+  background: #f7f9fc;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: normal;
+}
+
+.table-wrapper .ant-table-tbody > tr > td,
+.timeline-table-wrapper .ant-table-tbody > tr > td {
+  padding: 10px 14px;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+.table-actions,
+.action-buttons,
+.timeline-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.table-actions [nz-button],
+.action-buttons [nz-button],
+.timeline-actions [nz-button] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-right: 0;
+  padding: 0;
+  border-radius: 6px;
+}
+
+.reference-months-tags {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.reference-months-tags .ant-tag {
+  margin-right: 0;
+  width: max-content;
+  max-width: 100%;
+}
+
+.drawer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 0;
+  background: #f8f9fa;
+}
+
+.drawer-footer [nz-button] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 104px;
+  height: 36px;
+  margin-right: 0;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+@media (max-width: 1199px) {
+  .table-scroll,
+  .timeline-table-wrapper {
+    overflow-x: auto !important;
+  }
+
+  .table-wrapper nz-table,
+  .timeline-table-wrapper nz-table {
+    min-width: max-content;
+  }
+}
+
+@media (min-width: 1200px) {
+  .table-wrapper .ant-table-cell,
+  .timeline-table-wrapper .ant-table-cell {
+    white-space: normal;
+  }
+}

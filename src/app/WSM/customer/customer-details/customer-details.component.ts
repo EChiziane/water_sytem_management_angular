@@ -238,7 +238,6 @@ export class CustomerDetailsComponent implements OnInit {
       .subscribe({
 
         next: (response: MonthlyCharge[]) => {
-          console.log(response);
           if (response?.length) {
 
             this.monthlyTimeline = response;
@@ -806,7 +805,7 @@ export class CustomerDetailsComponent implements OnInit {
   // FORMAT MONTH
   // =====================================================
 
-  formatMonth(month: any): string {
+  formatMonth(month: string | { referenceYear?: string | number; referenceMonth?: string | number } | null | undefined): string {
     if (!month) {
       return '';
     }

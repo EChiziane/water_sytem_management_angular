@@ -93,19 +93,20 @@
       <nz-table
         #nzTable
         [nzData]="listOfDisplayData"
-        [nzScroll]="{ x: '1150px', y: '340px' }"
+        [nzScroll]="{ y: 'calc(100vh - 360px)' }"
+        nzSize="middle"
         nzTableLayout="fixed">
 
         <thead>
         <tr>
-          <th nzWidth="180px">Nome</th>
-          <th nzWidth="260px">Email</th>
-          <th nzWidth="150px">Login</th>
-          <th nzWidth="140px">Função</th>
-          <th nzWidth="160px">Telefone</th>
-          <th nzWidth="130px">Estado</th>
-          <th nzWidth="220px">Data de Criação</th>
-          <th nzWidth="140px">Ações</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Login</th>
+          <th>Função</th>
+          <th>Telefone</th>
+          <th>Estado</th>
+          <th>Data de Criação</th>
+          <th>Ações</th>
         </tr>
         </thead>
 

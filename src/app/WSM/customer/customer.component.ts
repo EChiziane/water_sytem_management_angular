@@ -1,259 +1,246 @@
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {CustomerService} from '../../services/customer.service';
+import {finalize} from 'rxjs';
 import {Customer} from '../../models/WSM/customer';
-import {PaymentService} from '../../services/payment.service';
+import {CustomerPayload, CustomerService} from '../../services/customer.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
 
 @Component({
-    selector: 'app-customer',
-    standalone: false,
-    templateUrl: './customer.component.html',
-    styleUrls: ['./customer.component.scss']
+  selector: 'app-customer',
+  standalone: false,
+  templateUrl: './customer.component.html',
+  styleUrls: ['./customer.component.scss']
 })
 export class CustomerComponent implements OnInit {
+  dataSource: Customer[] = [];
+  listOfDisplayData: Customer[] = [];
+  dataCostumers: Customer[] = [];
 
-    // ========= Data =========
-    dataSource: Customer[] = [];
-    listOfDisplayData: Customer[] = [];
-    dataCostumers: Customer[] = [];
+  isSaving = false;
+  totalCustomers = 0;
+  debtorsCustomers = 0;
+  regularCustomers = 0;
+  isLoading = false;
 
-    isSaving = false;
+  searchValue = '';
+  visible = false;
+  isCustomerDrawerVisible = false;
+  paymentDrawerVisible = false;
 
+  debtFilter: 'ALL' | 'DEBT' | 'CLEAR' = 'ALL';
 
-    totalCustomers = 0;
-    debtorsCustomers = 0;
-    regularCustomers = 0;
-    isLoading = false;
+  isEditMode = false;
+  customerDrawerTitle = 'Criar Cliente';
+  selectedCustomerId: string | null = null;
 
-    // ========= UI State =========
-    searchValue = '';
-    visible = false;
-    isCustomerDrawerVisible = false;
-    paymentDrawerVisible = false;
+  drawerWidth: string | number = 720;
+  drawerPlacement: 'right' | 'bottom' = 'right';
 
-    // ===== Debt Filter =====
-    debtFilter: 'ALL' | 'DEBT' | 'CLEAR' = 'ALL';
+  customerForm = new FormGroup({
+    name: new FormControl('', Validators.required),
+    contact: new FormControl('', [Validators.required, Validators.pattern('^[+0-9 ]+$')]),
+    address: new FormControl('', Validators.required),
+    status: new FormControl('ATIVO', Validators.required),
+    valve: new FormControl(10, [Validators.required, Validators.min(0)]),
+    monthlyFee: new FormControl(750),
+    monthsInDebt: new FormControl(1, [Validators.required, Validators.min(0)])
+  });
 
-    // ========= Edit State =========
-    isEditMode = false;
-    customerDrawerTitle = 'Criar Cliente';
-    selectedCustomerId: any | null = null;
+  constructor(
+    private customerService: CustomerService,
+    private message: NzMessageService,
+    private modal: NzModalService
+  ) {
+  }
 
-    drawerWidth: string | number = 720;
-    drawerPlacement: 'right' | 'bottom' = 'right';
+  ngOnInit(): void {
+    this.getCustomers();
+    this.updateDrawer();
+  }
 
-    // ========= Forms =========
-    customerForm = new FormGroup({
-        name: new FormControl('', Validators.required),
-        contact: new FormControl('', [Validators.required, Validators.pattern('^[+0-9 ]+$')]),
-        address: new FormControl('', Validators.required),
-        status: new FormControl('ATIVO', Validators.required),
-        valve: new FormControl(10, [Validators.required, Validators.min(0)]),
-        monthlyFee: new FormControl(750),
-        monthsInDebt: new FormControl(1, [Validators.required, Validators.min(0)])
+  @HostListener('window:resize')
+  onResize(): void {
+    this.updateDrawer();
+  }
+
+  updateDrawer(): void {
+    if (window.innerWidth <= 768) {
+      this.drawerWidth = '100%';
+      this.drawerPlacement = 'bottom';
+      return;
+    }
+
+    this.drawerWidth = 720;
+    this.drawerPlacement = 'right';
+  }
+
+  getCustomers(): void {
+    this.isLoading = true;
+
+    this.customerService.getCustomers()
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: customers => {
+          this.dataSource = customers;
+          this.dataCostumers = customers;
+          this.listOfDisplayData = [...customers];
+          this.calculateCustomerStats();
+        },
+        error: () => this.message.error('Erro ao carregar clientes.')
+      });
+  }
+
+  applyFilters(): void {
+    let data = [...this.dataSource];
+
+    if (this.searchValue) {
+      data = data.filter(item =>
+        item.name.toLowerCase().includes(this.searchValue.toLowerCase())
+      );
+    }
+
+    if (this.debtFilter === 'DEBT') {
+      data = data.filter(item => item.monthsInDebt > 0);
+    }
+
+    if (this.debtFilter === 'CLEAR') {
+      data = data.filter(item => item.monthsInDebt === 0);
+    }
+
+    this.listOfDisplayData = data;
+  }
+
+  calculateCustomerStats(): void {
+    this.totalCustomers = this.dataSource.length;
+
+    this.debtorsCustomers = this.dataSource.filter(
+      customer => customer.monthsInDebt && customer.monthsInDebt > 0
+    ).length;
+
+    this.regularCustomers = this.dataSource.filter(
+      customer => !customer.monthsInDebt || customer.monthsInDebt === 0
+    ).length;
+  }
+
+  search(): void {
+    this.visible = false;
+    this.applyFilters();
+  }
+
+  filterByDebt(value: 'ALL' | 'DEBT' | 'CLEAR'): void {
+    this.debtFilter = value;
+    this.applyFilters();
+  }
+
+  editCustomer(customer: Customer): void {
+    this.isEditMode = true;
+    this.customerDrawerTitle = 'Editar Cliente';
+    this.selectedCustomerId = customer.id;
+    this.isCustomerDrawerVisible = true;
+
+    this.customerForm.patchValue({
+      name: customer.name,
+      monthlyFee: customer.monthlyFee,
+      contact: customer.contact,
+      address: customer.address,
+      status: customer.status,
+      valve: customer.valve,
+      monthsInDebt: customer.monthsInDebt
     });
+  }
 
-
-    constructor(
-        private http: HttpClient,
-        private customerService: CustomerService,
-        private paymentService: PaymentService,
-        private message: NzMessageService,
-        private modal: NzModalService
-    ) {
+  createCustomer(): void {
+    if (this.customerForm.invalid) {
+      this.message.warning('Preencha todos os campos obrigatórios!');
+      return;
     }
 
-    // ========= Init =========
-    ngOnInit(): void {
+    this.isSaving = true;
+    const value = this.customerForm.value;
+    const formData: CustomerPayload = {
+      name: value.name ?? '',
+      contact: value.contact ?? '',
+      address: value.address ?? '',
+      status: value.status ?? 'ATIVO',
+      valve: value.valve ?? 10,
+      monthlyFee: value.monthlyFee ?? 750,
+      monthsInDebt: value.monthsInDebt ?? 1
+    };
+    const rawContact = formData.contact?.trim();
+
+    formData.contact = rawContact?.startsWith('+258')
+      ? rawContact
+      : `+258 ${rawContact}`;
+
+    if (!formData.monthlyFee) {
+      formData.monthlyFee = 750;
+    }
+
+    const request$ = this.isEditMode && this.selectedCustomerId
+      ? this.customerService.updateCustomer(this.selectedCustomerId, formData)
+      : this.customerService.addCustomer(formData);
+
+    request$.pipe(finalize(() => this.isSaving = false)).subscribe({
+      next: () => {
         this.getCustomers();
-        this.updateDrawer();
-        window.addEventListener('resize', () => this.updateDrawer());
-    }
+        this.closeCustomerDrawer();
+        this.message.success(
+          this.isEditMode
+            ? 'Cliente atualizado com sucesso!'
+            : 'Cliente criado com sucesso!'
+        );
+      },
+      error: () => this.message.error('Erro ao gravar cliente.')
+    });
+  }
 
+  deleteCustomer(data: Customer): void {
+    this.modal.confirm({
+      nzTitle: 'Tens certeza que quer eliminar este Cliente?',
+      nzContent: `Cliente: <strong>${data.name}</strong>`,
+      nzOkText: 'Sim',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzCancelText: 'Não',
+      nzOnOk: () =>
+        this.customerService.deleteCustomer(data.id).subscribe({
+          next: () => {
+            this.getCustomers();
+            this.message.success('Cliente deletado com sucesso!');
+          },
+          error: () => this.message.error('Erro ao deletar cliente.')
+        })
+    });
+  }
 
-    updateDrawer() {
-        if (window.innerWidth <= 768) {
-            this.drawerWidth = '100%';
-            this.drawerPlacement = 'bottom';
-        } else {
-            this.drawerWidth = 720;
-            this.drawerPlacement = 'right';
-        }
-    }
+  viewCustomer(_data: Customer): void {
+  }
 
-    // ========= Customer Logic =========
-    getCustomers() {
-        this.isLoading = true;
-        this.customerService.getCustomers().subscribe(customers => {
-            this.dataSource = customers;
-            this.dataCostumers = customers;
-            this.listOfDisplayData = [...customers];
-            this.calculateCustomerStats();
-            this.isLoading = false;
-        });
-    }
+  reset(): void {
+    this.searchValue = '';
+    this.search();
+  }
 
-    applyFilters() {
-        let data = [...this.dataSource];
+  openCustomerDrawer(): void {
+    this.isEditMode = false;
+    this.customerDrawerTitle = 'Criar Cliente';
+    this.customerForm.reset({
+      status: 'ATIVO',
+      valve: 10,
+      monthlyFee: 750,
+      monthsInDebt: 1
+    });
+    this.isCustomerDrawerVisible = true;
+  }
 
-        // --- Filter by name ---
-        if (this.searchValue) {
-            data = data.filter(item =>
-                item.name.toLowerCase().includes(this.searchValue.toLowerCase())
-            );
-        }
+  closeCustomerDrawer(): void {
+    this.isCustomerDrawerVisible = false;
+    this.customerForm.reset();
+    this.selectedCustomerId = null;
+  }
 
-        // --- Filter by debt ---
-        if (this.debtFilter === 'DEBT') {
-            data = data.filter(item => item.monthsInDebt > 0);
-        }
-
-        if (this.debtFilter === 'CLEAR') {
-            data = data.filter(item => item.monthsInDebt === 0);
-        }
-
-        this.listOfDisplayData = data;
-    }
-
-
-    calculateCustomerStats() {
-        this.totalCustomers = this.dataSource.length;
-
-        this.debtorsCustomers = this.dataSource.filter(
-            c => c.monthsInDebt && c.monthsInDebt > 0
-        ).length;
-
-        this.regularCustomers = this.dataSource.filter(
-            c => !c.monthsInDebt || c.monthsInDebt === 0
-        ).length;
-    }
-
-    search() {
-        this.visible = false;
-        this.applyFilters();
-    }
-
-    filterByDebt(value: 'ALL' | 'DEBT' | 'CLEAR') {
-        this.debtFilter = value;
-        this.applyFilters();
-    }
-
-
-    editCustomer(customer: Customer) {
-        this.isEditMode = true;
-        this.customerDrawerTitle = 'Editar Cliente';
-        this.selectedCustomerId = customer.id;
-        this.isCustomerDrawerVisible = true;
-
-        this.customerForm.patchValue({
-            name: customer.name,
-            monthlyFee: customer.monthlyFee,
-            contact: customer.contact,
-            address: customer.address,
-            status: customer.status,
-            valve: customer.valve,
-            monthsInDebt: customer.monthsInDebt
-        });
-    }
-
-    createCustomer() {
-        if (this.customerForm.invalid) {
-            this.message.warning('Preencha todos os campos obrigatórios!');
-            return;
-        }
-
-        this.isSaving = true; // 🔄 START SPINNER
-
-        const formData = {...this.customerForm.value};
-
-        const rawContact = formData.contact?.trim();
-        formData.contact = rawContact!.startsWith('+258')
-            ? rawContact
-            : `+258 ${rawContact}`;
-
-        if (!formData.monthlyFee) {
-            formData.monthlyFee = 750;
-        }
-
-        const request$ = this.isEditMode && this.selectedCustomerId
-            ? this.customerService.updateCustomer(this.selectedCustomerId, formData)
-            : this.customerService.addCustomer(formData);
-
-        request$.subscribe({
-            next: () => {
-                this.getCustomers();
-                this.closeCustomerDrawer();
-                this.message.success(
-                    this.isEditMode
-                        ? 'Cliente atualizado com sucesso! ✅'
-                        : 'Cliente criado com sucesso! 🎉'
-                );
-                this.isSaving = false; // ✅ STOP SPINNER
-            },
-            error: () => {
-                this.message.error('Erro ao gravar cliente. 🚫');
-                this.isSaving = false; // ❌ STOP SPINNER
-            }
-        });
-    }
-
-
-    deleteCustomer(data: Customer) {
-        this.modal.confirm({
-            nzTitle: 'Tens certeza que quer eliminar este Cliente?',
-            nzContent: `Cliente: <strong>${data.name}</strong>`,
-            nzOkText: 'Sim',
-            nzOkType: 'primary',
-            nzOkDanger: true,
-            nzCancelText: 'Não',
-            nzOnOk: () =>
-                this.customerService.deleteCustomer(data.id).subscribe({
-                    next: () => {
-                        this.getCustomers();
-                        this.message.success('Cliente deletado com sucesso! 🗑️');
-                    },
-                    error: () => this.message.error('Erro ao deletar cliente. 🚫')
-                })
-        });
-    }
-
-    viewCustomer(data: Customer) {
-        console.log('Visualizar cliente:', data);
-    }
-
-    // ========= Search =========
-    reset() {
-        this.searchValue = '';
-        this.search();
-    }
-
-
-    // ========= Drawer Controls =========
-    openCustomerDrawer() {
-        this.isEditMode = false;
-        this.customerDrawerTitle = 'Criar Cliente';
-        this.customerForm.reset(
-            {
-                status: 'ATIVO',
-                valve: 10,
-                monthlyFee: 750,
-                monthsInDebt: 1
-            });
-        this.isCustomerDrawerVisible = true;
-    }
-
-    closeCustomerDrawer() {
-        this.isCustomerDrawerVisible = false;
-        this.customerForm.reset();
-        this.selectedCustomerId = null;
-    }
-
-
-    // ========= Navigation =========
-    onBack() {
-        window.history.back();
-    }
+  onBack(): void {
+    window.history.back();
+  }
 }

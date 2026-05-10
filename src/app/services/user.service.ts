@@ -4,6 +4,8 @@ import {User} from '../models/user';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environments';
 
+type UserPayload = Partial<Pick<User, 'name' | 'email' | 'phone' | 'login' | 'password' | 'role' | 'status'>>;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,11 +21,11 @@ export class UserService {
     return this.http.get<User[]>(`${this.baseURL}/users`).pipe(take(1));
   }
 
-  addUser(user: any): Observable<User> {
+  addUser(user: UserPayload): Observable<User> {
     return this.http.post<User>(`${this.baseURL}/register`, user).pipe(take(1));
   }
 
-  updateUser(id: string, user: any): Observable<User> {
+  updateUser(id: string, user: UserPayload): Observable<User> {
     return this.http.put<User>(`${this.baseURL}/${id}`, user).pipe(take(1));
   }
 

@@ -1,8 +1,7 @@
-import {Component, EventEmitter, Inject, OnInit, Output, PLATFORM_ID} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {isPlatformBrowser} from '@angular/common';
 import {NzMessageService} from 'ng-zorro-antd/message';
 
 @Component({
@@ -50,7 +49,6 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: object,
     private msg: NzMessageService
   ) {
   }
@@ -60,7 +58,7 @@ export class LoginComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('token');
+    this.authService.logout();
   }
 
   togglePasswordVisibility(): void {
@@ -99,7 +97,6 @@ export class LoginComponent implements OnInit {
       error: (err) => {
         this.isLoading = false;
         this.responseMessage = 'Login inválido';
-        console.error(err);
       }
     });
   }
@@ -153,7 +150,6 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         this.recoveryLoading = false;
-        console.error(err);
         this.msg.error('Não foi possível localizar a conta com esse WhatsApp.');
       }
     });
@@ -171,7 +167,6 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         this.recoveryLoading = false;
-        console.error(err);
         this.msg.error('Não foi possível iniciar o envio do código.');
       }
     });
@@ -207,7 +202,6 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         this.recoveryLoading = false;
-        console.error(err);
         this.msg.error('Código inválido ou expirado.');
       }
     });
