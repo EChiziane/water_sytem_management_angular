@@ -43,20 +43,20 @@ import {NzTooltipDirective} from 'ng-zorro-antd/tooltip';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {CalendarComponent} from './calendar/calendar.component';
+import {CalendarComponent} from './features/calendar/calendar.component';
 import {IconsProviderModule} from './icons-provider.module';
-import {AuthInterceptor} from './interceptors/auth-interceptor';
-import {LandingPageComponent} from './landpage/landingpage.component';
-import {MainLayoutComponent} from './main-layout/main-layout.component';
-import {ListuserComponent} from './UASM/listuser/listuser.component';
-import {LoginComponent} from './UASM/login/login.component';
-import {SigninComponent} from './UASM/signin/signin.component';
-import {CustomerDetailsComponent} from './WSM/customer/customer-details/customer-details.component';
-import {CustomerComponent} from './WSM/customer/customer.component';
-import {MonthlyChargeComponent} from './WSM/monthly-charge/monthly-charge.component';
-import {PaymentDetailsComponent} from './WSM/payment/payment-details/payment-details.component';
-import {PaymentComponent} from './WSM/payment/payment.component';
-import {ReciboComponent} from './WSM/recibo/recibo.component';
+import {AuthInterceptor} from './core/interceptors/auth-interceptor';
+import {LandingPageComponent} from './pages/landing/landingpage.component';
+import {MainLayoutComponent} from './layout/main-layout/main-layout.component';
+import {ListuserComponent} from './features/users/list-user/listuser.component';
+import {LoginComponent} from './pages/auth/login/login.component';
+import {SigninComponent} from './pages/auth/sign-up/signin.component';
+import {CustomerDetailsComponent} from './features/customers/customer-details/customer-details.component';
+import {CustomerComponent} from './features/customers/customer.component';
+import {MonthlyChargeComponent} from './features/billing/monthly-charge/monthly-charge.component';
+import {PaymentDetailsComponent} from './features/payments/payment-details/payment-details.component';
+import {PaymentComponent} from './features/payments/payment.component';
+import {ReciboComponent} from './features/receipts/recibo.component';
 
 registerLocaleData(en);
 
