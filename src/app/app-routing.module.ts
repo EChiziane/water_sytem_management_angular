@@ -9,6 +9,7 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { MonthlyChargeComponent } from './features/billing/monthly-charge/monthly-charge.component';
 import { PaymentDetailsComponent } from './features/payments/payment-details/payment-details.component';
 import { PaymentComponent } from './features/payments/payment.component';
+import { ProfileComponent } from './features/profile/profile.component';
 import { ReciboComponent } from './features/receipts/recibo.component';
 import { ListuserComponent } from './features/users/list-user/listuser.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
@@ -74,6 +75,14 @@ const routes: Routes = [
       {
         path: 'users',
         component: ListuserComponent
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent
+      },
+      {
+        path: 'profile/:id',
+        component: ProfileComponent
       },
       {
         path: '',

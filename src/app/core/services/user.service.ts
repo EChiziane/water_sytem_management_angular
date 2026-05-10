@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, take} from 'rxjs';
+import {map, Observable, take} from 'rxjs';
 import {User} from '../../models/user';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environments';
@@ -19,6 +19,12 @@ export class UserService {
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.baseURL}/users`).pipe(take(1));
+  }
+
+  getUserById(id: string): Observable<User | undefined> {
+    return this.getUsers().pipe(
+      map(users => users.find(user => user.id === id))
+    );
   }
 
   addUser(user: UserPayload): Observable<User> {

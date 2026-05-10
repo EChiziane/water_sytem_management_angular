@@ -128,7 +128,9 @@
 
           <td>
             <button
-              (click)="viewUser(data)" [routerLink]="['/user-detail', data]" nz-button
+              (click)="viewUser(data)" nz-button
+              nz-tooltip
+              nzTooltipTitle="Ver perfil"
               nzSize="small"
               nzType="link">
               <nz-icon nzTheme="outline" nzType="eye"></nz-icon>

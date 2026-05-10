@@ -5,6 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {UserService} from '../../../core/services/user.service';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -36,7 +37,8 @@ export class ListuserComponent {
     private message: NzMessageService,
     private userService: UserService,
     private modal: NzModalService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.initForms();
   }
@@ -127,7 +129,7 @@ export class ListuserComponent {
   }
 
   viewUser(data: User) {
-    // Implementar visualização do utilizador
+    this.router.navigate(['/app/profile', data.id]);
   }
 
   editUser(user: User) {

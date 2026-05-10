@@ -57,6 +57,7 @@ import {DashboardComponent} from './features/dashboard/dashboard.component';
 import {MonthlyChargeComponent} from './features/billing/monthly-charge/monthly-charge.component';
 import {PaymentDetailsComponent} from './features/payments/payment-details/payment-details.component';
 import {PaymentComponent} from './features/payments/payment.component';
+import {ProfileComponent} from './features/profile/profile.component';
 import {ReciboComponent} from './features/receipts/recibo.component';
 
 registerLocaleData(en);
@@ -75,6 +76,7 @@ registerLocaleData(en);
     MonthlyChargeComponent,
     PaymentComponent,
     PaymentDetailsComponent,
+    ProfileComponent,
     ReciboComponent,
     SigninComponent
   ],
