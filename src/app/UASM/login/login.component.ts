@@ -23,10 +23,8 @@ export class LoginComponent implements OnInit {
   responseMessage: string | null = null;
   isLoading = false;
 
-  // show/hide login password
   isPasswordVisible = false;
 
-  // ===== Recovery Modal =====
   isForgotPasswordVisible = false;
   recoveryStep: 0 | 1 | 2 = 0;
   recoveryLoading = false;
@@ -57,7 +55,7 @@ export class LoginComponent implements OnInit {
     this.logout();
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
   }
 
@@ -94,7 +92,7 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
         this.router.navigate(['/app/customer']);
       },
-      error: (err) => {
+      error: () => {
         this.isLoading = false;
         this.responseMessage = 'Login inválido';
       }
@@ -102,7 +100,6 @@ export class LoginComponent implements OnInit {
   }
 
 
-  // ===== Register Modal =====
   openRegisterModal(): void {
     this.isRegisterVisible = true;
   }
@@ -111,7 +108,6 @@ export class LoginComponent implements OnInit {
     this.isRegisterVisible = false;
   }
 
-  // ===== Recovery Modal =====
   openForgotPasswordModal(): void {
     this.isForgotPasswordVisible = true;
     this.recoveryStep = 0;
@@ -148,7 +144,7 @@ export class LoginComponent implements OnInit {
         this.recoveryPreview = preview;
         this.recoveryStep = 1;
       },
-      error: (err) => {
+      error: () => {
         this.recoveryLoading = false;
         this.msg.error('Não foi possível localizar a conta com esse WhatsApp.');
       }
@@ -165,7 +161,7 @@ export class LoginComponent implements OnInit {
         this.recoveryStep = 2;
         this.msg.success('Enviámos um código para o WhatsApp e email associados.');
       },
-      error: (err) => {
+      error: () => {
         this.recoveryLoading = false;
         this.msg.error('Não foi possível iniciar o envio do código.');
       }
@@ -200,15 +196,11 @@ export class LoginComponent implements OnInit {
         this.msg.success('Senha alterada com sucesso. Já pode entrar.');
         this.closeForgotPasswordModal();
       },
-      error: (err) => {
+      error: () => {
         this.recoveryLoading = false;
         this.msg.error('Código inválido ou expirado.');
       }
     });
-  }
-
-  private markAllTouched(): void {
-    Object.values(this.userForm.controls).forEach(c => c.markAsTouched());
   }
 
   private normalizeMzPhoneToE164(raw: string): string {
