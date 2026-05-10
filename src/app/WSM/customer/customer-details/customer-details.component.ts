@@ -632,10 +632,10 @@ export class CustomerDetailsComponent implements OnInit {
 
     this.modal.confirm({
 
-      nzTitle: 'Incluir pagamentos no PDF?',
+      nzTitle: 'Incluir histórico no PDF?',
 
       nzContent:
-        'Deseja incluir o histórico completo de pagamentos neste documento?',
+        'Deseja incluir o histórico mensal completo neste documento?',
 
       nzOkText: 'Sim, incluir',
 
