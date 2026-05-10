@@ -53,6 +53,7 @@ import {LoginComponent} from './pages/auth/login/login.component';
 import {SigninComponent} from './pages/auth/sign-up/signin.component';
 import {CustomerDetailsComponent} from './features/customers/customer-details/customer-details.component';
 import {CustomerComponent} from './features/customers/customer.component';
+import {DashboardComponent} from './features/dashboard/dashboard.component';
 import {MonthlyChargeComponent} from './features/billing/monthly-charge/monthly-charge.component';
 import {PaymentDetailsComponent} from './features/payments/payment-details/payment-details.component';
 import {PaymentComponent} from './features/payments/payment.component';
@@ -66,6 +67,7 @@ registerLocaleData(en);
     CalendarComponent,
     CustomerComponent,
     CustomerDetailsComponent,
+    DashboardComponent,
     LandingPageComponent,
     ListuserComponent,
     LoginComponent,

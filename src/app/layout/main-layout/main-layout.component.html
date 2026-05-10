@@ -1,0 +1,140 @@
+<nz-layout class="app-shell">
+  <nz-sider
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+    class="app-sidebar"
+    nzBreakpoint="lg"
+    nzCollapsible
+    nzWidth="280px">
+
+    <div class="brand">
+      <div class="brand-mark">
+        <span>AC</span>
+      </div>
+
+      <div class="brand-copy">
+        <strong>Águas Chiziane</strong>
+        <span>Water System</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">Gestão</div>
+
+    <ul
+      [nzInlineCollapsed]="isCollapsed"
+      class="nav-menu"
+      nz-menu
+      nzMode="inline"
+      nzTheme="dark">
+
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/dashboard">
+          <span nz-icon nzType="dashboard"></span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/customer">
+          <span nz-icon nzType="team"></span>
+          <span>Clientes</span>
+        </a>
+      </li>
+
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/payment">
+          <span nz-icon nzType="credit-card"></span>
+          <span>Pagamentos</span>
+        </a>
+      </li>
+
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/calendar">
+          <span nz-icon nzType="calendar"></span>
+          <span>Calendário</span>
+        </a>
+      </li>
+
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/users">
+          <span nz-icon nzType="usergroup-add"></span>
+          <span>Utilizadores</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <span class="status-dot"></span>
+      <div>
+        <strong>Sistema ativo</strong>
+        <span>Operação diária</span>
+      </div>
+    </div>
+  </nz-sider>
+
+  <nz-layout class="main-area">
+    <nz-header class="topbar">
+      <button
+        (click)="isCollapsed = !isCollapsed"
+        aria-label="Alternar menu"
+        class="nav-toggle"
+        type="button">
+        <span [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" nz-icon></span>
+      </button>
+
+      <div class="topbar-title">
+        <span>Painel de gestão</span>
+        <strong>Clientes, cobranças e recibos</strong>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="operator-chip">
+          <span nz-icon nzType="safety-certificate"></span>
+          <span>Ambiente seguro</span>
+        </div>
+
+        <div [nzDropdownMenu]="userMenu" class="user-menu" nz-dropdown>
+          <div class="user-avatar">
+            {{ userInitials }}
+          </div>
+
+          <div class="user-copy">
+            <span>{{ username }}</span>
+            <small>Conta autenticada</small>
+          </div>
+
+          <span class="user-arrow" nz-icon nzType="down"></span>
+        </div>
+      </div>
+
+      <nz-dropdown-menu #userMenu="nzDropdownMenu">
+        <ul nz-menu class="account-menu">
+          <li nz-menu-item>
+            <a routerLink="/profile">
+              <span nz-icon nzType="user"></span>
+              Perfil
+            </a>
+          </li>
+
+          <li nz-menu-item>
+            <a routerLink="/app/users">
+              <span nz-icon nzType="setting"></span>
+              Utilizadores
+            </a>
+          </li>
+
+          <li (click)="logout()" nz-menu-item>
+            <span nz-icon nzType="logout"></span>
+            Logout
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </nz-header>
+
+    <nz-content class="content-area">
+      <main class="inner-content">
+        <router-outlet></router-outlet>
+      </main>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

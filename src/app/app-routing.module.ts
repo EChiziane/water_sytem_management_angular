@@ -5,6 +5,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { CalendarComponent } from './features/calendar/calendar.component';
 import { CustomerDetailsComponent } from './features/customers/customer-details/customer-details.component';
 import { CustomerComponent } from './features/customers/customer.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { MonthlyChargeComponent } from './features/billing/monthly-charge/monthly-charge.component';
 import { PaymentDetailsComponent } from './features/payments/payment-details/payment-details.component';
 import { PaymentComponent } from './features/payments/payment.component';
@@ -39,6 +40,10 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
+        path: 'dashboard',
+        component: DashboardComponent
+      },
+      {
         path: 'customer',
         component: CustomerComponent
       },
@@ -72,7 +77,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'customer',
+        redirectTo: 'dashboard',
         pathMatch: 'full'
       }
     ]

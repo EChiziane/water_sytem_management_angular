@@ -1,0 +1,146 @@
+<section class="dashboard-page">
+  <header class="dashboard-header">
+    <div>
+      <span class="eyebrow">Visão geral</span>
+      <h1>Dashboard</h1>
+      <p>Acompanhe clientes, pagamentos e dívidas num só lugar.</p>
+    </div>
+
+    <button (click)="loadDashboard()" nz-button nzType="default">
+      <span nz-icon nzType="reload"></span>
+      Atualizar
+    </button>
+  </header>
+
+  <nz-spin [nzSpinning]="isLoading" nzSize="large" nzTip="A carregar dashboard...">
+    <div class="metric-grid">
+      <article *ngFor="let metric of metrics" class="metric-card" [class]="'tone-' + metric.tone">
+        <div class="metric-icon">
+          <span nz-icon [nzType]="metric.icon"></span>
+        </div>
+
+        <div>
+          <span>{{ metric.label }}</span>
+          <strong>{{ metric.value }}</strong>
+          <small>{{ metric.hint }}</small>
+        </div>
+      </article>
+    </div>
+
+    <div class="dashboard-grid">
+      <section class="panel payments-chart">
+        <div class="panel-header">
+          <div>
+            <span>Últimos meses</span>
+            <h2>Pagamentos recebidos</h2>
+          </div>
+        </div>
+
+        <div *ngIf="monthlyPayments.length; else emptyChart" class="bars">
+          <div *ngFor="let month of monthlyPayments" class="bar-row">
+            <span class="bar-label">{{ month.label }}</span>
+            <div class="bar-track">
+              <div class="bar-fill" [style.width.%]="month.width"></div>
+            </div>
+            <strong>{{ month.amount }}</strong>
+          </div>
+        </div>
+
+        <ng-template #emptyChart>
+          <nz-empty nzNotFoundContent="Sem pagamentos para apresentar"></nz-empty>
+        </ng-template>
+      </section>
+
+      <section class="panel health-panel">
+        <div class="panel-header">
+          <div>
+            <span>Estado atual</span>
+            <h2>Saúde da carteira</h2>
+          </div>
+        </div>
+
+        <div class="health-list">
+          <div>
+            <span>Clientes sem dívida</span>
+            <strong>{{ customers.length - customersWithDebt }}</strong>
+          </div>
+
+          <div>
+            <span>Clientes com dívida</span>
+            <strong>{{ customersWithDebt }}</strong>
+          </div>
+
+          <div>
+            <span>Dívida estimada</span>
+            <strong>{{ formatMoney(totalDebt) }}</strong>
+          </div>
+
+          <div>
+            <span>Recebido este mês</span>
+            <strong>{{ formatMoney(paidThisMonth) }}</strong>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="dashboard-grid bottom-grid">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <span>Acompanhamento</span>
+            <h2>Clientes com maior dívida</h2>
+          </div>
+
+          <a routerLink="/app/customer">Ver clientes</a>
+        </div>
+
+        <div *ngIf="topDebtors.length; else emptyDebtors" class="debt-list">
+          <article *ngFor="let customer of topDebtors">
+            <div>
+              <strong>{{ customer.name }}</strong>
+              <span>{{ customer.monthsInDebt }} mês(es) em atraso</span>
+            </div>
+            <b>{{ formatMoney(customer.debtAmount) }}</b>
+          </article>
+        </div>
+
+        <ng-template #emptyDebtors>
+          <nz-empty nzNotFoundContent="Sem clientes em dívida"></nz-empty>
+        </ng-template>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <span>Movimento recente</span>
+            <h2>Últimos pagamentos</h2>
+          </div>
+
+          <a routerLink="/app/payment">Ver pagamentos</a>
+        </div>
+
+        <div *ngIf="recentPayments.length; else emptyPayments" class="payment-list">
+          <article *ngFor="let payment of recentPayments">
+            <div class="payment-avatar">
+              <span nz-icon nzType="credit-card"></span>
+            </div>
+
+            <div class="payment-copy">
+              <strong>{{ payment.customerName || '-' }}</strong>
+              <span>{{ formatReferenceMonths(payment.referenceMonth) }}</span>
+            </div>
+
+            <div class="payment-meta">
+              <strong>{{ formatMoney(payment.amount) }}</strong>
+              <span>{{ formatDate(payment.paymentDate) }}</span>
+            </div>
+          </article>
+        </div>
+
+        <ng-template #emptyPayments>
+          <nz-empty nzNotFoundContent="Sem pagamentos recentes"></nz-empty>
+        </ng-template>
+      </section>
+    </div>
+  </nz-spin>
+</section>
