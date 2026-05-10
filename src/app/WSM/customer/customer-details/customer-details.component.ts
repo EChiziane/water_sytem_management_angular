@@ -882,6 +882,17 @@ export class CustomerDetailsComponent implements OnInit {
   formatTimelineMonth(
     item: MonthlyCharge
   ): string {
+    const generatedMonth = item as MonthlyCharge & {
+      referenceYear?: string | number;
+      referenceMonth?: string | number;
+    };
+
+    if (generatedMonth.referenceYear && generatedMonth.referenceMonth) {
+      return this.formatMonth({
+        referenceYear: generatedMonth.referenceYear,
+        referenceMonth: generatedMonth.referenceMonth
+      });
+    }
 
     return this.formatMonth(
       item.referenceMonth

@@ -2,7 +2,6 @@ import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {finalize} from 'rxjs';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import {NzModalService} from 'ng-zorro-antd/modal';
 import {Customer} from '../../models/WSM/customer';
 import {Payment} from '../../models/WSM/payment';
 import {CustomerService} from '../../services/customer.service';
@@ -46,7 +45,6 @@ export class PaymentComponent implements OnInit {
     private customerService: CustomerService,
     private paymentInvoiceService: PaymentInvoiceService,
     private message: NzMessageService,
-    private modal: NzModalService,
     private fb: FormBuilder
   ) {
   }
@@ -229,12 +227,6 @@ export class PaymentComponent implements OnInit {
         },
         error: () => this.message.error('Erro ao carregar pagamentos.')
       });
-  }
-
-  viewPayment(_data: Payment): void {
-  }
-
-  deletePayment(_data: Payment): void {
   }
 
   download(payment: Payment): void {

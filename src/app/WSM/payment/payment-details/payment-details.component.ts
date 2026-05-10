@@ -35,11 +35,11 @@ export class PaymentDetailsComponent implements OnInit {
     });
   }
 
-  goBack() {
+  goBack(): void {
     window.history.back();
   }
 
-  download() {
+  download(): void {
 
     this.paymentInvoiceService
       .downloadPaymentInvoice(this.payment);
@@ -56,7 +56,7 @@ export class PaymentDetailsComponent implements OnInit {
       );
   }
 
-  private getPayment() {
+  private getPayment(): void {
 
     this.isLoading = true;
 
