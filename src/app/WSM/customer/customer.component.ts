@@ -15,7 +15,6 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 export class CustomerComponent implements OnInit {
   dataSource: Customer[] = [];
   listOfDisplayData: Customer[] = [];
-  dataCostumers: Customer[] = [];
 
   isSaving = false;
   totalCustomers = 0;
@@ -26,7 +25,6 @@ export class CustomerComponent implements OnInit {
   searchValue = '';
   visible = false;
   isCustomerDrawerVisible = false;
-  paymentDrawerVisible = false;
 
   debtFilter: 'ALL' | 'DEBT' | 'CLEAR' = 'ALL';
 
@@ -83,7 +81,6 @@ export class CustomerComponent implements OnInit {
       .subscribe({
         next: customers => {
           this.dataSource = customers;
-          this.dataCostumers = customers;
           this.listOfDisplayData = [...customers];
           this.calculateCustomerStats();
         },
@@ -197,7 +194,7 @@ export class CustomerComponent implements OnInit {
 
   deleteCustomer(data: Customer): void {
     this.modal.confirm({
-      nzTitle: 'Tens certeza que quer eliminar este Cliente?',
+      nzTitle: 'Tens certeza que quer eliminar este cliente?',
       nzContent: `Cliente: <strong>${data.name}</strong>`,
       nzOkText: 'Sim',
       nzOkType: 'primary',

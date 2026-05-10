@@ -11,8 +11,8 @@ import {
   Validators
 } from '@angular/forms';
 
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import {finalize} from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -25,7 +25,6 @@ import { CustomerService } from '../../../services/customer.service';
 import { PaymentService } from '../../../services/payment.service';
 import { BillingService } from '../../../services/billing.service';
 
-import { CustomerPaymentInvoiceService } from '../../../services/customer-payment-invoice.service';
 import { PaymentInvoiceService } from '../../../services/payment-invoice.service';
 import { CustomerDetailPdfService } from '../../../services/customer-detail-pdf.service';
 import {MonthlyCharge} from '../../../models/monthly-charge';
@@ -97,6 +96,8 @@ export class CustomerDetailsComponent implements OnInit {
 
   timelineLoading = false;
 
+  isSavingPayment = false;
+
   isPaymentDrawerVisible = false;
 
   // =====================================================
@@ -122,12 +123,10 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   constructor(
-    private http: HttpClient,
     private route: ActivatedRoute,
     private fb: FormBuilder,
 
     private customerService: CustomerService,
-    private customerPaymentInvoiceService: CustomerPaymentInvoiceService,
     private paymentService: PaymentService,
     private billingService: BillingService,
 
@@ -221,7 +220,9 @@ export class CustomerDetailsComponent implements OnInit {
           this.calculateDebtAmount();
 
           this.onNumMonthsChange();
-        }
+        },
+
+        error: () => this.message.error('Erro ao carregar cliente.')
       });
   }
 
@@ -235,6 +236,7 @@ export class CustomerDetailsComponent implements OnInit {
 
     this.billingService
       .getCustomerTimeline(this.customerId)
+      .pipe(finalize(() => this.timelineLoading = false))
       .subscribe({
 
         next: (response: MonthlyCharge[]) => {
@@ -266,7 +268,6 @@ export class CustomerDetailsComponent implements OnInit {
               m => !m.paid
             ).length;
 
-          this.timelineLoading = false;
         },
 
         error: () => {
@@ -292,7 +293,6 @@ export class CustomerDetailsComponent implements OnInit {
               m => !m.paid
             ).length;
 
-          this.timelineLoading = false;
         }
       });
   }
@@ -360,6 +360,7 @@ export class CustomerDetailsComponent implements OnInit {
 
     this.paymentService
       .getCustomerPayments(this.customerId)
+      .pipe(finalize(() => this.isLoading = false))
       .subscribe({
 
         next: (payments: Payment[]) => {
@@ -379,13 +380,9 @@ export class CustomerDetailsComponent implements OnInit {
               payments[0].paymentDate;
           }
 
-          this.isLoading = false;
         },
 
-        error: () => {
-
-          this.isLoading = false;
-        }
+        error: () => this.message.error('Erro ao carregar pagamentos.')
       });
   }
 
@@ -490,8 +487,11 @@ export class CustomerDetailsComponent implements OnInit {
       customerId: this.customerId
     };
 
+    this.isSavingPayment = true;
+
     this.paymentService
       .addPayment(payload)
+      .pipe(finalize(() => this.isSavingPayment = false))
       .subscribe({
 
         next: () => {
@@ -501,14 +501,14 @@ export class CustomerDetailsComponent implements OnInit {
           this.closePaymentDrawer();
 
           this.message.success(
-            'Pagamento realizado com sucesso 💧'
+            'Pagamento realizado com sucesso.'
           );
         },
 
         error: () => {
 
           this.message.error(
-            'Erro ao realizar pagamento 🚫'
+            'Erro ao realizar pagamento.'
           );
         }
       });
@@ -597,7 +597,7 @@ export class CustomerDetailsComponent implements OnInit {
             next: () => {
 
               this.message.success(
-                'Pagamento eliminado com sucesso ✅'
+                'Pagamento eliminado com sucesso.'
               );
 
               this.loadCustomerData();
@@ -606,7 +606,7 @@ export class CustomerDetailsComponent implements OnInit {
             error: () => {
 
               this.message.error(
-                'Erro ao eliminar o pagamento 🚫'
+                'Erro ao eliminar o pagamento.'
               );
             }
           });
@@ -723,14 +723,6 @@ export class CustomerDetailsComponent implements OnInit {
 
     window.history.back();
   }
-
-  // =====================================================
-  // PLACEHOLDERS
-  // =====================================================
-
-  editCustomer(): void {}
-
-  viewPayment(data: Payment): void {}
 
   // =====================================================
   // CALCULATE DEBT MONTHS

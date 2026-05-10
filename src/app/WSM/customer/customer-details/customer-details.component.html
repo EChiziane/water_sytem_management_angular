@@ -1,4 +1,4 @@
-<div class="content-wrapper" *ngIf="customer">
+﻿<div class="content-wrapper" *ngIf="customer">
 
   <!-- ===== Breadcrumb ===== -->
   <nz-breadcrumb class="page-breadcrumb">
@@ -8,7 +8,7 @@
     </nz-breadcrumb-item>
 
     <nz-breadcrumb-item>
-      <a routerLink="/app/customer">Customers</a>
+      <a routerLink="/app/customer">Clientes</a>
     </nz-breadcrumb-item>
 
     <nz-breadcrumb-item>
@@ -294,7 +294,7 @@
           <tr *ngFor="let month of timelineTable.data">
 
             <!-- ========================= -->
-            <!-- MÊS -->
+            <!-- Mês -->
             <!-- ========================= -->
 
             <td>
@@ -302,7 +302,7 @@
               <nz-tag
                 [nzColor]="month.paid ? 'green' : 'volcano'">
 
-                {{ formatMonth(month.referenceMonth) }}
+                {{ formatMonth(month) }}
 
               </nz-tag>
 
@@ -340,13 +340,13 @@
           </span>
 
               <span *ngIf="!month.createdByName">
-            —
+            -
           </span>
 
             </td>
 
             <!-- ========================= -->
-            <!-- REFERÊNCIA PAYMENT -->
+            <!-- Referência do pagamento -->
             <!-- ========================= -->
 
             <td>
@@ -362,7 +362,7 @@
           </span>
 
               <span *ngIf="!month.paymentReferenceCode">
-            —
+            -
           </span>
 
             </td>
@@ -383,7 +383,7 @@
           </span>
 
               <span *ngIf="!month.paymentDate">
-            —
+            -
           </span>
 
             </td>
@@ -406,7 +406,7 @@
             </td>
 
             <!-- ========================= -->
-            <!-- MÉTODO -->
+            <!-- Método -->
             <!-- ========================= -->
 
             <td>
@@ -422,13 +422,13 @@
           </span>
 
               <span *ngIf="!month.paymentMethod">
-            —
+            -
           </span>
 
             </td>
 
             <!-- ========================= -->
-            <!-- AÇÕES -->
+            <!-- Ações -->
             <!-- ========================= -->
 
             <td>
@@ -501,7 +501,7 @@
         nzType="plus-circle">
       </nz-icon>
 
-      Novo Payment
+      Novo pagamento
 
     </button>
 
@@ -516,7 +516,7 @@
       <nz-spin
         [nzSpinning]="isLoading"
         nzSize="large"
-        nzTip="A carregar Payments...">
+        nzTip="A carregar pagamentos...">
 
         <nz-table
           #nzTable
@@ -530,19 +530,19 @@
 
             <th>Code</th>
 
-            <th>Client Name</th>
+            <th>Cliente</th>
 
-            <th class="col-montante">Amount</th>
+            <th class="col-montante">Montante</th>
 
-            <th>Reference Month</th>
+            <th>Mês de referência</th>
 
-            <th class="col-metodo">Payment Method</th>
+            <th class="col-metodo">Método</th>
 
-            <th>Confirmed</th>
+            <th>Confirmado</th>
 
-            <th>Created At</th>
+            <th>Criado em</th>
 
-            <th>Actions</th>
+            <th>Ações</th>
 
           </tr>
 
@@ -603,7 +603,7 @@
               <nz-tag
                 [nzColor]="data.confirmed ? 'green' : 'red'">
 
-                {{ data.confirmed ? 'Confirmed' : 'Unconfirmed' }}
+                {{ data.confirmed ? 'Confirmado' : 'Não confirmado' }}
 
               </nz-tag>
 
@@ -1015,7 +1015,8 @@
 
       <button
         (click)="savePayment()"
-        [disabled]="paymentForm.invalid"
+        [disabled]="paymentForm.invalid || isSavingPayment"
+        [nzLoading]="isSavingPayment"
         class="btn-save"
         nz-button
         nzType="primary">
@@ -1031,3 +1032,4 @@
   </ng-template>
 
 </nz-drawer>
+
