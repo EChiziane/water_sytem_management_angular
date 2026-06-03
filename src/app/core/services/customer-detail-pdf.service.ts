@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-import { Customer } from '../../models/WSM/customer';
-import { Payment } from '../../models/WSM/payment';
+import {DocumentFilenameService} from '@core/services/document-filename.service';
+import {COMPANY_PROFILE} from '@shared/config/company-profile';
+import { Customer } from '@shared/models/WSM/customer';
+import { Payment } from '@shared/models/WSM/payment';
+import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 
 type MonthlyHistoryRow = {
   month: string;
@@ -20,6 +23,9 @@ type MonthlyHistoryRow = {
   providedIn: 'root'
 })
 export class CustomerDetailPdfService {
+
+  constructor(private filenames: DocumentFilenameService) {
+  }
 
   downloadCustomerReport(
     customer: Customer,
@@ -39,19 +45,19 @@ export class CustomerDetailPdfService {
     this.drawHeader(doc, 'Ficha do cliente', `Emitido em ${issueDate}`);
 
     this.drawMetricCard(doc, margin, 52, 78, 'Estado', customer.status || '-');
-    this.drawMetricCard(doc, margin + 88, 52, 78, 'Meses em dívida', `${customer.monthsInDebt || 0}`);
-    this.drawMetricCard(doc, margin + 176, 52, 78, 'Total em dívida', `${this.money(totalDebt)} MT`);
+    this.drawMetricCard(doc, margin + 88, 52, 78, 'Meses em d?vida', `${customer.monthsInDebt || 0}`);
+    this.drawMetricCard(doc, margin + 176, 52, 78, 'Total em d?vida', `${this.money(totalDebt)} MT`);
 
     this.drawSectionTitle(doc, 'Dados do cliente', margin, 92);
     this.drawInfoPanel(doc, margin, 98, contentWidth, [
-      ['Código', customer.code || '-'],
+      ['C?digo', customer.code || '-'],
       ['Nome', customer.name || '-'],
       ['Contacto', customer.contact || '-'],
-      ['Endereço', customer.address || '-'],
+      ['Endere?o', customer.address || '-'],
       ['Cliente desde', this.formatDate(customer.createdAt)],
-      ['Válvula', String(customer.valve || '-')],
+      ['V?lvula', String(customer.valve || '-')],
       ['Taxa mensal', `${this.money(customer.monthlyFee)} MT`],
-      ['Último pagamento', lastPayment]
+      ['?ltimo pagamento', lastPayment]
     ]);
 
     if (includeHistory) {
@@ -59,7 +65,7 @@ export class CustomerDetailPdfService {
     }
 
     this.drawFooter(doc);
-    doc.save(`CLIENTE_${customer.code}.pdf`);
+    doc.save(this.filenames.build('CLIENTE', customer.code));
   }
 
   private drawMonthlyHistory(
@@ -70,7 +76,7 @@ export class CustomerDetailPdfService {
     contentWidth: number,
     startY: number
   ): void {
-    this.drawSectionTitle(doc, 'Histórico dos meses', margin, startY - 6);
+    this.drawSectionTitle(doc, 'Hist?rico dos meses', margin, startY - 6);
 
     const monthlyHistory = this.buildMonthlyHistory(customer, payments);
     const body = monthlyHistory.length
@@ -85,7 +91,7 @@ export class CustomerDetailPdfService {
       ])
       : [[
         '-',
-        'Sem histórico',
+        'Sem hist?rico',
         '-',
         '-',
         '-',
@@ -97,13 +103,13 @@ export class CustomerDetailPdfService {
       startY,
       margin: { left: margin, right: margin },
       head: [[
-        'Mês',
+        'M?s',
         'Estado',
         'Registrado por',
         'Recibo',
         'Data pagamento',
         'Valor',
-        'Método'
+        'M?todo'
       ]],
       body,
       styles: {
@@ -170,7 +176,7 @@ export class CustomerDetailPdfService {
 
       rowsByMonth.set(sortKey, {
         month: this.formatMonth(month),
-        status: 'Em dívida',
+        status: 'Em d?vida',
         registeredBy: '-',
         receipt: '-',
         paymentDate: '-',
@@ -193,7 +199,7 @@ export class CustomerDetailPdfService {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
     doc.setTextColor(255, 255, 255);
-    doc.text('Águas Chiziane', 14, 16);
+    doc.text(COMPANY_PROFILE.name, 14, 16);
 
     doc.setFontSize(10);
     doc.setTextColor(176, 230, 222);
@@ -202,8 +208,8 @@ export class CustomerDetailPdfService {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(219, 231, 236);
-    doc.text('Cumbeza, Rua da Esquadra 524 - Maputo, Moçambique', 14, 34);
-    doc.text('Contacto: 846 955 890 - Email: aguaschiziane@gmail.com', 14, 39);
+    doc.text(COMPANY_PROFILE.address, 14, 34);
+    doc.text(`Contacto: ${COMPANY_PROFILE.contact} - Email: ${COMPANY_PROFILE.email}`, 14, 39);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
@@ -272,10 +278,10 @@ export class CustomerDetailPdfService {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
       doc.setTextColor(99, 115, 129);
-      doc.text('Documento emitido automaticamente pelo sistema Águas Chiziane', 14, pageHeight - 10);
+      doc.text(`Documento emitido automaticamente pelo sistema ${COMPANY_PROFILE.name}`, 14, pageHeight - 10);
 
       doc.setFont('helvetica', 'italic');
-      doc.text('Águas Chiziane - água com qualidade, compromisso com a sua casa', pageWidth - 14, pageHeight - 10, {
+      doc.text(`${COMPANY_PROFILE.name} - ${COMPANY_PROFILE.tagline}`, pageWidth - 14, pageHeight - 10, {
         align: 'right'
       });
     }
@@ -318,23 +324,7 @@ export class CustomerDetailPdfService {
     const [year, monthNumber] = month.includes('-')
       ? month.split('-')
       : ['', month];
-
-    const monthNames = [
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro'
-    ];
-
-    const monthName = monthNames[Number(monthNumber) - 1];
+    const monthName = MONTH_NAMES_PT[Number(monthNumber) - 1];
 
     if (!monthName) {
       return month;

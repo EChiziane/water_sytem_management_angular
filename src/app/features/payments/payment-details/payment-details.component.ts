@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {PaymentService} from '../../../core/services/payment.service';
-import {Payment} from '../../../models/WSM/payment';
-import {PaymentInvoiceService} from '../../../core/services/payment-invoice.service';
+import {PaymentService} from '@core/services/payment.service';
+import {Payment} from '@shared/models/WSM/payment';
+import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
+import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 import {finalize} from 'rxjs';
 
 @Component({
@@ -89,23 +90,6 @@ export class PaymentDetailsComponent implements OnInit {
     const [year, monthNumber] =
       month.split('-');
 
-    const monthNames = [
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro'
-    ];
-
-    return `${
-      monthNames[Number(monthNumber) - 1]
-    } ${year}`;
+    return `${MONTH_NAMES_PT[Number(monthNumber) - 1]} ${year}`;
   }
 }

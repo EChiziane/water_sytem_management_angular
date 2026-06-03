@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environments';
 import {HttpClient} from '@angular/common/http';
 import {Observable, take} from 'rxjs';
-import {Payment} from '../../models/WSM/payment';
+import {Payment} from '@shared/models/WSM/payment';
 
 export type PaymentPayload = Partial<Omit<Payment, 'id' | 'referenceCode'>>;
 

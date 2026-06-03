@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
-import { CustomerService } from '../../core/services/customer.service';
-import { PaymentService } from '../../core/services/payment.service';
-import { Customer } from '../../models/WSM/customer';
-import { Payment } from '../../models/WSM/payment';
+import { CustomerService } from '@core/services/customer.service';
+import { PaymentService } from '@core/services/payment.service';
+import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
+import { Customer } from '@shared/models/WSM/customer';
+import { Payment } from '@shared/models/WSM/payment';
 
 type DashboardMetric = {
   label: string;
@@ -231,22 +232,7 @@ export class DashboardComponent implements OnInit {
       ? month.split('-')
       : ['', month];
 
-    const monthNames = [
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro'
-    ];
-
-    const monthName = monthNames[Number(monthNumber) - 1];
+    const monthName = MONTH_NAMES_PT[Number(monthNumber) - 1];
 
     if (!monthName) {
       return month;

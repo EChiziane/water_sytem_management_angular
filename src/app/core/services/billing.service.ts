@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, take } from 'rxjs';
 
 import { environment } from '../../../environments/environments';
-import {MonthlyCharge} from '../../models/monthly-charge';
+import {MonthlyCharge} from '@shared/models/monthly-charge';
 
 
 @Injectable({

@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environments';
 import {HttpClient} from '@angular/common/http';
 import {Observable, take} from 'rxjs';
-import {Payment} from '../../models/WSM/payment';
-import {Recibo} from '../../models/WSM/Recibo';
+import {Payment} from '@shared/models/WSM/payment';
+import {Recibo} from '@shared/models/WSM/Recibo';
 
 @Injectable({
   providedIn: 'root'

@@ -1,6 +1,6 @@
 import {isPlatformBrowser} from '@angular/common';
 import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
-import {User} from '../../models/user';
+import {User} from '@shared/models/user';
 
 type StoredUser = Partial<Omit<User, 'password'>>;
 

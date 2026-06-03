@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environments';
 import {HttpClient} from '@angular/common/http';
-import {map, Observable, switchMap, take, tap} from 'rxjs';
-import {User} from '../../models/user';
-import {AuthSessionService} from '../auth/auth-session.service';
+import {Observable, switchMap, take, tap} from 'rxjs';
+import {User} from '@shared/models/user';
+import {AuthSessionService} from '@core/auth/auth-session.service';
 
 type SignupPayload = Pick<User, 'name' | 'email' | 'phone' | 'login' | 'password' | 'role'>;
 
@@ -22,16 +22,7 @@ export class AuthService {
   login(login: string, password: string): Observable<User> {
     return this.http.post<{ token: string }>(`${this.baseURL}/login`, {login, password}).pipe(
       tap(response => this.session.setToken(response.token)),
-      switchMap(() => this.getUsers().pipe(take(1))),
-      map((users: User[]) => {
-        const found = users.find(user => user.login?.toLowerCase() === login.toLowerCase());
-
-        if (!found) {
-          throw new Error(`Utilizador não encontrado na lista /auth/users para o login: ${login}`);
-        }
-
-        return found;
-      }),
+      switchMap(() => this.getCurrentUser().pipe(take(1))),
       tap(user => this.session.setUser(user))
     );
   }
@@ -64,6 +55,10 @@ export class AuthService {
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.baseURL}/users`);
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${this.baseURL}/me`);
   }
 
   deleteUser(id: string): Observable<User> {

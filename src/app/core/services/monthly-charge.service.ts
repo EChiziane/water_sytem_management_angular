@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environments';
 import { Observable } from 'rxjs';
-import { MonthlyCharge } from '../../models/monthly-charge';
+import { MonthlyCharge } from '@shared/models/monthly-charge';
 
 @Injectable({
   providedIn: 'root'

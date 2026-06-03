@@ -17,17 +17,18 @@ import {finalize} from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { Customer } from '../../../models/WSM/customer';
-import { Payment } from '../../../models/WSM/payment';
+import { Customer } from '@shared/models/WSM/customer';
+import { Payment } from '@shared/models/WSM/payment';
 
 
-import { CustomerService } from '../../../core/services/customer.service';
-import { PaymentService } from '../../../core/services/payment.service';
-import { BillingService } from '../../../core/services/billing.service';
+import { CustomerService } from '@core/services/customer.service';
+import { PaymentService } from '@core/services/payment.service';
+import { BillingService } from '@core/services/billing.service';
 
-import { PaymentInvoiceService } from '../../../core/services/payment-invoice.service';
-import { CustomerDetailPdfService } from '../../../core/services/customer-detail-pdf.service';
-import {MonthlyCharge} from '../../../models/monthly-charge';
+import { PaymentInvoiceService } from '@core/services/payment-invoice.service';
+import { CustomerDetailPdfService } from '@core/services/customer-detail-pdf.service';
+import {MonthlyCharge} from '@shared/models/monthly-charge';
+import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 
 @Component({
   selector: 'app-customer-details',
@@ -422,7 +423,7 @@ export class CustomerDetailsComponent implements OnInit {
     if (numMonths > maxMonths) {
 
       this.message.warning(
-        `Foram informados ${numMonths} mês(es), mas o cliente possui apenas ${maxMonths} em dívida.`
+        `Foram informados ${numMonths} m?s(es), mas o cliente possui apenas ${maxMonths} em d?vida.`
       );
 
       numMonths = maxMonths;
@@ -474,7 +475,7 @@ export class CustomerDetailsComponent implements OnInit {
     if (this.paymentForm.invalid) {
 
       this.message.warning(
-        'Preencha os campos obrigatórios.'
+        'Preencha os campos obrigat?rios.'
       );
 
       return;
@@ -533,7 +534,7 @@ export class CustomerDetailsComponent implements OnInit {
     ) {
 
       this.message.warning(
-        'Este cliente não possui dívida.'
+        'Este cliente n?o possui d?vida.'
       );
 
       return;
@@ -577,7 +578,7 @@ export class CustomerDetailsComponent implements OnInit {
 
     this.modal.confirm({
 
-      nzTitle: 'Confirmar eliminação',
+      nzTitle: 'Confirmar elimina??o',
 
       nzContent:
         `Tem a certeza que deseja eliminar este pagamento de <strong>${data.customerName}</strong>?`,
@@ -632,14 +633,14 @@ export class CustomerDetailsComponent implements OnInit {
 
     this.modal.confirm({
 
-      nzTitle: 'Incluir histórico no PDF?',
+      nzTitle: 'Incluir hist?rico no PDF?',
 
       nzContent:
-        'Deseja incluir o histórico mensal completo neste documento?',
+        'Deseja incluir o hist?rico mensal completo neste documento?',
 
       nzOkText: 'Sim, incluir',
 
-      nzCancelText: 'Não incluir',
+      nzCancelText: 'N?o incluir',
 
       nzOnOk: () => {
 
@@ -834,27 +835,7 @@ export class CustomerDetailsComponent implements OnInit {
 
     const [year, monthNumber] = parts;
 
-    const monthNames = [
-
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro'
-    ];
-
-    return `${
-      monthNames[
-      Number(monthNumber) - 1
-        ] || monthNumber
-    } ${year}`;
+    return `${MONTH_NAMES_PT[Number(monthNumber) - 1] || monthNumber} ${year}`;
   }
 
   // =====================================================
@@ -876,7 +857,7 @@ export class CustomerDetailsComponent implements OnInit {
 
     return item.paid
       ? 'Pago'
-      : 'Em Dívida';
+      : 'Em D?vida';
   }
 
   formatTimelineMonth(

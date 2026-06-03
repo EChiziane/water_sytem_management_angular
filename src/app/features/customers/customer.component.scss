@@ -60,64 +60,6 @@
   border-radius: 8px;
 }
 
-.summary-section {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.summary-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 18px;
-  background: #ffffff;
-  border: 1px solid #dfeaf0;
-  border-radius: 8px;
-}
-
-.summary-content {
-  display: grid;
-  gap: 4px;
-
-  span {
-    color: #5f7481;
-    font-size: 13px;
-    font-weight: 650;
-  }
-
-  strong {
-    color: #0c2538;
-    font-size: 24px;
-    line-height: 1;
-  }
-}
-
-.icon-wrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  font-size: 21px;
-
-  &.total {
-    color: #0e7cc7;
-    background: #e8f6fb;
-  }
-
-  &.active {
-    color: #118a5b;
-    background: #dff8ef;
-  }
-
-  &.inactive {
-    color: #c2410c;
-    background: #fff3e8;
-  }
-}
-
 .filters-panel {
   display: flex;
   align-items: center;
@@ -239,9 +181,6 @@ nz-select {
     }
   }
 
-  .summary-section {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 640px) {

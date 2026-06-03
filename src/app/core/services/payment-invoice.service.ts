@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import autoTable from 'jspdf-autotable';
 import jsPDF from 'jspdf';
 
-import { Payment } from '../../models/WSM/payment';
+import {DocumentFilenameService} from '@core/services/document-filename.service';
+import {COMPANY_PROFILE} from '@shared/config/company-profile';
+import { Payment } from '@shared/models/WSM/payment';
+import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 
 type AutoTableDocument = jsPDF & {
   lastAutoTable?: {
@@ -14,6 +17,9 @@ type AutoTableDocument = jsPDF & {
   providedIn: 'root'
 })
 export class PaymentInvoiceService {
+
+  constructor(private filenames: DocumentFilenameService) {
+  }
 
   downloadPaymentInvoice(payment: Payment): void {
     const doc = new jsPDF();
@@ -31,7 +37,7 @@ export class PaymentInvoiceService {
     this.drawHeader(
       doc,
       'Recibo de pagamento',
-      `Recibo Nº ${payment.referenceCode || 'N/A'}`,
+      `Recibo N? ${payment.referenceCode || 'N/A'}`,
       issueDate
     );
 
@@ -43,8 +49,8 @@ export class PaymentInvoiceService {
     this.drawInfoPanel(doc, margin, 98, contentWidth, [
       ['Nome', payment.customerName || '-'],
       ['Contacto', payment.customerContact || '-'],
-      ['Localização', payment.customerAddress || '-'],
-      ['Válvula', String(payment.customerValve || '-')],
+      ['Localiza??o', payment.customerAddress || '-'],
+      ['V?lvula', String(payment.customerValve || '-')],
       ['Taxa mensal', `${this.formatMoney(monthlyFee)} MT`],
       ['Data de pagamento', paymentDate]
     ]);
@@ -111,7 +117,7 @@ export class PaymentInvoiceService {
 
     this.drawFooter(doc);
 
-    doc.save(`RECIBO_${payment.referenceCode || payment.id}.pdf`);
+    doc.save(this.filenames.build('RECIBO', payment.referenceCode || payment.id));
   }
 
   private drawHeader(doc: jsPDF, title: string, reference: string, issueDate: string): void {
@@ -123,7 +129,7 @@ export class PaymentInvoiceService {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
     doc.setTextColor(255, 255, 255);
-    doc.text('Águas Chiziane', 14, 16);
+    doc.text(COMPANY_PROFILE.name, 14, 16);
 
     doc.setFontSize(10);
     doc.setTextColor(176, 230, 222);
@@ -132,8 +138,8 @@ export class PaymentInvoiceService {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(219, 231, 236);
-    doc.text('Cumbeza, Rua da Esquadra 524 · Maputo - Moçambique', 14, 34);
-    doc.text('Contacto: 846 955 890 · Email: aguaschiziane@gmail.com · NUIT: 123456789', 14, 39);
+    doc.text(COMPANY_PROFILE.address, 14, 34);
+    doc.text(`Contacto: ${COMPANY_PROFILE.contact} - Email: ${COMPANY_PROFILE.email} - NUIT: ${COMPANY_PROFILE.nuit}`, 14, 39);
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
@@ -201,10 +207,10 @@ export class PaymentInvoiceService {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(99, 115, 129);
-    doc.text('Documento emitido por computador - não necessita de assinatura', 14, pageHeight - 14);
+    doc.text('Documento emitido por computador - n?o necessita de assinatura', 14, pageHeight - 14);
 
     doc.setFont('helvetica', 'italic');
-    doc.text('Águas Chiziane - água com qualidade, compromisso com a sua casa', pageWidth - 14, pageHeight - 14, {
+    doc.text(`${COMPANY_PROFILE.name} - ${COMPANY_PROFILE.tagline}`, pageWidth - 14, pageHeight - 14, {
       align: 'right'
     });
   }
@@ -248,23 +254,7 @@ export class PaymentInvoiceService {
     const [year, monthNumber] = month.includes('-')
       ? month.split('-')
       : ['', month];
-
-    const monthNames = [
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro'
-    ];
-
-    const monthName = monthNames[Number(monthNumber) - 1];
+    const monthName = MONTH_NAMES_PT[Number(monthNumber) - 1];
 
     if (!monthName) {
       return month;

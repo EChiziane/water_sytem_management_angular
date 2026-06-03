@@ -115,7 +115,7 @@
           <td>{{ data.name }}</td>
           <td>{{ data.email }}</td>
           <td>{{ data.login }}</td>
-          <td>{{ data.role }}</td>
+          <td>{{ roleLabel(data.role) }}</td>
           <td>{{ data.phone }}</td>
 
           <td>
@@ -215,9 +215,12 @@
             <nz-form-item>
               <nz-form-label nzRequired>Função</nz-form-label>
               <nz-form-control>
-                <nz-select formControlName="role">
-                  <nz-option nzLabel="Usuário" nzValue="USER"></nz-option>
-                  <nz-option nzLabel="Administrador" nzValue="ADMIN"></nz-option>
+                <nz-select formControlName="role" nzPlaceHolder="Selecione a função">
+                  <nz-option
+                    *ngFor="let role of roleOptions"
+                    [nzLabel]="role.label"
+                    [nzValue]="role.value">
+                  </nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>

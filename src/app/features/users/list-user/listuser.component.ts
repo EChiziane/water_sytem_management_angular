@@ -1,11 +1,12 @@
 import {Component} from '@angular/core';
-import {User} from '../../../models/user';
+import {User} from '@shared/models/user';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {UserService} from '../../../core/services/user.service';
+import {UserService} from '@core/services/user.service';
 import {Router} from '@angular/router';
+import {ROLE_OPTIONS} from '@shared/constants/app-labels';
 
 
 @Component({
@@ -17,6 +18,8 @@ import {Router} from '@angular/router';
 export class ListuserComponent {
   dataSource: User[] = [];
   listOfDisplayData: User[] = [];
+
+  readonly roleOptions: Array<{ label: string; value: User['role'] }> = ROLE_OPTIONS;
 
   drawerWidth: string | number = 720;
 
@@ -45,6 +48,10 @@ export class ListuserComponent {
 
   get userDrawerTitle(): string {
     return this.currentEditingUserId ? 'Editar Utilizador' : 'Criar Utilizador';
+  }
+
+  roleLabel(role: User['role']): string {
+    return this.roleOptions.find(option => option.value === role)?.label || role;
   }
 
   onBack() {
@@ -148,13 +155,13 @@ export class ListuserComponent {
   openUserDrawer() {
     this.isUserDrawerVisible = true;
     this.currentEditingUserId = null;
-    this.userForm.reset({status: 'CREATED'});
+    this.userForm.reset({status: 'CREATED', role: 'OPERATOR'});
   }
 
   closeUserDrawer() {
     this.isUserDrawerVisible = false;
     this.currentEditingUserId = null;
-    this.userForm.reset({status: 'CREATED'});
+    this.userForm.reset({status: 'CREATED', role: 'OPERATOR'});
   }
 
 
@@ -186,7 +193,7 @@ export class ListuserComponent {
       password: [''],
       status: [''],
       phone: ['', Validators.required],
-      role: ['USER', Validators.required],
+      role: ['OPERATOR', Validators.required],
     });
   }
 }

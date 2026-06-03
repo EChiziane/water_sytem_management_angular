@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environments';
 import {HttpClient} from '@angular/common/http';
 import {Observable, take} from 'rxjs';
-import {Customer} from '../../models/WSM/customer';
+import {Customer} from '@shared/models/WSM/customer';
 
 export type CustomerPayload = Partial<Omit<Customer, 'id' | 'code' | 'createdAt' | 'unpaidMonths'>>;
 

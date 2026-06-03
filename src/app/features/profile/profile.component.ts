@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 
-import { AuthSessionService } from '../../core/auth/auth-session.service';
-import { UserService } from '../../core/services/user.service';
-import { User } from '../../models/user';
+import { AuthSessionService } from '@core/auth/auth-session.service';
+import { UserService } from '@core/services/user.service';
+import {ROLE_LABELS} from '@shared/constants/app-labels';
+import { User } from '@shared/models/user';
 
 type ProfileUser = Partial<Omit<User, 'password'>>;
 
@@ -66,7 +67,7 @@ export class ProfileComponent implements OnInit {
   }
 
   get roleLabel(): string {
-    return this.user?.role === 'ADMIN' ? 'Administrador' : 'Utilizador';
+    return this.user?.role ? ROLE_LABELS[this.user.role] : '-';
   }
 
   get statusLabel(): string {

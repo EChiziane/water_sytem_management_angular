@@ -4,11 +4,11 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {Recibo} from '../../models/WSM/Recibo';
-import {ReciboService} from '../../core/services/recibo.service';
-import {Payment} from '../../models/WSM/payment';
-import {PaymentService} from '../../core/services/payment.service';
-import {CustomerPaymentInvoiceService} from '../../core/services/customer-payment-invoice.service';
+import {Recibo} from '@shared/models/WSM/Recibo';
+import {ReciboService} from '@core/services/recibo.service';
+import {Payment} from '@shared/models/WSM/payment';
+import {PaymentService} from '@core/services/payment.service';
+import {CustomerPaymentInvoiceService} from '@core/services/customer-payment-invoice.service';
 
 @Component({
   selector: 'app-recibo',

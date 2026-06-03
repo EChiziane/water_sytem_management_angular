@@ -1,8 +1,8 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {finalize} from 'rxjs';
-import {Customer} from '../../models/WSM/customer';
-import {CustomerPayload, CustomerService} from '../../core/services/customer.service';
+import {Customer} from '@shared/models/WSM/customer';
+import {CustomerPayload, CustomerService} from '@core/services/customer.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
 
@@ -17,9 +17,6 @@ export class CustomerComponent implements OnInit {
   listOfDisplayData: Customer[] = [];
 
   isSaving = false;
-  totalCustomers = 0;
-  debtorsCustomers = 0;
-  regularCustomers = 0;
   isLoading = false;
 
   searchValue = '';
@@ -82,7 +79,6 @@ export class CustomerComponent implements OnInit {
         next: customers => {
           this.dataSource = customers;
           this.listOfDisplayData = [...customers];
-          this.calculateCustomerStats();
         },
         error: () => this.message.error('Erro ao carregar clientes.')
       });
@@ -106,18 +102,6 @@ export class CustomerComponent implements OnInit {
     }
 
     this.listOfDisplayData = data;
-  }
-
-  calculateCustomerStats(): void {
-    this.totalCustomers = this.dataSource.length;
-
-    this.debtorsCustomers = this.dataSource.filter(
-      customer => customer.monthsInDebt && customer.monthsInDebt > 0
-    ).length;
-
-    this.regularCustomers = this.dataSource.filter(
-      customer => !customer.monthsInDebt || customer.monthsInDebt === 0
-    ).length;
   }
 
   search(): void {

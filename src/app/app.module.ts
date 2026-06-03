@@ -45,20 +45,18 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {CalendarComponent} from './features/calendar/calendar.component';
 import {IconsProviderModule} from './icons-provider.module';
-import {AuthInterceptor} from './core/interceptors/auth-interceptor';
+import {AuthInterceptor} from '@core/interceptors/auth-interceptor';
 import {LandingPageComponent} from './pages/landing/landingpage.component';
-import {MainLayoutComponent} from './layout/main-layout/main-layout.component';
+import {MainLayoutComponent} from '@features/shell/main-layout/main-layout.component';
 import {ListuserComponent} from './features/users/list-user/listuser.component';
 import {LoginComponent} from './pages/auth/login/login.component';
 import {SigninComponent} from './pages/auth/sign-up/signin.component';
 import {CustomerDetailsComponent} from './features/customers/customer-details/customer-details.component';
 import {CustomerComponent} from './features/customers/customer.component';
 import {DashboardComponent} from './features/dashboard/dashboard.component';
-import {MonthlyChargeComponent} from './features/billing/monthly-charge/monthly-charge.component';
 import {PaymentDetailsComponent} from './features/payments/payment-details/payment-details.component';
 import {PaymentComponent} from './features/payments/payment.component';
 import {ProfileComponent} from './features/profile/profile.component';
-import {ReciboComponent} from './features/receipts/recibo.component';
 
 registerLocaleData(en);
 
@@ -73,11 +71,9 @@ registerLocaleData(en);
     ListuserComponent,
     LoginComponent,
     MainLayoutComponent,
-    MonthlyChargeComponent,
     PaymentComponent,
     PaymentDetailsComponent,
     ProfileComponent,
-    ReciboComponent,
     SigninComponent
   ],
   imports: [

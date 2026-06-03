@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthService} from '../../../core/auth/auth.service';
+import {AuthService} from '@core/auth/auth.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import {User} from '../../../models/user';
+import {User} from '@shared/models/user';
 
 type SigninPayload = Pick<User, 'name' | 'email' | 'phone' | 'login' | 'password' | 'role'>;
 
@@ -29,7 +29,7 @@ export class SigninComponent {
       phone: ['', Validators.required], // aqui guardamos só os dígitos (sem +258)
       login: ['', Validators.required],
       password: ['', Validators.required],
-      role: ['USER', Validators.required]
+      role: ['OPERATOR', Validators.required]
     });
   }
 
@@ -61,7 +61,7 @@ export class SigninComponent {
       next: () => {
         this.isLoading = false;
         this.msg.success('Utilizador registado com sucesso!');
-        this.signinForm.reset({role: 'USER'});
+        this.signinForm.reset({role: 'OPERATOR'});
       },
       error: () => {
         this.isLoading = false;

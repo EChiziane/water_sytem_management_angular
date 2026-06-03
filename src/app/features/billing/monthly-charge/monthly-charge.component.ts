@@ -3,8 +3,8 @@
 
 // monthly-charge.component.ts
 import { Component, OnInit } from '@angular/core';
-import {MonthlyCharge} from '../../../models/monthly-charge';
-import {MonthlyChargeService} from '../../../core/services/monthly-charge.service';
+import {MonthlyCharge} from '@shared/models/monthly-charge';
+import {MonthlyChargeService} from '@core/services/monthly-charge.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 
 

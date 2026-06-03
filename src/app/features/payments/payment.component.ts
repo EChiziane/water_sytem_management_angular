@@ -2,11 +2,12 @@ import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {finalize} from 'rxjs';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import {Customer} from '../../models/WSM/customer';
-import {Payment} from '../../models/WSM/payment';
-import {CustomerService} from '../../core/services/customer.service';
-import {PaymentInvoiceService} from '../../core/services/payment-invoice.service';
-import {PaymentPayload, PaymentService} from '../../core/services/payment.service';
+import {Customer} from '@shared/models/WSM/customer';
+import {Payment} from '@shared/models/WSM/payment';
+import {CustomerService} from '@core/services/customer.service';
+import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
+import {PaymentPayload, PaymentService} from '@core/services/payment.service';
+import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 
 @Component({
   selector: 'app-payment',
@@ -25,9 +26,6 @@ export class PaymentComponent implements OnInit {
   selectedMonths: string[] = [];
 
   searchValue = '';
-  totalPayments = 0;
-  confirmedPayments = 0;
-  unconfirmedPayments = 0;
 
   isLoading = false;
   isSaving = false;
@@ -89,7 +87,7 @@ export class PaymentComponent implements OnInit {
         this.selectedCustomer = customer;
 
         if (!customer.unpaidMonths?.length) {
-          this.message.warning('Cliente sem dívida');
+          this.message.warning('Cliente sem d?vida');
           return;
         }
 
@@ -121,7 +119,7 @@ export class PaymentComponent implements OnInit {
     if (numMonths > maxMonths) {
       numMonths = maxMonths;
       this.paymentForm.get('numMonths')?.setValue(numMonths);
-      this.message.warning(`O cliente possui apenas ${maxMonths} mês(es) em dívida.`);
+      this.message.warning(`O cliente possui apenas ${maxMonths} m?s(es) em d?vida.`);
     }
 
     this.selectedMonths = this.selectedCustomer.unpaidMonths.slice(0, numMonths);
@@ -187,12 +185,6 @@ export class PaymentComponent implements OnInit {
     this.isSaving = false;
   }
 
-  calculatePaymentStats(): void {
-    this.totalPayments = this.dataSource.length;
-    this.confirmedPayments = this.dataSource.filter(payment => payment.confirmed).length;
-    this.unconfirmedPayments = this.dataSource.filter(payment => !payment.confirmed).length;
-  }
-
   reset(): void {
     this.searchValue = '';
     this.filterData();
@@ -223,7 +215,6 @@ export class PaymentComponent implements OnInit {
             numMonths: Number(payment.numMonths)
           }));
           this.listOfDisplayData = [...this.dataSource];
-          this.calculatePaymentStats();
         },
         error: () => this.message.error('Erro ao carregar pagamentos.')
       });
@@ -249,21 +240,6 @@ export class PaymentComponent implements OnInit {
     }
 
     const [year, monthNumber] = month.split('-');
-    const monthNames = [
-      'Janeiro',
-      'Fevereiro',
-      'Março',
-      'Abril',
-      'Maio',
-      'Junho',
-      'Julho',
-      'Agosto',
-      'Setembro',
-      'Outubro',
-      'Novembro',
-      'Dezembro'
-    ];
-
-    return `${monthNames[Number(monthNumber) - 1]} ${year}`;
+    return `${MONTH_NAMES_PT[Number(monthNumber) - 1]} ${year}`;
   }
 }

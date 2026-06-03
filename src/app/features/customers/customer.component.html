@@ -22,40 +22,7 @@
       Novo cliente
     </button>
   </header>
-
-  <section class="summary-section">
-    <article class="summary-card">
-      <span class="icon-wrapper total">
-        <nz-icon nzTheme="outline" nzType="team"></nz-icon>
-      </span>
-      <div class="summary-content">
-        <span>Total de clientes</span>
-        <strong>{{ totalCustomers }}</strong>
-      </div>
-    </article>
-
-    <article class="summary-card">
-      <span class="icon-wrapper inactive">
-        <nz-icon nzTheme="outline" nzType="warning"></nz-icon>
-      </span>
-      <div class="summary-content">
-        <span>Clientes devedores</span>
-        <strong>{{ debtorsCustomers }}</strong>
-      </div>
-    </article>
-
-    <article class="summary-card">
-      <span class="icon-wrapper active">
-        <nz-icon nzTheme="outline" nzType="check-circle"></nz-icon>
-      </span>
-      <div class="summary-content">
-        <span>Clientes regulares</span>
-        <strong>{{ regularCustomers }}</strong>
-      </div>
-    </article>
-  </section>
-
-  <section class="filters-panel">
+<section class="filters-panel">
     <nz-input-group nzPrefixIcon="search" class="search-input">
       <input
         (ngModelChange)="search()"
