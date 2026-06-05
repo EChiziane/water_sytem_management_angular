@@ -300,7 +300,17 @@ nz-select {
   min-height: 42px;
   margin: 0;
   padding: 0;
+  border-color: #b8e7de;
   border-radius: 8px;
+  color: #0e8f78;
+  background: #e7faf5;
+
+  &:hover,
+  &:focus {
+    border-color: #0e8f78;
+    color: #0b725f;
+    background: #d5f5ed;
+  }
 }
 
 .mobile-card-facts {
