@@ -70,6 +70,18 @@ export class PaymentComponent implements OnInit {
     return this.dataSource.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
   }
 
+  get selectedPaymentTotal(): number {
+    return Number(this.paymentForm?.get('amount')?.value || 0);
+  }
+
+  get selectedDebtTotal(): number {
+    if (!this.selectedCustomer) {
+      return 0;
+    }
+
+    return Number(this.selectedCustomer.monthlyFee || 0) * Number(this.selectedCustomer.monthsInDebt || 0);
+  }
+
   @HostListener('window:resize')
   onResize(): void {
     this.updateDrawer();
@@ -139,6 +151,10 @@ export class PaymentComponent implements OnInit {
     }
 
     this.selectedMonths = this.selectedCustomer.unpaidMonths.slice(0, numMonths);
+    this.paymentForm.get('amount')?.setValue(
+      Number(this.selectedCustomer.monthlyFee || 0) * numMonths,
+      {emitEvent: false}
+    );
   }
 
   updateDrawer(): void {

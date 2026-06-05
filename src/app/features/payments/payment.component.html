@@ -263,6 +263,12 @@
         </nz-form-item>
       </section>
 
+      <section *ngIf="!selectedCustomer" class="drawer-empty-guide">
+        <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
+        <h3>Selecione um cliente com divida</h3>
+        <p>Depois da selecao, o resumo financeiro e os meses em aberto aparecem aqui.</p>
+      </section>
+
       <section *ngIf="selectedCustomer" class="drawer-customer-card">
         <div class="customer-main">
           <div class="customer-avatar">{{ getCustomerInitials(selectedCustomer.name) }}</div>
@@ -291,26 +297,25 @@
 
         <article class="financial-card debt">
           <span>Total em divida</span>
-          <strong>{{ formatMoney(selectedCustomer.monthlyFee * selectedCustomer.monthsInDebt) }}</strong>
+          <strong>{{ formatMoney(selectedDebtTotal) }}</strong>
         </article>
       </section>
 
       <section *ngIf="selectedCustomer" class="drawer-section">
         <h3 class="section-title">Informacoes do pagamento</h3>
 
-        <div [nzGutter]="16" nz-row>
-          <div nz-col nzMd="12" nzSm="24" nzXs="24">
-            <nz-form-item>
-              <nz-form-label>Montante</nz-form-label>
-              <nz-form-control>
-                <nz-input-group nzAddOnBefore="MZN">
-                  <input formControlName="amount" nz-input placeholder="Digite o valor" type="number">
-                </nz-input-group>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
+        <div class="payment-entry-grid">
+          <aside class="drawer-amount-card">
+            <span>Total a pagar</span>
+            <strong>{{ formatMoney(selectedPaymentTotal) }}</strong>
+            <small>{{ selectedMonths.length }} mes(es) selecionado(s)</small>
 
-          <div nz-col nzMd="12" nzSm="24" nzXs="24">
+            <ul *ngIf="selectedMonths.length" class="drawer-month-bullets">
+              <li *ngFor="let m of selectedMonths">{{ formatMonth(m) }}</li>
+            </ul>
+          </aside>
+
+          <div class="drawer-fields">
             <nz-form-item>
               <nz-form-label>Numero de meses</nz-form-label>
               <nz-form-control>
@@ -324,32 +329,30 @@
                   type="number"/>
               </nz-form-control>
             </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>Montante</nz-form-label>
+              <nz-form-control>
+                <nz-input-group nzAddOnBefore="MZN">
+                  <input formControlName="amount" nz-input placeholder="Digite o valor" type="number">
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>Metodo de pagamento</nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o metodo">
+                  <nz-option nzLabel="Numerario" nzValue="CASH"></nz-option>
+                  <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
+                  <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
+                  <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
+                  <nz-option nzLabel="BIM" nzValue="BIM"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
           </div>
         </div>
-
-        <div *ngIf="selectedMonths.length > 0" class="selected-months-wrapper">
-          <div class="selected-months-header">
-            <span>Meses selecionados</span>
-            <nz-tag nzColor="processing">{{ selectedMonths.length }} mes(es)</nz-tag>
-          </div>
-
-          <div class="selected-months">
-            <nz-tag *ngFor="let m of selectedMonths" nzColor="volcano">{{ formatMonth(m) }}</nz-tag>
-          </div>
-        </div>
-
-        <nz-form-item>
-          <nz-form-label>Metodo de pagamento</nz-form-label>
-          <nz-form-control>
-            <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o metodo">
-              <nz-option nzLabel="Numerario" nzValue="CASH"></nz-option>
-              <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
-              <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
-              <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
-              <nz-option nzLabel="BIM" nzValue="BIM"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
 
         <div *ngIf="paymentForm.valid" class="payment-preview">
           <div class="preview-row">
@@ -362,7 +365,7 @@
           </div>
           <div class="preview-row total">
             <span>Total</span>
-            <strong>{{ formatMoney(selectedCustomer.monthlyFee * (paymentForm.get('numMonths')?.value || 0)) }}</strong>
+            <strong>{{ formatMoney(selectedPaymentTotal) }}</strong>
           </div>
         </div>
       </section>

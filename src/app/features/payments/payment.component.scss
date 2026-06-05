@@ -276,6 +276,27 @@
   background: #f8fbfd;
 }
 
+.drawer-empty-guide {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 24px 14px;
+  border: 1px dashed #cfe0e8;
+  border-radius: 8px;
+  background: #ffffff;
+  text-align: center;
+
+  h3 {
+    margin: 0;
+    font-weight: 850;
+  }
+
+  p {
+    margin: 0;
+    color: #607786;
+  }
+}
+
 .section-title {
   margin: 0 0 18px;
   padding-left: 10px;
@@ -378,30 +399,53 @@ nz-select {
   border-radius: 8px;
 }
 
-.selected-months-wrapper,
 .payment-preview {
   margin-bottom: 18px;
   padding: 14px;
   border-radius: 8px;
 }
 
-.selected-months-wrapper {
-  border: 1px solid #ffe7ba;
-  background: #fff7e6;
+.payment-entry-grid {
+  display: grid;
+  grid-template-columns: minmax(190px, .8fr) minmax(0, 1.2fr);
+  gap: 14px;
 }
 
-.selected-months-header,
+.drawer-amount-card {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(14, 143, 120, 0.22);
+  border-radius: 8px;
+  background: #f4fffb;
+
+  span {
+    color: #607786;
+    font-size: 12px;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: #0e8f78;
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  small {
+    color: #607786;
+    font-weight: 750;
+  }
+}
+
 .preview-row {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-}
-
-.selected-months {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  flex-wrap: wrap;
 }
 
 .payment-preview {
@@ -534,7 +578,8 @@ nz-select {
   }
 }
 
-.mobile-month-bullets {
+.mobile-month-bullets,
+.drawer-month-bullets {
   display: grid;
   gap: 7px;
   margin: 10px 0 0;
@@ -709,6 +754,10 @@ nz-select {
       min-height: 42px;
       margin: 0;
     }
+  }
+
+  .payment-entry-grid {
+    grid-template-columns: 1fr;
   }
 }
 
