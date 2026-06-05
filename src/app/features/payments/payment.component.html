@@ -1,8 +1,6 @@
-<div class="content-wrapper">
+<div class="content-wrapper compact-list-layout">
   <nz-breadcrumb class="page-breadcrumb">
-    <nz-breadcrumb-item>
-      <a routerLink="/app">Home</a>
-    </nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/app">Home</a></nz-breadcrumb-item>
     <nz-breadcrumb-item>Pagamentos</nz-breadcrumb-item>
   </nz-breadcrumb>
 
@@ -12,26 +10,133 @@
     </button>
 
     <div>
-      <span class="section-label">Gestão financeira</span>
+      <span class="section-label">Gestao financeira</span>
       <h1>Pagamentos</h1>
-      <p>Consulte pagamentos, recibos, métodos e meses de referência.</p>
+      <p>Consulte pagamentos, recibos, metodos e meses de referencia.</p>
     </div>
 
-    <button (click)="openPaymentDrawer()" nz-button nzType="primary">
+    <button (click)="openPaymentDrawer()" class="primary-water-action" nz-button nzType="primary">
       <nz-icon nzTheme="outline" nzType="plus-circle"></nz-icon>
       Novo pagamento
     </button>
   </header>
-<section class="filters-panel">
+
+  <section class="summary-grid">
+    <article>
+      <span>Total recebido</span>
+      <strong>{{ formatMoney(totalReceivedAmount) }}</strong>
+      <small>{{ totalPayments }} pagamento(s) registado(s)</small>
+    </article>
+
+    <article class="active-summary">
+      <span>Confirmados</span>
+      <strong>{{ confirmedPayments }}</strong>
+      <small>Pagamentos validados</small>
+    </article>
+
+    <article class="danger-summary">
+      <span>Pendentes</span>
+      <strong>{{ pendingPayments }}</strong>
+      <small>Aguardam confirmacao</small>
+    </article>
+  </section>
+
+  <section class="filters-panel">
     <nz-input-group nzPrefixIcon="search" class="search-input">
       <input
         (ngModelChange)="filterData()"
         [(ngModel)]="searchValue"
         nz-input
-        placeholder="Pesquisar por código ou cliente"
+        placeholder="Pesquisar por codigo ou cliente"
         type="text"/>
     </nz-input-group>
+
+    <div class="filter-actions">
+      <button (click)="reset()" nz-button nzType="default">
+        <nz-icon nzTheme="outline" nzType="reload"></nz-icon>
+        Limpar
+      </button>
+
+      <button (click)="openPaymentDrawer()" class="primary-water-action" nz-button nzType="primary">
+        <nz-icon nzTheme="outline" nzType="plus-circle"></nz-icon>
+        Novo pagamento
+      </button>
+    </div>
   </section>
+
+  <nz-spin [nzSpinning]="isLoading" class="mobile-payment-spin" nzTip="A carregar pagamentos...">
+    <div *ngIf="listOfDisplayData.length; else mobileEmptyPayments" class="mobile-payment-list">
+      <article *ngFor="let payment of listOfDisplayData" class="mobile-payment-card">
+        <div class="mobile-card-topline">
+          <div>
+            <span class="mobile-card-kicker">{{ payment.referenceCode || 'Sem codigo' }}</span>
+            <h3>{{ payment.customerName || 'Cliente sem nome' }}</h3>
+          </div>
+
+          <nz-tag [nzColor]="getPaymentStatusColor(payment)">
+            {{ getPaymentStatusLabel(payment) }}
+          </nz-tag>
+        </div>
+
+        <div class="mobile-contact-line">
+          <span nz-icon nzTheme="outline" nzType="phone"></span>
+          <span>{{ payment.customerContact || 'Sem contacto' }}</span>
+        </div>
+
+        <dl class="mobile-card-facts">
+          <div>
+            <dt>Montante</dt>
+            <dd>{{ formatMoney(payment.amount) }}</dd>
+          </div>
+          <div>
+            <dt>Metodo</dt>
+            <dd>{{ payment.paymentMethod || '-' }}</dd>
+          </div>
+          <div>
+            <dt>Meses</dt>
+            <dd>{{ payment.numMonths || getFormattedReferenceMonths(payment.referenceMonth).length || 0 }}</dd>
+          </div>
+          <div>
+            <dt>Data</dt>
+            <dd>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</dd>
+          </div>
+        </dl>
+
+        <div *ngIf="getFormattedReferenceMonths(payment.referenceMonth).length" class="mobile-months">
+          <nz-tag *ngFor="let month of getFormattedReferenceMonths(payment.referenceMonth)" nzColor="geekblue">
+            {{ month }}
+          </nz-tag>
+        </div>
+
+        <div class="mobile-card-actions">
+          <button [routerLink]="['/app/payment-detail', payment.id]" nz-button nzType="default">
+            <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
+            Detalhes
+          </button>
+
+          <a [href]="phoneHref(payment.customerContact)" class="mobile-call-action" nz-button nzType="default" aria-label="Ligar ao cliente">
+            <nz-icon nzTheme="outline" nzType="phone"></nz-icon>
+          </a>
+
+          <button (click)="download(payment)" nz-button nzType="default" aria-label="Imprimir recibo">
+            <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
+          </button>
+        </div>
+      </article>
+    </div>
+  </nz-spin>
+
+  <ng-template #mobileEmptyPayments>
+    <div *ngIf="!isLoading" class="mobile-empty-state">
+      <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
+      <h3>Nenhum pagamento encontrado</h3>
+      <p>Limpa a pesquisa ou regista um novo pagamento.</p>
+      <button (click)="openPaymentDrawer()" class="primary-water-action" nz-button nzType="primary">
+        <nz-icon nzTheme="outline" nzType="plus-circle"></nz-icon>
+        Novo pagamento
+      </button>
+    </div>
+  </ng-template>
 
   <section class="table-wrapper">
     <div class="table-scroll">
@@ -39,51 +144,47 @@
         <nz-table
           #nzTable
           [nzData]="listOfDisplayData"
+          [nzNoResult]="tableEmptyPayments"
           [nzPageSize]="8"
+          [nzScroll]="{ x: '1080px', y: '440px' }"
+          class="compact-payment-table"
           nzTableLayout="fixed">
           <thead>
           <tr>
-            <th>Código</th>
+            <th>Codigo</th>
             <th>Cliente</th>
             <th>Montante</th>
-            <th>Mês de referência</th>
-            <th>Método</th>
+            <th>Mes de referencia</th>
+            <th>Metodo</th>
             <th>Estado</th>
             <th>Criado por</th>
             <th>Data</th>
-            <th>Ações</th>
+            <th>Acoes</th>
           </tr>
           </thead>
 
           <tbody>
           <tr *ngFor="let data of nzTable.data">
+            <td><nz-tag nzColor="blue">{{ data.referenceCode || 'Sem codigo' }}</nz-tag></td>
             <td>
-              <nz-tag nzColor="blue">{{ data.referenceCode || 'Sem código' }}</nz-tag>
+              <div class="payment-customer-cell">
+                <span class="customer-avatar-mini">{{ getCustomerInitials(data.customerName) }}</span>
+                <div>
+                  <strong>{{ data.customerName || '-' }}</strong>
+                  <span class="muted-text">{{ data.customerContact || 'Sem contacto' }}</span>
+                </div>
+              </div>
             </td>
-            <td>
-              <strong>{{ data.customerName }}</strong>
-              <span class="muted-text">{{ data.customerContact }}</span>
-            </td>
-            <td>
-              <span class="amount">{{ data.amount | number:'1.2-2' }} MT</span>
-            </td>
+            <td><span class="amount">{{ formatMoney(data.amount) }}</span></td>
             <td>
               <div class="reference-months-tags">
-                <nz-tag
-                  *ngFor="let month of getFormattedReferenceMonths(data.referenceMonth)"
-                  nzColor="geekblue">
+                <nz-tag *ngFor="let month of getFormattedReferenceMonths(data.referenceMonth)" nzColor="geekblue">
                   {{ month }}
                 </nz-tag>
               </div>
             </td>
-            <td>
-              <nz-tag nzColor="purple">{{ data.paymentMethod }}</nz-tag>
-            </td>
-            <td>
-              <nz-tag [nzColor]="data.confirmed ? 'green' : 'red'">
-                {{ data.confirmed ? 'Confirmado' : 'Não confirmado' }}
-              </nz-tag>
-            </td>
+            <td><nz-tag nzColor="purple">{{ data.paymentMethod || '-' }}</nz-tag></td>
+            <td><nz-tag [nzColor]="getPaymentStatusColor(data)">{{ getPaymentStatusLabel(data) }}</nz-tag></td>
             <td>{{ data.createdByName || 'Sistema' }}</td>
             <td>{{ data.paymentDate | date: 'dd/MM/yyyy - HH:mm' }}</td>
             <td>
@@ -91,7 +192,10 @@
                 <button
                   [routerLink]="['/app/payment-detail', data.id]"
                   nz-button
+                  nzShape="circle"
                   nzSize="small"
+                  nz-tooltip
+                  nzTooltipTitle="Ver detalhes"
                   nzType="link"
                   aria-label="Ver detalhes">
                   <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
@@ -100,7 +204,10 @@
                 <button
                   (click)="download(data)"
                   nz-button
+                  nzShape="circle"
                   nzSize="small"
+                  nz-tooltip
+                  nzTooltipTitle="Imprimir recibo"
                   nzType="link"
                   aria-label="Imprimir recibo">
                   <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
@@ -113,6 +220,14 @@
       </nz-spin>
     </div>
   </section>
+
+  <ng-template #tableEmptyPayments>
+    <div class="table-empty-state">
+      <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
+      <h3>Nenhum pagamento encontrado</h3>
+      <p>Altera a pesquisa ou cria um novo pagamento.</p>
+    </div>
+  </ng-template>
 </div>
 
 <nz-drawer
@@ -124,147 +239,148 @@
   [nzTitle]="paymentDrawerTitle"
   [nzVisible]="isPaymentDrawerVisible"
   [nzWidth]="drawerWidth">
-  <form *nzDrawerContent [formGroup]="paymentForm" class="drawer-form" nz-form>
-    <section class="drawer-section">
-      <h3 class="section-title">Selecionar cliente</h3>
+  <nz-spin *nzDrawerContent [nzSpinning]="isSaving" nzTip="A gravar pagamento...">
+    <form [formGroup]="paymentForm" class="drawer-form" nz-form>
+      <section class="drawer-section">
+        <h3 class="section-title">Selecionar cliente</h3>
 
-      <nz-form-item>
-        <nz-form-label>Cliente</nz-form-label>
-        <nz-form-control>
-          <nz-select
-            (ngModelChange)="onCustomerSelect($event)"
-            formControlName="customerId"
-            nzPlaceHolder="Selecione o cliente">
-            <nz-option
-              *ngFor="let c of allCustomers"
-              [nzLabel]="c.name + ' - ' + c.monthsInDebt + ' mês(es) em dívida'"
-              [nzValue]="c.id">
-            </nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-    </section>
+        <nz-form-item>
+          <nz-form-label>Cliente</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              (ngModelChange)="onCustomerSelect($event)"
+              formControlName="customerId"
+              nzAllowClear
+              nzPlaceHolder="Selecione o cliente"
+              nzShowSearch>
+              <nz-option
+                *ngFor="let c of allCustomers"
+                [nzLabel]="c.name + ' - ' + c.monthsInDebt + ' mes(es) em divida'"
+                [nzValue]="c.id">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </section>
 
-    <section *ngIf="selectedCustomer" class="drawer-customer-card">
-      <div class="customer-main">
-        <div class="customer-avatar">{{ selectedCustomer.name.charAt(0) }}</div>
+      <section *ngIf="selectedCustomer" class="drawer-customer-card">
+        <div class="customer-main">
+          <div class="customer-avatar">{{ getCustomerInitials(selectedCustomer.name) }}</div>
 
-        <div class="customer-details">
-          <h3>{{ selectedCustomer.name }}</h3>
-          <p><nz-icon nzType="phone"></nz-icon>{{ selectedCustomer.contact }}</p>
-          <p><nz-icon nzType="environment"></nz-icon>{{ selectedCustomer.address }}</p>
-        </div>
-      </div>
-
-      <div class="customer-tags">
-        <nz-tag nzColor="blue">{{ selectedCustomer.code }}</nz-tag>
-        <nz-tag nzColor="cyan">Válvula {{ selectedCustomer.valve }}</nz-tag>
-        <nz-tag [nzColor]="selectedCustomer.monthsInDebt ? 'volcano' : 'green'">
-          {{ selectedCustomer.monthsInDebt }} meses em dívida
-        </nz-tag>
-      </div>
-    </section>
-
-    <section *ngIf="selectedCustomer" class="drawer-summary-grid">
-      <article class="financial-card">
-        <span>Taxa mensal</span>
-        <strong>{{ selectedCustomer.monthlyFee | number:'1.2-2' }} MT</strong>
-      </article>
-
-      <article class="financial-card debt">
-        <span>Total em dívida</span>
-        <strong>{{ selectedCustomer.monthlyFee * selectedCustomer.monthsInDebt | number:'1.2-2' }} MT</strong>
-      </article>
-    </section>
-
-    <section *ngIf="selectedCustomer" class="drawer-section">
-      <h3 class="section-title">Informações do pagamento</h3>
-
-      <div [nzGutter]="16" nz-row>
-        <div nz-col nzMd="12" nzSm="24" nzXs="24">
-          <nz-form-item>
-            <nz-form-label>Montante</nz-form-label>
-            <nz-form-control>
-              <nz-input-group nzAddOnBefore="MZN">
-                <input formControlName="amount" nz-input placeholder="Digite o valor" type="number">
-              </nz-input-group>
-            </nz-form-control>
-          </nz-form-item>
+          <div class="customer-details">
+            <h3>{{ selectedCustomer.name }}</h3>
+            <p><nz-icon nzType="phone"></nz-icon>{{ selectedCustomer.contact || 'Sem contacto' }}</p>
+            <p><nz-icon nzType="environment"></nz-icon>{{ selectedCustomer.address || 'Sem endereco' }}</p>
+          </div>
         </div>
 
-        <div nz-col nzMd="12" nzSm="24" nzXs="24">
-          <nz-form-item>
-            <nz-form-label>Número de meses</nz-form-label>
-            <nz-form-control>
-              <input
-                (input)="onNumMonthsChange()"
-                [max]="selectedCustomer.monthsInDebt || 1"
-                [min]="1"
-                formControlName="numMonths"
-                nz-input
-                placeholder="Digite o número de meses"
-                type="number"/>
-            </nz-form-control>
-          </nz-form-item>
+        <div class="customer-tags">
+          <nz-tag nzColor="blue">{{ selectedCustomer.code }}</nz-tag>
+          <nz-tag nzColor="cyan">Valvula {{ selectedCustomer.valve }}</nz-tag>
+          <nz-tag [nzColor]="selectedCustomer.monthsInDebt ? 'volcano' : 'green'">
+            {{ selectedCustomer.monthsInDebt }} meses em divida
+          </nz-tag>
         </div>
-      </div>
+      </section>
 
-      <div *ngIf="selectedMonths.length > 0" class="selected-months-wrapper">
-        <div class="selected-months-header">
-          <span>Meses selecionados</span>
-          <nz-tag nzColor="processing">{{ selectedMonths.length }} mês(es)</nz-tag>
+      <section *ngIf="selectedCustomer" class="drawer-summary-grid">
+        <article class="financial-card">
+          <span>Taxa mensal</span>
+          <strong>{{ formatMoney(selectedCustomer.monthlyFee) }}</strong>
+        </article>
+
+        <article class="financial-card debt">
+          <span>Total em divida</span>
+          <strong>{{ formatMoney(selectedCustomer.monthlyFee * selectedCustomer.monthsInDebt) }}</strong>
+        </article>
+      </section>
+
+      <section *ngIf="selectedCustomer" class="drawer-section">
+        <h3 class="section-title">Informacoes do pagamento</h3>
+
+        <div [nzGutter]="16" nz-row>
+          <div nz-col nzMd="12" nzSm="24" nzXs="24">
+            <nz-form-item>
+              <nz-form-label>Montante</nz-form-label>
+              <nz-form-control>
+                <nz-input-group nzAddOnBefore="MZN">
+                  <input formControlName="amount" nz-input placeholder="Digite o valor" type="number">
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col nzMd="12" nzSm="24" nzXs="24">
+            <nz-form-item>
+              <nz-form-label>Numero de meses</nz-form-label>
+              <nz-form-control>
+                <input
+                  (input)="onNumMonthsChange()"
+                  [max]="selectedCustomer.monthsInDebt || 1"
+                  [min]="1"
+                  formControlName="numMonths"
+                  nz-input
+                  placeholder="Digite o numero de meses"
+                  type="number"/>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
         </div>
 
-        <div class="selected-months">
-          <nz-tag *ngFor="let m of selectedMonths" nzColor="volcano">{{ formatMonth(m) }}</nz-tag>
-        </div>
-      </div>
+        <div *ngIf="selectedMonths.length > 0" class="selected-months-wrapper">
+          <div class="selected-months-header">
+            <span>Meses selecionados</span>
+            <nz-tag nzColor="processing">{{ selectedMonths.length }} mes(es)</nz-tag>
+          </div>
 
-      <nz-form-item>
-        <nz-form-label>Método de pagamento</nz-form-label>
-        <nz-form-control>
-          <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o método">
-            <nz-option nzLabel="Numerário" nzValue="CASH"></nz-option>
-            <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
-            <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
-            <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
-            <nz-option nzLabel="BIM" nzValue="BIM"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
+          <div class="selected-months">
+            <nz-tag *ngFor="let m of selectedMonths" nzColor="volcano">{{ formatMonth(m) }}</nz-tag>
+          </div>
+        </div>
 
-      <div *ngIf="paymentForm.valid" class="payment-preview">
-        <div class="preview-row">
-          <span>Valor por mês</span>
-          <strong>{{ selectedCustomer.monthlyFee | number:'1.2-2' }} MT</strong>
+        <nz-form-item>
+          <nz-form-label>Metodo de pagamento</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o metodo">
+              <nz-option nzLabel="Numerario" nzValue="CASH"></nz-option>
+              <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
+              <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
+              <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
+              <nz-option nzLabel="BIM" nzValue="BIM"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <div *ngIf="paymentForm.valid" class="payment-preview">
+          <div class="preview-row">
+            <span>Valor por mes</span>
+            <strong>{{ formatMoney(selectedCustomer.monthlyFee) }}</strong>
+          </div>
+          <div class="preview-row">
+            <span>Quantidade de meses</span>
+            <strong>{{ paymentForm.get('numMonths')?.value || 0 }}</strong>
+          </div>
+          <div class="preview-row total">
+            <span>Total</span>
+            <strong>{{ formatMoney(selectedCustomer.monthlyFee * (paymentForm.get('numMonths')?.value || 0)) }}</strong>
+          </div>
         </div>
-        <div class="preview-row">
-          <span>Quantidade de meses</span>
-          <strong>{{ paymentForm.get('numMonths')?.value || 0 }}</strong>
-        </div>
-        <div class="preview-row total">
-          <span>Total</span>
-          <strong>
-            {{
-              selectedCustomer.monthlyFee *
-              (paymentForm.get('numMonths')?.value || 0)
-                | number:'1.2-2'
-            }} MT
-          </strong>
-        </div>
-      </div>
-    </section>
-  </form>
+      </section>
+    </form>
+  </nz-spin>
 </nz-drawer>
 
 <ng-template #paymentDrawerFooter>
   <div class="drawer-footer">
-    <button (click)="closePaymentDrawer()" nz-button nzType="default">Cancelar</button>
+    <button (click)="closePaymentDrawer()" [disabled]="isSaving" class="btn-cancel" nz-button nzType="default">
+      Cancelar
+    </button>
 
     <button
       (click)="savePayment()"
       [disabled]="paymentForm.invalid || isSaving"
       [nzLoading]="isSaving"
+      class="primary-water-action"
       nz-button
       nzType="primary">
       Confirmar pagamento

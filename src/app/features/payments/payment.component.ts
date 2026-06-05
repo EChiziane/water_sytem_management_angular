@@ -54,6 +54,22 @@ export class PaymentComponent implements OnInit {
     this.updateDrawer();
   }
 
+  get totalPayments(): number {
+    return this.dataSource.length;
+  }
+
+  get confirmedPayments(): number {
+    return this.dataSource.filter(payment => payment.confirmed).length;
+  }
+
+  get pendingPayments(): number {
+    return this.dataSource.filter(payment => !payment.confirmed).length;
+  }
+
+  get totalReceivedAmount(): number {
+    return this.dataSource.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+  }
+
   @HostListener('window:resize')
   onResize(): void {
     this.updateDrawer();
@@ -129,7 +145,7 @@ export class PaymentComponent implements OnInit {
     const isMobile = window.innerWidth <= this.MOBILE_BREAKPOINT;
 
     this.drawerWidth = isMobile ? '100%' : 720;
-    this.drawerPlacement = isMobile ? 'bottom' : 'right';
+    this.drawerPlacement = 'right';
   }
 
   openPaymentDrawer(): void {
@@ -222,6 +238,34 @@ export class PaymentComponent implements OnInit {
 
   download(payment: Payment): void {
     this.paymentInvoiceService.downloadPaymentInvoice(payment);
+  }
+
+  formatMoney(value: number | null | undefined): string {
+    return `${Number(value || 0).toFixed(2)} MT`;
+  }
+
+  getPaymentStatusLabel(payment: Payment): string {
+    return payment.confirmed ? 'Confirmado' : 'Nao confirmado';
+  }
+
+  getPaymentStatusColor(payment: Payment): string {
+    return payment.confirmed ? 'green' : 'volcano';
+  }
+
+  getCustomerInitials(value: string | null | undefined): string {
+    const name = value || 'Cliente';
+    return name
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part.charAt(0).toUpperCase())
+      .join('') || 'C';
+  }
+
+  phoneHref(phone: string | null | undefined): string {
+    const digits = (phone || '').toString().replace(/[^\d+]/g, '');
+    return digits ? `tel:${digits}` : 'tel:';
   }
 
   getFormattedReferenceMonths(reference: string): string[] {
