@@ -19,54 +19,6 @@
     </span>
   </div>
 
-  <section class="summary-section">
-    <div class="summary-background">
-      <div [nzGutter]="8" nz-row>
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper total">
-                <nz-icon nzTheme="outline" nzType="team"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Total</span>
-                <p>{{ totalCustomers }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper active">
-                <nz-icon nzTheme="outline" nzType="check-circle"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Ativos</span>
-                <p>{{ activeCustomers }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper inactive">
-                <nz-icon nzTheme="outline" nzType="clock-circle"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Com divida</span>
-                <p>{{ customersWithDebt }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="filters-panel">
     <input
       (ngModelChange)="search()"
