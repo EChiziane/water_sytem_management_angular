@@ -1,127 +1,129 @@
-<div *ngIf="payment" class="content-wrapper">
+<div class="detail-page">
   <nz-breadcrumb class="page-breadcrumb">
-    <nz-breadcrumb-item>
-      <a routerLink="/app">Home</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      <a routerLink="/app/payment">Pagamentos</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>Detalhes do pagamento</nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/app">Home</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/app/payment">Pagamentos</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>Detalhe</nz-breadcrumb-item>
   </nz-breadcrumb>
 
-  <header class="page-header">
-    <button (click)="goBack()" class="back-arrow" nz-button nzType="text" aria-label="Voltar">
-      <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
-    </button>
+  <nz-spin [nzSpinning]="isLoading" nzTip="A carregar pagamento...">
+    <ng-container *ngIf="payment; else emptyPayment">
+      <section class="hero-card">
+        <div class="hero-main">
+          <div class="receipt-mark">
+            <nz-icon nzTheme="outline" nzType="file-done"></nz-icon>
+          </div>
 
-    <div>
-      <span class="section-label">Recibo e auditoria</span>
-      <h1>Detalhes do pagamento</h1>
-      <p>{{ payment.referenceCode || 'Pagamento sem código de referência' }}</p>
-    </div>
+          <div>
+            <span class="eyebrow">Recibo e auditoria</span>
+            <h1>{{ payment.referenceCode || 'Pagamento sem codigo' }}</h1>
+            <p>{{ payment.customerName || 'Cliente sem nome' }}</p>
 
-    <button (click)="download()" class="download-btn" nz-button nzType="default">
-      <nz-icon nzTheme="outline" nzType="download"></nz-icon>
-      Download recibo
-    </button>
-  </header>
-
-  <section class="summary-strip">
-    <article class="metric-card amount">
-      <span>Montante pago</span>
-      <strong>{{ payment.amount | number:'1.2-2' }} MT</strong>
-    </article>
-
-    <article class="metric-card">
-      <span>Meses pagos</span>
-      <strong>{{ payment.numMonths }}</strong>
-    </article>
-
-    <article class="metric-card">
-      <span>Estado</span>
-      <nz-tag [nzColor]="payment.confirmed ? 'green' : 'volcano'">
-        {{ payment.confirmed ? 'Confirmado' : 'Pendente' }}
-      </nz-tag>
-    </article>
-  </section>
-
-  <section class="info-section">
-    <article class="section">
-      <h3 class="section-title">Informações do cliente</h3>
-
-      <div class="info-grid">
-        <div class="item">
-          <span>Nome</span>
-          <strong>{{ payment.customerName }}</strong>
-        </div>
-
-        <div class="item">
-          <span>Contacto</span>
-          <strong>{{ payment.customerContact }}</strong>
-        </div>
-
-        <div class="item">
-          <span>Endereço</span>
-          <strong>{{ payment.customerAddress }}</strong>
-        </div>
-
-        <div class="item">
-          <span>Válvula</span>
-          <nz-tag nzColor="cyan">Nº {{ payment.customerValve }}</nz-tag>
-        </div>
-
-        <div class="item">
-          <span>Taxa mensal</span>
-          <strong class="highlight-text">{{ payment.monthlyFee | number:'1.2-2' }} MT</strong>
-        </div>
-      </div>
-    </article>
-
-    <article class="section">
-      <h3 class="section-title">Informações do pagamento</h3>
-
-      <div class="payment-grid">
-        <div class="detail-card reference">
-          <span>Código de referência</span>
-          <strong>{{ payment.referenceCode || '-' }}</strong>
-        </div>
-
-        <div class="detail-card">
-          <span>IVA</span>
-          <strong>{{ payment.tax | number:'1.2-2' }} MT</strong>
-        </div>
-
-        <div class="detail-card">
-          <span>Preço unitário</span>
-          <strong>{{ payment.unitPrice | number:'1.2-2' }} MT</strong>
-        </div>
-
-        <div class="detail-card">
-          <span>Método</span>
-          <nz-tag nzColor="purple">{{ payment.paymentMethod }}</nz-tag>
-        </div>
-
-        <div class="detail-card">
-          <span>Data do pagamento</span>
-          <strong>{{ payment.paymentDate | date: 'dd/MM/yyyy HH:mm' }}</strong>
-        </div>
-
-        <div class="detail-card">
-          <span>Criado por</span>
-          <strong>{{ payment.createdByName || 'Sistema' }}</strong>
-        </div>
-
-        <div class="detail-card reference-months-box">
-          <span>Meses de referência</span>
-          <div class="reference-months-tags">
-            <nz-tag
-              *ngFor="let month of formatReferenceMonths(payment.referenceMonth)"
-              nzColor="geekblue">
-              {{ month }}
-            </nz-tag>
+            <div class="tag-row">
+              <nz-tag [nzColor]="statusColor">{{ statusLabel }}</nz-tag>
+              <nz-tag nzColor="purple">{{ payment.paymentMethod || '-' }}</nz-tag>
+              <nz-tag nzColor="cyan">{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</nz-tag>
+            </div>
           </div>
         </div>
-      </div>
-    </article>
-  </section>
+
+        <div class="hero-actions">
+          <button (click)="download()" class="primary-water-action" nz-button nzType="primary">
+            <nz-icon nzTheme="outline" nzType="download"></nz-icon>
+            Download recibo
+          </button>
+
+          <button (click)="goToPayments()" nz-button nzType="default">
+            <nz-icon nzTheme="outline" nzType="unordered-list"></nz-icon>
+            Lista de pagamentos
+          </button>
+
+          <button (click)="goBack()" nz-button nzType="default">
+            <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
+            Voltar
+          </button>
+        </div>
+      </section>
+
+      <section class="summary-grid">
+        <article class="amount-summary">
+          <span>Montante pago</span>
+          <strong>{{ formatMoney(payment.amount) }}</strong>
+
+          <ul *ngIf="formatReferenceMonths(payment.referenceMonth).length" class="reference-month-bullets">
+            <li *ngFor="let month of formatReferenceMonths(payment.referenceMonth)">
+              {{ month }}
+            </li>
+          </ul>
+        </article>
+
+        <article>
+          <span>Meses pagos</span>
+          <strong>{{ payment.numMonths || formatReferenceMonths(payment.referenceMonth).length || 0 }}</strong>
+          <small>Referencia do pagamento</small>
+        </article>
+
+        <article>
+          <span>Taxa mensal</span>
+          <strong>{{ formatMoney(payment.monthlyFee) }}</strong>
+          <small>Cliente: {{ payment.customerName || '-' }}</small>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="section-card customer-card">
+          <header>
+            <div class="customer-avatar">{{ customerInitials }}</div>
+            <div>
+              <h2>Informacoes do cliente</h2>
+              <p>{{ payment.customerAddress || 'Sem endereco registado' }}</p>
+            </div>
+          </header>
+
+          <div class="kv-list">
+            <div><span>Nome</span><strong>{{ payment.customerName || '-' }}</strong></div>
+            <div><span>Contacto</span><strong>{{ payment.customerContact || '-' }}</strong></div>
+            <div><span>Endereco</span><strong>{{ payment.customerAddress || '-' }}</strong></div>
+            <div><span>Valvula</span><strong>{{ payment.customerValve || '-' }}</strong></div>
+            <div><span>Taxa mensal</span><strong class="amount">{{ formatMoney(payment.monthlyFee) }}</strong></div>
+          </div>
+
+          <a [href]="phoneHref(payment.customerContact)" class="mobile-call-action" nz-button nzType="default">
+            <nz-icon nzTheme="outline" nzType="phone"></nz-icon>
+            Ligar ao cliente
+          </a>
+        </article>
+
+        <article class="section-card">
+          <header>
+            <span nz-icon nzTheme="outline" nzType="credit-card"></span>
+            <div>
+              <h2>Informacoes do pagamento</h2>
+              <p>Metodo, impostos e auditoria do recibo</p>
+            </div>
+          </header>
+
+          <div class="kv-list">
+            <div><span>Codigo</span><strong>{{ payment.referenceCode || '-' }}</strong></div>
+            <div><span>Metodo</span><strong>{{ payment.paymentMethod || '-' }}</strong></div>
+            <div><span>Estado</span><strong>{{ statusLabel }}</strong></div>
+            <div><span>IVA</span><strong>{{ formatMoney(payment.tax) }}</strong></div>
+            <div><span>Preco unitario</span><strong>{{ formatMoney(payment.unitPrice) }}</strong></div>
+            <div><span>Criado por</span><strong>{{ payment.createdByName || 'Sistema' }}</strong></div>
+            <div><span>Data</span><strong>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</strong></div>
+          </div>
+        </article>
+      </section>
+    </ng-container>
+  </nz-spin>
+
+  <ng-template #emptyPayment>
+    <div *ngIf="!isLoading" class="empty-state">
+      <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
+      <h3>Pagamento nao encontrado</h3>
+      <p>Volte para a lista e selecione outro pagamento.</p>
+      <button (click)="goToPayments()" class="primary-water-action" nz-button nzType="primary">
+        Lista de pagamentos
+      </button>
+    </div>
+  </ng-template>
 </div>

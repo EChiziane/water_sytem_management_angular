@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {PaymentService} from '@core/services/payment.service';
 import {Payment} from '@shared/models/WSM/payment';
 import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
@@ -22,9 +22,29 @@ export class PaymentDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private paymentService: PaymentService,
     private paymentInvoiceService: PaymentInvoiceService,
   ) {}
+
+  get customerInitials(): string {
+    const value = this.payment?.customerName || 'Cliente';
+    return value
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part.charAt(0).toUpperCase())
+      .join('') || 'C';
+  }
+
+  get statusLabel(): string {
+    return this.payment?.confirmed ? 'Confirmado' : 'Nao confirmado';
+  }
+
+  get statusColor(): string {
+    return this.payment?.confirmed ? 'green' : 'volcano';
+  }
 
   ngOnInit(): void {
 
@@ -38,6 +58,10 @@ export class PaymentDetailsComponent implements OnInit {
 
   goBack(): void {
     window.history.back();
+  }
+
+  goToPayments(): void {
+    this.router.navigate(['/app/payment']);
   }
 
   download(): void {
@@ -55,6 +79,15 @@ export class PaymentDetailsComponent implements OnInit {
       .map(month =>
         this.formatMonth(month.trim())
       );
+  }
+
+  formatMoney(value: number | null | undefined): string {
+    return `${Number(value || 0).toFixed(2)} MT`;
+  }
+
+  phoneHref(phone: string | null | undefined): string {
+    const digits = (phone || '').toString().replace(/[^\d+]/g, '');
+    return digits ? `tel:${digits}` : 'tel:';
   }
 
   private getPayment(): void {
