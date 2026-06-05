@@ -84,9 +84,15 @@
         </div>
 
         <dl class="mobile-card-facts">
-          <div>
+          <div class="mobile-amount-card">
             <dt>Montante</dt>
             <dd>{{ formatMoney(payment.amount) }}</dd>
+
+            <ul *ngIf="getFormattedReferenceMonths(payment.referenceMonth).length" class="mobile-month-bullets">
+              <li *ngFor="let month of getFormattedReferenceMonths(payment.referenceMonth)">
+                {{ month }}
+              </li>
+            </ul>
           </div>
           <div>
             <dt>Metodo</dt>
@@ -101,12 +107,6 @@
             <dd>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</dd>
           </div>
         </dl>
-
-        <div *ngIf="getFormattedReferenceMonths(payment.referenceMonth).length" class="mobile-months">
-          <nz-tag *ngFor="let month of getFormattedReferenceMonths(payment.referenceMonth)" nzColor="geekblue">
-            {{ month }}
-          </nz-tag>
-        </div>
 
         <div class="mobile-card-actions">
           <button [routerLink]="['/app/payment-detail', payment.id]" nz-button nzType="default">

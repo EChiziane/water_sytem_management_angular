@@ -496,6 +496,27 @@ nz-select {
   border-radius: 8px;
   background: #f4f8fb;
 
+  > div {
+    min-width: 0;
+    min-height: 66px;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: #ffffff;
+  }
+
+  .mobile-amount-card {
+    align-content: start;
+    grid-row: span 3;
+    border-color: rgba(14, 143, 120, 0.22);
+    background: #f4fffb;
+  }
+
+  .mobile-amount-card dd {
+    color: #0e8f78;
+    font-size: 15px;
+  }
+
   dt {
     color: #607786;
     font-size: 11px;
@@ -513,13 +534,34 @@ nz-select {
   }
 }
 
-.mobile-months {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+.mobile-month-bullets {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0 0;
+  padding: 10px 0 0;
+  border-top: 1px solid rgba(14, 143, 120, 0.16);
+  list-style: none;
 
-  .ant-tag {
-    margin: 0;
+  li {
+    position: relative;
+    min-width: 0;
+    padding-left: 14px;
+    color: #0c2538;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #0e8f78;
   }
 }
 
@@ -678,6 +720,10 @@ nz-select {
   .mobile-card-facts,
   .filter-actions {
     grid-template-columns: 1fr;
+  }
+
+  .mobile-card-facts .mobile-amount-card {
+    grid-row: auto;
   }
 
   .mobile-card-actions {
