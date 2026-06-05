@@ -8,7 +8,14 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarComponent implements OnInit {
-  weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
+
+  shiftOptions = [
+    {value: 1, label: 'Dia', description: 'Turno diurno', time: '08:00 - 17:00', className: 'shift-dia'},
+    {value: 2, label: 'Noite', description: 'Turno noturno', time: '17:00 - 08:00', className: 'shift-noite'},
+    {value: 3, label: 'Folga 1', description: 'Primeiro dia de descanso', time: 'Descanso', className: 'shift-folga1'},
+    {value: 4, label: 'Folga 2', description: 'Segundo dia de descanso', time: 'Descanso', className: 'shift-folga2'}
+  ];
 
   // array usado para renderizar a grid (null = célula vazia)
   displayDays: (number | null)[] = [];
@@ -25,6 +32,22 @@ export class CalendarComponent implements OnInit {
 
   // turno correspondente à referenceDateObj (null = none)
   referenceShift: number | null = null;
+
+  get selectedShiftLabel(): string {
+    return this.shiftOptions.find(option => option.value === this.todayShift)?.label || 'Sem referencia';
+  }
+
+  get selectedShiftDescription(): string {
+    return this.shiftOptions.find(option => option.value === this.todayShift)?.description || 'Escolha o estado de hoje para projetar o ciclo.';
+  }
+
+  get todayLabel(): string {
+    return new Date().toLocaleDateString('pt-PT', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
+  }
 
   ngOnInit() {
     const today = new Date();
@@ -60,7 +83,7 @@ export class CalendarComponent implements OnInit {
     const firstDay = new Date(this.year, this.month, 1);
     const firstDayIndex = firstDay.getDay(); // 0 (domingo) .. 6 (sábado)
     const daysInMonth = new Date(this.year, this.month + 1, 0).getDate();
-    this.monthName = firstDay.toLocaleString('default', {month: 'long'});
+    this.monthName = firstDay.toLocaleString('pt-PT', {month: 'long'});
 
     const blanks = Array(firstDayIndex).fill(null);
     const monthDays = Array.from({length: daysInMonth}, (_, i) => i + 1);
@@ -85,6 +108,13 @@ export class CalendarComponent implements OnInit {
 
   nextYear() {
     this.year++;
+    this.updateCalendar();
+  }
+
+  goToday() {
+    const today = new Date();
+    this.month = today.getMonth();
+    this.year = today.getFullYear();
     this.updateCalendar();
   }
 
@@ -138,6 +168,10 @@ export class CalendarComponent implements OnInit {
       default:
         return '';
     }
+  }
+
+  getShiftByClass(className: string) {
+    return this.shiftOptions.find(option => option.className === className);
   }
 
   /** Verifica se a célula representa hoje (usada para destacar) */

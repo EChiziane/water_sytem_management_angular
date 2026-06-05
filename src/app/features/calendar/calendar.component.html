@@ -1,66 +1,122 @@
-<div class="content">
-  <!-- Lado esquerdo: calendário -->
-  <div class="calendar-section">
-    <div class="calendar">
-      <div class="month-navigation">
-        <button (click)="prevMonth()">&#10094;</button>
-        <p>{{ monthName }} {{ year }}</p>
-        <button (click)="nextMonth()">&#10095;</button>
+<div class="calendar-page">
+  <nz-breadcrumb class="page-breadcrumb">
+    <nz-breadcrumb-item><a routerLink="/app">Home</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>Calendario</nz-breadcrumb-item>
+  </nz-breadcrumb>
+
+  <header class="page-header">
+    <div>
+      <span class="section-label">Escala operacional</span>
+      <h1>Calendario</h1>
+      <p>Projete turnos de dia, noite e folgas a partir do estado atual.</p>
+    </div>
+
+    <button (click)="goToday()" class="primary-water-action" nz-button nzType="primary">
+      <nz-icon nzTheme="outline" nzType="calendar"></nz-icon>
+      Hoje
+    </button>
+  </header>
+
+  <section class="summary-grid">
+    <article class="active-summary">
+      <span>Hoje</span>
+      <strong>{{ todayLabel }}</strong>
+      <small>{{ selectedShiftDescription }}</small>
+    </article>
+
+    <article>
+      <span>Referencia</span>
+      <strong>{{ selectedShiftLabel }}</strong>
+      <small>{{ referenceShift ? 'Ciclo ativo no calendario' : 'Sem ciclo aplicado' }}</small>
+    </article>
+
+    <article>
+      <span>Periodo visivel</span>
+      <strong>{{ monthName }} {{ year }}</strong>
+      <small>{{ displayDays.length }} celulas no calendario</small>
+    </article>
+  </section>
+
+  <main class="calendar-layout">
+    <section class="calendar-card">
+      <div class="calendar-toolbar">
+        <div class="month-navigation">
+          <button (click)="prevMonth()" nz-button nzShape="circle" nzType="default" aria-label="Mes anterior">
+            <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
+          </button>
+
+          <div>
+            <span>Mes</span>
+            <strong>{{ monthName }} {{ year }}</strong>
+          </div>
+
+          <button (click)="nextMonth()" nz-button nzShape="circle" nzType="default" aria-label="Proximo mes">
+            <nz-icon nzTheme="outline" nzType="arrow-right"></nz-icon>
+          </button>
+        </div>
+
+        <div class="year-navigation">
+          <button (click)="prevYear()" nz-button nzSize="small" nzType="default">
+            <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
+            Ano
+          </button>
+          <button (click)="nextYear()" nz-button nzSize="small" nzType="default">
+            Ano
+            <nz-icon nzTheme="outline" nzType="arrow-right"></nz-icon>
+          </button>
+        </div>
       </div>
 
-      <div class="year-navigation">
-        <button (click)="prevYear()">&#10094;</button>
-        <span>{{ year }}</span>
-        <button (click)="nextYear()">&#10095;</button>
-      </div>
-
-      <div class="header">
+      <div class="weekday-row">
         <span *ngFor="let day of weekDays">{{ day }}</span>
       </div>
 
-      <div class="days">
-        <!-- displayDays tem null para células vazias e números para dias -->
+      <div class="days-grid">
         <ng-container *ngFor="let day of displayDays">
-          <span
+          <button
             *ngIf="day !== null; else emptyCell"
-            [ngClass]="getDayClass(day)">
-            {{ day }}
-          </span>
+            [ngClass]="[getDayClass(day), isToday(day) ? 'today' : '']"
+            class="day-cell"
+            type="button">
+            <span>{{ day }}</span>
+          </button>
 
           <ng-template #emptyCell>
-            <!-- célula vazia (mantém a grid alinhada) -->
-            <span class="empty"></span>
+            <span class="day-cell empty"></span>
           </ng-template>
         </ng-container>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Lado direito: select + info -->
-  <div class="input-section">
-    <div class="select-section">
-      <mat-form-field appearance="outline">
-        <mat-label>Selecione o estado atual de hoje</mat-label>
-        <mat-select (selectionChange)="updateReference()" [(value)]="todayShift">
-          <mat-option [value]="null">None</mat-option>
-          <mat-option [value]="1">Dia</mat-option>
-          <mat-option [value]="2">Noite</mat-option>
-          <mat-option [value]="3">Folga 1</mat-option>
-          <mat-option [value]="4">Folga 2</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <aside class="control-panel">
+      <section class="panel-card">
+        <h2>Estado atual de hoje</h2>
+        <p>Use esta referencia para gerar o ciclo de quatro dias.</p>
 
-    <div class="info-section">
-      <div class="legend">
-        <div class="legend-item"><span class="dot shift-dia"></span> Dia: Day shift (8:00–17:00)</div>
-        <div class="legend-item"><span class="dot shift-noite"></span> Noite: Night shift (17:00–8:00)</div>
-        <div class="legend-item"><span class="dot shift-folga1"></span> Folga 1: First day off</div>
-        <div class="legend-item"><span class="dot shift-folga2"></span> Folga 2: Second day off</div>
-      </div>
-    </div>
-  </div>
+        <mat-form-field appearance="outline" class="shift-select">
+          <mat-label>Selecionar estado</mat-label>
+          <mat-select (selectionChange)="updateReference()" [(value)]="todayShift">
+            <mat-option [value]="null">Sem referencia</mat-option>
+            <mat-option *ngFor="let option of shiftOptions" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </section>
+
+      <section class="panel-card">
+        <h2>Legenda</h2>
+
+        <div class="legend-list">
+          <article *ngFor="let option of shiftOptions" class="legend-item">
+            <span [ngClass]="option.className" class="legend-dot"></span>
+            <div>
+              <strong>{{ option.label }}</strong>
+              <small>{{ option.description }} · {{ option.time }}</small>
+            </div>
+          </article>
+        </div>
+      </section>
+    </aside>
+  </main>
 </div>
-<footer class="footer">
-  Desenvolvido por <strong>Ednilson Chiziane</strong> · © 2025 | Equipa Fo Team
-</footer>
