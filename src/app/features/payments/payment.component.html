@@ -304,54 +304,52 @@
       <section *ngIf="selectedCustomer" class="drawer-section">
         <h3 class="section-title">Informacoes do pagamento</h3>
 
+        <aside class="drawer-amount-card">
+          <span>Total a pagar</span>
+          <strong>{{ formatMoney(selectedPaymentTotal) }}</strong>
+          <small>{{ selectedMonths.length }} mes(es) selecionado(s)</small>
+
+          <ul *ngIf="selectedMonths.length" class="drawer-month-bullets">
+            <li *ngFor="let m of selectedMonths">{{ formatMonth(m) }}</li>
+          </ul>
+        </aside>
+
         <div class="payment-entry-grid">
-          <aside class="drawer-amount-card">
-            <span>Total a pagar</span>
-            <strong>{{ formatMoney(selectedPaymentTotal) }}</strong>
-            <small>{{ selectedMonths.length }} mes(es) selecionado(s)</small>
+          <nz-form-item>
+            <nz-form-label>Numero de meses</nz-form-label>
+            <nz-form-control>
+              <input
+                (input)="onNumMonthsChange()"
+                [max]="selectedCustomer.monthsInDebt || 1"
+                [min]="1"
+                formControlName="numMonths"
+                nz-input
+                placeholder="Digite o numero de meses"
+                type="number"/>
+            </nz-form-control>
+          </nz-form-item>
 
-            <ul *ngIf="selectedMonths.length" class="drawer-month-bullets">
-              <li *ngFor="let m of selectedMonths">{{ formatMonth(m) }}</li>
-            </ul>
-          </aside>
+          <nz-form-item>
+            <nz-form-label>Montante</nz-form-label>
+            <nz-form-control>
+              <nz-input-group nzAddOnBefore="MZN">
+                <input formControlName="amount" nz-input placeholder="Digite o valor" type="number">
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
 
-          <div class="drawer-fields">
-            <nz-form-item>
-              <nz-form-label>Numero de meses</nz-form-label>
-              <nz-form-control>
-                <input
-                  (input)="onNumMonthsChange()"
-                  [max]="selectedCustomer.monthsInDebt || 1"
-                  [min]="1"
-                  formControlName="numMonths"
-                  nz-input
-                  placeholder="Digite o numero de meses"
-                  type="number"/>
-              </nz-form-control>
-            </nz-form-item>
-
-            <nz-form-item>
-              <nz-form-label>Montante</nz-form-label>
-              <nz-form-control>
-                <nz-input-group nzAddOnBefore="MZN">
-                  <input formControlName="amount" nz-input placeholder="Digite o valor" type="number">
-                </nz-input-group>
-              </nz-form-control>
-            </nz-form-item>
-
-            <nz-form-item>
-              <nz-form-label>Metodo de pagamento</nz-form-label>
-              <nz-form-control>
-                <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o metodo">
-                  <nz-option nzLabel="Numerario" nzValue="CASH"></nz-option>
-                  <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
-                  <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
-                  <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
-                  <nz-option nzLabel="BIM" nzValue="BIM"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-          </div>
+          <nz-form-item>
+            <nz-form-label>Metodo de pagamento</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o metodo">
+                <nz-option nzLabel="Numerario" nzValue="CASH"></nz-option>
+                <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
+                <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
+                <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
+                <nz-option nzLabel="BIM" nzValue="BIM"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
         </div>
 
         <div *ngIf="paymentForm.valid" class="payment-preview">

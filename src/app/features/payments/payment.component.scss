@@ -407,7 +407,7 @@ nz-select {
 
 .payment-entry-grid {
   display: grid;
-  grid-template-columns: minmax(190px, .8fr) minmax(0, 1.2fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
