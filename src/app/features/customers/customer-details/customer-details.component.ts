@@ -11,7 +11,7 @@ import {
   Validators
 } from '@angular/forms';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {finalize} from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -125,6 +125,7 @@ export class CustomerDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private fb: FormBuilder,
 
     private customerService: CustomerService,
@@ -153,6 +154,29 @@ export class CustomerDetailsComponent implements OnInit {
     });
 
     this.updateDrawer();
+  }
+
+  get initials(): string {
+    const value = this.customer?.name || 'C';
+    return value
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part.charAt(0).toUpperCase())
+      .join('') || 'C';
+  }
+
+  get fullAddress(): string {
+    return this.customer?.address || 'Sem endereco registado';
+  }
+
+  get debtStatusLabel(): string {
+    return this.customer?.monthsInDebt > 0 ? 'Em divida' : 'Em dia';
+  }
+
+  get debtStatusColor(): string {
+    return this.customer?.monthsInDebt > 0 ? 'volcano' : 'green';
   }
 
   // =====================================================
@@ -677,7 +701,7 @@ export class CustomerDetailsComponent implements OnInit {
       isMobile ? '100%' : 720;
 
     this.drawerPlacement =
-      isMobile ? 'bottom' : 'right';
+      'right';
   }
 
   // =====================================================
@@ -723,6 +747,19 @@ export class CustomerDetailsComponent implements OnInit {
   goBack(): void {
 
     window.history.back();
+  }
+
+  goToCustomers(): void {
+    this.router.navigate(['/app/customer']);
+  }
+
+  formatMoney(value: number | null | undefined): string {
+    return `${Number(value || 0).toFixed(2)} MT`;
+  }
+
+  phoneHref(phone: string | null | undefined): string {
+    const digits = (phone || '').toString().replace(/[^\d+]/g, '');
+    return digits ? `tel:${digits}` : 'tel:';
   }
 
   // =====================================================
