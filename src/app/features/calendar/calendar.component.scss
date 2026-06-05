@@ -276,10 +276,10 @@
   width: 100%;
 }
 
-::ng-deep .shift-select {
-  .mat-mdc-text-field-wrapper {
-    border-radius: 8px;
-    background: #ffffff;
+::ng-deep .shift-select.ant-select-focused {
+  .ant-select-selector {
+    border-color: #0e8f78 !important;
+    box-shadow: 0 0 0 2px rgba(14, 143, 120, 0.15) !important;
   }
 }
 

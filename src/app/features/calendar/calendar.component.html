@@ -93,15 +93,19 @@
         <h2>Estado atual de hoje</h2>
         <p>Use esta referencia para gerar o ciclo de quatro dias.</p>
 
-        <mat-form-field appearance="outline" class="shift-select">
-          <mat-label>Selecionar estado</mat-label>
-          <mat-select (selectionChange)="updateReference()" [(value)]="todayShift">
-            <mat-option [value]="null">Sem referencia</mat-option>
-            <mat-option *ngFor="let option of shiftOptions" [value]="option.value">
-              {{ option.label }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <nz-select
+          (ngModelChange)="updateReference()"
+          [(ngModel)]="todayShift"
+          class="shift-select"
+          nzAllowClear
+          nzPlaceHolder="Selecionar estado">
+          <nz-option nzLabel="Sem referencia" [nzValue]="null"></nz-option>
+          <nz-option
+            *ngFor="let option of shiftOptions"
+            [nzLabel]="option.label"
+            [nzValue]="option.value">
+          </nz-option>
+        </nz-select>
       </section>
 
       <section class="panel-card">
