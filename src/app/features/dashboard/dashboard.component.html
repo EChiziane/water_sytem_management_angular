@@ -7,7 +7,7 @@
     </div>
 
     <div class="hero-actions">
-      <button (click)="goToCustomers()" nz-button nzType="primary">
+      <button (click)="goToCustomers()" class="primary-water-action" nz-button nzType="primary">
         <span nz-icon nzType="team"></span>
         Clientes
       </button>
@@ -125,7 +125,7 @@
             <div class="empty-state compact-empty">
               <span nz-icon nzType="check-circle"></span>
               <p>Sem clientes em divida.</p>
-              <button (click)="goToCustomers()" nz-button nzSize="small" nzType="primary">Ver clientes</button>
+              <button (click)="goToCustomers()" class="primary-water-action" nz-button nzSize="small" nzType="primary">Ver clientes</button>
             </div>
           </ng-template>
         </div>
@@ -149,7 +149,12 @@
 
               <div class="payment-copy">
                 <strong>{{ payment.customerName || '-' }}</strong>
-                <span>{{ formatReferenceMonths(payment.referenceMonth) }}</span>
+                <ul class="payment-month-bullets" *ngIf="getReferenceMonths(payment.referenceMonth).length; else noPaymentMonths">
+                  <li *ngFor="let month of getReferenceMonths(payment.referenceMonth)">{{ month }}</li>
+                </ul>
+                <ng-template #noPaymentMonths>
+                  <span>-</span>
+                </ng-template>
                 <small>{{ formatDate(payment.paymentDate) }} - {{ payment.paymentMethod || 'Metodo nao informado' }}</small>
               </div>
 
@@ -161,7 +166,7 @@
             <div class="empty-state compact-empty">
               <span nz-icon nzType="credit-card"></span>
               <p>Sem pagamentos recentes.</p>
-              <button (click)="goToPayments()" nz-button nzSize="small" nzType="primary">Registar pagamento</button>
+              <button (click)="goToPayments()" class="primary-water-action" nz-button nzSize="small" nzType="primary">Registar pagamento</button>
             </div>
           </ng-template>
         </div>
@@ -173,7 +178,7 @@
             <span class="panel-kicker">Estado atual</span>
             <h2>Saude da carteira</h2>
           </div>
-          <nz-tag nzColor="blue">{{ filteredCustomers.length }}</nz-tag>
+          <nz-tag nzColor="green">{{ filteredCustomers.length }}</nz-tag>
         </header>
 
         <div class="panel-body">

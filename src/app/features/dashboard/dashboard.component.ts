@@ -184,16 +184,19 @@ export class DashboardComponent implements OnInit {
   }
 
   formatReferenceMonths(reference: string | null | undefined): string {
+    const months = this.getReferenceMonths(reference);
+    return months.length ? months.join(', ') : '-';
+  }
+
+  getReferenceMonths(reference: string | null | undefined): string[] {
     if (!reference) {
-      return '-';
+      return [];
     }
 
-    const months = reference
+    return reference
       .split('|')
       .map(month => this.formatMonth(month.trim()))
       .filter(Boolean);
-
-    return months.length ? months.join(', ') : '-';
   }
 
   trackById(_: number, item: Customer | Payment): string {

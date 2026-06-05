@@ -187,8 +187,88 @@
 }
 
 .drawer-form {
+  display: grid;
+  gap: 16px;
   padding: 8px 16px 24px;
   background: #ffffff;
+}
+
+.drawer-customer-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(14, 143, 120, 0.22);
+  border-radius: 8px;
+  background: #f4fffb;
+
+  span {
+    color: #0e8f78;
+    font-size: 12px;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  h3 {
+    margin: 2px 0;
+    color: #0c2538;
+    font-size: 18px;
+    font-weight: 850;
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    margin: 0;
+    color: #607786;
+    font-size: 13px;
+  }
+}
+
+.customer-avatar {
+  display: inline-flex;
+  flex: 0 0 54px;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #0e8f78;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.drawer-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  article {
+    display: grid;
+    gap: 6px;
+    padding: 14px;
+    border: 1px solid #dfeaf0;
+    border-radius: 8px;
+    background: #f8fbfd;
+  }
+
+  .debt {
+    border-color: #ffccc7;
+    background: #fff2f0;
+  }
+
+  span {
+    color: #607786;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: #0c2538;
+    font-size: 20px;
+    font-weight: 900;
+  }
 }
 
 .drawer-section {
@@ -464,6 +544,10 @@ nz-select {
       margin: 0;
     }
   }
+
+  .drawer-summary-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 420px) {
@@ -487,5 +571,10 @@ nz-select {
     button[nzDanger] {
       grid-column: 1 / -1;
     }
+  }
+
+  .drawer-customer-preview {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

@@ -96,6 +96,22 @@ export class CustomerComponent implements OnInit {
     return this.debtFilter !== 'ALL' || !!this.searchValue.trim();
   }
 
+  get drawerInitials(): string {
+    const name = this.customerForm.get('name')?.value || 'Cliente';
+    return name
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part.charAt(0).toUpperCase())
+      .join('') || 'C';
+  }
+
+  get drawerEstimatedDebt(): number {
+    return Number(this.customerForm.get('monthlyFee')?.value || 0) *
+      Number(this.customerForm.get('monthsInDebt')?.value || 0);
+  }
+
   applyFilters(): void {
     let data = [...this.dataSource];
 

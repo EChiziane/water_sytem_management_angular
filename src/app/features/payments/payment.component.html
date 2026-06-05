@@ -165,7 +165,7 @@
 
           <tbody>
           <tr *ngFor="let data of nzTable.data">
-            <td><nz-tag nzColor="blue">{{ data.referenceCode || 'Sem codigo' }}</nz-tag></td>
+            <td><nz-tag nzColor="green">{{ data.referenceCode || 'Sem codigo' }}</nz-tag></td>
             <td>
               <div class="payment-customer-cell">
                 <span class="customer-avatar-mini">{{ getCustomerInitials(data.customerName) }}</span>
@@ -177,11 +177,10 @@
             </td>
             <td><span class="amount">{{ formatMoney(data.amount) }}</span></td>
             <td>
-              <div class="reference-months-tags">
-                <nz-tag *ngFor="let month of getFormattedReferenceMonths(data.referenceMonth)" nzColor="geekblue">
-                  {{ month }}
-                </nz-tag>
-              </div>
+              <ul class="table-month-bullets" *ngIf="getFormattedReferenceMonths(data.referenceMonth).length; else noTableMonths">
+                <li *ngFor="let month of getFormattedReferenceMonths(data.referenceMonth)">{{ month }}</li>
+              </ul>
+              <ng-template #noTableMonths>-</ng-template>
             </td>
             <td><nz-tag nzColor="purple">{{ data.paymentMethod || '-' }}</nz-tag></td>
             <td><nz-tag [nzColor]="getPaymentStatusColor(data)">{{ getPaymentStatusLabel(data) }}</nz-tag></td>
@@ -281,7 +280,7 @@
         </div>
 
         <div class="customer-tags">
-          <nz-tag nzColor="blue">{{ selectedCustomer.code }}</nz-tag>
+          <nz-tag nzColor="green">{{ selectedCustomer.code }}</nz-tag>
           <nz-tag nzColor="cyan">Valvula {{ selectedCustomer.valve }}</nz-tag>
           <nz-tag [nzColor]="selectedCustomer.monthsInDebt ? 'volcano' : 'green'">
             {{ selectedCustomer.monthsInDebt }} meses em divida

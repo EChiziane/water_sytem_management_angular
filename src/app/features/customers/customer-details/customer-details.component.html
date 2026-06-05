@@ -17,7 +17,7 @@
             <p>{{ fullAddress }}</p>
 
             <div class="tag-row">
-              <nz-tag nzColor="blue">{{ customer.code || 'Sem codigo' }}</nz-tag>
+              <nz-tag nzColor="green">{{ customer.code || 'Sem codigo' }}</nz-tag>
               <nz-tag nzColor="cyan">Valvula {{ customer.valve || '-' }}</nz-tag>
               <nz-tag [nzColor]="debtStatusColor">{{ debtStatusLabel }}</nz-tag>
             </div>
@@ -190,7 +190,7 @@
                 <td><nz-tag [nzColor]="month.paid ? 'success' : 'error'">{{ month.paid ? 'Pago' : 'Em divida' }}</nz-tag></td>
                 <td>{{ month.createdByName || '-' }}</td>
                 <td>
-                  <nz-tag *ngIf="month.paymentReferenceCode; else noReceipt" nzColor="blue">
+                  <nz-tag *ngIf="month.paymentReferenceCode; else noReceipt" nzColor="green">
                     {{ month.paymentReferenceCode }}
                   </nz-tag>
                   <ng-template #noReceipt>-</ng-template>
@@ -263,7 +263,12 @@
             <dl class="mobile-card-facts">
               <div>
                 <dt>Mes</dt>
-                <dd>{{ formatReferenceMonths(payment.referenceMonth) }}</dd>
+                <dd>
+                  <ul class="mobile-month-bullets" *ngIf="getFormattedReferenceMonths(payment.referenceMonth).length; else noMobilePaymentMonths">
+                    <li *ngFor="let month of getFormattedReferenceMonths(payment.referenceMonth)">{{ month }}</li>
+                  </ul>
+                  <ng-template #noMobilePaymentMonths>-</ng-template>
+                </dd>
               </div>
               <div>
                 <dt>Metodo</dt>
@@ -326,15 +331,14 @@
 
                 <tbody>
                 <tr *ngFor="let data of nzTable.data">
-                  <td><nz-tag nzColor="blue">{{ data.referenceCode }}</nz-tag></td>
+                  <td><nz-tag nzColor="green">{{ data.referenceCode }}</nz-tag></td>
                   <td>{{ data.customerName }}</td>
                   <td class="col-montante"><span class="amount">{{ formatMoney(data.amount) }}</span></td>
                   <td>
-                    <div class="reference-months-tags">
-                      <nz-tag *ngFor="let month of getFormattedReferenceMonths(data.referenceMonth)" nzColor="geekblue">
-                        {{ month }}
-                      </nz-tag>
-                    </div>
+                    <ul class="table-month-bullets" *ngIf="getFormattedReferenceMonths(data.referenceMonth).length; else noCustomerDetailMonths">
+                      <li *ngFor="let month of getFormattedReferenceMonths(data.referenceMonth)">{{ month }}</li>
+                    </ul>
+                    <ng-template #noCustomerDetailMonths>-</ng-template>
                   </td>
                   <td class="col-metodo"><nz-tag nzColor="purple">{{ data.paymentMethod }}</nz-tag></td>
                   <td>
@@ -400,7 +404,7 @@
       </div>
 
       <div class="customer-tags">
-        <nz-tag nzColor="blue">{{ customer.code }}</nz-tag>
+        <nz-tag nzColor="green">{{ customer.code }}</nz-tag>
         <nz-tag nzColor="cyan">Valvula {{ customer.valve }}</nz-tag>
         <nz-tag [nzColor]="debtStatusColor">{{ customer.monthsInDebt }} meses em divida</nz-tag>
       </div>

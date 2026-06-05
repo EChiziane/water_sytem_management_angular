@@ -154,7 +154,7 @@
           <tbody>
           <tr *ngFor="let data of nzTable.data">
             <td>
-              <nz-tag nzColor="blue">{{ data.code || '-' }}</nz-tag>
+              <nz-tag nzColor="green">{{ data.code || '-' }}</nz-tag>
             </td>
             <td>
               <strong>{{ data.name }}</strong>
@@ -221,6 +221,26 @@
   [nzWidth]="drawerWidth">
   <nz-spin *nzDrawerContent [nzSpinning]="isSaving" nzTip="A gravar cliente...">
     <form [formGroup]="customerForm" class="drawer-form" nz-form>
+      <section class="drawer-customer-preview">
+        <div class="customer-avatar">{{ drawerInitials }}</div>
+        <div>
+          <span>{{ isEditMode ? 'Editar cliente' : 'Novo cliente' }}</span>
+          <h3>{{ customerForm.get('name')?.value || 'Cliente sem nome' }}</h3>
+          <p>{{ customerForm.get('address')?.value || 'Endereco ainda nao informado' }}</p>
+        </div>
+      </section>
+
+      <section class="drawer-summary-grid">
+        <article>
+          <span>Taxa mensal</span>
+          <strong>{{ formatMoney(customerForm.get('monthlyFee')?.value) }}</strong>
+        </article>
+        <article class="debt">
+          <span>Divida estimada</span>
+          <strong>{{ formatMoney(drawerEstimatedDebt) }}</strong>
+        </article>
+      </section>
+
       <div class="drawer-section">
         <h3 class="section-title">Informacao do Cliente</h3>
 

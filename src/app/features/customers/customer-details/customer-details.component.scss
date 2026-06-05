@@ -357,10 +357,34 @@ p {
   font-weight: 800;
 }
 
-.reference-months-tags {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 6px;
+.table-month-bullets,
+.mobile-month-bullets {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    position: relative;
+    padding-left: 13px;
+    color: #0c2538;
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #0e8f78;
+  }
 }
 
 .action-buttons,

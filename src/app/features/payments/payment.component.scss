@@ -243,17 +243,26 @@
   }
 }
 
-.reference-months-tags {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
+.table-month-bullets {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
-  .ant-tag {
-    width: max-content;
-    max-width: 100%;
-    margin-right: 0;
-    border-radius: 6px;
+  li {
+    position: relative;
+    padding-left: 13px;
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #0e8f78;
   }
 }
 
