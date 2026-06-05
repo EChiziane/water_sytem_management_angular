@@ -13,12 +13,12 @@
       </div>
 
       <div class="brand-copy">
-        <strong>Águas Chiziane</strong>
+        <strong>Aguas Chiziane</strong>
         <span>Water System</span>
       </div>
     </div>
 
-    <div class="sidebar-section">Gestão</div>
+    <div class="sidebar-section">Operacao</div>
 
     <ul
       [nzInlineCollapsed]="isCollapsed"
@@ -34,25 +34,33 @@
         </a>
       </li>
 
-      <li nz-menu-item nzMatchRouter>
-        <a routerLink="/app/customer">
-          <span nz-icon nzType="team"></span>
-          <span>Clientes</span>
-        </a>
+      <li nz-submenu nzIcon="customer-service" nzOpen nzTitle="Agua e clientes">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/app/customer">
+              <span nz-icon nzType="team"></span>
+              <span>Clientes</span>
+            </a>
+          </li>
+
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/app/calendar">
+              <span nz-icon nzType="calendar"></span>
+              <span>Calendario</span>
+            </a>
+          </li>
+        </ul>
       </li>
 
-      <li nz-menu-item nzMatchRouter>
-        <a routerLink="/app/payment">
-          <span nz-icon nzType="credit-card"></span>
-          <span>Pagamentos</span>
-        </a>
-      </li>
-
-      <li nz-menu-item nzMatchRouter>
-        <a routerLink="/app/calendar">
-          <span nz-icon nzType="calendar"></span>
-          <span>Calendário</span>
-        </a>
+      <li nz-submenu nzIcon="credit-card" nzTitle="Financeiro">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/app/payment">
+              <span nz-icon nzType="credit-card"></span>
+              <span>Pagamentos</span>
+            </a>
+          </li>
+        </ul>
       </li>
 
       <li *ngIf="isAdmin" nz-menu-item nzMatchRouter>
@@ -67,7 +75,7 @@
       <span class="status-dot"></span>
       <div>
         <strong>Sistema ativo</strong>
-        <span>Operação diária</span>
+        <span>Operacao diaria</span>
       </div>
     </div>
   </nz-sider>
@@ -75,7 +83,7 @@
   <nz-layout class="main-area">
     <nz-header class="topbar">
       <button
-        (click)="isCollapsed = !isCollapsed"
+        (click)="togglePrimaryNavigation()"
         aria-label="Alternar menu"
         class="nav-toggle"
         type="button">
@@ -83,8 +91,8 @@
       </button>
 
       <div class="topbar-title">
-        <span>Painel de gestão</span>
-        <strong>Clientes, pagamentos e utilizadores</strong>
+        <span>Painel de gestao</span>
+        <strong>Clientes, pagamentos e cobrancas</strong>
       </div>
 
       <div class="topbar-actions">
@@ -138,3 +146,55 @@
     </nz-content>
   </nz-layout>
 </nz-layout>
+
+<nz-drawer
+  (nzOnClose)="closeMobileMenu()"
+  [nzBodyStyle]="{ padding: '0' }"
+  [nzVisible]="isMobileMenuVisible"
+  class="mobile-navigation-drawer"
+  nzPlacement="left"
+  nzTitle="Aguas Chiziane"
+  nzWidth="320px">
+  <nav *nzDrawerContent class="mobile-navigation" aria-label="Navegacao mobile">
+    <a routerLink="/app/dashboard" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span nz-icon nzType="dashboard"></span>
+      <span>Dashboard</span>
+    </a>
+
+    <div class="mobile-nav-section">Agua e clientes</div>
+
+    <a routerLink="/app/customer" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span nz-icon nzType="team"></span>
+      <span>Clientes</span>
+    </a>
+
+    <a routerLink="/app/calendar" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span nz-icon nzType="calendar"></span>
+      <span>Calendario</span>
+    </a>
+
+    <div class="mobile-nav-section">Financeiro</div>
+
+    <a routerLink="/app/payment" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span nz-icon nzType="credit-card"></span>
+      <span>Pagamentos</span>
+    </a>
+
+    <div class="mobile-nav-section">Conta</div>
+
+    <a routerLink="/app/profile" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span nz-icon nzType="user"></span>
+      <span>Perfil</span>
+    </a>
+
+    <a *ngIf="isAdmin" routerLink="/app/users" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span nz-icon nzType="usergroup-add"></span>
+      <span>Utilizadores</span>
+    </a>
+
+    <button (click)="logout()" class="mobile-logout" type="button">
+      <span nz-icon nzType="logout"></span>
+      <span>Logout</span>
+    </button>
+  </nav>
+</nz-drawer>

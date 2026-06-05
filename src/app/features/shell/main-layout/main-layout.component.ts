@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthSessionService} from '@core/auth/auth-session.service';
 import {ROLE_LABELS} from '@shared/constants/app-labels';
@@ -9,8 +9,9 @@ import {ROLE_LABELS} from '@shared/constants/app-labels';
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   isCollapsed = false;
+  isMobileMenuVisible = false;
 
   username: string = 'Utilizador';
 
@@ -35,6 +36,19 @@ export class MainLayoutComponent {
       this.userRole = this.getRoleLabel(user.role);
       this.isAdmin = user.role === 'ADMIN';
     }
+  }
+
+  togglePrimaryNavigation(): void {
+    if (typeof window !== 'undefined' && window.innerWidth <= 900) {
+      this.isMobileMenuVisible = true;
+      return;
+    }
+
+    this.isCollapsed = !this.isCollapsed;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuVisible = false;
   }
 
   logout(): void {

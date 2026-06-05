@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {forkJoin} from 'rxjs';
 
-import { CustomerService } from '@core/services/customer.service';
-import { PaymentService } from '@core/services/payment.service';
+import {CustomerService} from '@core/services/customer.service';
+import {PaymentService} from '@core/services/payment.service';
 import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
-import { Customer } from '@shared/models/WSM/customer';
-import { Payment } from '@shared/models/WSM/payment';
+import {Customer} from '@shared/models/WSM/customer';
+import {Payment} from '@shared/models/WSM/payment';
 
 type DashboardMetric = {
   label: string;
   value: string;
   hint: string;
   icon: string;
-  tone: 'primary' | 'success' | 'warning' | 'neutral';
+  tone: 'primary' | 'success' | 'warning' | 'danger' | 'neutral';
 };
 
 type ChartItem = {
@@ -22,6 +23,9 @@ type ChartItem = {
   width: number;
 };
 
+type FilterMode = 'ALL' | 'DEBT' | 'ACTIVE';
+type OperationPanelId = 'debtors' | 'payments' | 'health';
+
 @Component({
   selector: 'app-dashboard',
   standalone: false,
@@ -29,6 +33,8 @@ type ChartItem = {
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
+  private readonly filterStorageKey = 'wsm-dashboard-filters';
+
   isLoading = false;
 
   customers: Customer[] = [];
@@ -36,21 +42,57 @@ export class DashboardComponent implements OnInit {
 
   metrics: DashboardMetric[] = [];
   monthlyPayments: ChartItem[] = [];
+  filteredCustomers: Customer[] = [];
+  debtors: Array<Customer & { debtAmount: number }> = [];
   topDebtors: Array<Customer & { debtAmount: number }> = [];
   recentPayments: Payment[] = [];
+
+  searchValue = '';
+  filterMode: FilterMode = 'ALL';
+  showAllDebtors = false;
 
   totalDebt = 0;
   paidThisMonth = 0;
   customersWithDebt = 0;
+  activeCustomers = 0;
+  inactiveCustomers = 0;
 
   constructor(
     private customerService: CustomerService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private router: Router
   ) {
   }
 
   ngOnInit(): void {
+    this.restoreFilters();
     this.loadDashboard();
+  }
+
+  get operationHeadline(): string {
+    if (this.customersWithDebt > 0) {
+      return `${this.customersWithDebt} cliente(s) precisam de acompanhamento`;
+    }
+
+    if (this.paidThisMonth > 0) {
+      return 'Carteira em dia com pagamentos recentes';
+    }
+
+    return 'Comece pela organizacao dos clientes e cobrancas';
+  }
+
+  get operationSubline(): string {
+    const nextDebtor = this.topDebtors[0];
+
+    if (nextDebtor) {
+      return `${nextDebtor.name} tem ${nextDebtor.monthsInDebt} mes(es) em atraso, estimado em ${this.formatMoney(nextDebtor.debtAmount)}.`;
+    }
+
+    return `${this.activeCustomers} cliente(s) ativos e ${this.formatMoney(this.paidThisMonth)} recebidos neste mes.`;
+  }
+
+  get visibleDebtors(): Array<Customer & { debtAmount: number }> {
+    return this.showAllDebtors ? this.debtors : this.topDebtors;
   }
 
   loadDashboard(): void {
@@ -60,7 +102,7 @@ export class DashboardComponent implements OnInit {
       customers: this.customerService.getCustomers(),
       payments: this.paymentService.getPayments()
     }).subscribe({
-      next: ({ customers, payments }) => {
+      next: ({customers, payments}) => {
         this.customers = customers || [];
         this.payments = payments || [];
         this.buildDashboard();
@@ -73,6 +115,54 @@ export class DashboardComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  scrollToPanel(panelId: OperationPanelId): void {
+    if (typeof document === 'undefined') return;
+
+    document.getElementById(`water-${panelId}`)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'nearest'
+    });
+  }
+
+  filterAll(): void {
+    this.filterMode = 'ALL';
+    this.applyFilters();
+  }
+
+  filterDebt(): void {
+    this.filterMode = 'DEBT';
+    this.applyFilters();
+  }
+
+  filterActive(): void {
+    this.filterMode = 'ACTIVE';
+    this.applyFilters();
+  }
+
+  resetFilters(): void {
+    this.searchValue = '';
+    this.filterMode = 'ALL';
+    this.applyFilters();
+  }
+
+  toggleAllDebtors(): void {
+    this.showAllDebtors = !this.showAllDebtors;
+    this.persistFilters();
+  }
+
+  goToCustomers(): void {
+    this.router.navigate(['/app/customer']);
+  }
+
+  goToPayments(): void {
+    this.router.navigate(['/app/payment']);
+  }
+
+  goToCustomerDetails(customer: Customer): void {
+    this.router.navigate(['/app/customer-detail', customer.id]);
   }
 
   formatMoney(value: number): string {
@@ -106,62 +196,99 @@ export class DashboardComponent implements OnInit {
     return months.length ? months.join(', ') : '-';
   }
 
+  trackById(_: number, item: Customer | Payment): string {
+    return item.id;
+  }
+
+  debtTone(customer: Customer): string {
+    const months = Number(customer.monthsInDebt || 0);
+
+    if (months >= 3) return 'priority-danger';
+    if (months === 2) return 'priority-warning';
+    return 'priority-watch';
+  }
+
   private buildDashboard(): void {
-    const activeCustomers = this.customers.filter(customer => this.isActiveCustomer(customer)).length;
-    this.customersWithDebt = this.customers.filter(customer => Number(customer.monthsInDebt || 0) > 0).length;
-    this.totalDebt = this.customers.reduce(
-      (total, customer) => total + Number(customer.monthlyFee || 0) * Number(customer.monthsInDebt || 0),
-      0
-    );
+    this.activeCustomers = this.customers.filter(customer => this.isActiveCustomer(customer)).length;
+    this.inactiveCustomers = Math.max(this.customers.length - this.activeCustomers, 0);
+
+    this.debtors = [...this.customers]
+      .map(customer => ({
+        ...customer,
+        debtAmount: Number(customer.monthlyFee || 0) * Number(customer.monthsInDebt || 0)
+      }))
+      .filter(customer => customer.debtAmount > 0)
+      .sort((current, next) => next.debtAmount - current.debtAmount);
+
+    this.customersWithDebt = this.debtors.length;
+    this.totalDebt = this.debtors.reduce((total, customer) => total + customer.debtAmount, 0);
     this.paidThisMonth = this.payments
       .filter(payment => this.isCurrentMonth(payment.paymentDate))
       .reduce((total, payment) => total + Number(payment.amount || 0), 0);
 
     this.metrics = [
       {
-        label: 'Clientes',
-        value: String(this.customers.length),
-        hint: `${activeCustomers} ativos no sistema`,
+        label: 'Clientes ativos',
+        value: String(this.activeCustomers),
+        hint: `${this.customers.length} cliente(s) registados`,
         icon: 'team',
         tone: 'primary'
       },
       {
-        label: 'Pagamentos do mês',
+        label: 'Pagamentos do mes',
         value: this.formatMoney(this.paidThisMonth),
-        hint: 'Valor recebido no mês atual',
+        hint: 'Valor recebido no mes atual',
         icon: 'credit-card',
         tone: 'success'
       },
       {
-        label: 'Clientes com dívida',
+        label: 'Clientes com divida',
         value: String(this.customersWithDebt),
-        hint: 'Precisam de acompanhamento',
+        hint: 'Prioridade de cobranca',
         icon: 'clock-circle',
-        tone: 'warning'
+        tone: this.customersWithDebt ? 'warning' : 'neutral'
       },
       {
-        label: 'Dívida estimada',
+        label: 'Divida estimada',
         value: this.formatMoney(this.totalDebt),
         hint: 'Baseada nos meses em atraso',
         icon: 'dashboard',
-        tone: 'neutral'
+        tone: this.totalDebt > 0 ? 'danger' : 'neutral'
       }
     ];
 
     this.recentPayments = [...this.payments]
       .sort((current, next) => this.toTime(next.paymentDate) - this.toTime(current.paymentDate))
-      .slice(0, 6);
+      .slice(0, 8);
 
-    this.topDebtors = [...this.customers]
-      .map(customer => ({
-        ...customer,
-        debtAmount: Number(customer.monthlyFee || 0) * Number(customer.monthsInDebt || 0)
-      }))
-      .filter(customer => customer.debtAmount > 0)
-      .sort((current, next) => next.debtAmount - current.debtAmount)
-      .slice(0, 5);
-
+    this.topDebtors = this.debtors.slice(0, 6);
     this.monthlyPayments = this.buildMonthlyPayments();
+    this.applyFilters();
+  }
+
+  applyFilters(): void {
+    let filtered = [...this.customers];
+
+    if (this.searchValue.trim()) {
+      const search = this.searchValue.toLowerCase();
+      filtered = filtered.filter(customer =>
+        (customer.name || '').toLowerCase().includes(search) ||
+        (customer.code || '').toLowerCase().includes(search) ||
+        (customer.contact || '').toLowerCase().includes(search) ||
+        (customer.address || '').toLowerCase().includes(search)
+      );
+    }
+
+    if (this.filterMode === 'DEBT') {
+      filtered = filtered.filter(customer => Number(customer.monthsInDebt || 0) > 0);
+    }
+
+    if (this.filterMode === 'ACTIVE') {
+      filtered = filtered.filter(customer => this.isActiveCustomer(customer));
+    }
+
+    this.filteredCustomers = filtered;
+    this.persistFilters();
   }
 
   private buildMonthlyPayments(): ChartItem[] {
@@ -193,6 +320,37 @@ export class DashboardComponent implements OnInit {
     return items.map(item => ({
       ...item,
       width: Math.max(8, Math.round((item.value / max) * 100))
+    }));
+  }
+
+  private restoreFilters(): void {
+    if (typeof localStorage === 'undefined') return;
+
+    try {
+      const raw = localStorage.getItem(this.filterStorageKey);
+      if (!raw) return;
+
+      const saved = JSON.parse(raw) as Partial<{
+        searchValue: string;
+        filterMode: FilterMode;
+        showAllDebtors: boolean;
+      }>;
+
+      this.searchValue = saved.searchValue || '';
+      this.filterMode = saved.filterMode || 'ALL';
+      this.showAllDebtors = !!saved.showAllDebtors;
+    } catch {
+      localStorage.removeItem(this.filterStorageKey);
+    }
+  }
+
+  private persistFilters(): void {
+    if (typeof localStorage === 'undefined') return;
+
+    localStorage.setItem(this.filterStorageKey, JSON.stringify({
+      searchValue: this.searchValue,
+      filterMode: this.filterMode,
+      showAllDebtors: this.showAllDebtors
     }));
   }
 
