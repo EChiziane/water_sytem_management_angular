@@ -14,6 +14,9 @@ import {
   FormOutline,
   ArrowLeftOutline,
   CheckCircleOutline,
+  DeleteOutline,
+  EditOutline,
+  EyeOutline,
   IdcardOutline,
   LogoutOutline,
   MailOutline,
@@ -24,8 +27,11 @@ import {
   PhoneOutline,
   ReloadOutline,
   SafetyCertificateOutline,
+  SearchOutline,
   SettingOutline,
   TeamOutline,
+  UnorderedListOutline,
+  UserAddOutline,
   UserOutline,
   UsergroupAddOutline
 } from '@ant-design/icons-angular/icons';
@@ -44,6 +50,9 @@ const icons = [
   FormOutline,
   ArrowLeftOutline,
   CheckCircleOutline,
+  DeleteOutline,
+  EditOutline,
+  EyeOutline,
   IdcardOutline,
   LogoutOutline,
   MailOutline,
@@ -53,8 +62,11 @@ const icons = [
   PhoneOutline,
   ReloadOutline,
   SafetyCertificateOutline,
+  SearchOutline,
   SettingOutline,
   TeamOutline,
+  UnorderedListOutline,
+  UserAddOutline,
   UserOutline,
   UsergroupAddOutline
 ];

@@ -13,6 +13,8 @@ import {NzModalService} from 'ng-zorro-antd/modal';
   styleUrls: ['./customer.component.scss']
 })
 export class CustomerComponent implements OnInit {
+  private readonly filterStorageKey = 'wsm-customer-filters';
+
   dataSource: Customer[] = [];
   listOfDisplayData: Customer[] = [];
 
@@ -24,6 +26,10 @@ export class CustomerComponent implements OnInit {
   isCustomerDrawerVisible = false;
 
   debtFilter: 'ALL' | 'DEBT' | 'CLEAR' = 'ALL';
+
+  totalCustomers = 0;
+  activeCustomers = 0;
+  customersWithDebt = 0;
 
   isEditMode = false;
   customerDrawerTitle = 'Criar Cliente';
@@ -50,6 +56,7 @@ export class CustomerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.restoreFilters();
     this.getCustomers();
     this.updateDrawer();
   }
@@ -62,7 +69,7 @@ export class CustomerComponent implements OnInit {
   updateDrawer(): void {
     if (window.innerWidth <= 768) {
       this.drawerWidth = '100%';
-      this.drawerPlacement = 'bottom';
+      this.drawerPlacement = 'right';
       return;
     }
 
@@ -78,18 +85,27 @@ export class CustomerComponent implements OnInit {
       .subscribe({
         next: customers => {
           this.dataSource = customers;
-          this.listOfDisplayData = [...customers];
+          this.calculateStats();
+          this.applyFilters();
         },
         error: () => this.message.error('Erro ao carregar clientes.')
       });
+  }
+
+  get hasActiveFilters(): boolean {
+    return this.debtFilter !== 'ALL' || !!this.searchValue.trim();
   }
 
   applyFilters(): void {
     let data = [...this.dataSource];
 
     if (this.searchValue) {
+      const search = this.searchValue.toLowerCase();
       data = data.filter(item =>
-        item.name.toLowerCase().includes(this.searchValue.toLowerCase())
+        (item.name || '').toLowerCase().includes(search) ||
+        (item.code || '').toLowerCase().includes(search) ||
+        (item.contact || '').toLowerCase().includes(search) ||
+        (item.address || '').toLowerCase().includes(search)
       );
     }
 
@@ -102,6 +118,7 @@ export class CustomerComponent implements OnInit {
     }
 
     this.listOfDisplayData = data;
+    this.persistFilters();
   }
 
   search(): void {
@@ -112,6 +129,19 @@ export class CustomerComponent implements OnInit {
   filterByDebt(value: 'ALL' | 'DEBT' | 'CLEAR'): void {
     this.debtFilter = value;
     this.applyFilters();
+  }
+
+  debtAmount(customer: Customer): number {
+    return Number(customer.monthlyFee || 0) * Number(customer.monthsInDebt || 0);
+  }
+
+  formatMoney(value: number | null | undefined): string {
+    return `${Number(value || 0).toFixed(2)} MT`;
+  }
+
+  phoneHref(phone: string | null | undefined): string {
+    const digits = (phone || '').toString().replace(/[^\d+]/g, '');
+    return digits ? `tel:${digits}` : 'tel:';
   }
 
   editCustomer(customer: Customer): void {
@@ -200,12 +230,14 @@ export class CustomerComponent implements OnInit {
 
   reset(): void {
     this.searchValue = '';
+    this.debtFilter = 'ALL';
     this.search();
   }
 
   openCustomerDrawer(): void {
     this.isEditMode = false;
     this.customerDrawerTitle = 'Criar Cliente';
+    this.selectedCustomerId = null;
     this.customerForm.reset({
       status: 'ATIVO',
       valve: 10,
@@ -219,9 +251,46 @@ export class CustomerComponent implements OnInit {
     this.isCustomerDrawerVisible = false;
     this.customerForm.reset();
     this.selectedCustomerId = null;
+    this.isEditMode = false;
   }
 
   onBack(): void {
     window.history.back();
+  }
+
+  private calculateStats(): void {
+    this.totalCustomers = this.dataSource.length;
+    this.activeCustomers = this.dataSource.filter(customer => this.isActiveCustomer(customer)).length;
+    this.customersWithDebt = this.dataSource.filter(customer => Number(customer.monthsInDebt || 0) > 0).length;
+  }
+
+  private isActiveCustomer(customer: Customer): boolean {
+    return (customer.status || '').toLowerCase() === 'active' ||
+      (customer.status || '').toLowerCase() === 'ativo' ||
+      (customer.status || '').toUpperCase() === 'ATIVO';
+  }
+
+  private restoreFilters(): void {
+    if (typeof localStorage === 'undefined') return;
+
+    try {
+      const raw = localStorage.getItem(this.filterStorageKey);
+      if (!raw) return;
+
+      const saved = JSON.parse(raw) as Partial<{ searchValue: string; debtFilter: 'ALL' | 'DEBT' | 'CLEAR' }>;
+      this.searchValue = saved.searchValue || '';
+      this.debtFilter = saved.debtFilter || 'ALL';
+    } catch {
+      localStorage.removeItem(this.filterStorageKey);
+    }
+  }
+
+  private persistFilters(): void {
+    if (typeof localStorage === 'undefined') return;
+
+    localStorage.setItem(this.filterStorageKey, JSON.stringify({
+      searchValue: this.searchValue,
+      debtFilter: this.debtFilter
+    }));
   }
 }

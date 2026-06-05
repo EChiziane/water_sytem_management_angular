@@ -1,4 +1,4 @@
-<div class="content-wrapper">
+<div class="content-wrapper compact-list-layout">
   <nz-breadcrumb class="page-breadcrumb">
     <nz-breadcrumb-item>
       <a routerLink="/app">Home</a>
@@ -6,56 +6,173 @@
     <nz-breadcrumb-item>Clientes</nz-breadcrumb-item>
   </nz-breadcrumb>
 
-  <header class="page-header">
-    <button (click)="onBack()" class="back-arrow" nz-button nzType="text" aria-label="Voltar">
-      <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
-    </button>
-
-    <div>
-      <span class="section-label">Gestão de clientes</span>
-      <h1>Clientes</h1>
-      <p>Acompanhe dados, estado de dívida e histórico de cada cliente.</p>
+  <div class="page-header">
+    <div class="compact-title-block">
+      <p>Clientes</p>
+      <span class="list-meta">
+        {{ totalCustomers }} clientes - {{ activeCustomers }} ativos - {{ customersWithDebt }} com divida
+      </span>
     </div>
 
-    <button (click)="openCustomerDrawer()" nz-button nzType="primary">
+    <span (click)="onBack()" class="back-arrow">
+      <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
+    </span>
+  </div>
+
+  <section class="summary-section">
+    <div class="summary-background">
+      <div [nzGutter]="8" nz-row>
+        <div [nzSpan]="8" nz-col>
+          <nz-card nzSize="small">
+            <div class="summary-card">
+              <div class="icon-wrapper total">
+                <nz-icon nzTheme="outline" nzType="team"></nz-icon>
+              </div>
+              <div class="summary-content">
+                <span class="title">Total</span>
+                <p>{{ totalCustomers }}</p>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+
+        <div [nzSpan]="8" nz-col>
+          <nz-card nzSize="small">
+            <div class="summary-card">
+              <div class="icon-wrapper active">
+                <nz-icon nzTheme="outline" nzType="check-circle"></nz-icon>
+              </div>
+              <div class="summary-content">
+                <span class="title">Ativos</span>
+                <p>{{ activeCustomers }}</p>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+
+        <div [nzSpan]="8" nz-col>
+          <nz-card nzSize="small">
+            <div class="summary-card">
+              <div class="icon-wrapper inactive">
+                <nz-icon nzTheme="outline" nzType="clock-circle"></nz-icon>
+              </div>
+              <div class="summary-content">
+                <span class="title">Com divida</span>
+                <p>{{ customersWithDebt }}</p>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="filters-panel">
+    <input
+      (ngModelChange)="search()"
+      [(ngModel)]="searchValue"
+      nz-input
+      placeholder="Pesquisar nome/codigo/contacto/endereco"
+      type="text"/>
+
+    <button (click)="openCustomerDrawer()" class="create-action" nz-button nzType="primary">
       <nz-icon nzTheme="outline" nzType="user-add"></nz-icon>
       Novo cliente
     </button>
-  </header>
-<section class="filters-panel">
-    <nz-input-group nzPrefixIcon="search" class="search-input">
-      <input
-        (ngModelChange)="search()"
-        [(ngModel)]="searchValue"
-        nz-input
-        placeholder="Pesquisar por nome"
-        type="text"/>
-    </nz-input-group>
 
     <div class="filter-actions">
-      <button
-        (click)="filterByDebt('ALL')"
-        [class.active]="debtFilter === 'ALL'"
-        nz-button
-        nzType="default">
+      <button (click)="filterByDebt('ALL')" [class.active]="debtFilter === 'ALL'" nz-button nzType="default">
         Todos
       </button>
-      <button
-        (click)="filterByDebt('DEBT')"
-        [class.active]="debtFilter === 'DEBT'"
-        nz-button
-        nzType="default">
-        Com dívida
+
+      <button (click)="filterByDebt('DEBT')" [class.active]="debtFilter === 'DEBT'" nz-button nzType="default">
+        Com divida
       </button>
-      <button
-        (click)="filterByDebt('CLEAR')"
-        [class.active]="debtFilter === 'CLEAR'"
-        nz-button
-        nzType="default">
+
+      <button (click)="filterByDebt('CLEAR')" [class.active]="debtFilter === 'CLEAR'" nz-button nzType="default">
         Em dia
       </button>
     </div>
   </section>
+
+  <nz-spin [nzSpinning]="isLoading" class="mobile-customer-spin" nzTip="A carregar clientes...">
+    <div *ngIf="listOfDisplayData.length; else mobileEmptyCustomers" class="mobile-customer-list">
+      <article *ngFor="let data of listOfDisplayData" class="mobile-customer-card">
+        <div class="mobile-card-topline">
+          <div>
+            <span class="mobile-card-kicker">{{ data.code || 'Cliente' }}</span>
+            <h3>{{ data.name }}</h3>
+            <small>{{ data.address || 'Sem endereco' }}</small>
+          </div>
+
+          <a
+            [href]="phoneHref(data.contact)"
+            [attr.aria-label]="'Ligar para ' + data.name"
+            class="mobile-call-action"
+            nz-button
+            nzType="primary">
+            <nz-icon nzTheme="outline" nzType="phone"></nz-icon>
+          </a>
+        </div>
+
+        <dl class="mobile-card-facts">
+          <div>
+            <dt>Contacto</dt>
+            <dd>{{ data.contact || '-' }}</dd>
+          </div>
+          <div>
+            <dt>Valvula</dt>
+            <dd>{{ data.valve || '-' }}</dd>
+          </div>
+          <div>
+            <dt>Meses</dt>
+            <dd>{{ data.monthsInDebt || 0 }}</dd>
+          </div>
+          <div>
+            <dt>Taxa mensal</dt>
+            <dd>{{ formatMoney(data.monthlyFee) }}</dd>
+          </div>
+          <div>
+            <dt>Divida estimada</dt>
+            <dd>{{ formatMoney(debtAmount(data)) }}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>{{ data.status || '-' }}</dd>
+          </div>
+        </dl>
+
+        <div class="mobile-card-actions">
+          <button [routerLink]="['/app/customer-detail', data.id]" nz-button nzType="default">
+            <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
+            Ver
+          </button>
+
+          <button (click)="editCustomer(data)" class="edit-action" nz-button nzType="primary">
+            <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
+            Editar
+          </button>
+
+          <button (click)="deleteCustomer(data)" nz-button nzDanger nzType="default">
+            <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
+          </button>
+        </div>
+      </article>
+    </div>
+  </nz-spin>
+
+  <ng-template #mobileEmptyCustomers>
+    <div *ngIf="!isLoading" class="mobile-empty-state">
+      <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
+      <h3>Nenhum cliente encontrado</h3>
+      <p *ngIf="hasActiveFilters">Tenta pesquisar por outro nome, contacto ou codigo.</p>
+      <p *ngIf="!hasActiveFilters">Comeca criando o primeiro cliente para acompanhar valvulas, pagamentos e dividas.</p>
+      <button (click)="openCustomerDrawer()" class="create-action" nz-button nzType="primary">
+        <nz-icon nzTheme="outline" nzType="user-add"></nz-icon>
+        Novo cliente
+      </button>
+    </div>
+  </ng-template>
 
   <section class="table-wrapper">
     <div class="table-scroll">
@@ -63,36 +180,39 @@
         <nz-table
           #nzTable
           [nzData]="listOfDisplayData"
+          [nzNoResult]="emptyCustomers"
           [nzPageSize]="8"
+          [nzScroll]="{ x: '980px', y: '360px' }"
+          class="compact-customer-table"
           nzTableLayout="fixed">
           <thead>
           <tr>
-            <th>Código</th>
+            <th>Codigo</th>
             <th>Nome</th>
-            <th>Válvula</th>
+            <th>Valvula</th>
             <th>Contacto</th>
-            <th>Estado da dívida</th>
+            <th>Estado da divida</th>
             <th>Meses</th>
             <th>Taxa mensal</th>
             <th>Status</th>
-            <th>Ações</th>
+            <th>Acoes</th>
           </tr>
           </thead>
 
           <tbody>
           <tr *ngFor="let data of nzTable.data">
             <td>
-              <nz-tag nzColor="blue">{{ data.code }}</nz-tag>
+              <nz-tag nzColor="blue">{{ data.code || '-' }}</nz-tag>
             </td>
             <td>
               <strong>{{ data.name }}</strong>
-              <span class="muted-text">{{ data.address }}</span>
+              <span class="muted-text">{{ data.address || '-' }}</span>
             </td>
             <td>{{ data.valve }}</td>
             <td>{{ data.contact }}</td>
             <td>
               <nz-tag [nzColor]="data.monthsInDebt > 0 ? 'volcano' : 'green'">
-                {{ data.monthsInDebt > 0 ? 'Em dívida' : 'Em dia' }}
+                {{ data.monthsInDebt > 0 ? 'Em divida' : 'Em dia' }}
               </nz-tag>
             </td>
             <td>{{ data.monthsInDebt }}</td>
@@ -104,31 +224,15 @@
             </td>
             <td>
               <div class="table-actions">
-                <button
-                  [routerLink]="['/app/customer-detail', data.id]"
-                  nz-button
-                  nzSize="small"
-                  nzType="link"
-                  aria-label="Ver detalhes">
+                <button [routerLink]="['/app/customer-detail', data.id]" nz-button nzSize="small" nzType="link" aria-label="Ver detalhes">
                   <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
                 </button>
 
-                <button
-                  (click)="editCustomer(data)"
-                  nz-button
-                  nzSize="small"
-                  nzType="link"
-                  aria-label="Editar cliente">
+                <button (click)="editCustomer(data)" nz-button nzSize="small" nzType="link" aria-label="Editar cliente">
                   <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
                 </button>
 
-                <button
-                  (click)="deleteCustomer(data)"
-                  nz-button
-                  nzDanger
-                  nzSize="small"
-                  nzType="link"
-                  aria-label="Eliminar cliente">
+                <button (click)="deleteCustomer(data)" nz-button nzDanger nzSize="small" nzType="link" aria-label="Eliminar cliente">
                   <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
                 </button>
               </div>
@@ -136,6 +240,19 @@
           </tr>
           </tbody>
         </nz-table>
+
+        <ng-template #emptyCustomers>
+          <div class="table-empty-state">
+            <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
+            <h3>{{ isLoading ? 'A carregar clientes...' : 'Nenhum cliente encontrado' }}</h3>
+            <p *ngIf="!isLoading && hasActiveFilters">Nao ha clientes para os filtros atuais.</p>
+            <p *ngIf="!isLoading && !hasActiveFilters">Comeca criando o primeiro cliente.</p>
+            <div class="empty-actions" *ngIf="!isLoading">
+              <button *ngIf="hasActiveFilters" (click)="reset()" nz-button nzType="default">Limpar filtros</button>
+              <button (click)="openCustomerDrawer()" class="create-action" nz-button nzType="primary">Novo cliente</button>
+            </div>
+          </div>
+        </ng-template>
       </nz-spin>
     </div>
   </section>
@@ -152,8 +269,8 @@
   [nzWidth]="drawerWidth">
   <nz-spin *nzDrawerContent [nzSpinning]="isSaving" nzTip="A gravar cliente...">
     <form [formGroup]="customerForm" class="drawer-form" nz-form>
-      <section class="drawer-section">
-        <h3 class="section-title">Informações do cliente</h3>
+      <div class="drawer-section">
+        <h3 class="section-title">Informacao do Cliente</h3>
 
         <div [nzGutter]="16" nz-row>
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
@@ -180,9 +297,9 @@
         <div [nzGutter]="16" nz-row>
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
-              <nz-form-label>Endereço</nz-form-label>
+              <nz-form-label>Endereco</nz-form-label>
               <nz-form-control>
-                <input formControlName="address" nz-input placeholder="Digite o endereço"/>
+                <input formControlName="address" nz-input placeholder="Digite o endereco"/>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -203,16 +320,16 @@
         <div [nzGutter]="16" nz-row>
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
-              <nz-form-label>Válvula</nz-form-label>
+              <nz-form-label>Valvula</nz-form-label>
               <nz-form-control>
-                <input formControlName="valve" nz-input placeholder="Digite a válvula" type="number"/>
+                <input formControlName="valve" nz-input placeholder="Digite a valvula" type="number"/>
               </nz-form-control>
             </nz-form-item>
           </div>
 
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
-              <nz-form-label>Meses em dívida</nz-form-label>
+              <nz-form-label>Meses em divida</nz-form-label>
               <nz-form-control>
                 <input formControlName="monthsInDebt" nz-input placeholder="Digite os meses" type="number"/>
               </nz-form-control>
@@ -230,27 +347,30 @@
             </nz-form-item>
           </div>
         </div>
-      </section>
+      </div>
     </form>
   </nz-spin>
 
   <ng-template #customerDrawerFooter>
     <div class="drawer-footer">
-      <button
-        (click)="closeCustomerDrawer()"
-        [disabled]="isSaving"
-        nz-button
-        nzType="default">
+      <button (click)="closeCustomerDrawer()" [disabled]="isSaving" class="btn-cancel" nz-button nzType="default">
         Cancelar
       </button>
 
       <button
         (click)="createCustomer()"
         [disabled]="customerForm.invalid || isSaving"
-        [nzLoading]="isSaving"
+        class="btn-save"
         nz-button
         nzType="primary">
-        {{ isEditMode ? 'Salvar' : 'Criar' }}
+        <ng-container *ngIf="!isSaving; else savingTpl">
+          {{ isEditMode ? 'Salvar' : 'Criar' }}
+        </ng-container>
+
+        <ng-template #savingTpl>
+          <nz-spin nzSize="small"></nz-spin>
+          A gravar...
+        </ng-template>
       </button>
     </div>
   </ng-template>
