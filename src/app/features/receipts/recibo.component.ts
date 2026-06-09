@@ -9,6 +9,7 @@ import {ReciboService} from '@core/services/recibo.service';
 import {Payment} from '@shared/models/WSM/payment';
 import {PaymentService} from '@core/services/payment.service';
 import {CustomerPaymentInvoiceService} from '@core/services/customer-payment-invoice.service';
+import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
 
 @Component({
   selector: 'app-recibo',
@@ -41,6 +42,7 @@ export class ReciboComponent implements OnInit {
     private http: HttpClient,
     private reciboService: ReciboService,
     private customerPaymentInvoice: CustomerPaymentInvoiceService,
+    private paymentInvoiceService: PaymentInvoiceService,
     private paymentService: PaymentService,
     private message: NzMessageService,
     private modal: NzModalService
@@ -164,17 +166,8 @@ export class ReciboComponent implements OnInit {
     });
   }
 
-  getDownloadUrl(recibo: Recibo) {
-
-
-    this.customerPaymentInvoice.downloadRecibo(recibo.payment.id).subscribe((fileBlob: Blob) => {
-      const url = window.URL.createObjectURL(fileBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = recibo.fileName || 'invoice.xlsx';
-      a.click();
-      window.URL.revokeObjectURL(url);
-    })
+  getDownloadUrl(recibo: Recibo): void {
+    this.paymentInvoiceService.downloadPaymentInvoice(recibo.payment);
   }
 
   // ========= Navigation =========
