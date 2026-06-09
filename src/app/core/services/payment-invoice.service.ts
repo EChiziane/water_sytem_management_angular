@@ -37,7 +37,7 @@ export class PaymentInvoiceService {
     this.drawHeader(
       doc,
       'Recibo de pagamento',
-      `Recibo N? ${payment.referenceCode || 'N/A'}`,
+      `Recibo N. ${payment.referenceCode || 'N/A'}`,
       issueDate
     );
 
@@ -49,8 +49,8 @@ export class PaymentInvoiceService {
     this.drawInfoPanel(doc, margin, 98, contentWidth, [
       ['Nome', payment.customerName || '-'],
       ['Contacto', payment.customerContact || '-'],
-      ['Localiza??o', payment.customerAddress || '-'],
-      ['V?lvula', String(payment.customerValve || '-')],
+      ['Localizacao', payment.customerAddress || '-'],
+      ['Valvula', String(payment.customerValve || '-')],
       ['Taxa mensal', `${this.formatMoney(monthlyFee)} MT`],
       ['Data de pagamento', paymentDate]
     ]);
@@ -81,12 +81,14 @@ export class PaymentInvoiceService {
         valign: 'middle'
       },
       headStyles: {
-        fillColor: [12, 37, 56],
+        fillColor: [255, 255, 255],
         fontStyle: 'bold',
-        textColor: [255, 255, 255]
+        lineColor: [14, 143, 120],
+        lineWidth: 0.5,
+        textColor: [12, 37, 56]
       },
       alternateRowStyles: {
-        fillColor: [248, 251, 253]
+        fillColor: [255, 255, 255]
       },
       columnStyles: {
         0: { cellWidth: contentWidth - 72 },
@@ -98,21 +100,22 @@ export class PaymentInvoiceService {
     const finalY = (doc as AutoTableDocument).lastAutoTable?.finalY || 174;
     const description = `Pagamento referente a ${monthsText}. Documento emitido por ${payment.createdByName || 'Sistema'}.`;
 
-    doc.setFillColor(240, 247, 250);
-    doc.roundedRect(margin, finalY + 12, contentWidth, 26, 3, 3, 'F');
+    doc.setDrawColor(224, 231, 239);
+    doc.roundedRect(margin, finalY + 12, contentWidth, 26, 3, 3, 'D');
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(70, 86, 102);
     doc.text(doc.splitTextToSize(description, contentWidth - 10), margin + 5, finalY + 22);
 
-    doc.setFillColor(12, 37, 56);
-    doc.roundedRect(pageWidth - margin - 64, finalY + 48, 64, 22, 3, 3, 'F');
+    doc.setDrawColor(14, 143, 120);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(pageWidth - margin - 64, finalY + 48, 64, 22, 3, 3, 'D');
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
-    doc.setTextColor(176, 230, 222);
+    doc.setTextColor(14, 143, 120);
     doc.text('TOTAL PAGO', pageWidth - margin - 59, finalY + 57);
     doc.setFontSize(13);
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(12, 37, 56);
     doc.text(`${this.formatMoney(amount)} MT`, pageWidth - margin - 5, finalY + 66, { align: 'right' });
 
     this.drawFooter(doc);
@@ -123,39 +126,40 @@ export class PaymentInvoiceService {
   private drawHeader(doc: jsPDF, title: string, reference: string, issueDate: string): void {
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    doc.setFillColor(12, 37, 56);
-    doc.rect(0, 0, pageWidth, 42, 'F');
-
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(12, 37, 56);
     doc.text(COMPANY_PROFILE.name, 14, 16);
 
     doc.setFontSize(10);
-    doc.setTextColor(176, 230, 222);
+    doc.setTextColor(14, 143, 120);
     doc.text(title, 14, 26);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(219, 231, 236);
+    doc.setTextColor(70, 86, 102);
     doc.text(COMPANY_PROFILE.address, 14, 34);
     doc.text(`Contacto: ${COMPANY_PROFILE.contact} - Email: ${COMPANY_PROFILE.email} - NUIT: ${COMPANY_PROFILE.nuit}`, 14, 39);
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(12, 37, 56);
     doc.text(reference, pageWidth - 14, 18, { align: 'right' });
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(219, 231, 236);
+    doc.setTextColor(70, 86, 102);
     doc.text(`Emitido em ${issueDate}`, pageWidth - 14, 28, { align: 'right' });
+
+    doc.setDrawColor(14, 143, 120);
+    doc.setLineWidth(0.7);
+    doc.line(14, 42, pageWidth - 14, 42);
   }
 
   private drawMetricCard(doc: jsPDF, x: number, y: number, width: number, label: string, value: string): void {
-    doc.setFillColor(248, 251, 253);
     doc.setDrawColor(224, 231, 239);
-    doc.roundedRect(x, y, width, 26, 3, 3, 'FD');
+    doc.setLineWidth(0.2);
+    doc.roundedRect(x, y, width, 26, 3, 3, 'D');
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
@@ -176,9 +180,8 @@ export class PaymentInvoiceService {
   }
 
   private drawInfoPanel(doc: jsPDF, x: number, y: number, width: number, rows: Array<[string, string]>): void {
-    doc.setFillColor(255, 255, 255);
     doc.setDrawColor(224, 231, 239);
-    doc.roundedRect(x, y, width, 36, 3, 3, 'FD');
+    doc.roundedRect(x, y, width, 36, 3, 3, 'D');
 
     rows.forEach(([label, value], index) => {
       const column = index % 2;
@@ -207,7 +210,7 @@ export class PaymentInvoiceService {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(99, 115, 129);
-    doc.text('Documento emitido por computador - n?o necessita de assinatura', 14, pageHeight - 14);
+    doc.text('Documento emitido por computador - nao necessita de assinatura', 14, pageHeight - 14);
 
     doc.setFont('helvetica', 'italic');
     doc.text(`${COMPANY_PROFILE.name} - ${COMPANY_PROFILE.tagline}`, pageWidth - 14, pageHeight - 14, {

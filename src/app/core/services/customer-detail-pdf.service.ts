@@ -45,19 +45,19 @@ export class CustomerDetailPdfService {
     this.drawHeader(doc, 'Ficha do cliente', `Emitido em ${issueDate}`);
 
     this.drawMetricCard(doc, margin, 52, 78, 'Estado', customer.status || '-');
-    this.drawMetricCard(doc, margin + 88, 52, 78, 'Meses em d?vida', `${customer.monthsInDebt || 0}`);
-    this.drawMetricCard(doc, margin + 176, 52, 78, 'Total em d?vida', `${this.money(totalDebt)} MT`);
+    this.drawMetricCard(doc, margin + 88, 52, 78, 'Meses em divida', `${customer.monthsInDebt || 0}`);
+    this.drawMetricCard(doc, margin + 176, 52, 78, 'Total em divida', `${this.money(totalDebt)} MT`);
 
     this.drawSectionTitle(doc, 'Dados do cliente', margin, 92);
     this.drawInfoPanel(doc, margin, 98, contentWidth, [
-      ['C?digo', customer.code || '-'],
+      ['Codigo', customer.code || '-'],
       ['Nome', customer.name || '-'],
       ['Contacto', customer.contact || '-'],
-      ['Endere?o', customer.address || '-'],
+      ['Endereco', customer.address || '-'],
       ['Cliente desde', this.formatDate(customer.createdAt)],
-      ['V?lvula', String(customer.valve || '-')],
+      ['Valvula', String(customer.valve || '-')],
       ['Taxa mensal', `${this.money(customer.monthlyFee)} MT`],
-      ['?ltimo pagamento', lastPayment]
+      ['Ultimo pagamento', lastPayment]
     ]);
 
     if (includeHistory) {
@@ -76,7 +76,7 @@ export class CustomerDetailPdfService {
     contentWidth: number,
     startY: number
   ): void {
-    this.drawSectionTitle(doc, 'Hist?rico dos meses', margin, startY - 6);
+    this.drawSectionTitle(doc, 'Historico dos meses', margin, startY - 6);
 
     const monthlyHistory = this.buildMonthlyHistory(customer, payments);
     const body = monthlyHistory.length
@@ -91,7 +91,7 @@ export class CustomerDetailPdfService {
       ])
       : [[
         '-',
-        'Sem hist?rico',
+        'Sem historico',
         '-',
         '-',
         '-',
@@ -103,13 +103,13 @@ export class CustomerDetailPdfService {
       startY,
       margin: { left: margin, right: margin },
       head: [[
-        'M?s',
+        'Mes',
         'Estado',
         'Registrado por',
         'Recibo',
         'Data pagamento',
         'Valor',
-        'M?todo'
+        'Metodo'
       ]],
       body,
       styles: {
@@ -123,12 +123,14 @@ export class CustomerDetailPdfService {
         valign: 'middle'
       },
       headStyles: {
-        fillColor: [12, 37, 56],
+        fillColor: [255, 255, 255],
         fontStyle: 'bold',
-        textColor: [255, 255, 255]
+        lineColor: [14, 143, 120],
+        lineWidth: 0.5,
+        textColor: [12, 37, 56]
       },
       alternateRowStyles: {
-        fillColor: [248, 251, 253]
+        fillColor: [255, 255, 255]
       },
       columnStyles: {
         0: { cellWidth: 42 },
@@ -176,7 +178,7 @@ export class CustomerDetailPdfService {
 
       rowsByMonth.set(sortKey, {
         month: this.formatMonth(month),
-        status: 'Em d?vida',
+        status: 'Em divida',
         registeredBy: '-',
         receipt: '-',
         paymentDate: '-',
@@ -193,34 +195,35 @@ export class CustomerDetailPdfService {
   private drawHeader(doc: jsPDF, title: string, caption: string): void {
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    doc.setFillColor(12, 37, 56);
-    doc.rect(0, 0, pageWidth, 42, 'F');
-
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(12, 37, 56);
     doc.text(COMPANY_PROFILE.name, 14, 16);
 
     doc.setFontSize(10);
-    doc.setTextColor(176, 230, 222);
+    doc.setTextColor(14, 143, 120);
     doc.text(title, 14, 26);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(219, 231, 236);
+    doc.setTextColor(70, 86, 102);
     doc.text(COMPANY_PROFILE.address, 14, 34);
     doc.text(`Contacto: ${COMPANY_PROFILE.contact} - Email: ${COMPANY_PROFILE.email}`, 14, 39);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(12, 37, 56);
     doc.text(caption, pageWidth - 14, 20, { align: 'right' });
+
+    doc.setDrawColor(14, 143, 120);
+    doc.setLineWidth(0.7);
+    doc.line(14, 42, pageWidth - 14, 42);
   }
 
   private drawMetricCard(doc: jsPDF, x: number, y: number, width: number, label: string, value: string): void {
-    doc.setFillColor(248, 251, 253);
     doc.setDrawColor(224, 231, 239);
-    doc.roundedRect(x, y, width, 26, 3, 3, 'FD');
+    doc.setLineWidth(0.2);
+    doc.roundedRect(x, y, width, 26, 3, 3, 'D');
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
@@ -241,9 +244,8 @@ export class CustomerDetailPdfService {
   }
 
   private drawInfoPanel(doc: jsPDF, x: number, y: number, width: number, rows: Array<[string, string]>): void {
-    doc.setFillColor(255, 255, 255);
     doc.setDrawColor(224, 231, 239);
-    doc.roundedRect(x, y, width, 42, 3, 3, 'FD');
+    doc.roundedRect(x, y, width, 42, 3, 3, 'D');
 
     rows.forEach(([label, value], index) => {
       const column = index % 4;
