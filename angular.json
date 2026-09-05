@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "CustomerDashboarAngularNgZorro": {
+    "WaterSystemManagementAngular": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -85,10 +85,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "CustomerDashboarAngularNgZorro:build:production"
+              "buildTarget": "WaterSystemManagementAngular:build:production"
             },
             "development": {
-              "buildTarget": "CustomerDashboarAngularNgZorro:build:development"
+              "buildTarget": "WaterSystemManagementAngular:build:development"
             }
           },
           "defaultConfiguration": "development"
