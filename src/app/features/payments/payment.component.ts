@@ -8,6 +8,7 @@ import {CustomerService} from '@core/services/customer.service';
 import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
 import {PaymentPayload, PaymentService} from '@core/services/payment.service';
 import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
+import {WaterReportPdfService} from '@core/services/water-report-pdf.service';
 
 @Component({
   selector: 'app-payment',
@@ -42,6 +43,7 @@ export class PaymentComponent implements OnInit {
     private paymentService: PaymentService,
     private customerService: CustomerService,
     private paymentInvoiceService: PaymentInvoiceService,
+    private reports: WaterReportPdfService,
     private message: NzMessageService,
     private fb: FormBuilder
   ) {
@@ -80,6 +82,10 @@ export class PaymentComponent implements OnInit {
     }
 
     return Number(this.selectedCustomer.monthlyFee || 0) * Number(this.selectedCustomer.monthsInDebt || 0);
+  }
+
+  get filteredReceivedAmount(): number {
+    return this.listOfDisplayData.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
   }
 
   @HostListener('window:resize')
@@ -254,6 +260,10 @@ export class PaymentComponent implements OnInit {
 
   download(payment: Payment): void {
     this.paymentInvoiceService.downloadPaymentInvoice(payment);
+  }
+
+  downloadPaymentList(): void {
+    this.reports.downloadPaymentList(this.listOfDisplayData);
   }
 
   formatMoney(value: number | null | undefined): string {

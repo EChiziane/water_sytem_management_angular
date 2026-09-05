@@ -32,6 +32,11 @@
       Novo cliente
     </button>
 
+    <button (click)="downloadCustomerList()" nz-button nzType="default">
+      <nz-icon nzTheme="outline" nzType="download"></nz-icon>
+      Baixar lista
+    </button>
+
     <div class="filter-actions">
       <button (click)="filterByDebt('ALL')" [class.active]="debtFilter === 'ALL'" nz-button nzType="default">
         Todos
@@ -201,6 +206,7 @@
             <p *ngIf="!isLoading && !hasActiveFilters">Comeca criando o primeiro cliente.</p>
             <div class="empty-actions" *ngIf="!isLoading">
               <button *ngIf="hasActiveFilters" (click)="reset()" nz-button nzType="default">Limpar filtros</button>
+              <button (click)="downloadCustomerList()" nz-button nzType="default">Baixar lista</button>
               <button (click)="openCustomerDrawer()" class="create-action" nz-button nzType="primary">Novo cliente</button>
             </div>
           </div>

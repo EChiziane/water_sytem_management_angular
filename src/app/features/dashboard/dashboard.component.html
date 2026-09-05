@@ -21,6 +21,11 @@
         <span nz-icon nzType="reload"></span>
         Atualizar
       </button>
+
+      <button (click)="downloadDashboardReport()" nz-button nzType="default">
+        <span nz-icon nzType="download"></span>
+        Relatorio
+      </button>
     </div>
   </div>
 
@@ -84,6 +89,21 @@
       </div>
 
       <div class="toolbar-actions">
+        <button (click)="exportLocalData('json')" nz-button nzType="default">
+          <span nz-icon nzType="database"></span>
+          JSON
+        </button>
+
+        <button (click)="exportLocalData('txt')" nz-button nzType="default">
+          <span nz-icon nzType="file-text"></span>
+          TXT
+        </button>
+
+        <button (click)="resetLocalData()" nz-button nzDanger nzType="default">
+          <span nz-icon nzType="reload"></span>
+          Reset local
+        </button>
+
         <button (click)="toggleAllDebtors()" nz-button nzType="default">
           {{ showAllDebtors ? 'Ver prioridades' : 'Ver todos devedores' }}
         </button>

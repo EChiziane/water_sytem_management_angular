@@ -57,6 +57,11 @@
         Limpar
       </button>
 
+      <button (click)="downloadPaymentList()" nz-button nzType="default">
+        <nz-icon nzTheme="outline" nzType="download"></nz-icon>
+        Baixar lista
+      </button>
+
       <button (click)="openPaymentDrawer()" class="primary-water-action" nz-button nzType="primary">
         <nz-icon nzTheme="outline" nzType="plus-circle"></nz-icon>
         Novo pagamento
@@ -139,6 +144,11 @@
   </ng-template>
 
   <section class="table-wrapper">
+    <div class="list-total-strip">
+      <span>Total filtrado</span>
+      <strong>{{ formatMoney(filteredReceivedAmount) }}</strong>
+    </div>
+
     <div class="table-scroll">
       <nz-spin [nzSpinning]="isLoading" nzSize="large" nzTip="A carregar pagamentos...">
         <nz-table

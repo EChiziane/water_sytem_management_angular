@@ -5,6 +5,7 @@ import {Customer} from '@shared/models/WSM/customer';
 import {CustomerPayload, CustomerService} from '@core/services/customer.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {NzModalService} from 'ng-zorro-antd/modal';
+import {WaterReportPdfService} from '@core/services/water-report-pdf.service';
 
 @Component({
   selector: 'app-customer',
@@ -50,6 +51,7 @@ export class CustomerComponent implements OnInit {
 
   constructor(
     private customerService: CustomerService,
+    private reports: WaterReportPdfService,
     private message: NzMessageService,
     private modal: NzModalService
   ) {
@@ -261,6 +263,10 @@ export class CustomerComponent implements OnInit {
       monthsInDebt: 1
     });
     this.isCustomerDrawerVisible = true;
+  }
+
+  downloadCustomerList(): void {
+    this.reports.downloadCustomerList(this.listOfDisplayData);
   }
 
   closeCustomerDrawer(): void {

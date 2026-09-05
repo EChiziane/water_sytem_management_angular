@@ -7,6 +7,9 @@ import {PaymentService} from '@core/services/payment.service';
 import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 import {Customer} from '@shared/models/WSM/customer';
 import {Payment} from '@shared/models/WSM/payment';
+import {WaterReportPdfService} from '@core/services/water-report-pdf.service';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
 
 type DashboardMetric = {
   label: string;
@@ -60,6 +63,9 @@ export class DashboardComponent implements OnInit {
   constructor(
     private customerService: CustomerService,
     private paymentService: PaymentService,
+    private reports: WaterReportPdfService,
+    private message: NzMessageService,
+    private modal: NzModalService,
     private router: Router
   ) {
   }
@@ -159,6 +165,38 @@ export class DashboardComponent implements OnInit {
 
   goToPayments(): void {
     this.router.navigate(['/app/payment']);
+  }
+
+  downloadDashboardReport(): void {
+    this.reports.downloadDashboardReport({
+      customers: this.customers,
+      payments: this.payments,
+      activeCustomers: this.activeCustomers,
+      customersWithDebt: this.customersWithDebt,
+      paidThisMonth: this.paidThisMonth,
+      totalDebt: this.totalDebt,
+      recentPayments: this.recentPayments,
+      topDebtors: this.topDebtors
+    });
+  }
+
+  exportLocalData(format: 'json' | 'txt'): void {
+    this.reports.downloadLocalDatabase(format);
+  }
+
+  resetLocalData(): void {
+    this.modal.confirm({
+      nzTitle: 'Resetar dados locais?',
+      nzContent: 'Esta acao remove apenas os dados guardados no localStorage e recarrega a base inicial local.',
+      nzOkText: 'Resetar',
+      nzOkDanger: true,
+      nzCancelText: 'Cancelar',
+      nzOnOk: () => {
+        this.reports.resetLocalDatabase();
+        this.message.success('Base local resetada.');
+        this.loadDashboard();
+      }
+    });
   }
 
   goToCustomerDetails(customer: Customer): void {
