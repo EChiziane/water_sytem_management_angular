@@ -57,6 +57,8 @@ import {DashboardComponent} from './features/dashboard/dashboard.component';
 import {PaymentDetailsComponent} from './features/payments/payment-details/payment-details.component';
 import {PaymentComponent} from './features/payments/payment.component';
 import {ProfileComponent} from './features/profile/profile.component';
+import {ReciboComponent} from './features/receipts/recibo.component';
+import {TranslatePipe} from '@shared/pipes/translate.pipe';
 
 registerLocaleData(en);
 
@@ -74,6 +76,8 @@ registerLocaleData(en);
     PaymentComponent,
     PaymentDetailsComponent,
     ProfileComponent,
+    ReciboComponent,
+    TranslatePipe,
     SigninComponent
   ],
   imports: [

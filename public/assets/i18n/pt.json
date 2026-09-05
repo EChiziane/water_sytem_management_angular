@@ -1,0 +1,49 @@
+{
+  "app": {
+    "name": "Water System Management",
+    "subtitle": "Operacao de agua",
+    "brandShort": "WS"
+  },
+  "layout": {
+    "sections": {
+      "operations": "Operacao",
+      "water": "Agua e clientes",
+      "finance": "Financeiro",
+      "account": "Conta"
+    },
+    "nav": {
+      "mobile": "Navegacao mobile",
+      "dashboard": "Dashboard",
+      "customers": "Clientes",
+      "payments": "Pagamentos",
+      "receipts": "Recibos",
+      "calendar": "Calendario",
+      "users": "Utilizadores",
+      "profile": "Perfil"
+    },
+    "topbar": {
+      "eyebrow": "Water System Management",
+      "subtitle": "Clientes, pagamentos e cobrancas"
+    },
+    "status": {
+      "online": "Sistema operacional",
+      "localFallback": "Backend ou modo local"
+    },
+    "account": {
+      "defaultUser": "Utilizador",
+      "authenticated": "Conta autenticada",
+      "secure": "Ambiente seguro",
+      "logout": "Sair"
+    },
+    "roles": {
+      "admin": "Administrador",
+      "manager": "Gestor",
+      "operator": "Operador"
+    },
+    "language": {
+      "label": "Idioma",
+      "ptInterface": "Interface em portugues",
+      "enInterface": "Interface in English"
+    }
+  }
+}

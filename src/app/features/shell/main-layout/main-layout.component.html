@@ -9,16 +9,16 @@
 
     <div class="brand">
       <div class="brand-mark">
-        <span>AC</span>
+        <span>{{ 'app.brandShort' | translate }}</span>
       </div>
 
       <div class="brand-copy">
-        <strong>Aguas Chiziane</strong>
-        <span>Water System</span>
+        <strong>{{ 'app.name' | translate }}</strong>
+        <span>{{ 'app.subtitle' | translate }}</span>
       </div>
     </div>
 
-    <div class="sidebar-section">Operacao</div>
+    <div class="sidebar-section">{{ 'layout.sections.operations' | translate }}</div>
 
     <ul
       [nzInlineCollapsed]="isCollapsed"
@@ -30,43 +30,49 @@
       <li nz-menu-item nzMatchRouter>
         <a routerLink="/app/dashboard">
           <span nz-icon nzType="dashboard"></span>
-          <span>Dashboard</span>
+          <span>{{ 'layout.nav.dashboard' | translate }}</span>
         </a>
       </li>
 
-      <li nz-submenu nzIcon="customer-service" nzOpen nzTitle="Agua e clientes">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/app/customer">
-              <span nz-icon nzType="team"></span>
-              <span>Clientes</span>
-            </a>
-          </li>
-
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/app/calendar">
-              <span nz-icon nzType="calendar"></span>
-              <span>Calendario</span>
-            </a>
-          </li>
-        </ul>
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/customer">
+          <span nz-icon nzType="team"></span>
+          <span>{{ 'layout.nav.customers' | translate }}</span>
+        </a>
       </li>
 
-      <li nz-submenu nzIcon="credit-card" nzTitle="Financeiro">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/app/payment">
-              <span nz-icon nzType="credit-card"></span>
-              <span>Pagamentos</span>
-            </a>
-          </li>
-        </ul>
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/payment">
+          <span nz-icon nzType="credit-card"></span>
+          <span>{{ 'layout.nav.payments' | translate }}</span>
+        </a>
+      </li>
+
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/receipts">
+          <span nz-icon nzType="file-text"></span>
+          <span>{{ 'layout.nav.receipts' | translate }}</span>
+        </a>
+      </li>
+
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/calendar">
+          <span nz-icon nzType="calendar"></span>
+          <span>{{ 'layout.nav.calendar' | translate }}</span>
+        </a>
       </li>
 
       <li *ngIf="isAdmin" nz-menu-item nzMatchRouter>
         <a routerLink="/app/users">
           <span nz-icon nzType="usergroup-add"></span>
-          <span>Utilizadores</span>
+          <span>{{ 'layout.nav.users' | translate }}</span>
+        </a>
+      </li>
+
+      <li nz-menu-item nzMatchRouter>
+        <a routerLink="/app/profile">
+          <span nz-icon nzType="user"></span>
+          <span>{{ 'layout.nav.profile' | translate }}</span>
         </a>
       </li>
     </ul>
@@ -75,7 +81,7 @@
       <span class="status-dot"></span>
       <div>
         <strong>Sistema ativo</strong>
-        <span>Operacao diaria</span>
+        <span>{{ 'layout.status.localFallback' | translate }}</span>
       </div>
     </div>
   </nz-sider>
@@ -91,14 +97,25 @@
       </button>
 
       <div class="topbar-title">
-        <span>Painel de gestao</span>
-        <strong>Clientes, pagamentos e cobrancas</strong>
+        <span>{{ 'layout.topbar.eyebrow' | translate }}</span>
+        <strong>{{ 'layout.topbar.subtitle' | translate }}</strong>
       </div>
 
       <div class="topbar-actions">
+        <button
+          [nzDropdownMenu]="languageMenu"
+          class="language-switch"
+          nz-dropdown
+          nzTrigger="click"
+          type="button">
+          <span nz-icon nzType="global"></span>
+          <span>{{ currentLanguageLabel }}</span>
+          <span nz-icon nzType="down"></span>
+        </button>
+
         <div class="operator-chip">
           <span nz-icon nzType="safety-certificate"></span>
-          <span>Ambiente seguro</span>
+          <span>{{ 'layout.account.secure' | translate }}</span>
         </div>
 
         <div [nzDropdownMenu]="userMenu" class="user-menu" nz-dropdown>
@@ -120,20 +137,34 @@
           <li nz-menu-item>
             <a routerLink="/app/profile">
               <span nz-icon nzType="user"></span>
-              Perfil
+              {{ 'layout.nav.profile' | translate }}
             </a>
           </li>
 
           <li *ngIf="isAdmin" nz-menu-item>
             <a routerLink="/app/users">
               <span nz-icon nzType="setting"></span>
-              Utilizadores
+              {{ 'layout.nav.users' | translate }}
             </a>
           </li>
 
           <li (click)="logout()" nz-menu-item>
             <span nz-icon nzType="logout"></span>
-            Logout
+            {{ 'layout.account.logout' | translate }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+
+      <nz-dropdown-menu #languageMenu="nzDropdownMenu">
+        <ul nz-menu class="language-menu">
+          <li
+            *ngFor="let language of translationService.languages"
+            (click)="changeLanguage(language.code)"
+            [class.active]="language.code === currentLanguage"
+            nz-menu-item>
+            <span class="language-option-code">{{ languageShortLabel(language.code) }}</span>
+            <span>{{ language.label }}</span>
+            <span *ngIf="language.code === currentLanguage" nz-icon nzType="check"></span>
           </li>
         </ul>
       </nz-dropdown-menu>
@@ -153,48 +184,59 @@
   [nzVisible]="isMobileMenuVisible"
   class="mobile-navigation-drawer"
   nzPlacement="left"
-  nzTitle="Aguas Chiziane"
+  [nzTitle]="'app.name' | translate"
   nzWidth="320px">
-  <nav *nzDrawerContent class="mobile-navigation" aria-label="Navegacao mobile">
+  <nav *nzDrawerContent class="mobile-navigation" [attr.aria-label]="'layout.nav.mobile' | translate">
     <a routerLink="/app/dashboard" routerLinkActive="active" (click)="closeMobileMenu()">
       <span nz-icon nzType="dashboard"></span>
-      <span>Dashboard</span>
+      <span>{{ 'layout.nav.dashboard' | translate }}</span>
     </a>
-
-    <div class="mobile-nav-section">Agua e clientes</div>
 
     <a routerLink="/app/customer" routerLinkActive="active" (click)="closeMobileMenu()">
       <span nz-icon nzType="team"></span>
-      <span>Clientes</span>
+      <span>{{ 'layout.nav.customers' | translate }}</span>
+    </a>
+
+    <a routerLink="/app/payment" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span nz-icon nzType="credit-card"></span>
+      <span>{{ 'layout.nav.payments' | translate }}</span>
+    </a>
+
+    <a routerLink="/app/receipts" routerLinkActive="active" (click)="closeMobileMenu()">
+      <span nz-icon nzType="file-text"></span>
+      <span>{{ 'layout.nav.receipts' | translate }}</span>
     </a>
 
     <a routerLink="/app/calendar" routerLinkActive="active" (click)="closeMobileMenu()">
       <span nz-icon nzType="calendar"></span>
-      <span>Calendario</span>
+      <span>{{ 'layout.nav.calendar' | translate }}</span>
     </a>
-
-    <div class="mobile-nav-section">Financeiro</div>
-
-    <a routerLink="/app/payment" routerLinkActive="active" (click)="closeMobileMenu()">
-      <span nz-icon nzType="credit-card"></span>
-      <span>Pagamentos</span>
-    </a>
-
-    <div class="mobile-nav-section">Conta</div>
 
     <a routerLink="/app/profile" routerLinkActive="active" (click)="closeMobileMenu()">
       <span nz-icon nzType="user"></span>
-      <span>Perfil</span>
+      <span>{{ 'layout.nav.profile' | translate }}</span>
     </a>
 
     <a *ngIf="isAdmin" routerLink="/app/users" routerLinkActive="active" (click)="closeMobileMenu()">
       <span nz-icon nzType="usergroup-add"></span>
-      <span>Utilizadores</span>
+      <span>{{ 'layout.nav.users' | translate }}</span>
     </a>
+
+    <div class="mobile-nav-section">{{ 'layout.language.label' | translate }}</div>
+
+    <button
+      *ngFor="let language of translationService.languages"
+      (click)="changeLanguage(language.code); closeMobileMenu()"
+      [class.active-language]="language.code === currentLanguage"
+      class="mobile-language"
+      type="button">
+      <span class="language-option-code">{{ languageShortLabel(language.code) }}</span>
+      <span>{{ language.label }}</span>
+    </button>
 
     <button (click)="logout()" class="mobile-logout" type="button">
       <span nz-icon nzType="logout"></span>
-      <span>Logout</span>
+      <span>{{ 'layout.account.logout' | translate }}</span>
     </button>
   </nav>
 </nz-drawer>

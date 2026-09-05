@@ -1,0 +1,49 @@
+{
+  "app": {
+    "name": "Water System Management",
+    "subtitle": "Water operations",
+    "brandShort": "WS"
+  },
+  "layout": {
+    "sections": {
+      "operations": "Operations",
+      "water": "Water and customers",
+      "finance": "Finance",
+      "account": "Account"
+    },
+    "nav": {
+      "mobile": "Mobile navigation",
+      "dashboard": "Dashboard",
+      "customers": "Customers",
+      "payments": "Payments",
+      "receipts": "Receipts",
+      "calendar": "Calendar",
+      "users": "Users",
+      "profile": "Profile"
+    },
+    "topbar": {
+      "eyebrow": "Water System Management",
+      "subtitle": "Customers, payments and collections"
+    },
+    "status": {
+      "online": "Operational system",
+      "localFallback": "Backend or local mode"
+    },
+    "account": {
+      "defaultUser": "User",
+      "authenticated": "Authenticated account",
+      "secure": "Secure environment",
+      "logout": "Logout"
+    },
+    "roles": {
+      "admin": "Administrator",
+      "manager": "Manager",
+      "operator": "Operator"
+    },
+    "language": {
+      "label": "Language",
+      "ptInterface": "Interface em portugues",
+      "enInterface": "Interface in English"
+    }
+  }
+}

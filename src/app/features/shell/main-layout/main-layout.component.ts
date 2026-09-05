@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthSessionService} from '@core/auth/auth-session.service';
 import {ROLE_LABELS} from '@shared/constants/app-labels';
+import {TranslationService} from '@core/services/translation.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -23,7 +24,8 @@ export class MainLayoutComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private session: AuthSessionService
+    private session: AuthSessionService,
+    public translationService: TranslationService
   ) {
   }
 
@@ -54,6 +56,30 @@ export class MainLayoutComponent implements OnInit {
   logout(): void {
     this.session.clear();
     this.router.navigate(['/landing-page']);
+  }
+
+  get currentLanguage(): string {
+    return this.translationService.currentLanguage;
+  }
+
+  get currentLanguageLabel(): string {
+    return this.translationService.languages.find(language => language.code === this.currentLanguage)?.label
+      || this.currentLanguage.toUpperCase();
+  }
+
+  changeLanguage(language: string): void {
+    if (language === this.currentLanguage) {
+      return;
+    }
+
+    this.translationService.use(language).subscribe(() => {
+      const user = this.session.getUser();
+      this.userRole = this.getRoleLabel(user?.role);
+    });
+  }
+
+  languageShortLabel(languageCode: string): string {
+    return languageCode.toUpperCase();
   }
 
   private getInitials(name: string): string {

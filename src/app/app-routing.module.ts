@@ -10,6 +10,7 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { PaymentDetailsComponent } from './features/payments/payment-details/payment-details.component';
 import { PaymentComponent } from './features/payments/payment.component';
 import { ProfileComponent } from './features/profile/profile.component';
+import { ReciboComponent } from './features/receipts/recibo.component';
 import { ListuserComponent } from './features/users/list-user/listuser.component';
 import { MainLayoutComponent } from '@features/shell/main-layout/main-layout.component';
 import { LoginComponent } from './pages/auth/login/login.component';
@@ -54,6 +55,10 @@ const routes: Routes = [
       {
         path: 'payment',
         component: PaymentComponent
+      },
+      {
+        path: 'receipts',
+        component: ReciboComponent
       },
       {
         path: 'payment-detail/:id',
