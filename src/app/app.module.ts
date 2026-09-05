@@ -3,11 +3,6 @@ import en from '@angular/common/locales/en';
 import {HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatButton} from '@angular/material/button';
-import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatOption, MatSelect} from '@angular/material/select';
 import {BrowserModule, provideClientHydration, withEventReplay} from '@angular/platform-browser';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {NzAlertComponent} from 'ng-zorro-antd/alert';
@@ -133,17 +128,7 @@ registerLocaleData(en);
     NzTableModule,
     NzTagComponent,
     NzThAddOnComponent,
-    NzTooltipDirective,
-
-    MatButton,
-    MatDatepicker,
-    MatDatepickerInput,
-    MatDatepickerToggle,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatOption,
-    MatSelect
+    NzTooltipDirective
   ],
   providers: [
     {
