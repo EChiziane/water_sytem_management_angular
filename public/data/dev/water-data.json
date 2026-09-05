@@ -1,0 +1,156 @@
+{
+  "version": "water-seed-development-2026-09-05",
+  "customers": [
+    {
+      "id": "customer-001",
+      "code": "WSM-001",
+      "name": "Ana Mucavel",
+      "contact": "+258 84 111 2201",
+      "address": "Matola Rio, Rua 12",
+      "status": "ATIVO",
+      "valve": 18,
+      "monthlyFee": 750,
+      "monthsInDebt": 0,
+      "unpaidMonths": [],
+      "createdAt": "2026-01-12T08:30:00.000Z"
+    },
+    {
+      "id": "customer-002",
+      "code": "WSM-002",
+      "name": "Carlos Nhantumbo",
+      "contact": "+258 85 222 3302",
+      "address": "Boane, Bairro 25 de Setembro",
+      "status": "ATIVO",
+      "valve": 24,
+      "monthlyFee": 750,
+      "monthsInDebt": 2,
+      "unpaidMonths": ["2026-07", "2026-08"],
+      "createdAt": "2026-02-04T10:15:00.000Z"
+    },
+    {
+      "id": "customer-003",
+      "code": "WSM-003",
+      "name": "Lidia Cossa",
+      "contact": "+258 87 333 4403",
+      "address": "Machava Socimol",
+      "status": "ATIVO",
+      "valve": 31,
+      "monthlyFee": 900,
+      "monthsInDebt": 3,
+      "unpaidMonths": ["2026-06", "2026-07", "2026-08"],
+      "createdAt": "2026-02-18T07:45:00.000Z"
+    },
+    {
+      "id": "customer-004",
+      "code": "WSM-004",
+      "name": "Helder Bila",
+      "contact": "+258 86 444 5504",
+      "address": "Tchumene 2",
+      "status": "INATIVO",
+      "valve": 12,
+      "monthlyFee": 750,
+      "monthsInDebt": 1,
+      "unpaidMonths": ["2026-08"],
+      "createdAt": "2026-03-09T12:20:00.000Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": "payment-001",
+      "referenceCode": "REC-2026-0001",
+      "customerId": "customer-001",
+      "customerName": "Ana Mucavel",
+      "customerContact": "+258 84 111 2201",
+      "customerAddress": "Matola Rio, Rua 12",
+      "customerValve": 18,
+      "monthlyFee": 750,
+      "amount": 750,
+      "tax": 0,
+      "unitPrice": 750,
+      "confirmed": true,
+      "referenceMonth": "2026-08",
+      "numMonths": 1,
+      "paymentDate": "2026-09-02T09:40:00.000Z",
+      "paymentMethod": "CASH",
+      "createdBy": "user-admin",
+      "createdByName": "Administrador"
+    },
+    {
+      "id": "payment-002",
+      "referenceCode": "REC-2026-0002",
+      "customerId": "customer-002",
+      "customerName": "Carlos Nhantumbo",
+      "customerContact": "+258 85 222 3302",
+      "customerAddress": "Boane, Bairro 25 de Setembro",
+      "customerValve": 24,
+      "monthlyFee": 750,
+      "amount": 750,
+      "tax": 0,
+      "unitPrice": 750,
+      "confirmed": true,
+      "referenceMonth": "2026-06",
+      "numMonths": 1,
+      "paymentDate": "2026-08-28T14:10:00.000Z",
+      "paymentMethod": "MPESA",
+      "createdBy": "user-admin",
+      "createdByName": "Administrador"
+    }
+  ],
+  "receipts": [
+    {
+      "id": "receipt-001",
+      "invoiceCode": "REC-2026-0001",
+      "paymentId": "payment-001",
+      "customerName": "Ana Mucavel",
+      "fileName": "RECIBO_REC-2026-0001.pdf",
+      "filePath": "local://receipts/REC-2026-0001",
+      "total": "750.00 MT",
+      "monthDescription": "Agosto 2026",
+      "createdAt": "2026-09-02T09:40:00.000Z",
+      "payment": {
+        "id": "payment-001",
+        "referenceCode": "REC-2026-0001",
+        "customerId": "customer-001",
+        "customerName": "Ana Mucavel",
+        "customerContact": "+258 84 111 2201",
+        "customerAddress": "Matola Rio, Rua 12",
+        "customerValve": 18,
+        "monthlyFee": 750,
+        "amount": 750,
+        "tax": 0,
+        "unitPrice": 750,
+        "confirmed": true,
+        "referenceMonth": "2026-08",
+        "numMonths": 1,
+        "paymentDate": "2026-09-02T09:40:00.000Z",
+        "paymentMethod": "CASH",
+        "createdBy": "user-admin",
+        "createdByName": "Administrador"
+      }
+    }
+  ],
+  "users": [
+    {
+      "id": "user-admin",
+      "name": "Administrador",
+      "password": "admin123",
+      "email": "admin@watersystem.local",
+      "status": "ACTIVE",
+      "phone": "+258 84 000 0000",
+      "login": "admin",
+      "role": "ADMIN",
+      "createdAt": "2026-01-01T08:00:00.000Z"
+    },
+    {
+      "id": "user-operator",
+      "name": "Operador Local",
+      "password": "operator123",
+      "email": "operator@watersystem.local",
+      "status": "ACTIVE",
+      "phone": "+258 85 000 0000",
+      "login": "operator",
+      "role": "OPERATOR",
+      "createdAt": "2026-01-02T08:00:00.000Z"
+    }
+  ]
+}

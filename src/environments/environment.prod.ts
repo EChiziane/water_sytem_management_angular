@@ -1,4 +1,8 @@
-export const environment  = {
+export const environment = {
+  name: 'production',
   production: true,
-  baseURL: 'https://water-sytem-management-java.onrender.com'
+  useLocalFallback: true,
+  baseURL: 'https://water-sytem-management-java.onrender.com',
+  waterDataSourcePath: '/data/prod/water-data.json',
+  waterStorageKey: 'water-system-management-state-production'
 };

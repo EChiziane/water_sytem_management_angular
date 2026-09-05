@@ -1,0 +1,19 @@
+{
+  "version": "water-seed-production-2026-09-05",
+  "customers": [],
+  "payments": [],
+  "receipts": [],
+  "users": [
+    {
+      "id": "user-admin",
+      "name": "Administrador",
+      "password": "admin123",
+      "email": "admin@watersystem.local",
+      "status": "ACTIVE",
+      "phone": "+258 84 000 0000",
+      "login": "admin",
+      "role": "ADMIN",
+      "createdAt": "2026-01-01T08:00:00.000Z"
+    }
+  ]
+}
