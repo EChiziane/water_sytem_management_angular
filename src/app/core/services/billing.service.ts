@@ -40,7 +40,7 @@ export class BillingService {
       )
       .pipe(
         take(1),
-        catchError(() => of('Sincronizacao local concluida.'))
+        catchError(() => this.localData.syncBilling())
       );
   }
 

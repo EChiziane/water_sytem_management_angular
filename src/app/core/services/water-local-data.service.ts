@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, catchError, map, of, tap} from 'rxjs';
+import {BehaviorSubject, Observable, catchError, map, of, tap} from 'rxjs';
 
 import {environment} from '../../../environments/environments';
 import {MonthlyCharge} from '@shared/models/monthly-charge';
@@ -10,6 +10,7 @@ import {Payment} from '@shared/models/WSM/payment';
 import {PaymentPayload} from '@core/services/payment.service';
 import {Recibo} from '@shared/models/WSM/Recibo';
 import {User} from '@shared/models/user';
+import {isOverdueMonth, recoverLocalBilling} from '@shared/utils/billing-recovery';
 
 interface WaterState {
   customers: Customer[];
@@ -33,6 +34,7 @@ type UserPayload = Partial<Pick<User, 'name' | 'email' | 'phone' | 'login' | 'pa
   providedIn: 'root'
 })
 export class WaterLocalDataService {
+  readonly isLocalMode$ = new BehaviorSubject(false);
   private readonly storageKey = environment.waterStorageKey;
   private readonly dataSourcePath = environment.waterDataSourcePath;
   private sourceState: WaterSourceState | null = null;
@@ -345,7 +347,7 @@ export class WaterLocalDataService {
   }
 
   getCustomerDebtCount(customerId: string): Observable<number> {
-    return this.getCustomerUnpaidMonths(customerId).pipe(map(items => items.length));
+    return this.getCustomerUnpaidMonths(customerId).pipe(map(items => items.filter(item => isOverdueMonth(item.referenceMonth)).length));
   }
 
   exportState(format: 'json' | 'txt' = 'json'): string {
@@ -368,14 +370,15 @@ export class WaterLocalDataService {
   }
 
   private state$(): Observable<WaterState> {
+    this.isLocalMode$.next(true);
     const stored = this.readStoredState();
 
     if (stored) {
-      return of(stored);
+      return of(this.recoverBilling(stored));
     }
 
     if (this.sourceState) {
-      const state = this.cloneState(this.sourceState);
+      const state = this.recoverBilling(this.cloneState(this.sourceState));
       this.save(state);
       return of(state);
     }
@@ -384,7 +387,7 @@ export class WaterLocalDataService {
       map(source => this.normalizeSourceState(source)),
       tap(source => this.sourceState = source),
       map(source => {
-        const state = this.cloneState(source);
+        const state = this.recoverBilling(this.cloneState(source));
         this.save(state);
         return state;
       }),
@@ -396,6 +399,19 @@ export class WaterLocalDataService {
         return of(state);
       })
     );
+  }
+
+  private recoverBilling(state: WaterState): WaterState {
+    const recovered = recoverLocalBilling(state.customers, state.payments);
+    if (JSON.stringify(recovered) !== JSON.stringify(state.customers)) {
+      state.customers = recovered;
+      this.save(state);
+    }
+    return state;
+  }
+
+  syncBilling(): Observable<string> {
+    return this.state$().pipe(map(() => 'Mensalidades de demonstração atualizadas localmente.'));
   }
 
   private normalizeSourceState(source: WaterSourceState): WaterSourceState {
@@ -497,7 +513,7 @@ export class WaterLocalDataService {
       (customer.unpaidMonths || []).map(month => this.chargeFromCustomer(customer, month, false))
     );
 
-    const paid = state.payments.map(payment => this.chargeFromPayment(payment));
+    const paid = state.payments.filter(payment => payment.confirmed).map(payment => this.chargeFromPayment(payment));
     return [...unpaid, ...paid].sort((a, b) => b.referenceMonth.localeCompare(a.referenceMonth));
   }
 

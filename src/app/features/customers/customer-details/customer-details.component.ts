@@ -30,6 +30,7 @@ import { CustomerDetailPdfService } from '@core/services/customer-detail-pdf.ser
 import {MonthlyCharge} from '@shared/models/monthly-charge';
 import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 import {money} from '@shared/utils/payment-presentation';
+import {isOverdueMonth} from '@shared/utils/billing-recovery';
 
 @Component({
   selector: 'app-customer-details',
@@ -173,8 +174,10 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   get debtStatusLabel(): string {
-    return this.customer?.monthsInDebt > 0 ? 'Em divida' : 'Em dia';
+    return this.customer?.monthsInDebt > 0 ? 'Em dívida' : 'Sem dívida vencida';
   }
+
+  isOverdue(month: string): boolean { return isOverdueMonth(month); }
 
   get debtStatusColor(): string {
     return this.customer?.monthsInDebt > 0 ? 'volcano' : 'green';
@@ -273,7 +276,7 @@ export class CustomerDetailsComponent implements OnInit {
           else {
 
             this.monthlyTimeline =
-              this.generateTimelineFromCustomer();
+              [];
           }
 
           this.unpaidTimeline =
@@ -299,7 +302,7 @@ export class CustomerDetailsComponent implements OnInit {
         error: () => {
 
           this.monthlyTimeline =
-            this.generateTimelineFromCustomer();
+            [];
 
           this.unpaidTimeline =
             this.monthlyTimeline.filter(
@@ -322,63 +325,6 @@ export class CustomerDetailsComponent implements OnInit {
         }
       });
   }
-
-  generateTimelineFromCustomer(): MonthlyCharge[] {
-
-    if (!this.customer?.createdAt) {
-      return [];
-    }
-
-    const timeline: MonthlyCharge[] = [];
-
-    const createdDate =
-      new Date(this.customer.createdAt);
-
-    const today =
-      new Date();
-
-    const current =
-      new Date(
-        createdDate.getFullYear(),
-        createdDate.getMonth(),
-        1
-      );
-
-    while (current <= today) {
-
-      const year =
-        current.getFullYear();
-
-      const month =
-        current.getMonth() + 1;
-
-      const reference =
-        `${year}-${String(month).padStart(2, '0')}`;
-
-      const unpaid =
-        this.customer.unpaidMonths?.includes(reference);
-
-      timeline.push({
-        referenceYear: year,
-
-        referenceMonth: month,
-
-        paid: !unpaid,
-
-        amount: this.customer.monthlyFee || 0
-      } as unknown as MonthlyCharge);
-
-      current.setMonth(
-        current.getMonth() + 1
-      );
-    }
-
-    return timeline.reverse();
-  }
-
-  // =====================================================
-  // GET PAYMENTS
-  // =====================================================
 
   getCustomerPayments(): void {
 
@@ -554,8 +500,7 @@ export class CustomerDetailsComponent implements OnInit {
   openPaymentDrawer(): void {
 
     if (
-      !this.customer?.monthsInDebt ||
-      this.customer.monthsInDebt <= 0
+      !this.customer?.unpaidMonths?.length
     ) {
 
       this.message.warning(

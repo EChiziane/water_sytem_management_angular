@@ -102,6 +102,7 @@
       </div>
 
       <div class="topbar-actions">
+        <span *ngIf="localData.isLocalMode$ | async" class="local-mode-label" role="status">{{ 'layout.status.demoActive' | translate }}</span>
         <button
           [nzDropdownMenu]="languageMenu"
           class="language-switch"

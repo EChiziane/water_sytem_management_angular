@@ -105,7 +105,7 @@ export class PaymentComponent implements OnInit {
   loadCustomers(): void {
     this.customerService.getCustomers().subscribe({
       next: customers => {
-        this.allCustomers = customers.filter(customer => (customer.monthsInDebt || 0) > 0);
+        this.allCustomers = customers.filter(customer => (customer.unpaidMonths?.length || 0) > 0);
       },
       error: () => this.message.error('Erro ao carregar clientes.')
     });

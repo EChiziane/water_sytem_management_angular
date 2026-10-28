@@ -10,7 +10,7 @@
         <button (click)="goToCustomers()" nz-button><nz-icon nzType="arrow-left"></nz-icon> Clientes</button>
         <div class="customer-actions">
           <button (click)="downloadCustomerInfo()" nz-button><nz-icon nzType="download"></nz-icon> Descarregar PDF</button>
-          <button (click)="openPaymentDrawer()" [disabled]="!customer.monthsInDebt" nz-button nzType="primary"><nz-icon nzType="plus-circle"></nz-icon> Novo pagamento</button>
+          <button (click)="openPaymentDrawer()" [disabled]="!customer.unpaidMonths?.length" nz-button nzType="primary"><nz-icon nzType="plus-circle"></nz-icon> Novo pagamento</button>
         </div>
       </div>
       <article class="customer-sheet" aria-label="Ficha do cliente">
@@ -34,16 +34,16 @@
             <div><dt>Meses em dívida</dt><dd>{{ customer.monthsInDebt || 0 }}</dd></div>
             <div><dt>Pagamentos registados</dt><dd>{{ totalPayments }}</dd></div>
             <div><dt>Último pagamento</dt><dd>{{ lastPaymentDate ? (lastPaymentDate | date:'dd/MM/yyyy HH:mm') : 'Sem pagamentos' }}</dd></div>
-            <div class="open-periods"><dt>Períodos em aberto</dt><dd><ul *ngIf="debtMonths.length; else noDebtMonths" class="period-list"><li *ngFor="let month of debtMonths">{{ month }}</li></ul><ng-template #noDebtMonths>Sem períodos pendentes</ng-template></dd></div>
+            <div class="open-periods"><dt>Períodos por pagar</dt><dd><ul *ngIf="debtMonths.length; else noDebtMonths" class="period-list"><li *ngFor="let month of debtMonths">{{ month }}</li></ul><ng-template #noDebtMonths>Sem períodos pendentes</ng-template></dd></div>
           </dl>
         </section>
         <section class="sheet-section table-section">
-          <div class="section-heading"><h2>Movimentos por período</h2><span class="section-meta">Períodos: {{ totalTimelineMonths }} · Pagos: {{ totalPaidMonths }} · Em dívida: {{ totalUnpaidMonths }}</span></div>
+          <div class="section-heading"><h2>Movimentos por período</h2><span class="section-meta">Períodos: {{ totalTimelineMonths }} · Pagos: {{ totalPaidMonths }} · Pendentes: {{ totalUnpaidMonths }}</span></div>
           <nz-table #timelineTable [nzData]="monthlyTimeline" [nzNoResult]="emptyTimeline" [nzScroll]="{ x: '900px' }" nzSize="small" nzTableLayout="fixed" [nzHideOnSinglePage]="true">
             <thead><tr><th nzWidth="140px">Mês</th><th nzWidth="95px">Estado</th><th nzWidth="130px">Responsável</th><th nzWidth="150px">Recibo</th><th nzWidth="140px">Data do pagamento</th><th nzWidth="100px">Valor</th><th nzWidth="90px">Método</th><th nzWidth="65px">Ações</th></tr></thead>
             <tbody><tr *ngFor="let month of timelineTable.data">
               <td>{{ formatTimelineMonth(month) }}</td>
-              <td><span class="row-status" [class.has-debt]="!month.paid">{{ month.paid ? 'Pago' : 'Em dívida' }}</span></td>
+              <td><span class="row-status" [class.has-debt]="!month.paid && isOverdue(month.referenceMonth)">{{ month.paid ? 'Pago' : (isOverdue(month.referenceMonth) ? 'Em dívida' : 'Pendente') }}</span></td>
               <td>{{ month.createdByName || '—' }}</td>
               <td>{{ month.paymentReferenceCode || '—' }}</td>
               <td>{{ month.paymentDate ? (month.paymentDate | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
@@ -143,7 +143,7 @@
             <nz-form-control>
               <input
                 (input)="onNumMonthsChange()"
-                [max]="customer.monthsInDebt"
+                [max]="customer.unpaidMonths.length"
                 [min]="1"
                 formControlName="numMonths"
                 nz-input

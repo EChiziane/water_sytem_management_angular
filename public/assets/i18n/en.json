@@ -27,7 +27,8 @@
     },
     "status": {
       "online": "Operational system",
-      "localFallback": "Backend or local mode"
+      "localFallback": "Backend or local mode",
+      "demoActive": "Demo · local data"
     },
     "account": {
       "defaultUser": "User",

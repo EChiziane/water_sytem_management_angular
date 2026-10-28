@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {WaterLocalDataService} from '@core/services/water-local-data.service';
 import {Router} from '@angular/router';
 import {AuthSessionService} from '@core/auth/auth-session.service';
 import {ROLE_LABELS} from '@shared/constants/app-labels';
@@ -25,6 +26,7 @@ export class MainLayoutComponent implements OnInit {
   constructor(
     private router: Router,
     private session: AuthSessionService,
+    public localData: WaterLocalDataService,
     public translationService: TranslationService
   ) {
   }

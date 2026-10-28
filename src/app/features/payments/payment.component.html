@@ -289,7 +289,7 @@
             <nz-form-control>
               <input
                 (input)="onNumMonthsChange()"
-                [max]="selectedCustomer.monthsInDebt || 1"
+                [max]="selectedCustomer.unpaidMonths.length || 1"
                 [min]="1"
                 formControlName="numMonths"
                 nz-input
