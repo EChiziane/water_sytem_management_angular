@@ -1,287 +1,44 @@
-<section class="dashboard-page">
-  <div class="dashboard-hero">
-    <div class="hero-copy">
-      <span class="eyebrow">Visao geral</span>
-      <h1>{{ operationHeadline }}</h1>
-      <p>{{ operationSubline }}</p>
-    </div>
-
-    <div class="hero-actions">
-      <button (click)="goToCustomers()" class="primary-water-action" nz-button nzType="primary">
-        <span nz-icon nzType="team"></span>
-        Clientes
-      </button>
-
-      <button (click)="goToPayments()" nz-button nzType="default">
-        <span nz-icon nzType="credit-card"></span>
-        Pagamentos
-      </button>
-
-      <button (click)="loadDashboard()" nz-button nzType="default">
-        <span nz-icon nzType="reload"></span>
-        Atualizar
-      </button>
-
-      <button (click)="downloadDashboardReport()" nz-button nzType="default">
-        <span nz-icon nzType="download"></span>
-        Relatorio
-      </button>
-    </div>
-  </div>
-
-  <nz-spin [nzSpinning]="isLoading" nzSize="large" nzTip="A carregar dashboard...">
-    <div class="metric-grid">
-      <article *ngFor="let metric of metrics" class="metric-card" [class]="'metric-card tone-' + metric.tone">
-        <div class="metric-icon">
-          <span nz-icon [nzType]="metric.icon"></span>
-        </div>
-
-        <div class="metric-copy">
-          <span>{{ metric.label }}</span>
-          <strong>{{ metric.value }}</strong>
-          <small>{{ metric.hint }}</small>
-        </div>
-      </article>
-    </div>
-
-    <div class="operator-strip" aria-label="Atalhos operacionais">
-      <button (click)="scrollToPanel('debtors')" nz-button nzType="default">
-        <span nz-icon nzType="clock-circle"></span>
-        Dividas <strong>{{ customersWithDebt }}</strong>
-      </button>
-
-      <button (click)="scrollToPanel('payments')" nz-button nzType="default">
-        <span nz-icon nzType="credit-card"></span>
-        Recebido <strong>{{ formatMoney(paidThisMonth) }}</strong>
-      </button>
-
-      <button (click)="scrollToPanel('health')" nz-button nzType="default">
-        <span nz-icon nzType="check-circle"></span>
-        Ativos <strong>{{ activeCustomers }}</strong>
-      </button>
-    </div>
-
-    <div class="toolbar">
-      <div class="search-box">
-        <input
-          (ngModelChange)="applyFilters()"
-          [(ngModel)]="searchValue"
-          nz-input
-          placeholder="Pesquisar cliente, codigo, contacto ou endereco"
-        />
-      </div>
-
-      <div class="quick-filters">
-        <button (click)="filterAll()" [class.active]="filterMode === 'ALL'" nz-button nzType="default">
-          <span nz-icon nzType="dashboard"></span>
-          Todos
-        </button>
-
-        <button (click)="filterDebt()" [class.active]="filterMode === 'DEBT'" nz-button nzType="default">
-          <span nz-icon nzType="clock-circle"></span>
-          Com divida
-        </button>
-
-        <button (click)="filterActive()" [class.active]="filterMode === 'ACTIVE'" nz-button nzType="default">
-          <span nz-icon nzType="check-circle"></span>
-          Ativos
-        </button>
-      </div>
-
-      <div class="toolbar-actions">
-        <button (click)="exportLocalData('json')" nz-button nzType="default">
-          <span nz-icon nzType="database"></span>
-          JSON
-        </button>
-
-        <button (click)="exportLocalData('txt')" nz-button nzType="default">
-          <span nz-icon nzType="file-text"></span>
-          TXT
-        </button>
-
-        <button (click)="resetLocalData()" nz-button nzDanger nzType="default">
-          <span nz-icon nzType="reload"></span>
-          Reset local
-        </button>
-
-        <button (click)="toggleAllDebtors()" nz-button nzType="default">
-          {{ showAllDebtors ? 'Ver prioridades' : 'Ver todos devedores' }}
-        </button>
-
-        <button (click)="resetFilters()" nz-button nzType="default">Limpar</button>
-      </div>
-    </div>
-
-    <div class="operations-grid">
-      <section id="water-debtors" class="operation-panel priority-panel">
-        <header>
-          <div>
-            <span class="panel-kicker">Precisa de tratamento</span>
-            <h2>Clientes com divida</h2>
-          </div>
-          <nz-tag nzColor="orange">{{ visibleDebtors.length }}</nz-tag>
-        </header>
-
-        <div class="panel-body">
-          <ng-container *ngIf="visibleDebtors.length; else emptyDebtors">
-            <article
-              *ngFor="let customer of visibleDebtors; trackBy: trackById"
-              class="priority-item"
-              [ngClass]="debtTone(customer)">
-              <div class="priority-main">
-                <span>{{ customer.monthsInDebt }} mes(es) em atraso</span>
-                <strong>{{ customer.name }}</strong>
-                <small>{{ customer.code || 'Sem codigo' }} - {{ customer.contact || 'Sem contacto' }}</small>
-              </div>
-
-              <div class="priority-actions">
-                <b>{{ formatMoney(customer.debtAmount) }}</b>
-                <button (click)="goToCustomerDetails(customer)" nz-button nzSize="small" nzType="default">Ver</button>
-              </div>
-            </article>
-          </ng-container>
-
-          <ng-template #emptyDebtors>
-            <div class="empty-state compact-empty">
-              <span nz-icon nzType="check-circle"></span>
-              <p>Sem clientes em divida.</p>
-              <button (click)="goToCustomers()" class="primary-water-action" nz-button nzSize="small" nzType="primary">Ver clientes</button>
-            </div>
-          </ng-template>
-        </div>
-      </section>
-
-      <section id="water-payments" class="operation-panel payments-panel">
-        <header>
-          <div>
-            <span class="panel-kicker">Movimento recente</span>
-            <h2>Ultimos pagamentos</h2>
-          </div>
-          <nz-tag nzColor="green">{{ recentPayments.length }}</nz-tag>
-        </header>
-
-        <div class="panel-body">
-          <ng-container *ngIf="recentPayments.length; else emptyPayments">
-            <article *ngFor="let payment of recentPayments; trackBy: trackById" class="payment-card">
-              <div class="payment-avatar">
-                <span nz-icon nzType="credit-card"></span>
-              </div>
-
-              <div class="payment-copy">
-                <strong>{{ payment.customerName || '-' }}</strong>
-                <ul class="payment-month-bullets" *ngIf="getReferenceMonths(payment.referenceMonth).length; else noPaymentMonths">
-                  <li *ngFor="let month of getReferenceMonths(payment.referenceMonth)">{{ month }}</li>
-                </ul>
-                <ng-template #noPaymentMonths>
-                  <span>-</span>
-                </ng-template>
-                <small>{{ formatDate(payment.paymentDate) }} - {{ payment.paymentMethod || 'Metodo nao informado' }}</small>
-              </div>
-
-              <b>{{ formatMoney(payment.amount) }}</b>
-            </article>
-          </ng-container>
-
-          <ng-template #emptyPayments>
-            <div class="empty-state compact-empty">
-              <span nz-icon nzType="credit-card"></span>
-              <p>Sem pagamentos recentes.</p>
-              <button (click)="goToPayments()" class="primary-water-action" nz-button nzSize="small" nzType="primary">Registar pagamento</button>
-            </div>
-          </ng-template>
-        </div>
-      </section>
-
-      <section id="water-health" class="operation-panel health-panel">
-        <header>
-          <div>
-            <span class="panel-kicker">Estado atual</span>
-            <h2>Saude da carteira</h2>
-          </div>
-          <nz-tag nzColor="green">{{ filteredCustomers.length }}</nz-tag>
-        </header>
-
-        <div class="panel-body">
-          <div class="health-list">
-            <div>
-              <span>Clientes filtrados</span>
-              <strong>{{ filteredCustomers.length }}</strong>
-            </div>
-
-            <div>
-              <span>Clientes ativos</span>
-              <strong>{{ activeCustomers }}</strong>
-            </div>
-
-            <div>
-              <span>Clientes inativos</span>
-              <strong>{{ inactiveCustomers }}</strong>
-            </div>
-
-            <div>
-              <span>Divida estimada</span>
-              <strong>{{ formatMoney(totalDebt) }}</strong>
-            </div>
-
-            <div>
-              <span>Recebido este mes</span>
-              <strong>{{ formatMoney(paidThisMonth) }}</strong>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <div class="analytics-grid">
-      <section class="panel payments-chart">
-        <div class="panel-header">
-          <div>
-            <span>Ultimos meses</span>
-            <h2>Pagamentos recebidos</h2>
-          </div>
-        </div>
-
-        <div *ngIf="monthlyPayments.length; else emptyChart" class="bars">
-          <div *ngFor="let month of monthlyPayments" class="bar-row">
-            <span class="bar-label">{{ month.label }}</span>
-            <div class="bar-track">
-              <div class="bar-fill" [style.width.%]="month.width"></div>
-            </div>
-            <strong>{{ month.amount }}</strong>
-          </div>
-        </div>
-
-        <ng-template #emptyChart>
-          <nz-empty nzNotFoundContent="Sem pagamentos para apresentar"></nz-empty>
-        </ng-template>
-      </section>
-
-      <section class="panel customer-snapshot">
-        <div class="panel-header">
-          <div>
-            <span>Pesquisa atual</span>
-            <h2>Clientes encontrados</h2>
-          </div>
-
-          <a routerLink="/app/customer">Ver clientes</a>
-        </div>
-
-        <div *ngIf="filteredCustomers.length; else emptyCustomers" class="customer-list">
-          <article *ngFor="let customer of filteredCustomers.slice(0, 6); trackBy: trackById">
-            <div>
-              <strong>{{ customer.name }}</strong>
-              <span>{{ customer.address || 'Sem endereco' }}</span>
-            </div>
-            <nz-tag [nzColor]="customer.monthsInDebt > 0 ? 'orange' : 'green'">
-              {{ customer.monthsInDebt > 0 ? customer.monthsInDebt + ' mes(es)' : 'Em dia' }}
-            </nz-tag>
-          </article>
-        </div>
-
-        <ng-template #emptyCustomers>
-          <nz-empty nzNotFoundContent="Sem clientes para apresentar"></nz-empty>
-        </ng-template>
-      </section>
-    </div>
+<div class="dashboard-page">
+  <header class="dashboard-heading">
+    <div><h1>{{ 'dashboardHome.title' | translate }}</h1><p>{{ 'dashboardHome.subtitle' | translate }}</p><span class="dashboard-date">{{ 'dashboardHome.today' | translate }}: {{ asOf | date:'dd/MM/yyyy':'+0200' }} · Maputo</span></div>
+    <button nz-button (click)="loadDashboard()" [disabled]="isLoading"><nz-icon nzType="reload"></nz-icon> {{ 'dashboardHome.refresh' | translate }}</button>
+  </header>
+  <nz-spin [nzSpinning]="isLoading">
+    <p *ngIf="loadFailed" class="dashboard-error" role="alert">{{ 'dashboardHome.error' | translate }}</p>
+    <section *ngIf="!loadFailed" class="operational-counts" [attr.aria-label]="'dashboardHome.overview' | translate">
+      <div><span>{{ 'dashboardHome.total' | translate }}</span><strong>{{ isLoading ? '—' : totalCustomers }}</strong></div>
+      <div><span>{{ 'dashboardHome.active' | translate }}</span><strong>{{ isLoading ? '—' : activeCustomers }}</strong></div>
+      <div><span>{{ 'dashboardHome.inactive' | translate }}</span><strong>{{ isLoading ? '—' : inactiveCustomers }}</strong></div>
+    </section>
   </nz-spin>
-</section>
+
+  <div class="dashboard-activity" [attr.aria-busy]="isLoading">
+    <section class="activity-panel" aria-labelledby="recent-payments-heading">
+      <header><div><h2 id="recent-payments-heading">{{ 'dashboardHome.recentPayments' | translate }}</h2><p>{{ 'dashboardHome.latestTen' | translate }} · {{ asOf | date:'MM/yyyy':'+0200' }}</p></div><a routerLink="/app/payment">{{ 'dashboardHome.viewMore' | translate }} <nz-icon nzType="arrow-right"></nz-icon></a></header>
+      <p *ngIf="isLoading" class="activity-empty">{{ 'dashboardHome.loading' | translate }}</p>
+      <p *ngIf="!isLoading && paymentsFailed" class="activity-empty" role="alert">{{ 'dashboardHome.paymentsError' | translate }}</p>
+      <ng-container *ngIf="!isLoading && !paymentsFailed">
+        <ul class="activity-list"><li *ngFor="let payment of recentPayments"><a [routerLink]="['/app/payment-detail', payment.id]"><div class="activity-person"><strong>{{ payment.customerName || '—' }}</strong><span>{{ payment.referenceCode || '—' }} · {{ payment.confirmed ? ('dashboardHome.confirmed' | translate) : ('dashboardHome.pending' | translate) }}</span></div><time>{{ paymentDate(payment) | date:'dd/MM HH:mm':'+0200' }}</time><nz-icon nzType="arrow-right"></nz-icon></a></li></ul>
+        <p *ngIf="!recentPayments.length" class="activity-empty">{{ 'dashboardHome.noPayments' | translate }}</p>
+      </ng-container>
+    </section>
+    <section class="activity-panel" aria-labelledby="debtors-heading">
+      <header><div><h2 id="debtors-heading">{{ 'dashboardHome.debtors' | translate }}</h2><p>{{ 'dashboardHome.debtorsHint' | translate }}</p></div><a routerLink="/app/customer">{{ 'dashboardHome.viewMore' | translate }} <nz-icon nzType="arrow-right"></nz-icon></a></header>
+      <p *ngIf="isLoading" class="activity-empty">{{ 'dashboardHome.loading' | translate }}</p>
+      <p *ngIf="!isLoading && loadFailed" class="activity-empty" role="alert">{{ 'dashboardHome.customersError' | translate }}</p>
+      <ng-container *ngIf="!isLoading && !loadFailed">
+        <ul class="activity-list"><li *ngFor="let customer of debtors"><a [routerLink]="['/app/customer-detail', customer.id]"><div class="activity-person"><strong>{{ customer.name }}</strong><span>{{ customer.code || '—' }}</span></div><span class="debt-period-count">{{ customer.monthsInDebt }} {{ (customer.monthsInDebt === 1 ? 'dashboardHome.monthOpen' : 'dashboardHome.monthsOpen') | translate }}</span><nz-icon nzType="arrow-right"></nz-icon></a></li></ul>
+        <p *ngIf="!debtors.length" class="activity-empty">{{ 'dashboardHome.noDebtors' | translate }}</p>
+      </ng-container>
+    </section>
+  </div>
+  <section class="dashboard-workspace">
+    <h2>{{ 'dashboardHome.shortcuts' | translate }}</h2>
+    <nav class="dashboard-links" [attr.aria-label]="'dashboardHome.shortcuts' | translate">
+      <a routerLink="/app/customer"><nz-icon nzType="team"></nz-icon><div><strong>{{ 'dashboardHome.customers' | translate }}</strong><span>{{ 'dashboardHome.customersHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
+      <a routerLink="/app/payment"><nz-icon nzType="credit-card"></nz-icon><div><strong>{{ 'dashboardHome.payments' | translate }}</strong><span>{{ 'dashboardHome.paymentsHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
+      <a routerLink="/app/receipts"><nz-icon nzType="file-text"></nz-icon><div><strong>{{ 'dashboardHome.receipts' | translate }}</strong><span>{{ 'dashboardHome.receiptsHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
+      <a routerLink="/app/calendar"><nz-icon nzType="calendar"></nz-icon><div><strong>{{ 'dashboardHome.calendar' | translate }}</strong><span>{{ 'dashboardHome.calendarHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
+    </nav>
+  </section>
+</div>
