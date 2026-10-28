@@ -1,3 +1,5 @@
+import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
+import {tap} from 'rxjs';
 import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {finalize} from 'rxjs';
@@ -40,6 +42,7 @@ export class PaymentComponent implements OnInit {
   private readonly DEFAULT_PAYMENT_METHOD = 'CASH';
 
   constructor(
+    private confirmations: OperationConfirmationService,
     private paymentService: PaymentService,
     private customerService: CustomerService,
     private paymentInvoiceService: PaymentInvoiceService,
@@ -188,34 +191,20 @@ export class PaymentComponent implements OnInit {
   }
 
   savePayment(): void {
-    if (this.paymentForm.invalid) {
-      this.message.warning('Preencha todos os campos corretamente.');
+    if (this.isSaving || this.paymentForm.invalid || !this.selectedCustomer?.id || !this.selectedMonths.length) {
+      if (!this.isSaving) this.message.warning('Confira o cliente, os períodos e os campos do pagamento.');
       return;
     }
-
-    if (!this.selectedCustomer?.id) {
-      this.message.warning('Selecione um cliente');
-      return;
-    }
-
-    const payload: PaymentPayload = {
-      ...this.paymentForm.value,
-      customerId: this.selectedCustomer.id
-    };
-
-    this.isLoading = true;
-    this.isSaving = true;
-
-    this.paymentService.addPayment(payload)
-      .pipe(finalize(() => this.stopLoading()))
-      .subscribe({
-        next: () => {
-          this.message.success('Pagamento registado com sucesso.');
-          this.getPayments();
-          this.closePaymentDrawer();
-        },
-        error: () => this.message.error('Erro ao processar o pagamento.')
-      });
+    const payload: PaymentPayload = {...this.paymentForm.value, customerId: this.selectedCustomer.id};
+    this.confirmations.payment({customerId: this.selectedCustomer.id, customer: this.selectedCustomer.name,
+      amount: Number(payload.amount), months: [...this.selectedMonths], method: payload.paymentMethod || ''}, () => {
+      this.isLoading = true;
+      this.isSaving = true;
+      return this.paymentService.addPayment(payload).pipe(finalize(() => this.stopLoading()), tap({
+        next: () => { this.message.success('Pagamento registado com sucesso.'); this.getPayments(); this.closePaymentDrawer(); },
+        error: () => this.message.error('Erro ao processar o pagamento. Confira o registo antes de tentar novamente.')
+      }));
+    });
   }
 
   stopLoading(): void {

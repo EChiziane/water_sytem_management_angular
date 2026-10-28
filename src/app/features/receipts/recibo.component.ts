@@ -1,3 +1,5 @@
+import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
+import {tap} from 'rxjs';
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
@@ -41,6 +43,7 @@ export class ReciboComponent implements OnInit {
   recibosSemCaminho = 0;
 
   constructor(
+    private confirmations: OperationConfirmationService,
     private http: HttpClient,
     private reciboService: ReciboService,
     private customerPaymentInvoice: CustomerPaymentInvoiceService,
@@ -157,25 +160,12 @@ export class ReciboComponent implements OnInit {
     });
   }
 
-  deleteRecibo(data: Recibo) {
-    this.modal.confirm({
-      nzTitle: 'Tens certeza que quer eliminar este Recibo?',
-      nzContent: `Recibo: <strong>${data.fileName}</strong>`,
-      nzOkText: 'Sim',
-      nzOkType: 'primary',
-      nzCancelText: 'Não',
-      nzOnOk: () => {
-        this.reciboService.deleteRecibo(data.id).subscribe({
-          next: () => {
-            this.getRecibos();
-            this.message.success('Recibo deletado com sucesso! 🗑️');
-          },
-          error: () => {
-            this.message.error('Erro ao deletar recibo. 🚫');
-          }
-        });
-      }
-    });
+  deleteRecibo(data: Recibo): void {
+    this.confirmations.deletion('receipt', data.id, [data.invoiceCode, data.customerName, data.fileName].filter(Boolean).join(' · '), 'deleteReceiptNote',
+      () => this.reciboService.deleteRecibo(data.id).pipe(tap({
+        next: () => { this.getRecibos(); this.message.success('Recibo eliminado com sucesso.'); },
+        error: () => this.message.error('Erro ao eliminar o recibo.')
+      })));
   }
 
   getDownloadUrl(recibo: Recibo): void {

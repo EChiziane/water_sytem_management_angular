@@ -1,3 +1,5 @@
+import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
+import {tap} from 'rxjs';
 
 
 
@@ -23,6 +25,7 @@ export class MonthlyChargeComponent implements OnInit {
   searchValue = '';
 
   constructor(
+    private confirmations: OperationConfirmationService,
     private service: MonthlyChargeService,
     private message: NzMessageService
   ) {}
@@ -46,16 +49,13 @@ export class MonthlyChargeComponent implements OnInit {
     });
   }
 
-  generateMonth() {
-    this.service.generateMonth().subscribe({
-      next: () => {
-        this.message.success('Mês gerado com sucesso 📅');
-        this.load();
-      },
-      error: () => {
-        this.message.error('Erro ao gerar mês ❌');
-      }
-    });
+  generateMonth(): void {
+    this.confirmations.run({key:'generate-month', title:this.confirmations.text('generateTitle'), description:this.confirmations.text('generateDescription'),
+      fields:[[this.confirmations.text('month'),new Intl.DateTimeFormat('pt-MZ',{month:'long',year:'numeric',timeZone:'Africa/Maputo'}).format(new Date())]],
+      confirmLabel:this.confirmations.text('generate')}, () => this.service.generateMonth().pipe(tap({
+        next: () => { this.message.success('Mensalidades geradas com sucesso.'); this.load(); },
+        error: () => this.message.error('Erro ao gerar mensalidades.')
+      })));
   }
 
   filterData() {

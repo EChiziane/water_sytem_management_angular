@@ -1,3 +1,5 @@
+import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
+import {tap} from 'rxjs';
 import {Component} from '@angular/core';
 import {User} from '@shared/models/user';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -36,6 +38,7 @@ export class ListuserComponent {
   isSaving = false;
 
   constructor(
+    private confirmations: OperationConfirmationService,
     private http: HttpClient,
     private message: NzMessageService,
     private userService: UserService,
@@ -80,40 +83,20 @@ export class ListuserComponent {
     );
   }
 
-  submitUser() {
-    if (!this.userForm.valid) return;
-
-    this.isSaving = true;
-
-    const userData = this.userForm.value;
-
-    if (this.currentEditingUserId) {
-      this.userService.updateUser(this.currentEditingUserId, userData).subscribe({
-        next: () => {
-          this.loadUsers();
-          this.closeUserDrawer();
-          this.message.success('Utilizador atualizado com sucesso! ✅');
-          this.isSaving = false;
-        },
-        error: () => {
-          this.message.error('Erro ao atualizar o utilizador.');
-          this.isSaving = false;
-        }
-      });
-    } else {
-      this.userService.addUser(userData).subscribe({
-        next: () => {
-          this.loadUsers();
-          this.closeUserDrawer();
-          this.message.success('Utilizador guardado com sucesso!');
-          this.isSaving = false;
-        },
-        error: () => {
-          this.message.error('Erro ao guardar o utilizador.');
-          this.isSaving = false;
-        }
-      });
-    }
+  submitUser(): void {
+    if (this.userForm.invalid || this.isSaving) return;
+    const userData = {...this.userForm.value};
+    const id = this.currentEditingUserId;
+    this.confirmations.run({key: 'save-user:' + (id || 'new'), title: this.confirmations.text('saveUserTitle'),
+      description: this.confirmations.text('saveUserDescription'),
+      fields: [[this.confirmations.text('user'), userData.name], [this.confirmations.text('role'), this.roleLabel(userData.role)], [this.confirmations.text('status'), userData.status]],
+      confirmLabel: this.confirmations.text('save')}, () => {
+      this.isSaving = true;
+      return (id ? this.userService.updateUser(id,userData) : this.userService.addUser(userData)).pipe(tap({
+        next: () => { this.loadUsers(); this.closeUserDrawer(); this.message.success('Conta guardada com sucesso.'); this.isSaving = false; },
+        error: () => { this.message.error('Erro ao guardar a conta.'); this.isSaving = false; }
+      }));
+    });
   }
 
   ngOnInit(): void {
@@ -166,24 +149,11 @@ export class ListuserComponent {
 
 
   deleteUser(user: User): void {
-    this.modal.confirm({
-      nzTitle: "Tens a certeza de que queres eliminar este utilizador?",
-      nzContent: `Utilizador: <strong>${user.name}</strong>`,
-      nzOkText: `Sim`,
-      nzOkType: `primary`,
-      nzCancelText: `Não`,
-      nzOnOk: () => {
-        this.userService.deleteUser(user.id).subscribe({
-          next: () => {
-            this.loadUsers();
-            this.message.success('Utilizador eliminado com sucesso!');
-          },
-          error: () => {
-            this.message.error("Erro ao eliminar o utilizador.");
-          }
-        });
-      }
-    });
+    this.confirmations.deletion('user', user.id, [user.name, user.login || user.email].filter(Boolean).join(' · '), 'deleteUserNote',
+      () => this.userService.deleteUser(user.id).pipe(tap({
+        next: () => { this.loadUsers(); this.message.success('Utilizador eliminado com sucesso.'); },
+        error: () => this.message.error('Erro ao eliminar o utilizador.')
+      })));
   }
 
   private initForms(): void {

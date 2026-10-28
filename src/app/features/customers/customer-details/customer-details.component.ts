@@ -1,3 +1,5 @@
+import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
+import {tap} from 'rxjs';
 import {
   Component,
   HostListener,
@@ -15,7 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {finalize} from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 
 import { Customer } from '@shared/models/WSM/customer';
 import { Payment } from '@shared/models/WSM/payment';
@@ -126,6 +128,7 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   constructor(
+    private confirmations: OperationConfirmationService,
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
@@ -442,48 +445,19 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   savePayment(): void {
-
-    if (this.paymentForm.invalid) {
-
-      this.message.warning(
-        'Preencha os campos obrigat?rios.'
-      );
-
+    if (this.isSavingPayment || this.paymentForm.invalid || !this.selectedMonths.length) {
+      if (!this.isSavingPayment) this.message.warning('Confira os períodos e os campos obrigatórios.');
       return;
     }
-
-    const payload = {
-
-      ...this.paymentForm.value,
-
-      customerId: this.customerId
-    };
-
-    this.isSavingPayment = true;
-
-    this.paymentService
-      .addPayment(payload)
-      .pipe(finalize(() => this.isSavingPayment = false))
-      .subscribe({
-
-        next: () => {
-
-          this.loadCustomerData();
-
-          this.closePaymentDrawer();
-
-          this.message.success(
-            'Pagamento realizado com sucesso.'
-          );
-        },
-
-        error: () => {
-
-          this.message.error(
-            'Erro ao realizar pagamento.'
-          );
-        }
-      });
+    const payload = {...this.paymentForm.value, customerId: this.customerId};
+    this.confirmations.payment({customerId: this.customerId, customer: this.customer.name,
+      amount: Number(payload.amount), months: [...this.selectedMonths], method: payload.paymentMethod || ''}, () => {
+      this.isSavingPayment = true;
+      return this.paymentService.addPayment(payload).pipe(finalize(() => this.isSavingPayment = false), tap({
+        next: () => { this.loadCustomerData(); this.closePaymentDrawer(); this.message.success('Pagamento registado com sucesso.'); },
+        error: () => this.message.error('Erro ao registar o pagamento. Confira o registo antes de tentar novamente.')
+      }));
+    });
   }
 
 
@@ -545,44 +519,11 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   deletePayment(data: Payment): void {
-
-    this.modal.confirm({
-
-      nzTitle: 'Confirmar elimina??o',
-
-      nzContent:
-        `Tem a certeza que deseja eliminar este pagamento de <strong>${data.customerName}</strong>?`,
-
-      nzOkText: 'Sim, eliminar',
-
-      nzOkDanger: true,
-
-      nzCancelText: 'Cancelar',
-
-      nzOnOk: () => {
-
-        this.paymentService
-          .deletePayment(data.id)
-          .subscribe({
-
-            next: () => {
-
-              this.message.success(
-                'Pagamento eliminado com sucesso.'
-              );
-
-              this.loadCustomerData();
-            },
-
-            error: () => {
-
-              this.message.error(
-                'Erro ao eliminar o pagamento.'
-              );
-            }
-          });
-      }
-    });
+    this.confirmations.deletion('payment', data.id, [data.referenceCode, data.customerName, this.formatMoney(data.amount)].filter(Boolean).join(' · '), 'deletePaymentNote',
+      () => this.paymentService.deletePayment(data.id).pipe(tap({
+        next: () => { this.loadCustomerData(); this.message.success('Pagamento eliminado com sucesso.'); },
+        error: () => this.message.error('Erro ao eliminar o pagamento.')
+      })));
   }
 
   // =====================================================
@@ -600,37 +541,19 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   downloadCustomerInfo(): void {
-
-    this.modal.confirm({
-
-      nzTitle: 'Incluir hist?rico no PDF?',
-
-      nzContent:
-        'Deseja incluir o hist?rico mensal completo neste documento?',
-
-      nzOkText: 'Sim, incluir',
-
-      nzCancelText: 'N?o incluir',
-
-      nzOnOk: () => {
-
-        this.customerDetailPdfService
-          .downloadCustomerReport(
-            this.customer,
-            this.paymentDataSource,
-            true
-          );
-      },
-
-      nzOnCancel: () => {
-
-        this.customerDetailPdfService
-          .downloadCustomerReport(
-            this.customer,
-            this.paymentDataSource,
-            false
-          );
-      }
+    const download = (history: boolean) => {
+      this.customerDetailPdfService.downloadCustomerReport(this.customer,this.paymentDataSource,history);
+      dialog.destroy();
+    };
+    const dialog: NzModalRef = this.modal.create({
+      nzTitle: 'Preparar ficha A4 do cliente',
+      nzContent: 'Escolha o conteúdo do documento. A ficha será gerada em A4 vertical, pronta para impressão.',
+      nzMaskClosable: false,
+      nzFooter: [
+        {label:'Cancelar',onClick:()=>dialog.destroy()},
+        {label:'Apenas dados do cliente',onClick:()=>download(false)},
+        {label:'Incluir histórico',type:'primary',onClick:()=>download(true)}
+      ]
     });
   }
 

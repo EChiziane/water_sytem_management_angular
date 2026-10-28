@@ -1,3 +1,5 @@
+import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
+import {tap} from 'rxjs';
 import {Component, HostListener, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {finalize} from 'rxjs';
@@ -50,6 +52,7 @@ export class CustomerComponent implements OnInit {
   });
 
   constructor(
+    private confirmations: OperationConfirmationService,
     private customerService: CustomerService,
     private reports: WaterReportPdfService,
     private message: NzMessageService,
@@ -185,7 +188,7 @@ export class CustomerComponent implements OnInit {
       return;
     }
 
-    this.isSaving = true;
+    if (this.isSaving) return;
     const value = this.customerForm.value;
     const formData: CustomerPayload = {
       name: value.name ?? '',
@@ -206,41 +209,26 @@ export class CustomerComponent implements OnInit {
       formData.monthlyFee = 750;
     }
 
-    const request$ = this.isEditMode && this.selectedCustomerId
-      ? this.customerService.updateCustomer(this.selectedCustomerId, formData)
-      : this.customerService.addCustomer(formData);
-
-    request$.pipe(finalize(() => this.isSaving = false)).subscribe({
-      next: () => {
-        this.getCustomers();
-        this.closeCustomerDrawer();
-        this.message.success(
-          this.isEditMode
-            ? 'Cliente atualizado com sucesso!'
-            : 'Cliente criado com sucesso!'
-        );
-      },
-      error: () => this.message.error('Erro ao gravar cliente.')
+    const id = this.selectedCustomerId;
+    const editing = this.isEditMode;
+    this.confirmations.run({key:'save-customer:' + (id || 'new'), title:this.confirmations.text('saveCustomerTitle'), description:this.confirmations.text('saveCustomerDescription'),
+      fields:[[this.confirmations.text('customer'),formData.name || ''],[this.confirmations.text('status'),formData.status || ''],[this.confirmations.text('tariff'),String(formData.monthlyFee) + ' MT']],
+      confirmLabel:this.confirmations.text('save')}, () => {
+      this.isSaving = true;
+      const request$ = editing && id ? this.customerService.updateCustomer(id,formData) : this.customerService.addCustomer(formData);
+      return request$.pipe(finalize(() => this.isSaving = false), tap({
+        next: () => { this.getCustomers(); this.closeCustomerDrawer(); this.message.success(editing ? 'Cliente atualizado com sucesso.' : 'Cliente criado com sucesso.'); },
+        error: () => this.message.error('Erro ao gravar cliente.')
+      }));
     });
   }
 
   deleteCustomer(data: Customer): void {
-    this.modal.confirm({
-      nzTitle: 'Tens certeza que quer eliminar este cliente?',
-      nzContent: `Cliente: <strong>${data.name}</strong>`,
-      nzOkText: 'Sim',
-      nzOkType: 'primary',
-      nzOkDanger: true,
-      nzCancelText: 'Não',
-      nzOnOk: () =>
-        this.customerService.deleteCustomer(data.id).subscribe({
-          next: () => {
-            this.getCustomers();
-            this.message.success('Cliente deletado com sucesso!');
-          },
-          error: () => this.message.error('Erro ao deletar cliente.')
-        })
-    });
+    this.confirmations.deletion('customer', data.id, [data.code, data.name].filter(Boolean).join(' · '), 'deleteCustomerNote',
+      () => this.customerService.deleteCustomer(data.id).pipe(tap({
+        next: () => { this.getCustomers(); this.message.success('Cliente eliminado com sucesso.'); },
+        error: () => this.message.error('Erro ao eliminar cliente.')
+      })));
   }
 
   viewCustomer(_data: Customer): void {
