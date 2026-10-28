@@ -1,129 +1,56 @@
-<div class="detail-page">
-  <nz-breadcrumb class="page-breadcrumb">
-    <nz-breadcrumb-item><a routerLink="/app">Home</a></nz-breadcrumb-item>
+<div class="payment-detail">
+  <nz-breadcrumb class="payment-breadcrumb">
+    <nz-breadcrumb-item><a routerLink="/app/dashboard">Início</a></nz-breadcrumb-item>
     <nz-breadcrumb-item><a routerLink="/app/payment">Pagamentos</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>Detalhe</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Detalhe da operação</nz-breadcrumb-item>
   </nz-breadcrumb>
-
   <nz-spin [nzSpinning]="isLoading" nzTip="A carregar pagamento...">
     <ng-container *ngIf="payment; else emptyPayment">
-      <section class="hero-card">
-        <div class="hero-main">
-          <div class="receipt-mark">
-            <nz-icon nzTheme="outline" nzType="file-done"></nz-icon>
-          </div>
-
-          <div>
-            <span class="eyebrow">Recibo e auditoria</span>
-            <h1>{{ payment.referenceCode || 'Pagamento sem codigo' }}</h1>
-            <p>{{ payment.customerName || 'Cliente sem nome' }}</p>
-
-            <div class="tag-row">
-              <nz-tag [nzColor]="statusColor">{{ statusLabel }}</nz-tag>
-              <nz-tag nzColor="purple">{{ payment.paymentMethod || '-' }}</nz-tag>
-              <nz-tag nzColor="cyan">{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</nz-tag>
-            </div>
-          </div>
+      <div class="payment-toolbar">
+        <button (click)="goToPayments()" nz-button><nz-icon nzType="arrow-left"></nz-icon> Pagamentos</button>
+        <div class="payment-actions">
+          <button (click)="downloadStatement()" nz-button><nz-icon nzType="file-text"></nz-icon> Demonstrativo</button>
+          <button (click)="download()" nz-button nzType="primary"><nz-icon nzType="download"></nz-icon> {{ payment.confirmed ? 'Descarregar recibo' : 'Descarregar registo' }}</button>
         </div>
-
-        <div class="hero-actions">
-          <button (click)="download()" class="primary-water-action" nz-button nzType="primary">
-            <nz-icon nzTheme="outline" nzType="download"></nz-icon>
-            Download recibo
-          </button>
-
-          <button (click)="goToPayments()" nz-button nzType="default">
-            <nz-icon nzTheme="outline" nzType="unordered-list"></nz-icon>
-            Lista de pagamentos
-          </button>
-
-          <button (click)="goBack()" nz-button nzType="default">
-            <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
-            Voltar
-          </button>
-        </div>
-      </section>
-
-      <section class="summary-grid">
-        <article class="amount-summary">
-          <span>Montante pago</span>
-          <strong>{{ formatMoney(payment.amount) }}</strong>
-
-          <ul *ngIf="formatReferenceMonths(payment.referenceMonth).length" class="reference-month-bullets">
-            <li *ngFor="let month of formatReferenceMonths(payment.referenceMonth)">
-              {{ month }}
-            </li>
-          </ul>
-        </article>
-
-        <article>
-          <span>Meses pagos</span>
-          <strong>{{ payment.numMonths || formatReferenceMonths(payment.referenceMonth).length || 0 }}</strong>
-          <small>Referencia do pagamento</small>
-        </article>
-
-        <article>
-          <span>Taxa mensal</span>
-          <strong>{{ formatMoney(payment.monthlyFee) }}</strong>
-          <small>Cliente: {{ payment.customerName || '-' }}</small>
-        </article>
-      </section>
-
-      <section class="content-grid">
-        <article class="section-card customer-card">
-          <header>
-            <div class="customer-avatar">{{ customerInitials }}</div>
-            <div>
-              <h2>Informacoes do cliente</h2>
-              <p>{{ payment.customerAddress || 'Sem endereco registado' }}</p>
-            </div>
-          </header>
-
-          <div class="kv-list">
-            <div><span>Nome</span><strong>{{ payment.customerName || '-' }}</strong></div>
-            <div><span>Contacto</span><strong>{{ payment.customerContact || '-' }}</strong></div>
-            <div><span>Endereco</span><strong>{{ payment.customerAddress || '-' }}</strong></div>
-            <div><span>Valvula</span><strong>{{ payment.customerValve || '-' }}</strong></div>
-            <div><span>Taxa mensal</span><strong class="amount">{{ formatMoney(payment.monthlyFee) }}</strong></div>
-          </div>
-
-          <a [href]="phoneHref(payment.customerContact)" class="mobile-call-action" nz-button nzType="default">
-            <nz-icon nzTheme="outline" nzType="phone"></nz-icon>
-            Ligar ao cliente
-          </a>
-        </article>
-
-        <article class="section-card">
-          <header>
-            <span nz-icon nzTheme="outline" nzType="credit-card"></span>
-            <div>
-              <h2>Informacoes do pagamento</h2>
-              <p>Metodo, impostos e auditoria do recibo</p>
-            </div>
-          </header>
-
-          <div class="kv-list">
-            <div><span>Codigo</span><strong>{{ payment.referenceCode || '-' }}</strong></div>
-            <div><span>Metodo</span><strong>{{ payment.paymentMethod || '-' }}</strong></div>
-            <div><span>Estado</span><strong>{{ statusLabel }}</strong></div>
-            <div><span>IVA</span><strong>{{ formatMoney(payment.tax) }}</strong></div>
-            <div><span>Preco unitario</span><strong>{{ formatMoney(payment.unitPrice) }}</strong></div>
-            <div><span>Criado por</span><strong>{{ payment.createdByName || 'Sistema' }}</strong></div>
-            <div><span>Data</span><strong>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</strong></div>
-          </div>
-        </article>
-      </section>
+      </div>
+      <article class="payment-sheet" aria-label="Ficha do pagamento">
+        <header class="sheet-heading">
+          <div><span class="sheet-label">Detalhe do pagamento</span><h1>{{ payment.referenceCode || 'Sem referência' }}</h1><span class="payment-status" [class.pending]="!payment.confirmed"><nz-icon [nzType]="payment.confirmed ? 'check-circle' : 'clock-circle'"></nz-icon> {{ statusLabel }}</span></div>
+          <div class="sheet-amount"><span class="sheet-label">{{ payment.confirmed ? 'Montante recebido' : 'Montante por confirmar' }}</span><strong>{{ formatMoney(payment.amount) }}</strong></div>
+        </header>
+        <p *ngIf="!payment.confirmed" class="pending-note" role="status">O valor aguarda validação. Este registo não comprova o recebimento.</p>
+        <section class="sheet-section" aria-label="Dados da operação">
+          <dl class="sheet-fields">
+            <div><dt>Data e hora</dt><dd>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm':'+0200' }}</dd></div>
+            <div><dt>Forma de pagamento</dt><dd>{{ methodLabel }}</dd></div>
+            <div><dt>Registado por</dt><dd>{{ payment.createdByName || 'Não informado' }}</dd></div>
+          </dl>
+        </section>
+        <section class="sheet-section">
+          <div class="section-heading"><h2>Cliente</h2><a *ngIf="payment.customerId" [routerLink]="['/app/customer-detail', payment.customerId]">Consultar conta <nz-icon nzType="arrow-right"></nz-icon></a></div>
+          <dl class="sheet-fields customer-fields">
+            <div><dt>Titular</dt><dd>{{ payment.customerName || 'Não identificado' }}</dd></div>
+            <div><dt>Contacto</dt><dd>{{ payment.customerContact || 'Não informado' }}</dd></div>
+            <div><dt>Válvula</dt><dd>{{ payment.customerValve ?? 'Não informada' }}</dd></div>
+            <div class="full-row"><dt>Morada</dt><dd>{{ payment.customerAddress || 'Não informada' }}</dd></div>
+          </dl>
+        </section>
+        <section class="sheet-section">
+          <div class="section-heading"><h2>Serviço e períodos abrangidos</h2></div>
+          <dl class="sheet-fields">
+            <div><dt>Serviço</dt><dd>Abastecimento de água</dd></div>
+            <div><dt>Mensalidades registadas</dt><dd>{{ quantity || 'Não informado' }}</dd></div>
+            <div><dt>Taxa mensal de referência</dt><dd>{{ formatMoney(payment.monthlyFee) }}</dd></div>
+            <div *ngIf="payment.tax"><dt>IVA registado</dt><dd>{{ formatMoney(payment.tax) }}</dd></div>
+          </dl>
+          <div class="sheet-periods"><span class="sheet-label">Períodos de referência</span><ul><li *ngFor="let month of periods">{{ month }}</li></ul><span *ngIf="!periods.length">Não informados</span></div>
+        </section>
+        <footer class="sheet-footer">
+          <p><span>Identificador da operação</span> {{ payment.id }}</p>
+          <p>{{ payment.confirmed ? 'O recibo refere-se exclusivamente a este pagamento.' : 'O documento disponível é um registo de pagamento pendente.' }} O demonstrativo não substitui uma fatura fiscal nem cria uma nova cobrança.</p>
+        </footer>
+      </article>
     </ng-container>
   </nz-spin>
-
-  <ng-template #emptyPayment>
-    <div *ngIf="!isLoading" class="empty-state">
-      <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
-      <h3>Pagamento nao encontrado</h3>
-      <p>Volte para a lista e selecione outro pagamento.</p>
-      <button (click)="goToPayments()" class="primary-water-action" nz-button nzType="primary">
-        Lista de pagamentos
-      </button>
-    </div>
-  </ng-template>
+  <ng-template #emptyPayment><div *ngIf="!isLoading" class="payment-empty"><nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty><h3>Pagamento não encontrado</h3><p>Volte à lista para consultar outra operação.</p><button (click)="goToPayments()" nz-button nzType="primary">Lista de pagamentos</button></div></ng-template>
 </div>

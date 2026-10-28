@@ -3,8 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {PaymentService} from '@core/services/payment.service';
 import {Payment} from '@shared/models/WSM/payment';
 import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
-import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 import {finalize} from 'rxjs';
+import {money, paymentMethodLabel, referenceMonths, paymentQuantity} from '@shared/utils/payment-presentation';
 
 @Component({
   selector: 'app-payment-details',
@@ -14,7 +14,7 @@ import {finalize} from 'rxjs';
 })
 export class PaymentDetailsComponent implements OnInit {
 
-  payment!: Payment;
+  payment: Payment | null = null;
 
   paymentId!: string;
 
@@ -39,8 +39,14 @@ export class PaymentDetailsComponent implements OnInit {
   }
 
   get statusLabel(): string {
-    return this.payment?.confirmed ? 'Confirmado' : 'Nao confirmado';
+    return this.payment?.confirmed ? 'Confirmado' : 'Aguarda confirmação';
   }
+
+  get methodLabel(): string { return paymentMethodLabel(this.payment?.paymentMethod); }
+  get quantity(): number { return this.payment ? paymentQuantity(this.payment) : 0; }
+  get periods(): string[] { return referenceMonths(this.payment?.referenceMonth); }
+  downloadStatement(): void { if (this.payment) this.paymentInvoiceService.downloadBillingStatement(this.payment); }
+  goToCustomer(): void { if (this.payment) this.router.navigate(['/app/customer-detail', this.payment.customerId]); }
 
   get statusColor(): string {
     return this.payment?.confirmed ? 'green' : 'volcano';
@@ -65,24 +71,17 @@ export class PaymentDetailsComponent implements OnInit {
   }
 
   download(): void {
-
+    if (!this.payment) return;
     this.paymentInvoiceService
       .downloadPaymentInvoice(this.payment);
   }
 
   formatReferenceMonths(reference: string): string[] {
-
-    if (!reference) return [];
-
-    return reference
-      .split('|')
-      .map(month =>
-        this.formatMonth(month.trim())
-      );
+    return referenceMonths(reference);
   }
 
   formatMoney(value: number | null | undefined): string {
-    return `${Number(value || 0).toFixed(2)} MT`;
+    return money(value);
   }
 
   phoneHref(phone: string | null | undefined): string {
@@ -93,6 +92,7 @@ export class PaymentDetailsComponent implements OnInit {
   private getPayment(): void {
 
     this.isLoading = true;
+    this.payment = null;
 
     this.paymentService
       .getPaymentById(this.paymentId)
@@ -118,11 +118,4 @@ export class PaymentDetailsComponent implements OnInit {
       });
   }
 
-  private formatMonth(month: string): string {
-
-    const [year, monthNumber] =
-      month.split('-');
-
-    return `${MONTH_NAMES_PT[Number(monthNumber) - 1]} ${year}`;
-  }
 }

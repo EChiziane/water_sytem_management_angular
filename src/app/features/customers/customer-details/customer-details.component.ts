@@ -29,6 +29,7 @@ import { PaymentInvoiceService } from '@core/services/payment-invoice.service';
 import { CustomerDetailPdfService } from '@core/services/customer-detail-pdf.service';
 import {MonthlyCharge} from '@shared/models/monthly-charge';
 import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
+import {money} from '@shared/utils/payment-presentation';
 
 @Component({
   selector: 'app-customer-details',
@@ -754,7 +755,7 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   formatMoney(value: number | null | undefined): string {
-    return `${Number(value || 0).toFixed(2)} MT`;
+    return money(value);
   }
 
   phoneHref(phone: string | null | undefined): string {
