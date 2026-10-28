@@ -1,0 +1,218 @@
+
+> water-system-management-angular@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+Node.js version v25.9.0 detected.
+Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+28 10 2026 23:35:32.561:INFO [karma-server]: Karma v6.4.4 server started at http://localhost:9876/
+28 10 2026 23:35:32.564:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+28 10 2026 23:35:32.576:INFO [launcher]: Starting browser ChromeHeadless
+28 10 2026 23:35:33.474:INFO [Chrome Headless 155.0.0.0 (Windows 10)]: Connected on socket ULK5QSRZsbQ_fNfjAAAB with id 71561255
+Chrome Headless 155.0.0.0 (Windows 10): Executed 0 of 16 SUCCESS (0 secs / 0 secs)
+Chrome Headless 155.0.0.0 (Windows 10) PaymentDetailsComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[ActivatedRoute -> ActivatedRoute]: 
+	  NullInjectorError: No provider for ActivatedRoute!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'ActivatedRoute', 'ActivatedRoute' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:4849:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:5202:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:5250:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:17509:19)
+	    at NodeInjectorFactory.factory (ng:///PaymentDetailsComponent/ɵfac.js:4:67)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:5462:44)
+	    at instantiateAllDirectives (node_modules/@angular/core/fesm2022/core.mjs:12776:27)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 1 of 16 (1 FAILED) (0 secs / 0.133 secs)
+Chrome Headless 155.0.0.0 (Windows 10) MonthlyChargeComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MonthlyChargeService -> HttpClient -> HttpClient]: 
+	  NullInjectorError: No provider for HttpClient!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MonthlyChargeService', 'HttpClient', 'HttpClient' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at injectInjectorOnly (node_modules/@angular/core/fesm2022/core.mjs:1116:40)
+	    at ɵɵinject (node_modules/@angular/core/fesm2022/core.mjs:1122:60)
+	    at Object.factory (ng:///MonthlyChargeService/ɵfac.js:4:64)
+	    at callback (node_modules/@angular/core/fesm2022/core.mjs:2322:47)
+	    at runInInjectorProfilerContext (node_modules/@angular/core/fesm2022/core.mjs:880:9)
+	    at R3Injector.hydrate (node_modules/@angular/core/fesm2022/core.mjs:2321:21)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2189:33)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 2 of 16 (2 FAILED) (0 secs / 0.162 secs)
+Chrome Headless 155.0.0.0 (Windows 10) CustomerDetailsComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[ActivatedRoute -> ActivatedRoute]: 
+	  NullInjectorError: No provider for ActivatedRoute!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'ActivatedRoute', 'ActivatedRoute' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:4849:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:5202:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:5250:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:17509:19)
+	    at NodeInjectorFactory.factory (ng:///CustomerDetailsComponent/ɵfac.js:4:68)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:5462:44)
+	    at instantiateAllDirectives (node_modules/@angular/core/fesm2022/core.mjs:12776:27)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 3 of 16 (3 FAILED) (0 secs / 0.285 secs)
+Chrome Headless 155.0.0.0 (Windows 10) LoginComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[AuthService -> HttpClient -> HttpClient]: 
+	  NullInjectorError: No provider for HttpClient!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'AuthService', 'HttpClient', 'HttpClient' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at injectInjectorOnly (node_modules/@angular/core/fesm2022/core.mjs:1116:40)
+	    at ɵɵinject (node_modules/@angular/core/fesm2022/core.mjs:1122:60)
+	    at Object.factory (ng:///AuthService/ɵfac.js:4:55)
+	    at callback (node_modules/@angular/core/fesm2022/core.mjs:2322:47)
+	    at runInInjectorProfilerContext (node_modules/@angular/core/fesm2022/core.mjs:880:9)
+	    at R3Injector.hydrate (node_modules/@angular/core/fesm2022/core.mjs:2321:21)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2189:33)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 4 of 16 (4 FAILED) (0 secs / 0.345 secs)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 5 of 16 (4 FAILED) (0 secs / 0.348 secs)
+Chrome Headless 155.0.0.0 (Windows 10) ListuserComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[HttpClient -> HttpClient]: 
+	  NullInjectorError: No provider for HttpClient!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'HttpClient', 'HttpClient' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:4849:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:5202:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:5250:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:17509:19)
+	    at NodeInjectorFactory.factory (ng:///ListuserComponent/ɵfac.js:4:61)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:5462:44)
+	    at instantiateAllDirectives (node_modules/@angular/core/fesm2022/core.mjs:12776:27)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 6 of 16 (5 FAILED) (0 secs / 0.374 secs)
+Chrome Headless 155.0.0.0 (Windows 10) MainLayoutComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[TranslationService -> HttpClient -> HttpClient]: 
+	  NullInjectorError: No provider for HttpClient!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'TranslationService', 'HttpClient', 'HttpClient' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at injectInjectorOnly (node_modules/@angular/core/fesm2022/core.mjs:1116:40)
+	    at ɵɵinject (node_modules/@angular/core/fesm2022/core.mjs:1122:60)
+	    at Object.factory (ng:///TranslationService/ɵfac.js:4:62)
+	    at callback (node_modules/@angular/core/fesm2022/core.mjs:2322:47)
+	    at runInInjectorProfilerContext (node_modules/@angular/core/fesm2022/core.mjs:880:9)
+	    at R3Injector.hydrate (node_modules/@angular/core/fesm2022/core.mjs:2321:21)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2189:33)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 7 of 16 (6 FAILED) (0 secs / 0.408 secs)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 8 of 16 (6 FAILED) (0 secs / 0.415 secs)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 9 of 16 (6 FAILED) (0 secs / 0.419 secs)
+Chrome Headless 155.0.0.0 (Windows 10) CustomerComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[CustomerService -> HttpClient -> HttpClient]: 
+	  NullInjectorError: No provider for HttpClient!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'CustomerService', 'HttpClient', 'HttpClient' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at injectInjectorOnly (node_modules/@angular/core/fesm2022/core.mjs:1116:40)
+	    at ɵɵinject (node_modules/@angular/core/fesm2022/core.mjs:1122:60)
+	    at Object.factory (ng:///CustomerService/ɵfac.js:4:59)
+	    at callback (node_modules/@angular/core/fesm2022/core.mjs:2322:47)
+	    at runInInjectorProfilerContext (node_modules/@angular/core/fesm2022/core.mjs:880:9)
+	    at R3Injector.hydrate (node_modules/@angular/core/fesm2022/core.mjs:2321:21)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2189:33)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 10 of 16 (7 FAILED) (0 secs / 0.452 secs)
+Chrome Headless 155.0.0.0 (Windows 10) CalendarComponent should create FAILED
+	Error: NG0304: 'nz-breadcrumb' is not a known element (used in the 'CalendarComponent' component template):
+	1. If 'nz-breadcrumb' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'nz-breadcrumb' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	error properties: Object({ code: 304 })
+	    at validateElementIsKnown (node_modules/@angular/core/fesm2022/core.mjs:11342:23)
+	    at ɵɵelementStart (node_modules/@angular/core/fesm2022/core.mjs:28240:9)
+	    at templateFn (ng:///CalendarComponent.js:97:40)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12552:9)
+	    at renderView (node_modules/@angular/core/fesm2022/core.mjs:13108:13)
+	    at renderComponent (node_modules/@angular/core/fesm2022/core.mjs:13053:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/core.mjs:13156:9)
+	    at renderView (node_modules/@angular/core/fesm2022/core.mjs:13136:13)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/core.mjs:18170:17)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:2051:51)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 11 of 16 (8 FAILED) (0 secs / 0.465 secs)
+Chrome Headless 155.0.0.0 (Windows 10) LandingPageComponent should create FAILED
+	Error: NG0304: 'nz-layout' is not a known element (used in the 'LandingPageComponent' component template):
+	1. If 'nz-layout' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'nz-layout' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	error properties: Object({ code: 304 })
+	    at validateElementIsKnown (node_modules/@angular/core/fesm2022/core.mjs:11342:23)
+	    at ɵɵelementStart (node_modules/@angular/core/fesm2022/core.mjs:28240:9)
+	    at templateFn (ng:///LandingPageComponent.js:94:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12552:9)
+	    at renderView (node_modules/@angular/core/fesm2022/core.mjs:13108:13)
+	    at renderComponent (node_modules/@angular/core/fesm2022/core.mjs:13053:5)
+	    at renderChildComponents (node_modules/@angular/core/fesm2022/core.mjs:13156:9)
+	    at renderView (node_modules/@angular/core/fesm2022/core.mjs:13136:13)
+	    at ComponentFactory.create (node_modules/@angular/core/fesm2022/core.mjs:18170:17)
+	    at initComponent (node_modules/@angular/core/fesm2022/testing.mjs:2051:51)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 12 of 16 (9 FAILED) (0 secs / 0.481 secs)
+Chrome Headless 155.0.0.0 (Windows 10) BillingService should be created FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[BillingService -> HttpClient -> HttpClient]: 
+	  NullInjectorError: No provider for HttpClient!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'BillingService', 'HttpClient', 'HttpClient' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at injectInjectorOnly (node_modules/@angular/core/fesm2022/core.mjs:1116:40)
+	    at ɵɵinject (node_modules/@angular/core/fesm2022/core.mjs:1122:60)
+	    at Object.factory (ng:///BillingService/ɵfac.js:4:58)
+	    at callback (node_modules/@angular/core/fesm2022/core.mjs:2322:47)
+	    at runInInjectorProfilerContext (node_modules/@angular/core/fesm2022/core.mjs:880:9)
+	    at R3Injector.hydrate (node_modules/@angular/core/fesm2022/core.mjs:2321:21)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2189:33)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 13 of 16 (10 FAILED) (0 secs / 0.484 secs)
+Chrome Headless 155.0.0.0 (Windows 10) SigninComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[AuthService -> HttpClient -> HttpClient]: 
+	  NullInjectorError: No provider for HttpClient!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'AuthService', 'HttpClient', 'HttpClient' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at injectInjectorOnly (node_modules/@angular/core/fesm2022/core.mjs:1116:40)
+	    at ɵɵinject (node_modules/@angular/core/fesm2022/core.mjs:1122:60)
+	    at Object.factory (ng:///AuthService/ɵfac.js:4:55)
+	    at callback (node_modules/@angular/core/fesm2022/core.mjs:2322:47)
+	    at runInInjectorProfilerContext (node_modules/@angular/core/fesm2022/core.mjs:880:9)
+	    at R3Injector.hydrate (node_modules/@angular/core/fesm2022/core.mjs:2321:21)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2189:33)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 14 of 16 (11 FAILED) (0 secs / 0.492 secs)
+Chrome Headless 155.0.0.0 (Windows 10) ReciboComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[HttpClient -> HttpClient]: 
+	  NullInjectorError: No provider for HttpClient!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'HttpClient', 'HttpClient' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:4849:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:5202:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:5250:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:17509:19)
+	    at NodeInjectorFactory.factory (ng:///ReciboComponent/ɵfac.js:4:59)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:5462:44)
+	    at instantiateAllDirectives (node_modules/@angular/core/fesm2022/core.mjs:12776:27)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 15 of 16 (12 FAILED) (0 secs / 0.502 secs)
+Chrome Headless 155.0.0.0 (Windows 10) PaymentComponent should create FAILED
+	NullInjectorError: R3InjectorError(DynamicTestModule)[PaymentService -> HttpClient -> HttpClient]: 
+	  NullInjectorError: No provider for HttpClient!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'PaymentService', 'HttpClient', 'HttpClient' ] })
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:1676:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2199:33)
+	    at injectInjectorOnly (node_modules/@angular/core/fesm2022/core.mjs:1116:40)
+	    at ɵɵinject (node_modules/@angular/core/fesm2022/core.mjs:1122:60)
+	    at Object.factory (ng:///PaymentService/ɵfac.js:4:58)
+	    at callback (node_modules/@angular/core/fesm2022/core.mjs:2322:47)
+	    at runInInjectorProfilerContext (node_modules/@angular/core/fesm2022/core.mjs:880:9)
+	    at R3Injector.hydrate (node_modules/@angular/core/fesm2022/core.mjs:2321:21)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:2189:33)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 16 of 16 (13 FAILED) (0 secs / 0.535 secs)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 16 of 16 (13 FAILED) (0.59 secs / 0.535 secs)
+TOTAL: 13 FAILED, 3 SUCCESS
+√ Browser application bundle generation complete.
+√ Browser application bundle generation complete.
+

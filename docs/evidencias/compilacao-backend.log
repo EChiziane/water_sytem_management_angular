@@ -1,0 +1,20 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.api:Water_Sytem_Management_Java >-----------------
+[INFO] Building Water_Sytem_Management_Java 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ Water_Sytem_Management_Java ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ Water_Sytem_Management_Java ---
+[INFO] Recompiling the module because of added or removed source files.
+[INFO] Compiling 41 source files with javac [debug parameters release 17] to target\classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.118 s
+[INFO] Finished at: 2026-10-28T23:37:15+02:00
+[INFO] ------------------------------------------------------------------------

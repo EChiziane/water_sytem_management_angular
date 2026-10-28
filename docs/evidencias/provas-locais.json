@@ -1,0 +1,38 @@
+[
+  {
+    "id": "LP01",
+    "observation": "Valor recebido 1 MT aceite para duas mensalidades de 750 MT; dívida reduzida de 3 para 1 meses."
+  },
+  {
+    "id": "LP02",
+    "observation": "Pagamento não confirmado remove mensalidade em aberto e aparece como pago na timeline local."
+  },
+  {
+    "id": "LP03",
+    "observation": "Excluir pagamento não repõe o mês liquidado: dívida continua em 2, em vez de regressar a 3."
+  },
+  {
+    "id": "LP04",
+    "observation": "Pagamento de dois meses produz apenas uma linha paga local, com o total 1500 MT no primeiro mês."
+  },
+  {
+    "id": "LP05",
+    "observation": "Alterar tarifa do cliente reescreve monthlyFee no pagamento histórico e no snapshot do recibo local."
+  },
+  {
+    "id": "LP06",
+    "observation": "A numeração baseada no comprimento da lista reutiliza o número de outro pagamento após exclusão."
+  },
+  {
+    "id": "LP07",
+    "observation": "Pedir cinco meses tendo três em aberto fabrica períodos anteriores; não cria um adiantamento futuro rastreável."
+  },
+  {
+    "id": "LP08",
+    "observation": "useLocalFallback=false não impede o serviço local de gravar; a flag não é consultada."
+  },
+  {
+    "id": "LP09",
+    "observation": "Token arbitrário não JWT é considerado sessão válida pelo guard local; isto não comprova aceitação pela API."
+  }
+]

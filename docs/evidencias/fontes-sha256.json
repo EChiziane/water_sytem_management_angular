@@ -1,0 +1,498 @@
+[
+  {
+    "Path": "tools\\verify-payment-documents.cjs",
+    "Hash": "B554E28F6F31002CDCCD060628DDD3968C84243FFB20DFA90F4C9B518FF36EC4"
+  },
+  {
+    "Path": "public\\landing\\water-hero.png",
+    "Hash": "2DBF36C4555EB750029648DC91D7D3C8637A29CE9728DA29424BFF32C54E3289"
+  },
+  {
+    "Path": "public\\favicon.svg",
+    "Hash": "8708A5F3520F88F19108ECDD4700C0B5AAC1DE6A3B382A43E9CB0895978BDA95"
+  },
+  {
+    "Path": "public\\favicon.ico",
+    "Hash": "F9102BE80297C0529207607BE5277B4F90BCA89D65988FA1771B91C7894E815F"
+  },
+  {
+    "Path": "src\\theme.less",
+    "Hash": "D58F3C19831ACB024EA1BCD0028CC96493D36D2D977E4E777C7E3DCE35BFC61F"
+  },
+  {
+    "Path": "src\\styles.scss",
+    "Hash": "076540E77DD2BEBF822AF1A37F4080EEA6737E2AC636FB8147AECB23B1BCC757"
+  },
+  {
+    "Path": "src\\styles\\_corporate-details.scss",
+    "Hash": "16B9189E98EB2DD0441F109204369E7D3616DC6436CB7CF284171AA5563F2597"
+  },
+  {
+    "Path": "src\\styles\\_carload-foundation.scss",
+    "Hash": "963C02BFAE808C216A09715F3DED35052A1FF0D2E9998864808FCE0263DD6726"
+  },
+  {
+    "Path": "src\\server.ts",
+    "Hash": "860217ED2B57BEE0B1039B3FBC2E7966CF051E220897D2CFFB4A53CDEC78338B"
+  },
+  {
+    "Path": "src\\main.ts",
+    "Hash": "80FEF44503AB2D04F6D5CB77C893A31C846575824272E41DA61CB46B7E448A28"
+  },
+  {
+    "Path": "src\\main.server.ts",
+    "Hash": "A05AAC26FA3BA81A6573C23F2412F4573E3A1D3A7D1F8811BB555EF86C326842"
+  },
+  {
+    "Path": "src\\index.html",
+    "Hash": "4E844ACB8730DDFC53F4EB75B4B11AF5E51A4B35BAD3B2ECA0850CF98DD66C24"
+  },
+  {
+    "Path": "public\\assets\\i18n\\pt.json",
+    "Hash": "C078342E4C97489F526D46A985BC946FC9F1A9B4117E0F9B5AC55A6BFC1CD73A"
+  },
+  {
+    "Path": "public\\assets\\i18n\\en.json",
+    "Hash": "F1FAAB1CD1507F0C5511F4D61510C53862D0510B09432647AB61BC2E78590413"
+  },
+  {
+    "Path": "public\\data\\prod\\water-data.json",
+    "Hash": "1F66CB542B65E61038E7BD879D7272FD1AA743BBD8E491BECBEEADE1A04323F8"
+  },
+  {
+    "Path": "src\\environments\\environments.ts",
+    "Hash": "00FBC1ED08BE2B1792D5E8EE2FF6CED4A3FC6935F9EB3A32B2FF56231FFB21D0"
+  },
+  {
+    "Path": "src\\environments\\environment.prod.ts",
+    "Hash": "B75C8BD846471C24B9F0010AE4931532375B7043540E90EF46BA38BDFB3F8F57"
+  },
+  {
+    "Path": "public\\data\\dev\\water-data.json",
+    "Hash": "D073F746A4218EECA41F73A7A9F74C02C1F73C6C720EFECD299872731997524B"
+  },
+  {
+    "Path": "src\\app\\shared\\utils\\payment-presentation.ts",
+    "Hash": "6F0F60DA2E69FD861745C676A20CE8831288A061C3034F40A9F17DEFE336ECFA"
+  },
+  {
+    "Path": "src\\app\\shared\\pipes\\translate.pipe.ts",
+    "Hash": "44E91E382248A2C2836A41B269FF627830622FBF4437555AA6E4133F294DBA46"
+  },
+  {
+    "Path": "src\\app\\shared\\models\\WSM\\Recibo.ts",
+    "Hash": "B905BE05441C83F6519119A07C00E5671EE28170AF4350825B3D9B5B36791767"
+  },
+  {
+    "Path": "src\\app\\shared\\models\\WSM\\payment.ts",
+    "Hash": "F8D128EF140BB39D6227C2EAE2024213A50B8DB5AE0CC9F5D93B459FFD038233"
+  },
+  {
+    "Path": "src\\app\\shared\\models\\WSM\\customer.ts",
+    "Hash": "9FFE4227CEB5CA167785FDDF28FF273FEFA21B89CA54AFD01FF59DA6ACD14C2F"
+  },
+  {
+    "Path": "src\\app\\shared\\models\\user.ts",
+    "Hash": "110F4363CC9B1B5F02EDBB35052AA9792E70B4CEAD9516E2D40584D49EAA41B6"
+  },
+  {
+    "Path": "src\\app\\shared\\models\\monthly-charge.ts",
+    "Hash": "3859803D662985E5AB91FB8F48EAAE7AF720DECC4992B0AC05E09EF5C07BE476"
+  },
+  {
+    "Path": "src\\app\\shared\\constants\\app-labels.ts",
+    "Hash": "9BA379BA82A5CA7E50A0962D3BECD129EC1766D4F94B510602AD93F61169E8F6"
+  },
+  {
+    "Path": "src\\app\\shared\\config\\company-profile.ts",
+    "Hash": "E5B372E2315C7C029501381319479BC6F72141E2B9B5065C8B17EAC9FA25AA8B"
+  },
+  {
+    "Path": "src\\app\\icons-provider.module.ts",
+    "Hash": "DE7CF87FB0910AA1F0DD6FA68BEC8D7B11D9D66239FC3B381DE34C46847176F2"
+  },
+  {
+    "Path": "src\\app\\app-routing.module.ts",
+    "Hash": "CDC339B1C88070FF20DCF3955AFE406008F21A266198C84573F1C1956A1C419F"
+  },
+  {
+    "Path": "src\\app\\app.component.html",
+    "Hash": "E07F5200E28A2260BD96A6CB2ADBBD6EBC16D2539DE8F081815D1F8B78E46992"
+  },
+  {
+    "Path": "src\\app\\app.module.server.ts",
+    "Hash": "3D0223E2131E9E5A32D0B294488268A00E907A26100ED51EA35D5CB9E0E0FACC"
+  },
+  {
+    "Path": "src\\app\\app.component.ts",
+    "Hash": "11EC3E8626A068D88649A3D738773BD05A88824F8B82405636560E647D84BDC9"
+  },
+  {
+    "Path": "src\\app\\app.component.scss",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "src\\app\\app.routes.server.ts",
+    "Hash": "DB9A63A3848107EAEC48BCCDD42FF1E22F0B121FB950C23B6EC21A0EEB49EDE1"
+  },
+  {
+    "Path": "src\\app\\app.module.ts",
+    "Hash": "3125DC3433FC59C6B43DF81B4A5BDB069F64E87D87214D40E2779391E902FB59"
+  },
+  {
+    "Path": "src\\app\\app.component.spec.ts",
+    "Hash": "1B8B99A282385DA14781D1F86501779BDF8E8D913D1BEA645FAD5C61F871F943"
+  },
+  {
+    "Path": "src\\app\\features\\welcome\\welcome.module.ts",
+    "Hash": "1A3DF66AA2637FDCB9777C42D9198A1931771AF3E6A4D8AA3AB8014334C4228B"
+  },
+  {
+    "Path": "src\\app\\features\\welcome\\welcome.component.ts",
+    "Hash": "653407642B3FBB7B681260D3AC6CF93CBF68C19ECCA199CA4B75E648A665DDC9"
+  },
+  {
+    "Path": "src\\app\\features\\welcome\\welcome.component.scss",
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "Path": "src\\app\\features\\welcome\\welcome.component.html",
+    "Hash": "B4CF2517C46A7705849023F44F8B770CB7A890FCA3437857849160A49C5DD7F5"
+  },
+  {
+    "Path": "src\\app\\features\\welcome\\welcome-routing.module.ts",
+    "Hash": "55E7E1F78E29EBD573A53CED7746C63B54DFA5EE2AF72B7D9153480BAFD8B009"
+  },
+  {
+    "Path": "src\\app\\features\\calendar\\calendar.component.ts",
+    "Hash": "5B32C3FDF7BFE7440307359EFA85F94FFDD7B6A60B02484829775444B3306501"
+  },
+  {
+    "Path": "src\\app\\features\\calendar\\calendar.component.spec.ts",
+    "Hash": "2A9213B1F114D7CBFE9FADA12E5A3AE0968C2B2B2BB506341A8085E9D809A91E"
+  },
+  {
+    "Path": "src\\app\\features\\calendar\\calendar.component.scss",
+    "Hash": "06E35633AB80700300FE0EB0A843890ACA1500E6F77F1CB54AB74D75774780E9"
+  },
+  {
+    "Path": "src\\app\\features\\calendar\\calendar.component.html",
+    "Hash": "8E1A865489C26345B427027756F14CBCF2A5DFBD677D382573228A200D93A11B"
+  },
+  {
+    "Path": "src\\app\\core\\utils\\payment-document.ts",
+    "Hash": "674E3A5FAFCB65E53BF9F22104124F44B4614CD2152CED0573A0A496BC04851C"
+  },
+  {
+    "Path": "src\\app\\features\\auth\\register\\signin.component.ts",
+    "Hash": "7DD5C49D2CCFCF7060DE708527F9F6E95244124102DAAB6F20CE024A6CA339CE"
+  },
+  {
+    "Path": "src\\app\\features\\auth\\register\\signin.component.spec.ts",
+    "Hash": "8B1C8B5A9203FF3B3CCED43906D6D6A0A454D3B29EC85499ACEB1C6803BFFCB9"
+  },
+  {
+    "Path": "src\\app\\features\\auth\\register\\signin.component.scss",
+    "Hash": "3822B1C0A9355FFF8D513617C8A8A387B279E7AE94D0DFBB2D8EAEDD8375DFE6"
+  },
+  {
+    "Path": "src\\app\\features\\auth\\register\\signin.component.html",
+    "Hash": "E74597E070B9E31A57A1B1BD3FAF66E2F8D4F591871D8A7B29E325FE02FFF6B5"
+  },
+  {
+    "Path": "src\\app\\features\\users\\list-user\\listuser.component.ts",
+    "Hash": "53E36719FAC6A655A1344FA84258797398A0B0FA4888D6A3FDA9109CC85623AE"
+  },
+  {
+    "Path": "src\\app\\features\\users\\list-user\\listuser.component.spec.ts",
+    "Hash": "FCE56C13A101FC40E413BB1328591FAAEB4D930EAC666CD0E600AD42B4D0D73A"
+  },
+  {
+    "Path": "src\\app\\features\\users\\list-user\\listuser.component.scss",
+    "Hash": "1E71473E33213BF0B131AE1D7C46BD12E898528C12457EDD2340BAFBD01003B1"
+  },
+  {
+    "Path": "src\\app\\features\\users\\list-user\\listuser.component.html",
+    "Hash": "AB1F4D2CCED04392652B1686986B17DCB948E860D011089C3FF6B05AACB7554A"
+  },
+  {
+    "Path": "src\\app\\features\\auth\\login\\login.component.ts",
+    "Hash": "26231D0038820C7F5A0B3A68192FC9BA3DE3A5BECDEEC2387DE5D5B357500113"
+  },
+  {
+    "Path": "src\\app\\features\\auth\\login\\login.component.spec.ts",
+    "Hash": "6EE7353A7CF510A4C2C88B0D3C1B8F62D21141DF4CA99C52933215F3E771518B"
+  },
+  {
+    "Path": "src\\app\\features\\auth\\login\\login.component.scss",
+    "Hash": "B781993BAC5831CAD5F388E1C9368C222DB84A717AC62CB3A90B880942542436"
+  },
+  {
+    "Path": "src\\app\\features\\auth\\login\\login.component.html",
+    "Hash": "E4865E771686215D24D475010E4E4214B8612442103F9F870E9BD9D9824417D1"
+  },
+  {
+    "Path": "src\\app\\core\\services\\billing.service.spec.ts",
+    "Hash": "5F233797E406433194B77D469C193BF219B690ED3C077B43EFB07C6264B88CAC"
+  },
+  {
+    "Path": "src\\app\\features\\shell\\main-layout\\main-layout.component.ts",
+    "Hash": "630B24AC3B8C02FDCC46C540BD6DC3DD6FA27B422519011D81CBD524E712D7AB"
+  },
+  {
+    "Path": "src\\app\\features\\shell\\main-layout\\main-layout.component.spec.ts",
+    "Hash": "93EDDEBFA6CCEC431D6F6D269C9ADF6A3A5C99534225381C8306C892753EF08A"
+  },
+  {
+    "Path": "src\\app\\features\\shell\\main-layout\\main-layout.component.scss",
+    "Hash": "79D4EAB9DDC370D0151883B76227B8BBDF5E10810D9C39A48D9E0BF1CB4C5FB9"
+  },
+  {
+    "Path": "src\\app\\features\\shell\\main-layout\\main-layout.component.html",
+    "Hash": "9EE61C49ECF763ADA6210510EF83CD9CACCF40BAE743372BFC83FFB5F7E95B7E"
+  },
+  {
+    "Path": "src\\app\\core\\interceptors\\auth-interceptor.ts",
+    "Hash": "95C4C5AF04008FE4A6A0103BB1E76FFBA60E46DFC800401AB305FEC04251F879"
+  },
+  {
+    "Path": "src\\app\\core\\services\\water-report-pdf.service.ts",
+    "Hash": "A64630552A5F731E8A0ADB7185387BA44C3AB6DFF808D5FF4A72653ED41EA895"
+  },
+  {
+    "Path": "src\\app\\core\\services\\water-local-data.service.ts",
+    "Hash": "9935C4CA9494485022219695C97688CCFC7DFA295A6C1051AEBD41F4EB2E973D"
+  },
+  {
+    "Path": "src\\app\\core\\services\\user.service.ts",
+    "Hash": "EC722211D85EE11F2EAE746A9FCAD55663948729767E66234A20366B69B092D9"
+  },
+  {
+    "Path": "src\\app\\core\\services\\translation.service.ts",
+    "Hash": "B71B2D012291FFA2AA2CACAE0A9E4CFA7788EF7179F4825E3137F62044B7372E"
+  },
+  {
+    "Path": "src\\app\\core\\services\\recibo.service.ts",
+    "Hash": "631BB4C734A4DBF2504C20D7AC80FEEC0C1B06214245186B2AB9CEDF37B47CFE"
+  },
+  {
+    "Path": "src\\app\\core\\services\\payment.service.ts",
+    "Hash": "97A633FFCF4CF2118A3D4F000BE52EFD4B552EDA320516251A0462A128D54B75"
+  },
+  {
+    "Path": "src\\app\\core\\services\\payment-invoice.service.ts",
+    "Hash": "1BE9E284D2051E5C13AE342539E79DFE7FA25B271C72E9F15EF3D438DCFF04C9"
+  },
+  {
+    "Path": "src\\app\\core\\services\\monthly-charge.service.ts",
+    "Hash": "3A6A3E9A1DD199975B2E53E859A5578E9EA70966C6498BBE9418CDF8ED0FEE17"
+  },
+  {
+    "Path": "src\\app\\core\\services\\document-filename.service.ts",
+    "Hash": "4870B14DF96A7298B1B3132570B8960F1E380B4962019AB8915FCBD827545369"
+  },
+  {
+    "Path": "src\\app\\core\\services\\customer.service.ts",
+    "Hash": "69541909029B459786EC2A7DCCEB5368B680ABC102736972FE485447140AE276"
+  },
+  {
+    "Path": "src\\app\\core\\services\\customer-payment-invoice.service.ts",
+    "Hash": "6C0A81F35CE696AC4E9738A0C8FFF454401AD304147198129EDC839FF1DCAD2B"
+  },
+  {
+    "Path": "src\\app\\core\\services\\customer-detail-pdf.service.ts",
+    "Hash": "C2DD2806BD38A47DE6B8FC341283788478C8B16397BF44E032C8498CC281A63F"
+  },
+  {
+    "Path": "src\\app\\core\\services\\customer-detail-pdf.service.spec.ts",
+    "Hash": "580822DC3CC4F9B62BD6480D7790C68C1CF34F5D9FDFD7E9B1633B56FDD001C7"
+  },
+  {
+    "Path": "src\\app\\core\\services\\billing.service.ts",
+    "Hash": "6D1FE43CB8BFDDFEA17E1B0901C96A66119104B7659DC31AD3A7BCE7DEFF6091"
+  },
+  {
+    "Path": "src\\app\\features\\billing\\monthly-charge\\monthly-charge.component.html",
+    "Hash": "2079AD9784C238738A93808C829B6FA1C3A7EEF744F98A6F1A115E18D3903780"
+  },
+  {
+    "Path": "src\\app\\features\\billing\\monthly-charge\\monthly-charge.component.scss",
+    "Hash": "5C89E36439BFC109A58A291864F6B5D505E0C256D8C57F717D91322AABED9E70"
+  },
+  {
+    "Path": "src\\app\\features\\billing\\monthly-charge\\monthly-charge.component.ts",
+    "Hash": "871B19C15DD3202DEDD5AF51033BE87DF110D89ABC2548A2ED8E34CFD9C488D8"
+  },
+  {
+    "Path": "src\\app\\features\\billing\\monthly-charge\\monthly-charge.component.spec.ts",
+    "Hash": "EDA5D9EC780D9F53EB002E167952E592E70AA8A274154E8B1C7C776FE5157FF2"
+  },
+  {
+    "Path": "src\\app\\core\\guards\\role.guard.ts",
+    "Hash": "9B6012C114009B9CC7D19A2EE4326FFA4C58732743F5A6E50288DD6DD77DC5A4"
+  },
+  {
+    "Path": "src\\app\\core\\guards\\auth.guard.ts",
+    "Hash": "B69A973E64BA6D85E349C6D4E2614B64ED0915AF4C5DC16032942A40B6C547C3"
+  },
+  {
+    "Path": "src\\app\\features\\receipts\\recibo.component.ts",
+    "Hash": "2CE4BAFD2D28AF2A1FEDE7B8B0BA0E2406ECEAEC163B783DAD2FF6BFDDB92B59"
+  },
+  {
+    "Path": "src\\app\\features\\receipts\\recibo.component.spec.ts",
+    "Hash": "8321B88A120E586729C2ADDF3EDB1530341170A38CB7F30834613F1C15148930"
+  },
+  {
+    "Path": "src\\app\\features\\receipts\\recibo.component.scss",
+    "Hash": "9E2B5E22CE940547E2D1CAB03E2742DC0266BC6640249F1FA572AB36B44032CE"
+  },
+  {
+    "Path": "src\\app\\features\\receipts\\recibo.component.html",
+    "Hash": "4C0F9CEB47B11AEEDB857BD3B0FAA5CC40F7C0154BCB220442F25B2D9A50FAD0"
+  },
+  {
+    "Path": "src\\app\\features\\payments\\payment.component.ts",
+    "Hash": "91D019FB18B96A05183B7BE76322F9E3E905DC67AC503931A7DD413B9FC1CFA3"
+  },
+  {
+    "Path": "src\\app\\features\\profile\\profile.component.ts",
+    "Hash": "CB17119D305E67C357DA3CFB70866A9A456B120A94591FDF858133C50C5D6E47"
+  },
+  {
+    "Path": "src\\app\\features\\payments\\payment.component.spec.ts",
+    "Hash": "4183916D4512F373F0DAA77F0F34CCADE172E3FEEEC16A4265F9DB5BA1202F24"
+  },
+  {
+    "Path": "src\\app\\features\\profile\\profile.component.scss",
+    "Hash": "9F5726AD56E589AE58356A068567AD65E89B888812BC72599FAD692FCCD5A227"
+  },
+  {
+    "Path": "src\\app\\features\\payments\\payment.component.scss",
+    "Hash": "0481DC8C2B0464AA1A67418DB524F066CE0256546A40696766CFCFDA839C5BCF"
+  },
+  {
+    "Path": "src\\app\\features\\payments\\payment.component.html",
+    "Hash": "129C58C6B44F2BB7D8EB85AEEE61B449E7F6F1B49975F597F49731022F363A90"
+  },
+  {
+    "Path": "src\\app\\features\\profile\\profile.component.html",
+    "Hash": "409CC954E282EFC7407D4818F984182FC7BAEA4F63A55F60B867F35C6FB4297A"
+  },
+  {
+    "Path": "src\\app\\core\\auth\\auth.service.ts",
+    "Hash": "ADD1767085D1AF01451AFAE179B8E8C62D330733B8131623EE727CC559C3F820"
+  },
+  {
+    "Path": "src\\app\\core\\auth\\auth-session.service.ts",
+    "Hash": "A82404142BA6E8D28CF00882F6A3752A733B2CAA83F7676A0D68064442B34AB6"
+  },
+  {
+    "Path": "src\\app\\features\\public\\landing-page\\landingpage.component.ts",
+    "Hash": "7A651632695F9CDDC72E167E2B27BD747986DFAC123D326962B5892781B5ED57"
+  },
+  {
+    "Path": "src\\app\\features\\public\\landing-page\\landingpage.component.spec.ts",
+    "Hash": "D1B97F08A2CF5C51A7A6863603AA875DEE20D632521F1D909ADD80AE93FFA110"
+  },
+  {
+    "Path": "src\\app\\features\\public\\landing-page\\landingpage.component.scss",
+    "Hash": "7C7879366FF8BB427CBF74957D9B6D7A4C3CB99FEB6EBD794A7DEC46CF63B960"
+  },
+  {
+    "Path": "src\\app\\features\\public\\landing-page\\landingpage.component.html",
+    "Hash": "2B69E36EE182111E0E456260B35BF2F5C13B6D77B64D038610F9F8D3D8ABDEAA"
+  },
+  {
+    "Path": "src\\app\\features\\payments\\payment-details\\payment-details.component.ts",
+    "Hash": "29B909F96A69AB264CA45714D26AB65D95CD922F2843FA7222A7DFF0AFD0DF11"
+  },
+  {
+    "Path": "src\\app\\features\\payments\\payment-details\\payment-details.component.spec.ts",
+    "Hash": "7524F8AF5C47E0AD721F9738761D884E96A785F1870AE39ADB9B722D1379F9FF"
+  },
+  {
+    "Path": "src\\app\\features\\payments\\payment-details\\payment-details.component.scss",
+    "Hash": "E2477736253C404922618F0B0B21D2089B66610E0353551A84EC0AAA5184A9C8"
+  },
+  {
+    "Path": "src\\app\\features\\payments\\payment-details\\payment-details.component.html",
+    "Hash": "4555F02189E7204B2B02FF289457882C44C3535F37923925EAF4AFD77E70AE6E"
+  },
+  {
+    "Path": "src\\app\\features\\dashboard\\dashboard.component.html",
+    "Hash": "5DCB3E34F993ED9709FAA35164C5F827B647DE91A11994EFD0894D5AC0A68D96"
+  },
+  {
+    "Path": "src\\app\\features\\dashboard\\dashboard.component.ts",
+    "Hash": "C46803308C6142BC7E3AB442765CF4C3F0F1FBE65AFA5048EFDA868327A6DAED"
+  },
+  {
+    "Path": "src\\app\\features\\dashboard\\dashboard.component.scss",
+    "Hash": "49AD9D9040D92FB382F2E695A531746D628DF9ED07889F641F973EFF539F52CB"
+  },
+  {
+    "Path": "src\\app\\features\\customers\\customer.component.ts",
+    "Hash": "1C8CCD344B712222D5A41EA4E63765F9FBD54AA53997B2898D35DE1E65C9304F"
+  },
+  {
+    "Path": "src\\app\\features\\customers\\customer.component.spec.ts",
+    "Hash": "8B855B2E20E12EDEFC2559D4D4EE2C52DF7AFA7F7AC3323B3A65701D068A401F"
+  },
+  {
+    "Path": "src\\app\\features\\customers\\customer.component.scss",
+    "Hash": "50C4A625B37801722684ED796EA22312378833BC5B3E7D0D4191983907924E79"
+  },
+  {
+    "Path": "src\\app\\features\\customers\\customer.component.html",
+    "Hash": "0D6346D58C5D30FF3F5AC174FDE9D379761E2AAC0C1F413CEF317371CD504FD9"
+  },
+  {
+    "Path": "src\\app\\features\\customers\\customer-details\\customer-details.component.ts",
+    "Hash": "52F65CE0859B0D2D3E0F2F13016378D8ECE34FE100A9D50C246BA02986C56927"
+  },
+  {
+    "Path": "src\\app\\features\\customers\\customer-details\\customer-details.component.spec.ts",
+    "Hash": "520BC36F15C1C399555084EEB6C1356968F57805CFA2F257EDE1E714D3332EC0"
+  },
+  {
+    "Path": "src\\app\\features\\customers\\customer-details\\customer-details.component.scss",
+    "Hash": "8DB04E4F8723537F5CDEC12E27B456E94F6839E8CDCEDB3B33CDFF7748FBD362"
+  },
+  {
+    "Path": "src\\app\\features\\customers\\customer-details\\customer-details.component.html",
+    "Hash": "1CDEE33A5822EDAD3AAF734D570967BE98E399434880389BACBEDDCA2D574097"
+  },
+  {
+    "Path": "package.json",
+    "Hash": "6F345F9C2734A14567B414953BCF9667B61FB5B2EAF487B4D2ED789F0FF0FC41"
+  },
+  {
+    "Path": "package-lock.json",
+    "Hash": "020D55594542495FD37343C43500082AB0A51FB7161B86A21C01F7F0A01DE33E"
+  },
+  {
+    "Path": "angular.json",
+    "Hash": "FF5AD399DD9DCB2ADE54381F380DAA787810380C5F84905A2A03FD2BBE4CADC1"
+  },
+  {
+    "Path": "tsconfig.json",
+    "Hash": "F3BB154C09DAA442D2A68097AEB18E16A6D2DF0622CA094F7ADEFA92817354E9"
+  },
+  {
+    "Path": "tsconfig.app.json",
+    "Hash": "A260473D7E78800D9A0BF226D0D9124A6A5054FC1268434630F006A91D17A60A"
+  },
+  {
+    "Path": "tsconfig.spec.json",
+    "Hash": "6AF0F2D4063A7F44109B6EB41666B95D6CA8ED14AC4EFD2EB3F8131DA88C1F53"
+  },
+  {
+    "Path": "README.md",
+    "Hash": "65FBDD5D416FC986F7FC615C8307C1C62B76E75C548074800F8AE3DE7A07C79E"
+  },
+  {
+    "Path": ".gitignore",
+    "Hash": "F1689C5600AD888A24AD7F7699FBEDA38749E4886CCB70C82F7174A01AEF4545"
+  }
+]
