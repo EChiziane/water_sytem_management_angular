@@ -13,9 +13,9 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { ReciboComponent } from './features/receipts/recibo.component';
 import { ListuserComponent } from './features/users/list-user/listuser.component';
 import { MainLayoutComponent } from '@features/shell/main-layout/main-layout.component';
-import { LoginComponent } from './pages/auth/login/login.component';
-import { SigninComponent } from './pages/auth/sign-up/signin.component';
-import { LandingPageComponent } from './pages/landing/landingpage.component';
+import { LoginComponent } from './features/auth/login/login.component';
+import { SigninComponent } from './features/auth/register/signin.component';
+import { LandingPageComponent } from './features/public/landing-page/landingpage.component';
 
 const routes: Routes = [
   {

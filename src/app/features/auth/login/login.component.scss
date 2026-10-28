@@ -6,7 +6,7 @@
   display: grid;
   grid-template-columns: minmax(420px, 1fr) minmax(380px, 520px);
   min-height: 100vh;
-  color: #0c2538;
+  color: #10212b;
   background: #f4f8fb;
 }
 
@@ -27,7 +27,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(85, 228, 181, 0.12), rgba(14, 124, 199, 0.06));
+    background: linear-gradient(180deg, rgba(228, 173, 84, 0.12), rgba(14, 124, 199, 0.06));
     pointer-events: none;
   }
 }
@@ -56,8 +56,8 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  color: #042133;
-  background: #55e4b5;
+  color: #17201d;
+  background: #e4ad54;
   border-radius: 8px;
   box-shadow: 0 18px 34px rgba(21, 199, 145, 0.24);
 }
@@ -67,7 +67,7 @@
 
   .eyebrow {
     margin: 0 0 14px;
-    color: #55e4b5;
+    color: #e4ad54;
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -133,7 +133,7 @@
   min-height: 100vh;
   padding: 42px;
   background:
-    radial-gradient(circle at top right, rgba(85, 228, 181, 0.2), transparent 34%),
+    radial-gradient(circle at top right, rgba(228, 173, 84, 0.2), transparent 34%),
     #f4f8fb;
 }
 
@@ -142,7 +142,7 @@
   max-width: 440px;
   border: 1px solid #dfeaf0;
   border-radius: 8px;
-  box-shadow: 0 24px 60px rgba(12, 37, 56, 0.12);
+  box-shadow: 0 24px 60px rgba(16, 33, 43, 0.12);
 
   ::ng-deep {
     .ant-card-body {
@@ -156,7 +156,7 @@
 
   h2 {
     margin: 0;
-    color: #0c2538;
+    color: #10212b;
     font-size: 31px;
     font-weight: 800;
     letter-spacing: 0;
@@ -204,7 +204,7 @@
     }
 
     .ant-input-group-addon {
-      color: #0e8f78;
+      color: #0e7c72;
       background: #f2f8fb;
     }
   }
@@ -233,7 +233,7 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  color: #0e8f78;
+  color: #0e7c72;
   background: transparent;
   border: 0;
   font: inherit;
@@ -260,7 +260,7 @@
   cursor: pointer;
 
   &:hover {
-    color: #0e8f78;
+    color: #0e7c72;
     background: #e8f6fb;
   }
 }
@@ -268,8 +268,8 @@
 .login-button {
   height: 46px;
   margin-top: 2px;
-  background: #0c2538;
-  border-color: #0c2538;
+  background: #10212b;
+  border-color: #10212b;
   border-radius: 8px;
   font-weight: 800;
 
@@ -304,7 +304,7 @@
 
   h3 {
     margin: 0;
-    color: #0c2538;
+    color: #10212b;
     font-size: 24px;
     font-weight: 800;
   }
@@ -338,7 +338,7 @@
   }
 
   .active {
-    color: #042133;
+    color: #17201d;
     background: #dff8ef;
     border-color: #8edfd1;
   }
@@ -371,7 +371,7 @@
   }
 
   strong {
-    color: #0c2538;
+    color: #10212b;
     font-size: 15px;
   }
 }
@@ -408,7 +408,7 @@
     }
 
     .ant-modal-title {
-      color: #0c2538;
+      color: #10212b;
       font-weight: 800;
     }
 
@@ -429,13 +429,13 @@
     }
 
     .ant-input-group-addon {
-      color: #0e8f78;
+      color: #0e7c72;
       background: #f2f8fb;
     }
 
     .ant-btn-primary {
-      background: #0c2538;
-      border-color: #0c2538;
+      background: #10212b;
+      border-color: #10212b;
     }
 
     .ant-btn {

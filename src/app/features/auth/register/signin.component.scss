@@ -59,3 +59,20 @@
   gap: 10px;
   align-items: center;
 }
+
+:host { display: block; min-height: 100vh; background: var(--wsm-bg); }
+.register-wrapper {
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  min-height: 100vh;
+  padding: 32px 16px;
+}
+.register-header { width: min(100%, 600px); margin: 0; }
+.form-container {
+  border: 1px solid var(--wsm-line);
+  border-radius: 8px;
+  box-shadow: var(--wsm-shadow);
+}
+.title .headline { color: var(--wsm-heading); font-size: 22px; font-weight: 850; }
+.title .sub { color: var(--wsm-muted); font-size: 13px; }

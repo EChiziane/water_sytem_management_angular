@@ -5,7 +5,7 @@
 .landing-shell {
   min-height: 100vh;
   background: #f4f8fb;
-  color: #0c2538;
+  color: #10212b;
 }
 
 .site-header {
@@ -15,7 +15,7 @@
   height: 72px;
   padding: 0;
   background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(12, 37, 56, 0.08);
+  border-bottom: 1px solid rgba(16, 33, 43, 0.08);
   backdrop-filter: blur(16px);
 }
 
@@ -33,7 +33,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #0c2538;
+  color: #10212b;
   font-size: 17px;
   font-weight: 800;
   letter-spacing: 0;
@@ -48,7 +48,7 @@
   width: 38px;
   height: 38px;
   color: #ffffff;
-  background: linear-gradient(135deg, #0e8f78, #20c997);
+  background: linear-gradient(135deg, #0e7c72, #20c997);
   border-radius: 8px;
   box-shadow: 0 10px 22px rgba(14, 124, 199, 0.22);
 }
@@ -68,7 +68,7 @@
     transition: color 0.2s ease;
 
     &:hover {
-      color: #0e8f78;
+      color: #0e7c72;
     }
   }
 }
@@ -97,13 +97,13 @@
 .login-button {
   height: 38px;
   padding: 0 18px;
-  background: #0c2538;
-  border-color: #0c2538;
+  background: #10212b;
+  border-color: #10212b;
 }
 
 .mobile-menu-btn {
   display: none;
-  color: #0c2538;
+  color: #10212b;
 }
 
 nz-content {
@@ -116,7 +116,7 @@ nz-content {
   gap: 16px;
 
   a {
-    color: #0c2538;
+    color: #10212b;
     font-weight: 700;
     text-decoration: none;
   }
@@ -196,8 +196,8 @@ nz-content {
   min-height: 48px;
   padding: 0 22px;
   color: #042133;
-  background: #55e4b5;
-  border: 1px solid #55e4b5;
+  background: #e4ad54;
+  border: 1px solid #e4ad54;
   border-radius: 8px;
   font-weight: 800;
   text-decoration: none;
@@ -281,7 +281,7 @@ nz-content {
 
   h2 {
     margin: 0;
-    color: #0c2538;
+    color: #10212b;
     font-size: 42px;
     line-height: 1.12;
   }
@@ -304,7 +304,7 @@ nz-content {
 
   h2 {
     margin: 0;
-    color: #0c2538;
+    color: #10212b;
     font-size: 38px;
     line-height: 1.16;
   }
@@ -326,13 +326,13 @@ nz-content {
 
   &:hover {
     border-color: #8edfd1;
-    box-shadow: 0 20px 42px rgba(12, 37, 56, 0.08);
+    box-shadow: 0 20px 42px rgba(16, 33, 43, 0.08);
     transform: translateY(-4px);
   }
 
   h3 {
     margin: 22px 0 10px;
-    color: #0c2538;
+    color: #10212b;
     font-size: 20px;
     font-weight: 800;
   }
@@ -350,7 +350,7 @@ nz-content {
   justify-content: center;
   width: 46px;
   height: 46px;
-  color: #0e8f78;
+  color: #0e7c72;
   background: #e8f6fb;
   border-radius: 8px;
   font-size: 24px;
@@ -361,7 +361,7 @@ nz-content {
   grid-template-columns: minmax(300px, 0.9fr) minmax(320px, 440px);
   gap: 54px;
   align-items: start;
-  background: #0c2538;
+  background: #10212b;
   color: #ffffff;
 
   h2 {
@@ -409,7 +409,7 @@ nz-content {
     width: 100%;
     min-height: 42px;
     padding: 10px 12px;
-    color: #0c2538;
+    color: #10212b;
     background: #f7fafc;
     border: 1px solid #dce8ef;
     border-radius: 7px;
@@ -417,7 +417,7 @@ nz-content {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:focus {
-      border-color: #0e8f78;
+      border-color: #0e7c72;
       box-shadow: 0 0 0 3px rgba(14, 124, 199, 0.13);
     }
   }
@@ -430,8 +430,8 @@ nz-content {
   button {
     height: 44px;
     margin-top: 4px;
-    background: #0e8f78;
-    border-color: #0e8f78;
+    background: #0e7c72;
+    border-color: #0e7c72;
   }
 }
 
@@ -444,7 +444,7 @@ nz-content {
 
   h2 {
     margin: 0;
-    color: #0c2538;
+    color: #10212b;
     font-size: 34px;
   }
 
