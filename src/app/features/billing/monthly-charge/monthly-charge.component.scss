@@ -39,7 +39,7 @@
     justify-content: center;
     padding: 6px 10px;
     font-size: 18px;
-    color: #0e8f78;
+    color: #0e7c72;
     cursor: pointer;
     border-radius: 6px;
     transition: background 0.2s ease-in-out;
@@ -188,7 +188,7 @@
     transition: 0.3s;
 
     &:focus {
-      border-color: #0e8f78;
+      border-color: #0e7c72;
       box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
     }
   }
@@ -254,7 +254,7 @@
   font-size: 16px;
   font-weight: 500;
   color: #333;
-  border-left: 4px solid #0e8f78;
+  border-left: 4px solid #0e7c72;
 }
 
 /* Forms */
@@ -292,7 +292,7 @@ textarea[nz-input] {
 
   .btn-save {
     border-radius: 8px;
-    background: #0e8f78;
+    background: #0e7c72;
     color: #fff;
     transition: 0.3s;
 

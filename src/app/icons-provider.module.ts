@@ -3,6 +3,8 @@ import {NzIconModule, provideNzIcons} from 'ng-zorro-antd/icon';
 
 import {
   ArrowRightOutline,
+  AuditOutline,
+  FolderOpenOutline,
   CarOutline,
   CalendarOutline,
   CheckOutline,
@@ -46,6 +48,8 @@ import {
 
 const icons = [
   ArrowRightOutline,
+  AuditOutline,
+  FolderOpenOutline,
   CarOutline,
   ClockCircleOutline,
   CalendarOutline,
