@@ -92,7 +92,7 @@
 
   button[nz-button] {
     border-radius: 8px;
-    font-weight: 650;
+    font-weight: 600;
 
     &.active {
       color: #0c2538;
@@ -181,11 +181,6 @@
   }
 }
 
-::ng-deep .ant-spin-text {
-  font-size: 14px;
-  white-space: nowrap;
-}
-
 .drawer-form {
   display: grid;
   gap: 16px;
@@ -205,7 +200,7 @@
   span {
     color: #0e8f78;
     font-size: 12px;
-    font-weight: 850;
+    font-weight: 800;
     text-transform: uppercase;
   }
 
@@ -213,7 +208,7 @@
     margin: 2px 0;
     color: #0c2538;
     font-size: 18px;
-    font-weight: 850;
+    font-weight: 800;
     overflow-wrap: anywhere;
   }
 
@@ -358,7 +353,7 @@ nz-select {
     margin: 2px 0 0;
     color: #10212b;
     font-size: 16px;
-    font-weight: 850;
+    font-weight: 800;
     line-height: 1.25;
   }
 }
@@ -405,7 +400,7 @@ nz-select {
   dt {
     color: #607786;
     font-size: 11px;
-    font-weight: 750;
+    font-weight: 700;
   }
 
   dd {
@@ -413,7 +408,7 @@ nz-select {
     overflow: hidden;
     color: #10212b;
     font-size: 13px;
-    font-weight: 750;
+    font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -435,7 +430,7 @@ nz-select {
     padding: 0 10px;
     border-radius: 8px;
     font-size: 12px;
-    font-weight: 750;
+    font-weight: 700;
   }
 }
 
@@ -450,7 +445,7 @@ nz-select {
     margin: 0;
     color: #10212b;
     font-size: 16px;
-    font-weight: 850;
+    font-weight: 800;
   }
 
   p {

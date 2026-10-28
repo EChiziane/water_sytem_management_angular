@@ -1,4 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --wsm-bg: #f4f8fb;
+  --wsm-surface: #ffffff;
+  --wsm-surface-muted: #f8fbfd;
+  --wsm-border: #dfeaf0;
+  --wsm-border-strong: #cbd8e1;
+  --wsm-text: #10212b;
+  --wsm-heading: #0c2538;
+  --wsm-muted: #607786;
+  --wsm-primary: #0e8f78;
+  --wsm-primary-dark: #0b725f;
+  --wsm-primary-soft: #e7faf5;
+  --wsm-danger: #b42318;
+  --wsm-shadow: 0 10px 24px rgba(12, 37, 56, 0.06);
+}
 
 html, body {
   height: 100%;
@@ -6,7 +20,103 @@ html, body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: var(--wsm-text);
+  background: var(--wsm-bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  letter-spacing: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--wsm-heading);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+a {
+  color: var(--wsm-primary);
+}
+
+.ant-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 8px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.ant-btn-primary {
+  border-color: var(--wsm-primary) !important;
+  background: var(--wsm-primary) !important;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  border-color: var(--wsm-primary-dark) !important;
+  background: var(--wsm-primary-dark) !important;
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector {
+  border-radius: 8px !important;
+}
+
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-affix-wrapper-focused,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--wsm-primary) !important;
+  box-shadow: 0 0 0 2px rgba(14, 143, 120, 0.14) !important;
+}
+
+.ant-form-item-label > label {
+  color: var(--wsm-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ant-spin-dot-item {
+  background-color: var(--wsm-primary) !important;
+}
+
+.ant-spin-text {
+  margin-top: 8px;
+  color: var(--wsm-muted) !important;
+  font-size: 12px !important;
+  font-weight: 700;
+}
+
+.ant-spin-nested-loading > div > .ant-spin {
+  max-height: none;
+}
+
+.ant-spin-container::after {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(1px);
+}
+
+.ant-empty-description {
+  color: var(--wsm-muted);
 }
 
 /* Section: Responsive tables */
@@ -48,7 +158,7 @@ body {
 .table-wrapper .ant-table-thead > tr > th,
 .timeline-table-wrapper .ant-table-thead > tr > th {
   padding: 12px 14px;
-  background: #f7f9fc;
+  background: var(--wsm-surface-muted);
   color: #334155;
   font-size: 12px;
   font-weight: 700;
@@ -60,8 +170,14 @@ body {
 .table-wrapper .ant-table-tbody > tr > td,
 .timeline-table-wrapper .ant-table-tbody > tr > td {
   padding: 10px 14px;
+  color: var(--wsm-text);
   vertical-align: middle;
   overflow-wrap: anywhere;
+}
+
+.table-wrapper .ant-table-tbody > tr:hover > td,
+.timeline-table-wrapper .ant-table-tbody > tr:hover > td {
+  background: var(--wsm-primary-soft);
 }
 
 .table-actions,
@@ -106,7 +222,7 @@ body {
   justify-content: flex-end;
   gap: 10px;
   padding: 12px 0;
-  background: #f8f9fa;
+  background: var(--wsm-surface-muted);
 }
 
 .drawer-footer [nz-button] {
