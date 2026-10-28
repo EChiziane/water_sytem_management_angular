@@ -394,7 +394,7 @@ export class CustomerDetailsComponent implements OnInit {
     if (numMonths > maxMonths) {
 
       this.message.warning(
-        `Foram informados ${numMonths} m?s(es), mas o cliente possui apenas ${maxMonths} em d?vida.`
+        `Foram informados ${numMonths} m?s(es), mas o cliente possui apenas ${maxMonths} por pagar.`
       );
 
       numMonths = maxMonths;
@@ -504,7 +504,7 @@ export class CustomerDetailsComponent implements OnInit {
     ) {
 
       this.message.warning(
-        'Este cliente n?o possui d?vida.'
+        'Este cliente não possui mensalidades por pagar.'
       );
 
       return;

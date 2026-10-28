@@ -121,7 +121,7 @@ export class PaymentComponent implements OnInit {
         this.selectedCustomer = customer;
 
         if (!customer.unpaidMonths?.length) {
-          this.message.warning('Cliente sem d?vida');
+          this.message.warning('Cliente sem mensalidades por pagar');
           return;
         }
 
@@ -153,7 +153,7 @@ export class PaymentComponent implements OnInit {
     if (numMonths > maxMonths) {
       numMonths = maxMonths;
       this.paymentForm.get('numMonths')?.setValue(numMonths);
-      this.message.warning(`O cliente possui apenas ${maxMonths} m?s(es) em d?vida.`);
+      this.message.warning(`O cliente possui apenas ${maxMonths} mensalidade(s) por pagar.`);
     }
 
     this.selectedMonths = this.selectedCustomer.unpaidMonths.slice(0, numMonths);

@@ -54,3 +54,7 @@ Os impedimentos mais importantes são:
 ## Recomendação
 
 Antes de ampliar funcionalidades, aprovar uma etapa curta de contenção: separar explicitamente demonstração e produção, fechar percursos de autenticação/gestão de contas inseguros, reparar a infraestrutura dos testes e estabelecer os contratos financeiros. Depois evoluir instalação, tarifas, obrigações e pagamentos na sequência documentada. A implementação fica pendente de aprovação; esta entrega não aplica essas mudanças.
+
+## Atualizações posteriores à auditoria
+
+A auditoria acima é um retrato de 28/10/2026. As alterações autorizadas posteriormente estão registadas em [Calendário e recuperação de mensalidades](05-calendario-cobranca.md) e [Histórico organizado de commits](06-historico-commits.md). As evidências novas não substituem os resultados originais da auditoria.

@@ -224,7 +224,7 @@
               nzShowSearch>
               <nz-option
                 *ngFor="let c of allCustomers"
-                [nzLabel]="c.name + ' - ' + c.monthsInDebt + ' mes(es) em divida'"
+                [nzLabel]="c.name + ' - ' + c.unpaidMonths.length + ' mensalidade(s) por pagar'"
                 [nzValue]="c.id">
               </nz-option>
             </nz-select>
