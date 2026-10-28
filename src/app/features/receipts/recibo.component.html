@@ -1,183 +1,30 @@
-<div class="content-wrapper">
-
-  <!-- ===== Breadcrumb ===== -->
-  <nz-breadcrumb class="page-breadcrumb">
-    <nz-breadcrumb-item>
-      <a routerLink="/app">Home</a>
-    </nz-breadcrumb-item>
-
-    <nz-breadcrumb-item>
-      Lista de Recibos
-    </nz-breadcrumb-item>
-  </nz-breadcrumb>
-
-  <!-- ===== Page Header ===== -->
-  <div class="page-header">
-    <p>Lista de Recibos</p>
-
-    <span (click)="onBack()" class="back-arrow">
-      <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
-    </span>
-  </div>
-
-  <!-- ===== Summary Section (igual ao customer) ===== -->
-  <div class="summary-section">
-    <div class="summary-background">
-      <div [nzGutter]="8" nz-row>
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper total">
-                <nz-icon nzTheme="outline" nzType="file-text"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Total de Recibos</span>
-                <p>{{ totalRecibos }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper active">
-                <nz-icon nzTheme="outline" nzType="check-circle"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Com Ficheiro</span>
-                <p>{{ recibosComFicheiro }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper inactive">
-                <nz-icon nzTheme="outline" nzType="warning"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Sem Caminho</span>
-                <p>{{ recibosSemCaminho }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-
-      </div>
+<div class="receipt-register content-wrapper compact-list-layout dense-list">
+  <header class="page-header">
+    <div class="compact-title-block">
+      <p>Recibos</p>
+      <span class="list-meta">{{ totalRecibos }} documentos · {{ confirmedReceipts }} confirmados</span>
     </div>
-  </div>
-
-  <!-- ===== Filters Panel ===== -->
-  <div class="filters-panel">
-    <input
-      (ngModelChange)="search()"
-      [(ngModel)]="searchValue"
-      nz-input
-      placeholder="Pesquisar recibo ou cliente"
-      type="text"
-    />
-  </div>
-
-  <!-- ===== Table ===== -->
-  <div class="table-wrapper">
-    <div class="table-scroll">
-
-      <nz-spin
-        [nzSpinning]="isLoading"
-        nzSize="large"
-        nzTip="A carregar recibos...">
-
-        <nz-table
-          #nzTable
-          [nzData]="listOfDisplayData"
-          [nzScroll]="{ y: 'calc(100vh - 360px)' }"
-          nzSize="middle"
-          nzTableLayout="fixed">
-
-          <thead>
-          <tr>
-            <th>Código</th>
-
-            <th nzCustomFilter>
-              Cliente
-              <nz-filter-trigger
-                [(nzVisible)]="visible"
-                [nzActive]="searchValue.length > 0"
-                [nzDropdownMenu]="menu">
-                <nz-icon nzType="search"></nz-icon>
-              </nz-filter-trigger>
-            </th>
-
-            <th>Mês/Ref.</th>
-            <th>Total</th>
-            <th>Nome do Ficheiro</th>
-            <th>Caminho do Ficheiro</th>
-            <th>Data de Criação</th>
-            <th>Ações</th>
-          </tr>
-          </thead>
-
-          <tbody>
-          <tr *ngFor="let data of nzTable.data">
-            <td>{{ data.invoiceCode }}</td>
-            <td>{{ data.customerName }}</td>
-            <td>{{ data.monthDescription }}</td>
-            <td>{{ data.total }}</td>
-
-            <td [title]="data.fileName" class="cell-ellipsis">
-              {{ data.fileName }}
-            </td>
-
-            <td [title]="data.filePath" class="cell-ellipsis">
-              <a (click)="getDownloadUrl(data)" target="_blank">
-                {{ data.filePath }}
-              </a>
-            </td>
-
-            <td>{{ data.createdAt | date: 'dd/MM/yyyy - HH:mm' }}</td>
-
-            <td>
-              <button (click)="getDownloadUrl(data)" nz-button nzSize="small" nzType="link">
-                <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
-              </button>
-
-              <button (click)="deleteRecibo(data)" nz-button nzDanger nzSize="small" nzType="link">
-                <nz-icon nzTheme="outline" nzType="delete"></nz-icon>
-              </button>
-            </td>
-          </tr>
-          </tbody>
-
-        </nz-table>
-      </nz-spin>
-
-      <!-- ===== Filter Dropdown ===== -->
-      <nz-dropdown-menu #menu="nzDropdownMenu">
-        <div class="ant-table-filter-dropdown">
-          <div class="search-box">
-            <input
-              (ngModelChange)="search()"
-              [(ngModel)]="searchValue"
-              nz-input
-              placeholder="Pesquisar"
-              type="text"/>
-
-            <button (click)="search()" nz-button nzSize="small" nzType="primary">
-              Pesquisar
-            </button>
-
-            <button (click)="reset()" nz-button nzSize="small">
-              Limpar
-            </button>
-          </div>
-        </div>
-      </nz-dropdown-menu>
-
-    </div>
-  </div>
-
+    <button (click)="onBack()" class="back-arrow" nz-button nzType="text" aria-label="Voltar"><nz-icon nzType="arrow-left"></nz-icon></button>
+  </header>
+  <section class="filters-panel document-toolbar">
+    <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Pesquisar referência ou cliente" aria-label="Pesquisar documentos"/>
+    <span>{{ listOfDisplayData.length }} documento(s)</span>
+    <button (click)="reset()" nz-button nzType="default">Limpar pesquisa</button>
+  </section>
+  <section class="table-wrapper">
+    <nz-table #nzTable [nzData]="listOfDisplayData" [nzLoading]="isLoading" [nzScroll]="{ x: '1120px' }" nzTableLayout="fixed" [nzPageSize]="10" [nzNoResult]="emptyDocuments">
+      <thead><tr>
+        <th nzWidth="160px">Documento</th><th nzWidth="200px">Cliente</th><th nzWidth="180px">Períodos</th><th nzWidth="120px">Pagamento</th><th nzWidth="140px">Valor</th><th nzWidth="130px">Estado</th><th nzWidth="130px">Emissão</th><th nzWidth="130px">Ações</th>
+      </tr></thead>
+      <tbody><tr *ngFor="let data of nzTable.data">
+        <td><strong>{{ data.invoiceCode || data.payment?.referenceCode || 'Sem referência' }}</strong><small class="document-caption">Recibo / pagamento</small></td>
+        <td>{{ data.customerName || data.payment?.customerName || 'Não identificado' }}</td>
+        <td>{{ receiptPeriods(data) }}</td><td>{{ receiptMethod(data) }}</td><td class="document-amount">{{ receiptMoney(data) }}</td>
+        <td><nz-tag [nzColor]="data.payment?.confirmed ? 'green' : 'gold'">{{ data.payment?.confirmed ? 'Confirmado' : 'Por confirmar' }}</nz-tag></td>
+        <td>{{ data.createdAt | date:'dd/MM/yyyy':'+0200' }}</td>
+        <td><div class="document-row-actions"><button *ngIf="data.paymentId || data.payment?.id" [routerLink]="['/app/payment-detail', data.paymentId || data.payment?.id]" nz-button nzType="text" aria-label="Consultar pagamento" title="Consultar pagamento"><nz-icon nzType="eye"></nz-icon></button><button (click)="getDownloadUrl(data)" nz-button nzType="text" aria-label="Descarregar documento" title="Descarregar documento"><nz-icon nzType="download"></nz-icon></button></div></td>
+      </tr></tbody>
+    </nz-table>
+    <ng-template #emptyDocuments><nz-empty nzNotFoundContent="Nenhum documento encontrado para esta pesquisa."></nz-empty></ng-template>
+  </section>
 </div>

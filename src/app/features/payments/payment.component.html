@@ -1,46 +1,11 @@
-<div class="content-wrapper compact-list-layout">
-  <nz-breadcrumb class="page-breadcrumb">
-    <nz-breadcrumb-item><a routerLink="/app">Home</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>Pagamentos</nz-breadcrumb-item>
-  </nz-breadcrumb>
-
+<div class="content-wrapper compact-list-layout dense-list">
   <header class="page-header">
-    <button (click)="onBack()" class="back-arrow" nz-button nzType="text" aria-label="Voltar">
-      <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
-    </button>
-
-    <div>
-      <span class="section-label">Gestao financeira</span>
-      <h1>Pagamentos</h1>
-      <p>Consulte pagamentos, recibos, metodos e meses de referencia.</p>
+    <div class="compact-title-block">
+      <p>Pagamentos</p>
+      <span class="list-meta">{{ totalPayments }} registos · {{ confirmedPayments }} confirmados · {{ pendingPayments }} pendentes</span>
     </div>
-
-    <button (click)="openPaymentDrawer()" class="primary-water-action" nz-button nzType="primary">
-      <nz-icon nzTheme="outline" nzType="plus-circle"></nz-icon>
-      Novo pagamento
-    </button>
+    <button (click)="onBack()" class="back-arrow" nz-button nzType="text" aria-label="Voltar"><nz-icon nzType="arrow-left"></nz-icon></button>
   </header>
-
-  <section class="summary-grid">
-    <article>
-      <span>Total recebido</span>
-      <strong>{{ formatMoney(totalReceivedAmount) }}</strong>
-      <small>{{ totalPayments }} pagamento(s) registado(s)</small>
-    </article>
-
-    <article class="active-summary">
-      <span>Confirmados</span>
-      <strong>{{ confirmedPayments }}</strong>
-      <small>Pagamentos validados</small>
-    </article>
-
-    <article class="danger-summary">
-      <span>Pendentes</span>
-      <strong>{{ pendingPayments }}</strong>
-      <small>Aguardam confirmacao</small>
-    </article>
-  </section>
-
   <section class="filters-panel">
     <nz-input-group nzPrefixIcon="search" class="search-input">
       <input
@@ -144,11 +109,6 @@
   </ng-template>
 
   <section class="table-wrapper">
-    <div class="list-total-strip">
-      <span>Total filtrado</span>
-      <strong>{{ formatMoney(filteredReceivedAmount) }}</strong>
-    </div>
-
     <div class="table-scroll">
       <nz-spin [nzSpinning]="isLoading" nzSize="large" nzTip="A carregar pagamentos...">
         <nz-table
@@ -156,20 +116,20 @@
           [nzData]="listOfDisplayData"
           [nzNoResult]="tableEmptyPayments"
           [nzPageSize]="8"
-          [nzScroll]="{ x: '1080px', y: '440px' }"
+          [nzScroll]="{ x: '1330px', y: '440px' }"
           class="compact-payment-table"
           nzTableLayout="fixed">
           <thead>
           <tr>
-            <th>Codigo</th>
-            <th>Cliente</th>
-            <th>Montante</th>
-            <th>Mes de referencia</th>
-            <th>Metodo</th>
-            <th>Estado</th>
-            <th>Criado por</th>
-            <th>Data</th>
-            <th>Acoes</th>
+            <th nzWidth="160px">Codigo</th>
+            <th nzWidth="220px">Cliente</th>
+            <th nzWidth="130px">Montante</th>
+            <th nzWidth="160px">Mes de referencia</th>
+            <th nzWidth="100px">Metodo</th>
+            <th nzWidth="120px">Estado</th>
+            <th nzWidth="160px">Criado por</th>
+            <th nzWidth="180px">Data</th>
+            <th nzWidth="100px">Acoes</th>
           </tr>
           </thead>
 

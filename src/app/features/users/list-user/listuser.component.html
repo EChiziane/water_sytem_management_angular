@@ -1,88 +1,24 @@
-<div class="content-wrapper">
-
-  <!-- ===== Breadcrumb ===== -->
-  <nz-breadcrumb class="page-breadcrumb">
-    <nz-breadcrumb-item>
-      <a routerLink="/app">Home</a>
-    </nz-breadcrumb-item>
-    <nz-breadcrumb-item>
-      Lista de Usuários
-    </nz-breadcrumb-item>
-  </nz-breadcrumb>
-
-  <!-- ===== Page Header ===== -->
-  <div class="page-header">
-    <p>Lista de Usuários</p>
-
-    <span (click)="onBack()" class="back-arrow">
-      <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
-    </span>
-  </div>
-
-  <!-- ===== Summary Section ===== -->
-  <div class="summary-section">
-    <div class="summary-background">
-      <div [nzGutter]="8" nz-row>
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper total">
-                <nz-icon nzTheme="outline" nzType="team"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Total Usuários</span>
-                <p>{{ totalUsers }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper active">
-                <nz-icon nzTheme="outline" nzType="check-circle"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Ativos</span>
-                <p>{{ activeUsers }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-
-        <div [nzSpan]="8" nz-col>
-          <nz-card nzSize="small">
-            <div class="summary-card">
-              <div class="icon-wrapper inactive">
-                <nz-icon nzTheme="outline" nzType="warning"></nz-icon>
-              </div>
-              <div class="summary-content">
-                <span class="title">Inativos</span>
-                <p>{{ inactiveUsers }}</p>
-              </div>
-            </div>
-          </nz-card>
-        </div>
-
-      </div>
+<div class="content-wrapper compact-list-layout dense-list">
+  <header class="page-header">
+    <div class="compact-title-block">
+      <p>Utilizadores</p>
+      <span class="list-meta">{{ totalUsers }} utilizadores · {{ activeUsers }} ativos · {{ inactiveUsers }} inativos</span>
     </div>
-  </div>
-
+    <button (click)="onBack()" class="back-arrow" nz-button nzType="text" aria-label="Voltar"><nz-icon nzType="arrow-left"></nz-icon></button>
+  </header>
   <!-- ===== Filters Panel ===== -->
   <div class="filters-panel">
     <input
       (ngModelChange)="search()"
       [(ngModel)]="searchValue"
       nz-input
-      placeholder="Pesquisar..."
+      placeholder="Pesquisar nome, email ou login"
       type="text"
     />
 
     <button (click)="openUserDrawer()" nz-button nzType="primary">
       <nz-icon nzTheme="outline" nzType="user-add"></nz-icon>
-      Novo Usuário
+      Novo utilizador
     </button>
   </div>
 
@@ -93,7 +29,7 @@
       <nz-table
         #nzTable
         [nzData]="listOfDisplayData"
-        [nzScroll]="{ y: 'calc(100vh - 360px)' }"
+        [nzScroll]="{ x: '1100px', y: 'calc(100dvh - 255px)' }"
         nzSize="middle"
         nzTableLayout="fixed">
 
