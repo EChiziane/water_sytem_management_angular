@@ -1,0 +1,34 @@
+
+> water-system-management-angular@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless --include=src/app/core/services/operation-confirmation.service.spec.ts --include=src/app/shared/utils/billing-recovery.spec.ts --include=src/app/shared/utils/business-date.spec.ts --include=src/app/features/dashboard/dashboard.component.spec.ts
+
+Node.js version v25.9.0 detected.
+Odd numbered Node.js versions will not enter LTS status and should not be used for production. For more information, please see https://nodejs.org/en/about/previous-releases/.
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+29 10 2026 00:47:00.784:INFO [karma-server]: Karma v6.4.4 server started at http://localhost:9876/
+29 10 2026 00:47:00.785:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+29 10 2026 00:47:00.805:INFO [launcher]: Starting browser ChromeHeadless
+29 10 2026 00:47:01.481:INFO [Chrome Headless 155.0.0.0 (Windows 10)]: Connected on socket jHRdTZGsqkqeehhWAAAB with id 49957104
+Chrome Headless 155.0.0.0 (Windows 10): Executed 0 of 17[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 1 of 17[32m SUCCESS[39m (0 secs / 0.017 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 2 of 17[32m SUCCESS[39m (0 secs / 0.017 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 3 of 17[32m SUCCESS[39m (0 secs / 0.017 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 4 of 17[32m SUCCESS[39m (0 secs / 0.019 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 5 of 17[32m SUCCESS[39m (0 secs / 0.021 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 6 of 17[32m SUCCESS[39m (0 secs / 0.022 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 7 of 17[32m SUCCESS[39m (0 secs / 0.026 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 8 of 17[32m SUCCESS[39m (0 secs / 0.028 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 9 of 17[32m SUCCESS[39m (0 secs / 0.03 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 10 of 17[32m SUCCESS[39m (0 secs / 0.033 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 11 of 17[32m SUCCESS[39m (0 secs / 0.033 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 12 of 17[32m SUCCESS[39m (0 secs / 0.034 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 13 of 17[32m SUCCESS[39m (0 secs / 0.166 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 14 of 17[32m SUCCESS[39m (0 secs / 0.186 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 15 of 17[32m SUCCESS[39m (0 secs / 0.2 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 16 of 17[32m SUCCESS[39m (0 secs / 0.213 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 17 of 17[32m SUCCESS[39m (0 secs / 0.225 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 17 of 17[32m SUCCESS[39m (0.251 secs / 0.225 secs)
+[32mTOTAL: 17 SUCCESS[39m
+√ Browser application bundle generation complete.
+√ Browser application bundle generation complete.
