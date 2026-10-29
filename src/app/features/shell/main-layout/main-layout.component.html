@@ -62,6 +62,8 @@
         </a>
       </li>
 
+      <li nz-menu-item nzMatchRouter><a routerLink="/app/company"><span nz-icon nzType="setting"></span><span>{{ 'layout.nav.company' | translate }}</span></a></li>
+
       <li *ngIf="isAdmin" nz-menu-item nzMatchRouter>
         <a routerLink="/app/users">
           <span nz-icon nzType="usergroup-add"></span>
@@ -142,6 +144,7 @@
             </a>
           </li>
 
+          <li nz-menu-item><a routerLink="/app/company"><span nz-icon nzType="setting"></span>{{ 'layout.nav.company' | translate }}</a></li>
           <li *ngIf="isAdmin" nz-menu-item>
             <a routerLink="/app/users">
               <span nz-icon nzType="setting"></span>
@@ -212,6 +215,8 @@
       <span nz-icon nzType="calendar"></span>
       <span>{{ 'layout.nav.calendar' | translate }}</span>
     </a>
+
+    <a routerLink="/app/company" routerLinkActive="active" (click)="closeMobileMenu()"><span nz-icon nzType="setting"></span><span>{{ 'layout.nav.company' | translate }}</span></a>
 
     <a routerLink="/app/profile" routerLinkActive="active" (click)="closeMobileMenu()">
       <span nz-icon nzType="user"></span>

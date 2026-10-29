@@ -1,9 +1,9 @@
 <nz-layout class="landing-shell">
   <nz-header class="site-header">
     <div class="header-content">
-      <a class="brand" href="#inicio" aria-label="Águas Chiziane">
+      <a class="brand" href="#inicio" [attr.aria-label]="company.name">
         <span class="brand-mark">AC</span>
-        <span>Águas Chiziane</span>
+        <span>{{ company.name }}</span>
       </a>
 
       <nav class="desktop-nav" aria-label="Navegação principal">
@@ -16,7 +16,7 @@
       <div class="header-actions">
         <a
           class="whatsapp-link"
-          href="https://wa.me/258841231234?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20%C3%81guas%20Chiziane"
+          [href]="'https://wa.me/' + phoneDigits"
           target="_blank"
           rel="noopener">
           WhatsApp
@@ -46,7 +46,7 @@
     (nzOnClose)="menuVisible = false"
     [nzVisible]="menuVisible"
     nzPlacement="right"
-    nzTitle="Águas Chiziane">
+    nzTitle="{{ company.name }}">
     <nav *nzDrawerContent class="mobile-nav" aria-label="Navegação móvel">
       <a (click)="menuVisible = false" href="#quem-somos">Quem Somos</a>
       <a (click)="menuVisible = false" href="#servicos">Serviços</a>
@@ -56,7 +56,7 @@
       <a
         (click)="menuVisible = false"
         class="mobile-whatsapp"
-        href="https://wa.me/258841231234?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20%C3%81guas%20Chiziane"
+        [href]="'https://wa.me/' + phoneDigits"
         target="_blank"
         rel="noopener">
         Falar no WhatsApp
@@ -78,7 +78,7 @@
 
       <div class="hero-content">
         <p class="hero-kicker">Água potável com entrega local</p>
-        <h1>Águas Chiziane</h1>
+        <h1>{{ company.name }}</h1>
         <p class="hero-copy">
           Distribuição de água segura, tratada e acessível para famílias, escolas e empresas em Maputo.
         </p>
@@ -86,7 +86,7 @@
         <div class="hero-actions">
           <a
             class="primary-cta"
-            href="https://wa.me/258841231234?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20%C3%81guas%20Chiziane"
+            [href]="'https://wa.me/' + phoneDigits"
             target="_blank"
             rel="noopener">
             Pedir informação
@@ -126,7 +126,7 @@
         </div>
 
         <p>
-          A Águas Chiziane é uma empresa familiar dedicada à produção e distribuição de água potável. O foco é manter um serviço confiável, com acompanhamento próximo aos clientes e atenção à qualidade em cada entrega.
+          A {{ company.name }} é uma empresa familiar dedicada à produção e distribuição de água potável. O foco é manter um serviço confiável, com acompanhamento próximo aos clientes e atenção à qualidade em cada entrega.
         </p>
       </div>
     </section>
@@ -163,14 +163,15 @@
         <span class="section-label">Contactos</span>
         <h2>Fale connosco para pedidos e informações.</h2>
 
+        <p>{{ company.address }}</p>
         <div class="contact-list">
-          <a href="tel:+258841231234">
+          <a [href]="'tel:+' + phoneDigits">
             <span nz-icon nzType="phone"></span>
-            +258 841 231 234
+            {{ company.contact }}
           </a>
-          <a href="mailto:aguaschiziane@gmail.com">
+          <a [href]="'mailto:' + company.email">
             <span nz-icon nzType="mail"></span>
-            aguaschiziane&#64;gmail.com
+            {{ company.email }}
           </a>
           <span>
             <span nz-icon nzType="clock-circle"></span>
@@ -205,7 +206,7 @@
 
       <div class="map-frame">
         <iframe
-          title="Localização da Águas Chiziane"
+          title="Localização da {{ company.name }}"
           loading="lazy"
           src="https://maps.google.com/maps?q=Maputo&t=&z=15&ie=UTF8&iwloc=&output=embed">
         </iframe>
@@ -214,7 +215,7 @@
   </nz-content>
 
   <nz-footer class="footer">
-    <span>© 2026 Águas Chiziane. Todos os direitos reservados.</span>
+    <span>© 2026 {{ company.name }}. Todos os direitos reservados.</span>
     <button (click)="goToLogin()" nz-button nzType="default">Área do Sistema</button>
   </nz-footer>
 </nz-layout>

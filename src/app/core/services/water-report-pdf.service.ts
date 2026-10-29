@@ -1,10 +1,13 @@
+import {CompanyProfileService} from './company-profile.service';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {TranslationService} from './translation.service';
+import type {CompanyProfile} from '@shared/models/company-profile';
 import {Injectable} from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 import {DocumentFilenameService} from '@core/services/document-filename.service';
 import {WaterLocalDataService} from '@core/services/water-local-data.service';
-import {COMPANY_PROFILE} from '@shared/config/company-profile';
 import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 import {Customer} from '@shared/models/WSM/customer';
 import {Payment} from '@shared/models/WSM/payment';
@@ -26,19 +29,20 @@ export interface DashboardReportData {
   providedIn: 'root'
 })
 export class WaterReportPdfService {
-  constructor(
+  constructor(private companyProfiles: CompanyProfileService, private messages: NzMessageService, private translations: TranslationService,
     private filenames: DocumentFilenameService,
     private localData: WaterLocalDataService
   ) {
   }
 
   downloadCustomerList(customers: Customer[], scopeLabel = 'Lista filtrada'): void {
+    this.companyProfiles.getProfile().subscribe({next:company=>{
     const doc = new jsPDF({orientation: 'portrait'});
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 14;
 
-    this.drawHeader(doc, 'LISTA DE CLIENTES', scopeLabel);
+    this.drawHeader(doc, 'LISTA DE CLIENTES', scopeLabel, company);
     this.drawSummaryTable(doc, autoTable, margin, 26, [
       ['Clientes', String(customers.length)],
       ['Ativos', String(customers.filter(customer => this.isActiveCustomer(customer)).length)],
@@ -65,16 +69,19 @@ export class WaterReportPdfService {
     });
 
     doc.save(this.filenames.build('CLIENTES', 'LISTA'));
+
+    },error:()=>this.messages.error(this.translations.instant('company.documentError'))});
   }
 
   downloadPaymentList(payments: Payment[], scopeLabel = 'Lista filtrada'): void {
+    this.companyProfiles.getProfile().subscribe({next:company=>{
     const doc = new jsPDF({orientation: 'portrait'});
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 14;
     const total = payments.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
 
-    this.drawHeader(doc, 'LISTA DE PAGAMENTOS', scopeLabel);
+    this.drawHeader(doc, 'LISTA DE PAGAMENTOS', scopeLabel, company);
     this.drawSummaryTable(doc, autoTable, margin, 26, [
       ['Pagamentos', String(payments.length)],
       ['Confirmados', String(payments.filter(payment => payment.confirmed).length)],
@@ -104,15 +111,18 @@ export class WaterReportPdfService {
     });
 
     doc.save(this.filenames.build('PAGAMENTOS', 'LISTA'));
+
+    },error:()=>this.messages.error(this.translations.instant('company.documentError'))});
   }
 
   downloadDashboardReport(data: DashboardReportData): void {
+    this.companyProfiles.getProfile().subscribe({next:company=>{
     const doc = new jsPDF({orientation: 'portrait'});
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 14;
 
-    this.drawHeader(doc, 'RELATORIO DO DASHBOARD', 'Resumo operacional');
+    this.drawHeader(doc, 'RELATORIO DO DASHBOARD', 'Resumo operacional', company);
     this.drawSummaryTable(doc, autoTable, margin, 26, [
       ['Clientes', String(data.customers.length)],
       ['Ativos', String(data.activeCustomers)],
@@ -155,6 +165,8 @@ export class WaterReportPdfService {
     });
 
     doc.save(this.filenames.build('DASHBOARD', 'RELATORIO'));
+
+    },error:()=>this.messages.error(this.translations.instant('company.documentError'))});
   }
 
   downloadLocalDatabase(format: 'json' | 'txt'): void {
@@ -172,7 +184,7 @@ export class WaterReportPdfService {
     this.localData.resetLocalData();
   }
 
-  private drawHeader(doc: jsPDF, title: string, caption: string): void {
+  private drawHeader(doc: jsPDF, title: string, caption: string, company: CompanyProfile): void {
     const pageWidth = doc.internal.pageSize.getWidth();
 
     doc.setDrawColor(190, 198, 207);
@@ -184,9 +196,13 @@ export class WaterReportPdfService {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
     doc.setTextColor(74, 85, 99);
-    doc.text(caption || COMPANY_PROFILE.name, 14, 16);
+    doc.text(caption || company.name, 14, 16);
     doc.text(`Emitido ${this.formatDateTime(new Date())}`, pageWidth - 14, 11, {align: 'right'});
-    doc.text(COMPANY_PROFILE.name, pageWidth - 14, 16, {align: 'right'});
+    let companyFont=7.5;
+    const availableWidth=pageWidth * 0.55;
+    let companyLines=doc.splitTextToSize(company.name,availableWidth);
+    while(companyLines.length>2 && companyFont>5){companyFont-=0.5;doc.setFontSize(companyFont);companyLines=doc.splitTextToSize(company.name,availableWidth);}
+    doc.text(companyLines,pageWidth-14,16,{align:'right'});
   }
 
   private drawSummaryTable(

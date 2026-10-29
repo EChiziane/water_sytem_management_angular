@@ -19,7 +19,8 @@
       "receipts": "Recibos",
       "calendar": "Calendario",
       "users": "Utilizadores",
-      "profile": "Perfil"
+      "profile": "Perfil",
+      "company": "Empresa"
     },
     "topbar": {
       "eyebrow": "Water System Management",
@@ -113,5 +114,36 @@
     "generateDescription": "Esta operação solicita a geração de mensalidades. Confirme o período e verifique os registos existentes antes de continuar.",
     "generate": "Confirmar geração",
     "month": "Período"
+  },
+  "company": {
+    "title": "Perfil da empresa",
+    "subtitle": "Dados institucionais e contactos da empresa.",
+    "save": "Guardar alterações",
+    "demo": "Demonstração: estas alterações ficam apenas neste navegador. Na API, os dados são partilhados pela empresa.",
+    "reload": "Recarregar",
+    "identity": "Identificação da empresa",
+    "name": "Nome / razão social",
+    "nuit": "NUIT",
+    "tagline": "Slogan / descrição curta",
+    "contacts": "Morada e contactos",
+    "address": "Morada",
+    "contact": "Telefone",
+    "email": "Email",
+    "required": "Preencha este campo.",
+    "nuitError": "O NUIT deve ter 9 algarismos.",
+    "phoneError": "Introduza um telefone válido.",
+    "emailError": "Introduza um email válido.",
+    "documentNote": "Os dados guardados serão usados nos recibos, fichas e relatórios gerados a partir de agora.",
+    "updated": "Última atualização:",
+    "loadError": "Não foi possível carregar o perfil da empresa.",
+    "saveError": "Não foi possível confirmar a gravação. Recarregue e confira os dados.",
+    "conflict": "Outro utilizador atualizou o perfil. Cancele a confirmação, recarregue e confira os dados antes de guardar.",
+    "saved": "Perfil da empresa atualizado com sucesso.",
+    "confirmTitle": "Confirmar atualização da empresa",
+    "confirmDescription": "Confira os dados institucionais. As alterações serão utilizadas nos documentos gerados a partir de agora.",
+    "confirmSave": "Confirmar e guardar",
+    "documentError": "Não foi possível obter os dados da empresa para gerar o documento.",
+    "discardTitle": "Descartar alterações por guardar?",
+    "discardDescription": "Ao recarregar, os campos por guardar serão substituídos pelos dados da empresa."
   }
 }

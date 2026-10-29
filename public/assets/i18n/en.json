@@ -19,7 +19,8 @@
       "receipts": "Receipts",
       "calendar": "Calendar",
       "users": "Users",
-      "profile": "Profile"
+      "profile": "Profile",
+      "company": "Company"
     },
     "topbar": {
       "eyebrow": "Water System Management",
@@ -113,5 +114,36 @@
     "generateDescription": "This requests monthly charge generation. Check the period and existing records before proceeding.",
     "generate": "Confirm generation",
     "month": "Period"
+  },
+  "company": {
+    "title": "Company profile",
+    "subtitle": "Company details and contact information.",
+    "save": "Save changes",
+    "demo": "Demo: changes are saved only in this browser. API data is shared across the company.",
+    "reload": "Reload",
+    "identity": "Company identification",
+    "name": "Company / legal name",
+    "nuit": "NUIT",
+    "tagline": "Tagline / short description",
+    "contacts": "Address and contacts",
+    "address": "Address",
+    "contact": "Phone",
+    "email": "Email",
+    "required": "Complete this field.",
+    "nuitError": "NUIT must contain 9 digits.",
+    "phoneError": "Enter a valid phone number.",
+    "emailError": "Enter a valid email address.",
+    "documentNote": "Saved details are used in receipts, customer sheets and reports generated from now on.",
+    "updated": "Last updated:",
+    "loadError": "Could not load the company profile.",
+    "saveError": "Could not confirm the save. Reload and review the details.",
+    "conflict": "Another user updated the profile. Cancel confirmation, reload and review the details before saving.",
+    "saved": "Company profile updated successfully.",
+    "confirmTitle": "Confirm company update",
+    "confirmDescription": "Check the company details. Changes apply to documents generated from now on.",
+    "confirmSave": "Confirm and save",
+    "documentError": "Could not retrieve company details to generate the document.",
+    "discardTitle": "Discard unsaved changes?",
+    "discardDescription": "Reloading replaces unsaved fields with the saved company details."
   }
 }

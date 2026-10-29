@@ -1,3 +1,6 @@
+import {CompanyProfileService} from '@core/services/company-profile.service';
+import {COMPANY_PROFILE} from '@shared/config/company-profile';
+import {CompanyProfile} from '@shared/models/company-profile';
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {AuthService} from '@core/auth/auth.service';
 import {Router} from '@angular/router';
@@ -11,6 +14,7 @@ import {NzMessageService} from 'ng-zorro-antd/message';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
+  company: Pick<CompanyProfile,'name'|'address'|'contact'|'email'|'tagline'> = {...COMPANY_PROFILE};
   @Output() loginSuccess = new EventEmitter<void>();
 
   userForm = new FormGroup({
@@ -46,6 +50,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private companies: CompanyProfileService,
     private router: Router,
     private msg: NzMessageService
   ) {
@@ -53,6 +58,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.logout();
+    this.companies.getPublicProfile().subscribe(profile=>this.company=profile);
   }
 
   logout(): void {

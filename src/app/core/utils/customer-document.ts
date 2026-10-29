@@ -1,3 +1,4 @@
+import type {CompanyProfile} from '../../shared/models/company-profile';
 import jsPDF from 'jspdf';
 import autoTable, {UserOptions} from 'jspdf-autotable';
 import {COMPANY_PROFILE} from '../../shared/config/company-profile';
@@ -7,7 +8,8 @@ import {money, paymentDate, paymentMethodLabel, referenceMonths} from '../../sha
 import {businessTimestamp} from '../../shared/utils/business-date';
 import {isOverdueMonth} from '../../shared/utils/billing-recovery';
 
-export function buildCustomerDocument(customer: Customer, payments: Payment[], options: {includeHistory?: boolean; issuedAt?: Date} = {}): jsPDF {
+export function buildCustomerDocument(customer: Customer, payments: Payment[], options: {includeHistory?: boolean; issuedAt?: Date; company?: CompanyProfile} = {}): jsPDF {
+  const company = options.company || COMPANY_PROFILE;
   const doc = new jsPDF({orientation: 'portrait', unit: 'mm', format: 'a4'});
   const margin = 14, width = 182;
   const issuedAt = options.issuedAt || new Date();
@@ -17,10 +19,10 @@ export function buildCustomerDocument(customer: Customer, payments: Payment[], o
   const status = customer.status === 'ATIVO' ? 'Ativo' : customer.status === 'INATIVO' ? 'Inativo' : value(customer.status);
   let y = 15;
   doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(30,45,60);
-  doc.text(COMPANY_PROFILE.name,margin,y);
+  const nameLines=doc.splitTextToSize(company.name,width); doc.text(nameLines,margin,y); y += (nameLines.length-1)*5;
   doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(85,95,105);
   y += 5;
-  for (const line of [COMPANY_PROFILE.address, `NUIT: ${COMPANY_PROFILE.nuit} | Tel.: ${COMPANY_PROFILE.contact} | ${COMPANY_PROFILE.email}`]) {
+  for (const line of [company.address, `NUIT: ${company.nuit} | Tel.: ${company.contact} | ${company.email}`]) {
     const lines = doc.splitTextToSize(line,width); doc.text(lines,margin,y); y += lines.length * 3.6;
   }
   y += 3; doc.setDrawColor(160,170,180); doc.line(margin,y,196,y); y += 7;
@@ -36,7 +38,7 @@ export function buildCustomerDocument(customer: Customer, payments: Payment[], o
       didDrawPage: () => {
         if(doc.getCurrentPageInfo().pageNumber > 1){
           doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(90,100,110);
-          doc.text(`${COMPANY_PROFILE.name} | Ficha do cliente`,margin,13);
+          doc.text(doc.splitTextToSize(`${company.name} | Ficha do cliente`,140)[0],margin,13);
           doc.text(value(customer.code),196,13,{align:'right'});
           doc.setDrawColor(210,215,220);doc.line(margin,18,196,18);
         }

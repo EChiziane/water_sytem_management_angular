@@ -1,3 +1,4 @@
+import type {CompanyProfile} from '../../shared/models/company-profile';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type {Payment} from '../../shared/models/WSM/payment';
@@ -5,6 +6,7 @@ import {COMPANY_PROFILE} from '../../shared/config/company-profile';
 import {money, paymentDate, paymentMethodLabel, paymentQuantity, referenceMonths} from '../../shared/utils/payment-presentation';
 
 export interface PaymentDocumentOptions {
+  company?: CompanyProfile;
   kind?: 'receipt' | 'statement';
   reference?: string;
   issuedAt?: string | Date;
@@ -12,6 +14,7 @@ export interface PaymentDocumentOptions {
 
 /** Builds the same document for every download entry point. Does not mutate payment data. */
 export function buildPaymentDocument(payment: Payment, options: PaymentDocumentOptions = {}): jsPDF {
+  const company = options.company || COMPANY_PROFILE;
   const doc = new jsPDF({unit: 'mm', format: 'a4'});
   const ink: [number, number, number] = [23, 43, 53];
   const teal: [number, number, number] = [14, 124, 114];
@@ -43,10 +46,10 @@ export function buildPaymentDocument(payment: Payment, options: PaymentDocumentO
   function header(): void {
     doc.setFillColor(...teal);
     doc.rect(0, 0, 210, 3, 'F');
-    text(COMPANY_PROFILE.name, margin, 17, 19, true);
-    text('SERVIÇOS DE ABASTECIMENTO DE ÁGUA', margin, 24, 8, false, muted);
-    let top = 32;
-    for (const value of [COMPANY_PROFILE.address, `Tel. ${COMPANY_PROFILE.contact}  |  ${COMPANY_PROFILE.email}`, `NUIT: ${COMPANY_PROFILE.nuit}`]) {
+    let top = 17 + paragraph(company.name, margin, 17, width, 16, true) + 2;
+    text('SERVIÇOS DE ABASTECIMENTO DE ÁGUA', margin, top, 8, false, muted);
+    top += 8;
+    for (const value of [company.address, `Tel. ${company.contact}  |  ${company.email}`, `NUIT: ${company.nuit}`]) {
       top += paragraph(value, margin, top, width, 8) + 1;
     }
     y = Math.max(53, top + 3);
@@ -129,11 +132,11 @@ export function buildPaymentDocument(payment: Payment, options: PaymentDocumentO
     doc.setPage(page);
     doc.setDrawColor(...line);
     doc.line(margin, 278, 192, 278);
-    text(COMPANY_PROFILE.name, margin, 284, 8, true, muted);
+    text(doc.splitTextToSize(company.name,105)[0], margin, 284, 8, true, muted);
     text('Documento gerado eletronicamente', margin, 289, 7, false, muted);
     doc.setFontSize(8);
     doc.text(`Página ${page} de ${count}`, 192, 285, {align: 'right'});
   }
-  doc.setProperties({title: `${title} - ${reference}`, author: COMPANY_PROFILE.name, subject: 'Serviços de abastecimento de água'});
+  doc.setProperties({title: `${title} - ${reference}`, author: company.name, subject: 'Serviços de abastecimento de água'});
   return doc;
 }

@@ -1,0 +1,20 @@
+<div class="company-page">
+  <header class="company-toolbar"><div><h1>{{ 'company.title' | translate }}</h1><p>{{ 'company.subtitle' | translate }}</p></div><div class="company-actions"><button nz-button (click)="reload()" [disabled]="isLoading || isSaving">{{ 'company.reload' | translate }}</button><button nz-button nzType="primary" (click)="save()" [disabled]="isLoading || isSaving || loadFailed || !profile || !form.dirty" [nzLoading]="isSaving"><nz-icon nzType="check"></nz-icon> {{ 'company.save' | translate }}</button></div></header>
+  <p *ngIf="company.source$.value === 'demo'" class="company-mode" role="status">{{ 'company.demo' | translate }}</p>
+  <nz-spin [nzSpinning]="isLoading">
+    <div *ngIf="loadFailed" class="company-error" role="alert">{{ 'company.loadError' | translate }} <button nz-button nzSize="small" (click)="load()">{{ 'company.reload' | translate }}</button></div>
+    <form *ngIf="profile" [formGroup]="form" (ngSubmit)="save()" class="company-sheet" nz-form nzLayout="vertical">
+      <section><h2>{{ 'company.identity' | translate }}</h2><div class="company-fields">
+        <nz-form-item><nz-form-label nzFor="company-name" nzRequired>{{ 'company.name' | translate }}</nz-form-label><nz-form-control [nzErrorTip]="'company.required' | translate"><input id="company-name" nz-input formControlName="name" maxlength="100" autocomplete="organization"/></nz-form-control></nz-form-item>
+        <nz-form-item><nz-form-label nzFor="company-nuit" nzRequired>{{ 'company.nuit' | translate }}</nz-form-label><nz-form-control [nzErrorTip]="'company.nuitError' | translate"><input id="company-nuit" nz-input formControlName="nuit" maxlength="9" inputmode="numeric"/></nz-form-control></nz-form-item>
+        <nz-form-item class="full-row"><nz-form-label nzFor="company-tagline">{{ 'company.tagline' | translate }}</nz-form-label><nz-form-control><input id="company-tagline" nz-input formControlName="tagline" maxlength="160"/></nz-form-control></nz-form-item>
+      </div></section>
+      <section><h2>{{ 'company.contacts' | translate }}</h2><div class="company-fields">
+        <nz-form-item class="full-row"><nz-form-label nzFor="company-address" nzRequired>{{ 'company.address' | translate }}</nz-form-label><nz-form-control [nzErrorTip]="'company.required' | translate"><textarea id="company-address" nz-input formControlName="address" maxlength="240" rows="2" autocomplete="street-address"></textarea></nz-form-control></nz-form-item>
+        <nz-form-item><nz-form-label nzFor="company-contact" nzRequired>{{ 'company.contact' | translate }}</nz-form-label><nz-form-control [nzErrorTip]="'company.phoneError' | translate"><input id="company-contact" nz-input formControlName="contact" type="tel" maxlength="30" autocomplete="tel"/></nz-form-control></nz-form-item>
+        <nz-form-item><nz-form-label nzFor="company-email" nzRequired>{{ 'company.email' | translate }}</nz-form-label><nz-form-control [nzErrorTip]="'company.emailError' | translate"><input id="company-email" nz-input formControlName="email" type="email" maxlength="120" autocomplete="email"/></nz-form-control></nz-form-item>
+      </div></section>
+      <footer><p>{{ 'company.documentNote' | translate }}</p><p *ngIf="profile.updatedAt">{{ 'company.updated' | translate }} {{ profile.updatedAt | date:'dd/MM/yyyy HH:mm':'+0200' }}</p></footer>
+    </form>
+  </nz-spin>
+</div>

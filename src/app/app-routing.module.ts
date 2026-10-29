@@ -1,3 +1,4 @@
+import {CompanyComponent} from './features/company/company.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -75,6 +76,10 @@ const routes: Routes = [
         data: {
           roles: ['ADMIN']
         }
+      },
+      {
+        path: 'company',
+        component: CompanyComponent
       },
       {
         path: 'profile',
