@@ -169,5 +169,13 @@
     "noPayment": "Sem pagamento associado",
     "ownAccount": "Não pode desativar a sua própria conta",
     "alreadyInactive": "Esta conta já está inativa"
+  },
+  "years": {
+    "year": "Ano",
+    "all": "Todos os anos",
+    "payment": "Ano do pagamento",
+    "period": "Ano da mensalidade",
+    "issue": "Ano de emissão",
+    "estimated": "Estimativa distribuída do total de demonstração; não existe detalhe histórico por mês."
   }
 }

@@ -41,7 +41,7 @@
     <section class="calendar-card">
       <div class="calendar-toolbar">
         <div class="month-navigation">
-          <button (click)="prevMonth()" nz-button nzShape="circle" nzType="default" aria-label="Mes anterior">
+          <button [disabled]="atFirstMonth" (click)="prevMonth()" nz-button nzShape="circle" nzType="default" aria-label="Mes anterior">
             <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
           </button>
 
@@ -50,17 +50,17 @@
             <strong>{{ monthName }} {{ year }}</strong>
           </div>
 
-          <button (click)="nextMonth()" nz-button nzShape="circle" nzType="default" aria-label="Proximo mes">
+          <button [disabled]="atLastMonth" (click)="nextMonth()" nz-button nzShape="circle" nzType="default" aria-label="Proximo mes">
             <nz-icon nzTheme="outline" nzType="arrow-right"></nz-icon>
           </button>
         </div>
 
         <div class="year-navigation">
-          <button (click)="prevYear()" nz-button nzSize="small" nzType="default">
+          <button [disabled]="atFirstYear" (click)="prevYear()" nz-button nzSize="small" nzType="default">
             <nz-icon nzTheme="outline" nzType="arrow-left"></nz-icon>
             Ano
           </button>
-          <button (click)="nextYear()" nz-button nzSize="small" nzType="default">
+          <button [disabled]="atLastYear" (click)="nextYear()" nz-button nzSize="small" nzType="default">
             Ano
             <nz-icon nzTheme="outline" nzType="arrow-right"></nz-icon>
           </button>

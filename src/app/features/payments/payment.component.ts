@@ -1,3 +1,4 @@
+import {matchesBusinessYear} from '@shared/utils/billing-period';
 import {PermissionService} from '@core/auth/permission.service';
 import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
 import {tap} from 'rxjs';
@@ -29,6 +30,7 @@ export class PaymentComponent implements OnInit {
   selectedCustomer: Customer | null = null;
   selectedMonths: string[] = [];
 
+  selectedYear:number|null=null;
   searchValue = '';
 
   isLoading = false;
@@ -214,6 +216,7 @@ export class PaymentComponent implements OnInit {
   }
 
   reset(): void {
+    this.selectedYear=null;
     this.searchValue = '';
     this.filterData();
   }
@@ -225,7 +228,7 @@ export class PaymentComponent implements OnInit {
   filterData(): void {
     const search = this.searchValue.toLowerCase();
 
-    this.listOfDisplayData = this.dataSource.filter((item: Payment) =>
+    this.listOfDisplayData = this.dataSource.filter(item=>matchesBusinessYear(item.paymentDate,this.selectedYear)).filter((item: Payment) =>
       (item.customerName || '').toLowerCase().includes(search) ||
       (item.referenceCode || '').toLowerCase().includes(search)
     );
@@ -242,7 +245,7 @@ export class PaymentComponent implements OnInit {
             ...payment,
             numMonths: Number(payment.numMonths)
           }));
-          this.listOfDisplayData = [...this.dataSource];
+          this.filterData();
         },
         error: () => this.message.error('Erro ao carregar pagamentos.')
       });

@@ -1,3 +1,4 @@
+import {FIRST_BUSINESS_YEAR,LAST_BUSINESS_YEAR} from '@shared/utils/billing-period';
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 
 @Component({
@@ -102,11 +103,13 @@ export class CalendarComponent implements OnInit {
   }
 
   prevYear() {
+    if(this.year<=FIRST_BUSINESS_YEAR)return;
     this.year--;
     this.updateCalendar();
   }
 
   nextYear() {
+    if(this.year>=LAST_BUSINESS_YEAR)return;
     this.year++;
     this.updateCalendar();
   }
@@ -118,15 +121,14 @@ export class CalendarComponent implements OnInit {
     this.updateCalendar();
   }
 
-  changeMonth(offset: number) {
-    this.month += offset;
-    if (this.month < 0) {
-      this.month = 11;
-      this.year--;
-    } else if (this.month > 11) {
-      this.month = 0;
-      this.year++;
-    }
+  get atFirstMonth(){return this.year===FIRST_BUSINESS_YEAR && this.month===0;}
+  get atLastMonth(){return this.year===LAST_BUSINESS_YEAR && this.month===11;}
+  get atFirstYear(){return this.year===FIRST_BUSINESS_YEAR;}
+  get atLastYear(){return this.year===LAST_BUSINESS_YEAR;}
+  changeMonth(offset:number){
+    const target=new Date(this.year,this.month+offset,1);
+    if(target.getFullYear()<FIRST_BUSINESS_YEAR || target.getFullYear()>LAST_BUSINESS_YEAR)return;
+    this.year=target.getFullYear();this.month=target.getMonth();
   }
 
   /**

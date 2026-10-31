@@ -1,3 +1,5 @@
+import {paymentPeriods, isBillingPeriod} from '@shared/utils/billing-period';
+import {maputoMonthKey} from '@shared/utils/business-date';
 import {PermissionService} from '@core/auth/permission.service';
 import {AuthSessionService} from '@core/auth/auth-session.service';
 import {DEMO_USERS} from '@shared/config/demo-users';
@@ -173,6 +175,7 @@ export class WaterLocalDataService {
           confirmed: true,
           referenceMonth: months.join('|') || this.currentMonthKey(),
           numMonths,
+          periodAmounts: Object.fromEntries(months.map(period=>[period,Number(customer.monthlyFee)])),
           paymentDate: payload.paymentDate || new Date().toISOString(),
           paymentMethod: payload.paymentMethod || 'CASH',
           createdBy: this.session.getUser()?.id || '',
@@ -528,7 +531,7 @@ export class WaterLocalDataService {
       (customer.unpaidMonths || []).map(month => this.chargeFromCustomer(customer, month, false))
     );
 
-    const paid = state.payments.filter(payment => payment.confirmed).map(payment => this.chargeFromPayment(payment));
+    const paid = state.payments.filter(payment => payment.confirmed).flatMap(payment => paymentPeriods(payment.referenceMonth).map(period=>this.chargeFromPayment(payment,period)));
     return [...unpaid, ...paid].sort((a, b) => b.referenceMonth.localeCompare(a.referenceMonth));
   }
 
@@ -552,15 +555,20 @@ export class WaterLocalDataService {
     };
   }
 
-  private chargeFromPayment(payment: Payment): MonthlyCharge {
-    const firstMonth = (payment.referenceMonth || '').split('|')[0] || this.currentMonthKey();
+  private chargeFromPayment(payment: Payment, firstMonth:string): MonthlyCharge {
+    const periods=paymentPeriods(payment.referenceMonth);
+    const index=periods.indexOf(firstMonth);
+    const cents=Math.round(Number(payment.amount || 0)*100);
+    const count=Math.max(periods.length,1);
+    const estimated=(Math.floor(cents/count)+(index<cents%count?1:0))/100;
 
     return {
       id: `charge-${payment.customerId}-${firstMonth}-${payment.id}`,
       referenceMonth: firstMonth,
       paid: true,
       paidAt: payment.paymentDate,
-      amount: Number(payment.amount || 0),
+      amount: payment.periodAmounts?.[firstMonth] ?? estimated,
+      amountEstimated: payment.periodAmounts?.[firstMonth]===undefined && periods.length>1,
       customerNameSnapshot: payment.customerName,
       customerContactSnapshot: payment.customerContact,
       customerAddressSnapshot: payment.customerAddress,
@@ -574,25 +582,16 @@ export class WaterLocalDataService {
     };
   }
 
-  private ensureUnpaidMonths(current: string[], count: number): string[] {
-    const normalized = current.filter(Boolean);
-    if (normalized.length >= count) {
-      return normalized.slice(0, count);
+  private ensureUnpaidMonths(current:string[],count:number):string[]{
+    const months=[...new Set(current.filter(isBillingPeriod))].sort();
+    if(months.length>=count)return months;
+    let [year,month]=this.currentMonthKey().split('-').map(Number);
+    while(months.length<count){
+      if(month===1){year--;month=12;}else month--;
+      const key=year+'-'+String(month).padStart(2,'0');
+      if(!isBillingPeriod(key))throw new Error('Período fora do intervalo 2012–2099.');
+      if(!months.includes(key))months.push(key);
     }
-
-    const months = [...normalized];
-    let cursor = new Date();
-    cursor.setDate(1);
-    cursor.setMonth(cursor.getMonth() - 1);
-
-    while (months.length < count) {
-      const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`;
-      if (!months.includes(key)) {
-        months.unshift(key);
-      }
-      cursor.setMonth(cursor.getMonth() - 1);
-    }
-
     return months.sort();
   }
 
@@ -602,12 +601,11 @@ export class WaterLocalDataService {
   }
 
   private nextReceiptCode(next: number): string {
-    return `REC-${new Date().getFullYear()}-${String(next).padStart(4, '0')}`;
+    return `REC-${Number(this.currentMonthKey().slice(0,4))}-${String(next).padStart(4, '0')}`;
   }
 
   private currentMonthKey(): string {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    return maputoMonthKey(new Date());
   }
 
   private id(prefix: string): string {

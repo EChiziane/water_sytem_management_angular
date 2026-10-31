@@ -11,6 +11,7 @@ export interface MonthlyCharge {
   paidAt: string;
 
   amount: number;
+  amountEstimated?: boolean;
 
   customerNameSnapshot: string;
 

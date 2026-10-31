@@ -18,6 +18,8 @@ export interface Payment {
 
   referenceMonth: string;
   numMonths: number;
+  /** Demo allocation snapshots; persisted API allocations remain authoritative in production. */
+  periodAmounts?: Record<string, number>;
 
   paymentDate: string;
   paymentMethod: string;

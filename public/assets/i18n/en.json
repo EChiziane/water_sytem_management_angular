@@ -169,5 +169,13 @@
     "noPayment": "No associated payment",
     "ownAccount": "You cannot deactivate your own account",
     "alreadyInactive": "This account is already inactive"
+  },
+  "years": {
+    "year": "Year",
+    "all": "All years",
+    "payment": "Payment year",
+    "period": "Billing year",
+    "issue": "Issue year",
+    "estimated": "Estimate distributed from the demonstration total; historical monthly allocations are unavailable."
   }
 }

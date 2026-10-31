@@ -107,4 +107,13 @@ describe('Demonstration role accounts',()=>{
    service.addPayment({customerId:'customer',numMonths:1,amount:0}).subscribe({next:()=>fail('Zero amount accepted'),error:error=>expect(error.status).toBe(422)});
    expect(JSON.parse(localStorage.getItem(key)!).state.payments.length).toBe(0);
  });
+ it('represents paid months from different years separately while preserving recorded historical allocations',()=>{
+   const state=JSON.parse(localStorage.getItem(key)!);
+   state.payments=[{id:'p',customerId:'c',confirmed:true,amount:1250,referenceMonth:'2025-12|2026-01',periodAmounts:{'2025-12':500,'2026-01':750}}];
+   localStorage.setItem(key,JSON.stringify(state));
+   service.getCustomerBilling('c').subscribe(periods=>{
+     expect(periods.map(period=>period.referenceMonth)).toEqual(['2026-01','2025-12']);
+     expect(periods.map(period=>period.amount)).toEqual([750,500]);expect(periods.every(period=>period.paid)).toBeTrue();
+   });
+ });
 });

@@ -38,8 +38,8 @@
           </dl>
         </section>
         <section class="sheet-section table-section">
-          <div class="section-heading"><h2>Movimentos por período</h2><span class="section-meta">Períodos: {{ totalTimelineMonths }} · Pagos: {{ totalPaidMonths }} · Pendentes: {{ totalUnpaidMonths }}</span></div>
-          <nz-table #timelineTable [nzData]="monthlyTimeline" [nzNoResult]="emptyTimeline" [nzScroll]="{ x: '900px' }" nzSize="small" nzTableLayout="fixed" [nzHideOnSinglePage]="true">
+          <div class="section-heading"><h2>Movimentos por período</h2><app-year-filter [(value)]="selectedPeriodYear" label="years.period"></app-year-filter><span class="section-meta">Períodos: {{ totalTimelineMonths }} · Pagos: {{ totalPaidMonths }} · Pendentes: {{ totalUnpaidMonths }}</span></div>
+          <nz-table #timelineTable [nzData]="filteredTimeline" [nzNoResult]="emptyTimeline" [nzScroll]="{ x: '900px' }" nzSize="small" nzTableLayout="fixed" [nzHideOnSinglePage]="true">
             <thead><tr><th nzWidth="140px">Mês</th><th nzWidth="95px">Estado</th><th nzWidth="130px">Responsável</th><th nzWidth="150px">Recibo</th><th nzWidth="140px">Data do pagamento</th><th nzWidth="100px">Valor</th><th nzWidth="90px">Método</th><th class="wsm-actions-column" nzWidth="90px">{{ 'tableActions.heading' | translate }}</th></tr></thead>
             <tbody><tr *ngFor="let month of timelineTable.data">
               <td>{{ formatTimelineMonth(month) }}</td>
@@ -47,7 +47,7 @@
               <td>{{ month.createdByName || '—' }}</td>
               <td>{{ month.paymentReferenceCode || '—' }}</td>
               <td>{{ month.paymentDate ? (month.paymentDate | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
-              <td class="amount">{{ formatMoney(month.amount) }}</td>
+              <td class="amount" [title]="month.amountEstimated ? ('years.estimated' | translate) : ''">{{ month.amountEstimated ? '≈ ' : '' }}{{ formatMoney(month.amount) }}</td>
               <td>{{ month.paymentMethod || '—' }}</td>
               <td class="wsm-actions-cell"><div class="wsm-row-actions"><app-row-action action="view" *ngIf="month.paymentId; else noPaymentAction" [route]="['/app/payment-detail', month.paymentId]" [context]="month.paymentReferenceCode || formatTimelineMonth(month)"></app-row-action><ng-template #noPaymentAction><span class="wsm-no-action" [title]="'tableActions.noPayment' | translate">—<span class="wsm-visually-hidden">{{ 'tableActions.noPayment' | translate }}</span></span></ng-template></div></td>
             </tr></tbody>
@@ -55,7 +55,7 @@
           <ng-template #emptyTimeline><p class="table-empty">Sem mensalidades registadas no histórico.</p></ng-template>
         </section>
         <section class="sheet-section table-section">
-          <div class="section-heading payments-heading"><h2>Pagamentos do cliente</h2><input (ngModelChange)="searchValue = $event; search()" [ngModel]="searchValue" nz-input placeholder="Pesquisar pagamento" aria-label="Pesquisar pagamento" type="search"/></div>
+          <div class="section-heading payments-heading"><h2>Pagamentos do cliente</h2><app-year-filter [(value)]="selectedPaymentYear" (valueChange)="search()" label="years.payment"></app-year-filter><input (ngModelChange)="searchValue = $event; search()" [ngModel]="searchValue" nz-input placeholder="Pesquisar pagamento" aria-label="Pesquisar pagamento" type="search"/></div>
           <nz-table #paymentsTable [nzData]="listOfDisplayData" [nzNoResult]="emptyPayments" [nzScroll]="{ x: '900px' }" nzSize="small" nzTableLayout="fixed" [nzHideOnSinglePage]="true">
             <thead><tr><th nzWidth="155px">Referência</th><th nzWidth="110px">Montante</th><th nzWidth="170px">Períodos</th><th nzWidth="90px">Método</th><th nzWidth="115px">Estado</th><th nzWidth="140px">Data de registo</th><th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th></tr></thead>
             <tbody><tr *ngFor="let payment of paymentsTable.data">

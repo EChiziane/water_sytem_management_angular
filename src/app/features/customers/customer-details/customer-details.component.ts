@@ -1,3 +1,4 @@
+import {matchesBusinessYear} from '@shared/utils/billing-period';
 import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
 import {tap} from 'rxjs';
 import {
@@ -73,6 +74,9 @@ export class CustomerDetailsComponent implements OnInit {
   // FILTERS
   // =====================================================
 
+  selectedPeriodYear:number|null=null;
+  selectedPaymentYear:number|null=null;
+  get filteredTimeline(){return this.selectedPeriodYear===null ? this.monthlyTimeline : this.monthlyTimeline.filter(item=>item.referenceMonth.startsWith(this.selectedPeriodYear+'-'));}
   searchValue = '';
 
   visible = false;
@@ -346,6 +350,7 @@ export class CustomerDetailsComponent implements OnInit {
             ...payments
           ];
 
+          this.search();
           this.totalPayments =
             payments.length;
 
@@ -582,7 +587,7 @@ export class CustomerDetailsComponent implements OnInit {
     this.visible = false;
 
     this.listOfDisplayData =
-      this.paymentDataSource.filter(
+      this.paymentDataSource.filter(item=>matchesBusinessYear(item.paymentDate,this.selectedPaymentYear)).filter(
         (item: Payment) =>
 
           item.customerName

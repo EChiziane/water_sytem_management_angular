@@ -16,6 +16,7 @@
         type="text"/>
     </nz-input-group>
 
+    <app-year-filter [(value)]="selectedYear" (valueChange)="filterData()" label="years.payment"></app-year-filter>
     <div class="filter-actions">
       <button (click)="reset()" nz-button nzType="default">
         <nz-icon nzTheme="outline" nzType="reload"></nz-icon>

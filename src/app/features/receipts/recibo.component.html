@@ -8,6 +8,7 @@
   </header>
   <section class="filters-panel document-toolbar">
     <input (ngModelChange)="search()" [(ngModel)]="searchValue" nz-input placeholder="Pesquisar referência ou cliente" aria-label="Pesquisar documentos"/>
+    <app-year-filter [(value)]="selectedYear" (valueChange)="search()" label="years.issue"></app-year-filter>
     <span>{{ listOfDisplayData.length }} documento(s)</span>
     <button (click)="reset()" nz-button nzType="default">Limpar pesquisa</button>
   </section>

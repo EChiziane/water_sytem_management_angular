@@ -1,3 +1,4 @@
+import {matchesBusinessYear} from '@shared/utils/billing-period';
 import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
 import {tap} from 'rxjs';
 import {Component, OnInit} from '@angular/core';
@@ -26,6 +27,7 @@ export class ReciboComponent implements OnInit {
   payments: Payment[] = [];
   listOfDisplayData: Recibo[] = [];
 
+  selectedYear:number|null=null;
   searchValue = '';
   visible = false;
   visibleDrawer = false;
@@ -81,7 +83,7 @@ export class ReciboComponent implements OnInit {
     this.visible = false;
 
     const q = this.searchValue.toLowerCase().trim();
-    this.listOfDisplayData = this.dataSource.filter((item: Recibo) =>
+    this.listOfDisplayData = this.dataSource.filter(item=>matchesBusinessYear(item.createdAt,this.selectedYear)).filter((item: Recibo) =>
       item.customerName?.toLowerCase().includes(q) ||
       item.fileName?.toLowerCase().includes(q) ||
       item.invoiceCode?.toLowerCase?.().includes?.(q)
@@ -97,6 +99,7 @@ export class ReciboComponent implements OnInit {
   }
 
   reset(): void {
+    this.selectedYear=null;
     this.searchValue = '';
     this.search();
   }
