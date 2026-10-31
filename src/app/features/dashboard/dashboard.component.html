@@ -33,13 +33,12 @@
     </section>
   </div>
   <section *ngIf="!permissions.can('customers.read')" class="dashboard-workspace"><h2>{{ 'access.technicalTitle' | translate }}</h2><p>{{ 'access.technicalPending' | translate }}</p><a routerLink="/app/profile">{{ 'layout.nav.profile' | translate }}</a></section>
-  <section class="dashboard-workspace">
+  <section *ngIf="permissions.can('customers.read')" class="dashboard-workspace">
     <h2>{{ 'dashboardHome.shortcuts' | translate }}</h2>
     <nav class="dashboard-links" [attr.aria-label]="'dashboardHome.shortcuts' | translate">
       <a *ngIf="permissions.can('customers.read')" routerLink="/app/customer"><nz-icon nzType="team"></nz-icon><div><strong>{{ 'dashboardHome.customers' | translate }}</strong><span>{{ 'dashboardHome.customersHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
       <a *ngIf="permissions.can('payments.read')" routerLink="/app/payment"><nz-icon nzType="credit-card"></nz-icon><div><strong>{{ 'dashboardHome.payments' | translate }}</strong><span>{{ 'dashboardHome.paymentsHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
       <a *ngIf="permissions.can('documents.issue')" routerLink="/app/receipts"><nz-icon nzType="file-text"></nz-icon><div><strong>{{ 'dashboardHome.receipts' | translate }}</strong><span>{{ 'dashboardHome.receiptsHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
-      <a routerLink="/app/calendar"><nz-icon nzType="calendar"></nz-icon><div><strong>{{ 'dashboardHome.calendar' | translate }}</strong><span>{{ 'dashboardHome.calendarHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
     </nav>
   </section>
 </div>

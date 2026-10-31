@@ -62,3 +62,5 @@ A auditoria acima é um retrato de 28/10/2026. As alterações autorizadas poste
 O controlo de acesso de 31/10/2026, a matriz aplicada e as contas de teste encontram-se em [Roles e permissões](09-roles-permissoes.md).
 
 A navegação e recuperação entre anos, os filtros de 2012 a 2099 e respetivas verificações estão em [Suporte multianual](11-suporte-multianual.md).
+
+A página experimental de calendário foi retirada: [Remoção da agenda experimental](12-remocao-calendario-experimental.md). As regras financeiras de datas continuam disponíveis.

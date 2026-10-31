@@ -55,12 +55,6 @@
         </a>
       </li>
 
-      <li nz-menu-item nzMatchRouter>
-        <a routerLink="/app/calendar">
-          <span nz-icon nzType="calendar"></span>
-          <span>{{ 'layout.nav.calendar' | translate }}</span>
-        </a>
-      </li>
 
       <li *ngIf="permissions.can('company.manage')" nz-menu-item nzMatchRouter><a *ngIf="permissions.can('company.manage')" routerLink="/app/company"><span nz-icon nzType="setting"></span><span>{{ 'layout.nav.company' | translate }}</span></a></li>
 
@@ -211,10 +205,6 @@
       <span>{{ 'layout.nav.receipts' | translate }}</span>
     </a>
 
-    <a routerLink="/app/calendar" routerLinkActive="active" (click)="closeMobileMenu()">
-      <span nz-icon nzType="calendar"></span>
-      <span>{{ 'layout.nav.calendar' | translate }}</span>
-    </a>
 
     <a *ngIf="permissions.can('company.manage')" routerLink="/app/company" routerLinkActive="active" (click)="closeMobileMenu()"><span nz-icon nzType="setting"></span><span>{{ 'layout.nav.company' | translate }}</span></a>
 

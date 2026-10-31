@@ -17,7 +17,6 @@
       "customers": "Customers",
       "payments": "Payments",
       "receipts": "Receipts",
-      "calendar": "Calendar",
       "users": "Users",
       "profile": "Profile",
       "company": "Company"
@@ -64,8 +63,6 @@
     "paymentsHint": "View and record transactions.",
     "receipts": "Receipts",
     "receiptsHint": "Payment documents and receipts.",
-    "calendar": "Calendar",
-    "calendarHint": "View the work calendar.",
     "today": "Today",
     "recentPayments": "Payments this month",
     "latestTen": "Latest 10 records",
@@ -151,7 +148,7 @@
     "deniedText": "Your role does not allow access to this area. Contact your administrator if access is required.",
     "back": "Back to dashboard",
     "technicalTitle": "Technical workspace",
-    "technicalPending": "Installation assignments are not yet available. You can access the calendar and your profile. Financial data is restricted to authorized roles.",
+    "technicalPending": "Installation assignments are not yet available. You can access your profile. Financial data is restricted to authorized roles.",
     "contactAdmin": "Contact your administrator to request an account."
   },
   "tableActions": {

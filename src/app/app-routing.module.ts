@@ -5,7 +5,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from '@core/guards/auth.guard';
-import { CalendarComponent } from './features/calendar/calendar.component';
 import { CustomerDetailsComponent } from './features/customers/customer-details/customer-details.component';
 import { CustomerComponent } from './features/customers/customer.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
@@ -65,10 +64,6 @@ const routes: Routes = [
       {
         path: 'payment-detail/:id',
         component: PaymentDetailsComponent, canActivate: [PermissionGuard], data: {permission: 'payments.read'}
-      },
-      {
-        path: 'calendar',
-        component: CalendarComponent, canActivate: [PermissionGuard], data: {permission: 'calendar.read'}
       },
       {
         path: 'users',

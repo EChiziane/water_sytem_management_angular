@@ -47,7 +47,7 @@ describe('Dashboard monthly activity', () => {
   afterEach(() => jasmine.clock().uninstall());
 
   it('does not request or render customer and financial data for a technician',()=>{
-    spyOn(TestBed.inject(PermissionService),'can').and.callFake(permission=>['dashboard.read','profile.read','calendar.read','technical.read'].includes(permission));
+    spyOn(TestBed.inject(PermissionService),'can').and.callFake(permission=>['dashboard.read','profile.read','technical.read'].includes(permission));
     customers.getCustomers.calls.reset();payments.getPayments.calls.reset();
     fixture.componentInstance.loadDashboard();fixture.detectChanges();
     expect(customers.getCustomers).not.toHaveBeenCalled();expect(payments.getPayments).not.toHaveBeenCalled();

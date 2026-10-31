@@ -17,7 +17,7 @@ Alteração incremental de 31/10/2026. O ano atual continua a ser obtido do rel�
 
 Filtros de 2012 a 2099 e «Todos os anos» foram acrescentados a pagamentos, recibos e às duas tabelas do histórico do cliente. O filtro de mensalidades usa o ano da obrigação; o de pagamentos usa a data real do pagamento em Maputo; o de recibos usa a emissão. Pesquisas de texto continuam a funcionar em conjunto com o ano. Listas de pagamentos exportadas usam os resultados filtrados existentes.
 
-O calendário operacional mantém a navegação entre meses/anos e bloqueia passos anteriores a janeiro de 2012 e posteriores a dezembro de 2099. Fevereiro continua a respeitar anos bissextos.
+A página experimental de calendário foi removida posteriormente a pedido do utilizador. As regras de datas, períodos e anos bissextos usadas na cobrança permanecem.
 
 ## Demonstração e histórico
 

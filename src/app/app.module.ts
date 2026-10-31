@@ -12,7 +12,6 @@ import {NzAlertComponent} from 'ng-zorro-antd/alert';
 import {NzAvatarModule} from 'ng-zorro-antd/avatar';
 import {NzBreadCrumbComponent, NzBreadCrumbItemComponent} from 'ng-zorro-antd/breadcrumb';
 import {NzButtonComponent, NzButtonModule} from 'ng-zorro-antd/button';
-import {NzCalendarComponent} from 'ng-zorro-antd/calendar';
 import {NzCardComponent} from 'ng-zorro-antd/card';
 import {NzCarouselComponent, NzCarouselContentDirective} from 'ng-zorro-antd/carousel';
 import {NzCheckboxComponent} from 'ng-zorro-antd/checkbox';
@@ -41,7 +40,6 @@ import {NzTooltipDirective} from 'ng-zorro-antd/tooltip';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {CalendarComponent} from './features/calendar/calendar.component';
 import {IconsProviderModule} from './icons-provider.module';
 import {AuthInterceptor} from '@core/interceptors/auth-interceptor';
 import {LandingPageComponent} from './features/public/landing-page/landingpage.component';
@@ -65,7 +63,6 @@ registerLocaleData(en);
   declarations: [
     AccessDeniedComponent,
     AppComponent,
-    CalendarComponent,
     CustomerComponent,
     CustomerDetailsComponent,
     DashboardComponent,
@@ -97,7 +94,6 @@ registerLocaleData(en);
     NzBreadCrumbItemComponent,
     NzButtonComponent,
     NzButtonModule,
-    NzCalendarComponent,
     NzCardComponent,
     NzCarouselComponent,
     NzCarouselContentDirective,

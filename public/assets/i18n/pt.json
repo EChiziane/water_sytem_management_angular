@@ -17,7 +17,6 @@
       "customers": "Clientes",
       "payments": "Pagamentos",
       "receipts": "Recibos",
-      "calendar": "Calendario",
       "users": "Utilizadores",
       "profile": "Perfil",
       "company": "Empresa"
@@ -64,8 +63,6 @@
     "paymentsHint": "Consultar e registar operações.",
     "receipts": "Recibos",
     "receiptsHint": "Documentos e comprovativos de pagamento.",
-    "calendar": "Calendário",
-    "calendarHint": "Consultar a agenda de trabalho.",
     "today": "Hoje",
     "recentPayments": "Pagamentos deste mês",
     "latestTen": "Últimos 10 registos",
@@ -151,7 +148,7 @@
     "deniedText": "A sua função não permite consultar esta área. Contacte o administrador se precisar de acesso.",
     "back": "Voltar ao início",
     "technicalTitle": "Área técnica",
-    "technicalPending": "Ainda não existem instalações atribuídas neste sistema. Consulte o calendário e o seu perfil. Os dados financeiros estão reservados às funções autorizadas.",
+    "technicalPending": "Ainda não existem instalações atribuídas neste sistema. Consulte o seu perfil. Os dados financeiros estão reservados às funções autorizadas.",
     "contactAdmin": "Para obter uma conta, contacte o administrador."
   },
   "tableActions": {

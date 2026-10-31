@@ -6,7 +6,7 @@ Implementação incremental de 31/10/2026 no Angular e no backend Java existente
 
 | Área / ação existente | ADMIN | MANAGER | OPERATOR | TECHNICIAN |
 |---|---|---|---|---|
-| Perfil próprio e calendário | Sim | Sim | Sim | Sim |
+| Perfil próprio | Sim | Sim | Sim | Sim |
 | Dashboard operacional com clientes | Sim | Sim | Sim | Não |
 | Consulta de clientes e histórico no atendimento | Sim | Sim | Sim | Não |
 | Criar cliente | Sim | Sim | Não | Não |
@@ -45,7 +45,7 @@ As contas existentes conservam logins, PINs e estado. A inicialização é idemp
 3. Tentar abrir `/app/company` e `/app/users` diretamente com outra role: aparece acesso restrito. O backend também recusa esses recursos.
 4. Carla consulta clientes e regista pagamentos. As opções de tarifa, estado e válvula não podem ser alteradas por ela; exportações financeiras não aparecem. Registar um pagamento de teste permite vê-lo na sua listagem geral.
 5. Bruno pode criar clientes, gerir os campos operacionais e exportar listas; não pode administrar a empresa, contas ou alterar a mensalidade existente.
-6. David encontra a área técnica, calendário e perfil, sem listagens financeiras. URLs de clientes, pagamentos e recibos são recusados.
+6. David encontra a área técnica e o perfil, sem listagens financeiras. URLs de clientes, pagamentos e recibos são recusados.
 7. Desativar outra conta como Ana: a identidade permanece no sistema e o login fica bloqueado. A desativação da própria conta e a remoção do último administrador ativo são recusadas.
 
 ## Garantias e limites

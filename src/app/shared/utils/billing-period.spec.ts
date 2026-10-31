@@ -2,7 +2,6 @@ import {BUSINESS_YEARS,isBillingPeriod,nextBillingPeriod,matchesBusinessYear,pay
 import {recoverLocalBilling,isOverdueMonth} from './billing-recovery';
 import {Customer} from '@shared/models/WSM/customer';
 import {Payment} from '@shared/models/WSM/payment';
-import {CalendarComponent} from '../../features/calendar/calendar.component';
 
 describe('Multi-year billing, 2012–2099',()=>{
  const customer={id:'c',status:'ATIVO',unpaidMonths:[],monthsInDebt:0} as unknown as Customer;
@@ -42,12 +41,5 @@ describe('Multi-year billing, 2012–2099',()=>{
  it('does not erase unsupported legacy periods in an automatic scan',()=>{
    const legacy={...customer,unpaidMonths:['2011-12'],monthsInDebt:1};
    expect(recoverLocalBilling([legacy],[],new Date('2026-01-15T12:00:00Z'))[0]).toEqual(legacy);
- });
- it('navigates calendar years correctly and respects both bounds and leap days',()=>{
-   const calendar=new CalendarComponent();calendar.year=2025;calendar.month=11;calendar.nextMonth();expect([calendar.year,calendar.month]).toEqual([2026,0]);
-   calendar.prevMonth();expect([calendar.year,calendar.month]).toEqual([2025,11]);
-   calendar.year=2012;calendar.month=0;calendar.prevMonth();expect(calendar.year).toBe(2012);expect(calendar.month).toBe(0);
-   calendar.year=2099;calendar.month=11;calendar.nextMonth();expect(calendar.year).toBe(2099);expect(calendar.month).toBe(11);
-   calendar.year=2024;calendar.month=1;calendar.updateCalendar();expect(calendar.displayDays.filter(Boolean).length).toBe(29);
  });
 });
