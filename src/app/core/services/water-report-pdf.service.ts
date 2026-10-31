@@ -1,3 +1,4 @@
+import {PermissionService} from '@core/auth/permission.service';
 import {CompanyProfileService} from './company-profile.service';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {TranslationService} from './translation.service';
@@ -29,14 +30,15 @@ export interface DashboardReportData {
   providedIn: 'root'
 })
 export class WaterReportPdfService {
-  constructor(private companyProfiles: CompanyProfileService, private messages: NzMessageService, private translations: TranslationService,
+  constructor(private permissions: PermissionService, private companyProfiles: CompanyProfileService, private messages: NzMessageService, private translations: TranslationService,
     private filenames: DocumentFilenameService,
     private localData: WaterLocalDataService
   ) {
   }
 
   downloadCustomerList(customers: Customer[], scopeLabel = 'Lista filtrada'): void {
-    this.companyProfiles.getProfile().subscribe({next:company=>{
+    this.permissions.require('reports.financial');
+    this.companyProfiles.getIssuerProfile().subscribe({next:company=>{
     const doc = new jsPDF({orientation: 'portrait'});
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -74,7 +76,8 @@ export class WaterReportPdfService {
   }
 
   downloadPaymentList(payments: Payment[], scopeLabel = 'Lista filtrada'): void {
-    this.companyProfiles.getProfile().subscribe({next:company=>{
+    this.permissions.require('reports.financial');
+    this.companyProfiles.getIssuerProfile().subscribe({next:company=>{
     const doc = new jsPDF({orientation: 'portrait'});
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -116,7 +119,8 @@ export class WaterReportPdfService {
   }
 
   downloadDashboardReport(data: DashboardReportData): void {
-    this.companyProfiles.getProfile().subscribe({next:company=>{
+    this.permissions.require('reports.financial');
+    this.companyProfiles.getIssuerProfile().subscribe({next:company=>{
     const doc = new jsPDF({orientation: 'portrait'});
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -170,6 +174,7 @@ export class WaterReportPdfService {
   }
 
   downloadLocalDatabase(format: 'json' | 'txt'): void {
+    this.permissions.require('users.manage');
     const content = this.localData.exportState(format);
     const blob = new Blob([content], {type: format === 'json' ? 'application/json' : 'text/plain'});
     const url = URL.createObjectURL(blob);

@@ -1,3 +1,5 @@
+import {AuthSessionService} from '@core/auth/auth-session.service';
+import {PermissionService} from '@core/auth/permission.service';
 import {CommonModule} from '@angular/common';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
@@ -32,6 +34,7 @@ describe('Dashboard monthly activity', () => {
       declarations: [DashboardComponent, TranslatePipe],
       imports: [CommonModule, RouterModule.forRoot([]), NoopAnimationsModule, IconsProviderModule, NzButtonModule, NzSpinModule],
       providers: [
+        {provide:AuthSessionService,useValue:{getUser:()=>({role:'ADMIN',status:'ACTIVE'})}},
         {provide: CustomerService, useValue: customers},
         {provide: PaymentService, useValue: payments},
         {provide: TranslationService, useValue: {languageChanges$: of('pt'), instant: (key: string) => key}}
@@ -42,6 +45,17 @@ describe('Dashboard monthly activity', () => {
   });
 
   afterEach(() => jasmine.clock().uninstall());
+
+  it('does not request or render customer and financial data for a technician',()=>{
+    spyOn(TestBed.inject(PermissionService),'can').and.callFake(permission=>['dashboard.read','profile.read','calendar.read','technical.read'].includes(permission));
+    customers.getCustomers.calls.reset();payments.getPayments.calls.reset();
+    fixture.componentInstance.loadDashboard();fixture.detectChanges();
+    expect(customers.getCustomers).not.toHaveBeenCalled();expect(payments.getPayments).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('.activity-panel')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.operational-counts')).toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain(customer.name);
+    expect(fixture.nativeElement.textContent).toContain('access.technicalPending');
+  });
 
   it('shows the two lists and links to their pages without exposing amounts or contacts', () => {
     const page = fixture.nativeElement as HTMLElement;

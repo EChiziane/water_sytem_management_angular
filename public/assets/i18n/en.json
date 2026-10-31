@@ -145,5 +145,13 @@
     "documentError": "Could not retrieve company details to generate the document.",
     "discardTitle": "Discard unsaved changes?",
     "discardDescription": "Reloading replaces unsaved fields with the saved company details."
+  },
+  "access": {
+    "deniedTitle": "Restricted access",
+    "deniedText": "Your role does not allow access to this area. Contact your administrator if access is required.",
+    "back": "Back to dashboard",
+    "technicalTitle": "Technical workspace",
+    "technicalPending": "Installation assignments are not yet available. You can access the calendar and your profile. Financial data is restricted to authorized roles.",
+    "contactAdmin": "Contact your administrator to request an account."
   }
 }

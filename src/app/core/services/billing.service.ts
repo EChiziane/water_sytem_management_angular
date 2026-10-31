@@ -1,10 +1,11 @@
+import {DataAccessService} from '@core/auth/data-access.service';
 // services/billing.service.ts
 
 import { Injectable } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 
-import { Observable, catchError, map, of, take } from 'rxjs';
+import { Observable, map, of, take } from 'rxjs';
 
 import { environment } from '../../../environments/environments';
 import {MonthlyCharge} from '@shared/models/monthly-charge';
@@ -20,6 +21,7 @@ export class BillingService {
     environment.baseURL + '/billing';
 
   constructor(
+    private access: DataAccessService,
     private http: HttpClient,
     private localData: WaterLocalDataService
   ) {}
@@ -29,8 +31,7 @@ export class BillingService {
   // ==========================================
 
   public syncAllTimelines(): Observable<string> {
-
-    return this.http
+    return this.access.run('billing.generate', () => this.http
       .post(
         `${this.baseURL}/sync`,
         {},
@@ -38,10 +39,7 @@ export class BillingService {
           responseType: 'text'
         }
       )
-      .pipe(
-        take(1),
-        catchError(() => this.localData.syncBilling())
-      );
+      .pipe(take(1)), () => this.localData.syncBilling());
   }
 
   // ==========================================
@@ -50,10 +48,7 @@ export class BillingService {
 
   public getAllBilling():
     Observable<MonthlyCharge[]> {
-
-    return this.http.get<MonthlyCharge[]>(this.baseURL).pipe(
-      catchError(() => this.localData.getBilling())
-    );
+    return this.access.run('reports.financial', () => this.http.get<MonthlyCharge[]>(this.baseURL), () => this.localData.getBilling());
   }
 
   // ==========================================
@@ -63,10 +58,7 @@ export class BillingService {
   public getCustomerTimeline(
     customerId: string
   ): Observable<MonthlyCharge[]> {
-
-    return this.http.get<MonthlyCharge[]>(`${this.baseURL}/customer/${customerId}`).pipe(
-      catchError(() => this.localData.getCustomerBilling(customerId))
-    );
+    return this.access.run('customers.read', () => this.http.get<MonthlyCharge[]>(`${this.baseURL}/customer/${customerId}`), () => this.localData.getCustomerBilling(customerId));
   }
 
   // ==========================================
@@ -76,10 +68,7 @@ export class BillingService {
   public getCustomerUnpaidMonths(
     customerId: string
   ): Observable<MonthlyCharge[]> {
-
-    return this.http.get<MonthlyCharge[]>(`${this.baseURL}/customer/${customerId}/unpaid`).pipe(
-      catchError(() => this.localData.getCustomerUnpaidMonths(customerId))
-    );
+    return this.access.run('customers.read', () => this.http.get<MonthlyCharge[]>(`${this.baseURL}/customer/${customerId}/unpaid`), () => this.localData.getCustomerUnpaidMonths(customerId));
   }
 
   // ==========================================
@@ -90,10 +79,7 @@ export class BillingService {
     customerId: string,
     referenceMonth: string
   ): Observable<MonthlyCharge> {
-
-    return this.http.get<MonthlyCharge>(`${this.baseURL}/customer/${customerId}/month/${referenceMonth}`).pipe(
-      catchError(() => this.localData.getCustomerMonth(customerId, referenceMonth))
-    );
+    return this.access.run('customers.read', () => this.http.get<MonthlyCharge>(`${this.baseURL}/customer/${customerId}/month/${referenceMonth.replace('-', '/')}`), () => this.localData.getCustomerMonth(customerId, referenceMonth));
   }
 
   // ==========================================
@@ -103,9 +89,6 @@ export class BillingService {
   public getCustomerDebtCount(
     customerId: string
   ): Observable<number> {
-
-    return this.http.get<number>(`${this.baseURL}/customer/${customerId}/debt-count`).pipe(
-      catchError(() => this.localData.getCustomerDebtCount(customerId))
-    );
+    return this.access.run('customers.read', () => this.http.get<number>(`${this.baseURL}/customer/${customerId}/debt-count`), () => this.localData.getCustomerDebtCount(customerId));
   }
 }

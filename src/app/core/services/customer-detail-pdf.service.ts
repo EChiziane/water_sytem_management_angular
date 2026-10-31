@@ -11,6 +11,6 @@ import {buildCustomerDocument} from '@core/utils/customer-document';
 export class CustomerDetailPdfService {
   constructor(private companyProfiles: CompanyProfileService, private messages: NzMessageService, private translations: TranslationService, private filenames: DocumentFilenameService) {}
   downloadCustomerReport(customer: Customer, payments: Payment[], includeHistory = false): void {
-    this.companyProfiles.getProfile().subscribe({next:company=>buildCustomerDocument(customer,payments,{includeHistory,company}).save(this.filenames.build('CLIENTE',customer.code)),error:()=>this.messages.error(this.translations.instant('company.documentError'))});
+    this.companyProfiles.getIssuerProfile().subscribe({next:company=>buildCustomerDocument(customer,payments,{includeHistory,company}).save(this.filenames.build('CLIENTE',customer.code)),error:()=>this.messages.error(this.translations.instant('company.documentError'))});
   }
 }

@@ -1,3 +1,4 @@
+import {AccessDeniedComponent} from './features/auth/access-denied.component';
 import {registerLocaleData} from '@angular/common';
 import en from '@angular/common/locales/en';
 import {HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi} from '@angular/common/http';
@@ -60,6 +61,7 @@ registerLocaleData(en);
 
 @NgModule({
   declarations: [
+    AccessDeniedComponent,
     AppComponent,
     CalendarComponent,
     CustomerComponent,

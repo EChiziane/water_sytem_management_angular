@@ -1,3 +1,4 @@
+import {PermissionService} from '@core/auth/permission.service';
 import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
 import {tap} from 'rxjs';
 import {Component, HostListener, Input, OnInit} from '@angular/core';
@@ -41,7 +42,7 @@ export class PaymentComponent implements OnInit {
   private readonly MOBILE_BREAKPOINT = 768;
   private readonly DEFAULT_PAYMENT_METHOD = 'CASH';
 
-  constructor(
+  constructor(public permissions: PermissionService,
     private confirmations: OperationConfirmationService,
     private paymentService: PaymentService,
     private customerService: CustomerService,
@@ -252,6 +253,7 @@ export class PaymentComponent implements OnInit {
   }
 
   downloadPaymentList(): void {
+    if(!this.permissions.can('reports.financial'))return;
     this.reports.downloadPaymentList(this.listOfDisplayData);
   }
 

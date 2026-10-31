@@ -68,7 +68,6 @@
               <td><div class="row-actions">
                 <button [routerLink]="['/app/payment-detail', payment.id]" nz-button nzSize="small" nzType="link" aria-label="Ver detalhes do pagamento"><nz-icon nzType="eye"></nz-icon></button>
                 <button (click)="download(payment)" nz-button nzSize="small" nzType="link" aria-label="Descarregar documento do pagamento"><nz-icon nzType="printer"></nz-icon></button>
-                <button (click)="deletePayment(payment)" nz-button nzDanger nzSize="small" nzType="link" aria-label="Eliminar pagamento"><nz-icon nzType="delete"></nz-icon></button>
               </div></td>
             </tr></tbody>
           </nz-table>

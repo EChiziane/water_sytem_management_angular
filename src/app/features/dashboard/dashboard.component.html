@@ -3,7 +3,7 @@
     <div><h1>{{ 'dashboardHome.title' | translate }}</h1><p>{{ 'dashboardHome.subtitle' | translate }}</p><span class="dashboard-date">{{ 'dashboardHome.today' | translate }}: {{ asOf | date:'dd/MM/yyyy':'+0200' }} · Maputo</span></div>
     <button nz-button (click)="loadDashboard()" [disabled]="isLoading"><nz-icon nzType="reload"></nz-icon> {{ 'dashboardHome.refresh' | translate }}</button>
   </header>
-  <nz-spin [nzSpinning]="isLoading">
+  <nz-spin *ngIf="permissions.can('customers.read')" [nzSpinning]="isLoading">
     <p *ngIf="loadFailed" class="dashboard-error" role="alert">{{ 'dashboardHome.error' | translate }}</p>
     <section *ngIf="!loadFailed" class="operational-counts" [attr.aria-label]="'dashboardHome.overview' | translate">
       <div><span>{{ 'dashboardHome.total' | translate }}</span><strong>{{ isLoading ? '—' : totalCustomers }}</strong></div>
@@ -12,9 +12,9 @@
     </section>
   </nz-spin>
 
-  <div class="dashboard-activity" [attr.aria-busy]="isLoading">
+  <div *ngIf="permissions.can('customers.read')" class="dashboard-activity" [attr.aria-busy]="isLoading">
     <section class="activity-panel" aria-labelledby="recent-payments-heading">
-      <header><div><h2 id="recent-payments-heading">{{ 'dashboardHome.recentPayments' | translate }}</h2><p>{{ 'dashboardHome.latestTen' | translate }} · {{ asOf | date:'MM/yyyy':'+0200' }}</p></div><a routerLink="/app/payment">{{ 'dashboardHome.viewMore' | translate }} <nz-icon nzType="arrow-right"></nz-icon></a></header>
+      <header><div><h2 id="recent-payments-heading">{{ 'dashboardHome.recentPayments' | translate }}</h2><p>{{ 'dashboardHome.latestTen' | translate }} · {{ asOf | date:'MM/yyyy':'+0200' }}</p></div><a *ngIf="permissions.can('payments.read')" routerLink="/app/payment">{{ 'dashboardHome.viewMore' | translate }} <nz-icon nzType="arrow-right"></nz-icon></a></header>
       <p *ngIf="isLoading" class="activity-empty">{{ 'dashboardHome.loading' | translate }}</p>
       <p *ngIf="!isLoading && paymentsFailed" class="activity-empty" role="alert">{{ 'dashboardHome.paymentsError' | translate }}</p>
       <ng-container *ngIf="!isLoading && !paymentsFailed">
@@ -23,7 +23,7 @@
       </ng-container>
     </section>
     <section class="activity-panel" aria-labelledby="debtors-heading">
-      <header><div><h2 id="debtors-heading">{{ 'dashboardHome.debtors' | translate }}</h2><p>{{ 'dashboardHome.debtorsHint' | translate }}</p></div><a routerLink="/app/customer">{{ 'dashboardHome.viewMore' | translate }} <nz-icon nzType="arrow-right"></nz-icon></a></header>
+      <header><div><h2 id="debtors-heading">{{ 'dashboardHome.debtors' | translate }}</h2><p>{{ 'dashboardHome.debtorsHint' | translate }}</p></div><a *ngIf="permissions.can('customers.read')" routerLink="/app/customer">{{ 'dashboardHome.viewMore' | translate }} <nz-icon nzType="arrow-right"></nz-icon></a></header>
       <p *ngIf="isLoading" class="activity-empty">{{ 'dashboardHome.loading' | translate }}</p>
       <p *ngIf="!isLoading && loadFailed" class="activity-empty" role="alert">{{ 'dashboardHome.customersError' | translate }}</p>
       <ng-container *ngIf="!isLoading && !loadFailed">
@@ -32,12 +32,13 @@
       </ng-container>
     </section>
   </div>
+  <section *ngIf="!permissions.can('customers.read')" class="dashboard-workspace"><h2>{{ 'access.technicalTitle' | translate }}</h2><p>{{ 'access.technicalPending' | translate }}</p><a routerLink="/app/profile">{{ 'layout.nav.profile' | translate }}</a></section>
   <section class="dashboard-workspace">
     <h2>{{ 'dashboardHome.shortcuts' | translate }}</h2>
     <nav class="dashboard-links" [attr.aria-label]="'dashboardHome.shortcuts' | translate">
-      <a routerLink="/app/customer"><nz-icon nzType="team"></nz-icon><div><strong>{{ 'dashboardHome.customers' | translate }}</strong><span>{{ 'dashboardHome.customersHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
-      <a routerLink="/app/payment"><nz-icon nzType="credit-card"></nz-icon><div><strong>{{ 'dashboardHome.payments' | translate }}</strong><span>{{ 'dashboardHome.paymentsHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
-      <a routerLink="/app/receipts"><nz-icon nzType="file-text"></nz-icon><div><strong>{{ 'dashboardHome.receipts' | translate }}</strong><span>{{ 'dashboardHome.receiptsHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
+      <a *ngIf="permissions.can('customers.read')" routerLink="/app/customer"><nz-icon nzType="team"></nz-icon><div><strong>{{ 'dashboardHome.customers' | translate }}</strong><span>{{ 'dashboardHome.customersHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
+      <a *ngIf="permissions.can('payments.read')" routerLink="/app/payment"><nz-icon nzType="credit-card"></nz-icon><div><strong>{{ 'dashboardHome.payments' | translate }}</strong><span>{{ 'dashboardHome.paymentsHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
+      <a *ngIf="permissions.can('documents.issue')" routerLink="/app/receipts"><nz-icon nzType="file-text"></nz-icon><div><strong>{{ 'dashboardHome.receipts' | translate }}</strong><span>{{ 'dashboardHome.receiptsHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
       <a routerLink="/app/calendar"><nz-icon nzType="calendar"></nz-icon><div><strong>{{ 'dashboardHome.calendar' | translate }}</strong><span>{{ 'dashboardHome.calendarHint' | translate }}</span></div><nz-icon nzType="arrow-right"></nz-icon></a>
     </nav>
   </section>

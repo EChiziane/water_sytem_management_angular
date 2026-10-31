@@ -1,3 +1,4 @@
+import {PermissionService} from '@core/auth/permission.service';
 import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
 import {tap} from 'rxjs';
 import {Component, HostListener, OnInit} from '@angular/core';
@@ -51,7 +52,7 @@ export class CustomerComponent implements OnInit {
     monthsInDebt: new FormControl(1, [Validators.required, Validators.min(0)])
   });
 
-  constructor(
+  constructor(public permissions: PermissionService,
     private confirmations: OperationConfirmationService,
     private customerService: CustomerService,
     private reports: WaterReportPdfService,
@@ -61,6 +62,9 @@ export class CustomerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    for(const name of ['status','valve'] as const)if(!this.permissions.can('customers.lifecycle'))this.customerForm.controls[name].disable();
+    if(!this.permissions.can('tariffs.manage'))this.customerForm.controls.monthlyFee.disable();
+    this.customerForm.controls.monthsInDebt.disable();
     this.restoreFilters();
     this.getCustomers();
     this.updateDrawer();
@@ -189,7 +193,7 @@ export class CustomerComponent implements OnInit {
     }
 
     if (this.isSaving) return;
-    const value = this.customerForm.value;
+    const value = this.customerForm.getRawValue();
     const formData: CustomerPayload = {
       name: value.name ?? '',
       contact: value.contact ?? '',
@@ -254,6 +258,7 @@ export class CustomerComponent implements OnInit {
   }
 
   downloadCustomerList(): void {
+    if(!this.permissions.can('reports.financial'))return;
     this.reports.downloadCustomerList(this.listOfDisplayData);
   }
 

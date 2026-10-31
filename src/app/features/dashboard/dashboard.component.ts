@@ -1,3 +1,4 @@
+import {PermissionService} from '@core/auth/permission.service';
 import {Component, OnInit} from '@angular/core';
 import {catchError, finalize, forkJoin, of} from 'rxjs';
 import {CustomerService} from '@core/services/customer.service';
@@ -23,13 +24,14 @@ export class DashboardComponent implements OnInit {
   recentPayments: Payment[] = [];
   debtors: Customer[] = [];
 
-  constructor(private customerService: CustomerService, private paymentService: PaymentService) {}
+  constructor(public permissions: PermissionService, private customerService: CustomerService, private paymentService: PaymentService) {}
 
   ngOnInit(): void { this.loadDashboard(); }
 
   paymentDate(payment: Payment): number { return businessTimestamp(payment.paymentDate); }
 
   loadDashboard(): void {
+    if(!this.permissions.can('customers.read'))return;
     this.asOf = new Date();
     const currentMonth = maputoMonthKey(this.asOf);
     this.isLoading = true;

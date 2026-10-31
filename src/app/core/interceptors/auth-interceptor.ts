@@ -11,7 +11,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.session.getToken();
 
-    if (token) {
+    if (token && token !== 'local-water-session') {
       const cloned = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,

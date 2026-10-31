@@ -1,3 +1,7 @@
+import {PermissionService} from '@core/auth/permission.service';
+import {AuthSessionService} from '@core/auth/auth-session.service';
+import {DEMO_USERS} from '@shared/config/demo-users';
+import {HttpErrorResponse} from '@angular/common/http';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, catchError, map, of, tap} from 'rxjs';
@@ -39,14 +43,16 @@ export class WaterLocalDataService {
   private readonly dataSourcePath = environment.waterDataSourcePath;
   private sourceState: WaterSourceState | null = null;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private permissions: PermissionService, private session: AuthSessionService) {
   }
 
   getCustomers(): Observable<Customer[]> {
+    this.permissions.require('customers.read');
     return this.state$().pipe(map(state => this.clone(state.customers)));
   }
 
   getCustomerById(id: string): Observable<Customer> {
+    this.permissions.require('customers.read');
     return this.state$().pipe(
       map(state => {
         const customer = state.customers.find(item => item.id === id);
@@ -57,6 +63,7 @@ export class WaterLocalDataService {
   }
 
   addCustomer(payload: CustomerPayload): Observable<Customer> {
+    this.permissions.require('customers.create');
     return this.state$().pipe(
       map(state => {
         const created: Customer = {
@@ -81,12 +88,16 @@ export class WaterLocalDataService {
   }
 
   updateCustomer(id: string, payload: CustomerPayload): Observable<Customer> {
+    this.permissions.require('customers.edit');
     return this.state$().pipe(
       map(state => {
         const index = state.customers.findIndex(item => item.id === id);
         if (index < 0) throw new Error('Customer not found');
 
         const current = state.customers[index];
+        if(!this.permissions.can('tariffs.manage') && payload.monthlyFee!==undefined && Number(payload.monthlyFee)!==Number(current.monthlyFee))throw new HttpErrorResponse({status:403});
+        if(!this.permissions.can('customers.lifecycle') && ((payload.status!==undefined && payload.status!==current.status) || (payload.valve!==undefined && Number(payload.valve)!==Number(current.valve))))throw new HttpErrorResponse({status:403});
+        if(payload.monthsInDebt!==undefined && Number(payload.monthsInDebt)!==Number(current.monthsInDebt))throw new HttpErrorResponse({status:409,statusText:'A dívida é calculada pelas mensalidades.'});
         const monthsInDebt = Number(payload.monthsInDebt ?? current.monthsInDebt ?? 0);
         const updated: Customer = {
           ...current,
@@ -101,7 +112,6 @@ export class WaterLocalDataService {
         };
 
         state.customers[index] = updated;
-        this.syncPaymentCustomerSnapshots(state, updated);
         this.save(state);
         return this.clone(updated);
       })
@@ -109,32 +119,23 @@ export class WaterLocalDataService {
   }
 
   deleteCustomer(id: string): Observable<Customer> {
-    return this.state$().pipe(
-      map(state => {
-        const customer = state.customers.find(item => item.id === id);
-        if (!customer) throw new Error('Customer not found');
-
-        const paymentIds = new Set(state.payments.filter(payment => payment.customerId === id).map(payment => payment.id));
-        state.customers = state.customers.filter(item => item.id !== id);
-        state.payments = state.payments.filter(payment => payment.customerId !== id);
-        state.receipts = state.receipts.filter(receipt => !paymentIds.has(receipt.paymentId));
-        this.save(state);
-        return this.clone(customer);
-      })
-    );
+    throw new HttpErrorResponse({status:403,statusText:'O histórico não pode ser eliminado.'});
   }
 
   getPayments(): Observable<Payment[]> {
-    return this.state$().pipe(map(state => this.clone(state.payments)));
+    this.permissions.require('payments.read');
+    return this.state$().pipe(map(state => this.clone(state.payments.filter(payment => this.permissions.can('reports.financial') || payment.createdBy === this.session.getUser()?.id))));
   }
 
   getCustomerPayments(customerId: string): Observable<Payment[]> {
+    this.permissions.require('payments.read');
     return this.state$().pipe(
       map(state => this.clone(state.payments.filter(payment => payment.customerId === customerId)))
     );
   }
 
   getPaymentById(id: string): Observable<Payment> {
+    this.permissions.require('payments.read');
     return this.state$().pipe(
       map(state => {
         const payment = state.payments.find(item => item.id === id);
@@ -145,14 +146,17 @@ export class WaterLocalDataService {
   }
 
   addPayment(payload: PaymentPayload): Observable<Payment> {
+    this.permissions.require('payments.create');
     return this.state$().pipe(
       map(state => {
         const customer = state.customers.find(item => item.id === payload.customerId);
         if (!customer) throw new Error('Customer not found');
 
-        const numMonths = Math.max(Number(payload.numMonths || 1), 1);
+        const numMonths = Number(payload.numMonths ?? 1);
+        if(!Number.isInteger(numMonths) || numMonths<1)throw new HttpErrorResponse({status:422,statusText:'Número de meses inválido.'});
         const months = this.ensureUnpaidMonths(customer.unpaidMonths || [], Math.max(customer.monthsInDebt || 0, numMonths)).slice(0, numMonths);
-        const amount = Number(payload.amount || customer.monthlyFee * numMonths || 0);
+        const amount = Number(payload.amount ?? customer.monthlyFee * numMonths);
+        if(!Number.isInteger(numMonths) || numMonths<1 || !Number.isFinite(amount) || Math.abs(amount-Number(customer.monthlyFee)*numMonths)>0.001)throw new HttpErrorResponse({status:422,statusText:'O valor recebido deve corresponder aos meses selecionados.'});
         const referenceCode = this.nextReceiptCode(state.payments.length + 1);
         const payment: Payment = {
           id: this.id('payment'),
@@ -166,13 +170,13 @@ export class WaterLocalDataService {
           amount,
           tax: Number(payload.tax || 0),
           unitPrice: Number(payload.unitPrice || customer.monthlyFee || 0),
-          confirmed: payload.confirmed ?? true,
+          confirmed: true,
           referenceMonth: months.join('|') || this.currentMonthKey(),
           numMonths,
           paymentDate: payload.paymentDate || new Date().toISOString(),
           paymentMethod: payload.paymentMethod || 'CASH',
-          createdBy: payload.createdBy || 'local-user',
-          createdByName: payload.createdByName || 'Sistema Local'
+          createdBy: this.session.getUser()?.id || '',
+          createdByName: this.session.getUser()?.name || ''
         };
 
         customer.unpaidMonths = (customer.unpaidMonths || []).filter(month => !months.includes(month));
@@ -186,30 +190,23 @@ export class WaterLocalDataService {
   }
 
   deletePayment(id: string): Observable<Payment> {
-    return this.state$().pipe(
-      map(state => {
-        const payment = state.payments.find(item => item.id === id);
-        if (!payment) throw new Error('Payment not found');
-
-        state.payments = state.payments.filter(item => item.id !== id);
-        state.receipts = state.receipts.filter(receipt => receipt.paymentId !== id);
-        this.save(state);
-        return this.clone(payment);
-      })
-    );
+    throw new HttpErrorResponse({status:403,statusText:'O histórico não pode ser eliminado.'});
   }
 
   getReceipts(): Observable<Recibo[]> {
-    return this.state$().pipe(map(state => this.clone(this.hydrateReceipts(state))));
+    this.permissions.require('documents.issue');
+    return this.state$().pipe(map(state => this.clone(this.hydrateReceipts(state).filter(receipt=>this.permissions.can('reports.financial') || receipt.payment?.createdBy===this.session.getUser()?.id))));
   }
 
   getReceiptsByPayment(paymentId: string): Observable<Recibo[]> {
+    this.permissions.require('documents.issue');
     return this.state$().pipe(
       map(state => this.clone(this.hydrateReceipts(state).filter(receipt => receipt.paymentId === paymentId)))
     );
   }
 
   getReceiptById(id: string): Observable<Recibo> {
+    this.permissions.require('documents.issue');
     return this.state$().pipe(
       map(state => {
         const receipt = this.hydrateReceipts(state).find(item => item.id === id);
@@ -220,6 +217,7 @@ export class WaterLocalDataService {
   }
 
   addReceipt(paymentId: string): Observable<Recibo> {
+    this.permissions.require('documents.issue');
     return this.state$().pipe(
       map(state => {
         const payment = state.payments.find(item => item.id === paymentId);
@@ -237,34 +235,31 @@ export class WaterLocalDataService {
   }
 
   deleteReceipt(id: string): Observable<Recibo> {
-    return this.state$().pipe(
-      map(state => {
-        const receipt = this.hydrateReceipts(state).find(item => item.id === id);
-        if (!receipt) throw new Error('Receipt not found');
-        state.receipts = state.receipts.filter(item => item.id !== id);
-        this.save(state);
-        return this.clone(receipt);
-      })
-    );
+    throw new HttpErrorResponse({status:403,statusText:'O histórico não pode ser eliminado.'});
   }
 
   getUsers(): Observable<User[]> {
+    this.permissions.require('users.manage');
     return this.state$().pipe(map(state => this.clone(state.users)));
   }
 
   getUserById(id: string): Observable<User | undefined> {
+    if(id !== this.session.getUser()?.id)this.permissions.require('users.manage');
     return this.state$().pipe(map(state => this.clone(state.users.find(user => user.id === id))));
   }
 
   addUser(payload: UserPayload): Observable<User> {
+    this.permissions.require('users.manage');
     return this.state$().pipe(
       map(state => {
+        const login=payload.login || (payload.name || '').trim().split(/\s+/)[0].toLowerCase()+'AC';
+        if(state.users.some(user=>user.login===login))throw new HttpErrorResponse({status:409,statusText:'Login já utilizado'});
         const created: User = {
           id: this.id('user'),
           name: payload.name || '',
           email: payload.email || '',
           phone: payload.phone || '',
-          login: payload.login || payload.email || '',
+          login,
           password: payload.password || '123456',
           role: payload.role || 'OPERATOR',
           status: payload.status || 'ACTIVE',
@@ -279,11 +274,13 @@ export class WaterLocalDataService {
   }
 
   updateUser(id: string, payload: UserPayload): Observable<User> {
+    this.permissions.require('users.manage');
     return this.state$().pipe(
       map(state => {
         const index = state.users.findIndex(user => user.id === id);
         if (index < 0) throw new Error('User not found');
 
+        this.checkUserChange(state,state.users[index],payload);
         const updated = {...state.users[index], ...payload, id};
         state.users[index] = updated;
         this.save(state);
@@ -293,11 +290,13 @@ export class WaterLocalDataService {
   }
 
   deleteUser(id: string): Observable<User> {
+    this.permissions.require('users.manage');
     return this.state$().pipe(
       map(state => {
         const user = state.users.find(item => item.id === id);
         if (!user) throw new Error('User not found');
-        state.users = state.users.filter(item => item.id !== id);
+        this.checkUserChange(state,user,{status:'INACTIVE'});
+        user.status='INACTIVE';
         this.save(state);
         return this.clone(user);
       })
@@ -310,7 +309,7 @@ export class WaterLocalDataService {
         const user = state.users.find(item =>
           (item.login === login || item.email === login || item.phone === login) &&
           item.password === password &&
-          item.status !== 'INACTIVE'
+          item.status === 'ACTIVE'
         );
 
         if (!user) throw new Error('Invalid local credentials');
@@ -320,16 +319,19 @@ export class WaterLocalDataService {
   }
 
   getBilling(): Observable<MonthlyCharge[]> {
+    this.permissions.require('reports.financial');
     return this.state$().pipe(map(state => this.clone(this.billingFromState(state))));
   }
 
   getCustomerBilling(customerId: string): Observable<MonthlyCharge[]> {
+    this.permissions.require('customers.read');
     return this.state$().pipe(
       map(state => this.clone(this.billingFromState(state).filter(item => item.id.startsWith(`charge-${customerId}-`))))
     );
   }
 
   getCustomerUnpaidMonths(customerId: string): Observable<MonthlyCharge[]> {
+    this.permissions.require('customers.read');
     return this.state$().pipe(
       map(state => this.clone(this.billingFromState(state)
         .filter(item => item.id.startsWith(`charge-${customerId}-`) && !item.paid)))
@@ -351,6 +353,7 @@ export class WaterLocalDataService {
   }
 
   exportState(format: 'json' | 'txt' = 'json'): string {
+    this.permissions.require('users.manage');
     const state = this.readStoredState() || this.cloneState(this.sourceState || this.seedState());
     const payload = {
       exportedAt: new Date().toISOString(),
@@ -364,9 +367,16 @@ export class WaterLocalDataService {
   }
 
   resetLocalData(): void {
+    this.permissions.require('users.manage');
     if (this.canUseLocalStorage()) {
       localStorage.removeItem(this.storageKey);
     }
+  }
+
+  private checkUserChange(state:WaterState,user:User,payload:UserPayload):void {
+    const role=payload.role ?? user.role;const status=payload.status ?? user.status;
+    if(user.id===this.session.getUser()?.id && (role!==user.role || status!=='ACTIVE'))throw new HttpErrorResponse({status:409,statusText:'Não pode desativar ou alterar o seu próprio perfil de acesso.'});
+    if(user.role==='ADMIN' && user.status==='ACTIVE' && (role!=='ADMIN' || status!=='ACTIVE') && state.users.filter(item=>item.role==='ADMIN' && item.status==='ACTIVE').length<=1)throw new HttpErrorResponse({status:409,statusText:'É necessário manter um administrador ativo.'});
   }
 
   private state$(): Observable<WaterState> {
@@ -394,7 +404,7 @@ export class WaterLocalDataService {
       catchError(() => {
         const source = this.seedState();
         this.sourceState = source;
-        const state = this.cloneState(source);
+        const state = this.recoverBilling(this.cloneState(source));
         this.save(state);
         return of(state);
       })
@@ -402,6 +412,10 @@ export class WaterLocalDataService {
   }
 
   private recoverBilling(state: WaterState): WaterState {
+    if(!environment.production && environment.useLocalFallback){
+      for(const user of DEMO_USERS)if(!state.users.some(existing=>existing.login===user.login))state.users.push(this.clone(user));
+      this.save(state);
+    }
     const recovered = recoverLocalBilling(state.customers, state.payments);
     if (JSON.stringify(recovered) !== JSON.stringify(state.customers)) {
       state.customers = recovered;
@@ -411,6 +425,7 @@ export class WaterLocalDataService {
   }
 
   syncBilling(): Observable<string> {
+    this.permissions.require('billing.generate');
     return this.state$().pipe(map(() => 'Mensalidades de demonstração atualizadas localmente.'));
   }
 
@@ -557,21 +572,6 @@ export class WaterLocalDataService {
       createdByName: payment.createdByName,
       paymentDate: payment.paymentDate
     };
-  }
-
-  private syncPaymentCustomerSnapshots(state: WaterState, customer: Customer): void {
-    state.payments = state.payments.map(payment => payment.customerId === customer.id ? {
-      ...payment,
-      customerName: customer.name,
-      customerContact: customer.contact,
-      customerAddress: customer.address,
-      customerValve: customer.valve,
-      monthlyFee: customer.monthlyFee
-    } : payment);
-    state.receipts = state.receipts.map(receipt => ({
-      ...receipt,
-      payment: state.payments.find(payment => payment.id === receipt.paymentId) || receipt.payment
-    }));
   }
 
   private ensureUnpaidMonths(current: string[], count: number): string[] {

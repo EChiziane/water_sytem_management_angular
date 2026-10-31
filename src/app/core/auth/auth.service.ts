@@ -1,3 +1,6 @@
+import {DataModeService} from './data-mode.service';
+import {DataAccessService} from './data-access.service';
+import {throwError} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environments';
 import {HttpClient} from '@angular/common/http';
@@ -15,6 +18,8 @@ export class AuthService {
   private baseURL = environment.baseURL + '/auth';
 
   constructor(
+    private mode: DataModeService,
+    private access: DataAccessService,
     private http: HttpClient,
     private session: AuthSessionService,
     private localData: WaterLocalDataService
@@ -22,29 +27,22 @@ export class AuthService {
   }
 
   login(login: string, password: string): Observable<User> {
+    this.session.clear();
     return this.http.post<{ token: string }>(`${this.baseURL}/login`, {login, password}).pipe(
-      tap(response => this.session.setToken(response.token)),
-      switchMap(() => this.getCurrentUser().pipe(take(1))),
-      tap(user => this.session.setUser(user)),
-      catchError(() => this.localData.login(login, password).pipe(
-        tap(user => {
-          this.session.setToken('local-water-session');
-          this.session.setUser(user);
-        })
-      ))
+      catchError(error => this.mode.canLoginLocally(error) ? this.localData.login(login, password).pipe(
+        map(user => ({token: 'local-water-session', user}))
+      ) : throwError(() => error)),
+      switchMap(response => {
+        this.session.setToken(response.token);
+        this.localData.isLocalMode$.next(response.token === 'local-water-session');
+        return 'user' in response ? of(response.user) : this.http.get<User>(`${this.baseURL}/me`);
+      }),
+      tap(user => this.session.setUser(user))
     );
   }
 
   signup(user: SignupPayload): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.baseURL}/register`, user).pipe(
-      catchError(() => this.localData.addUser({...user, status: 'ACTIVE'}).pipe(
-        tap(created => {
-          this.session.setToken('local-water-session');
-          this.session.setUser(created);
-        }),
-        map(() => ({token: 'local-water-session'}))
-      ))
-    );
+    return this.access.denied();
   }
 
   requestPasswordReset(phoneWhatsApp: string): Observable<{
@@ -70,27 +68,19 @@ export class AuthService {
   }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.baseURL}/users`).pipe(
-      catchError(() => this.localData.getUsers())
-    );
+    return this.access.run('users.manage', () => this.http.get<User[]>(`${this.baseURL}/users`), () => this.localData.getUsers());
   }
 
   getCurrentUser(): Observable<User> {
-    return this.http.get<User>(`${this.baseURL}/me`).pipe(
-      catchError(() => {
-        const userId = this.session.getUser()?.id;
-        return userId ? this.localData.getUserById(userId).pipe(
-          switchMap(user => user ? of(user) : this.localData.getUsers().pipe(map(users => users[0])))
-        ) : this.localData.getUsers().pipe(map(users => users[0]));
-      })
-    );
+    if(this.mode.local){
+      const id=this.session.getUser()?.id;
+      return this.localData.getUserById(id || '').pipe(switchMap(user => user?.status==='ACTIVE' ? of(user) : throwError(() => new Error('Conta inativa ou inexistente'))));
+    }
+    return this.http.get<User>(`${this.baseURL}/me`);
   }
 
-  deleteUser(id: string): Observable<User> {
-    return this.http.delete<User>(`${this.baseURL}/${id}`).pipe(
-      take(1),
-      catchError(() => this.localData.deleteUser(id))
-    );
+  deleteUser(id:string): Observable<User> {
+    return this.access.run('users.manage', () => this.http.delete<User>(`${this.baseURL}/${id}`), () => this.localData.deleteUser(id));
   }
 
   logout(): void {

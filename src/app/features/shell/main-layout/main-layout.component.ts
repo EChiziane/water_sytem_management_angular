@@ -1,3 +1,4 @@
+import {PermissionService} from '@core/auth/permission.service';
 import {Component, OnInit} from '@angular/core';
 import {WaterLocalDataService} from '@core/services/water-local-data.service';
 import {Router} from '@angular/router';
@@ -23,7 +24,7 @@ export class MainLayoutComponent implements OnInit {
 
   isAdmin = false;
 
-  constructor(
+  constructor(public permissions: PermissionService,
     private router: Router,
     private session: AuthSessionService,
     public localData: WaterLocalDataService,

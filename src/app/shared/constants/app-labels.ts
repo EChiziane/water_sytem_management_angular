@@ -18,11 +18,13 @@ export const MONTH_NAMES_PT = [
 export const ROLE_LABELS: Record<UserRole, string> = {
   ADMIN: 'Administrador',
   MANAGER: 'Gestor',
-  OPERATOR: 'Operador'
+  OPERATOR: 'Tesoureiro / Operador',
+  TECHNICIAN: 'Técnico'
 };
 
 export const ROLE_OPTIONS = [
   {label: ROLE_LABELS.ADMIN, value: 'ADMIN' as const},
   {label: ROLE_LABELS.MANAGER, value: 'MANAGER' as const},
-  {label: ROLE_LABELS.OPERATOR, value: 'OPERATOR' as const}
+  {label: ROLE_LABELS.OPERATOR, value: 'OPERATOR' as const},
+  {label: ROLE_LABELS.TECHNICIAN, value: 'TECHNICIAN' as const}
 ];

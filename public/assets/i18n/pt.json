@@ -145,5 +145,13 @@
     "documentError": "Não foi possível obter os dados da empresa para gerar o documento.",
     "discardTitle": "Descartar alterações por guardar?",
     "discardDescription": "Ao recarregar, os campos por guardar serão substituídos pelos dados da empresa."
+  },
+  "access": {
+    "deniedTitle": "Acesso restrito",
+    "deniedText": "A sua função não permite consultar esta área. Contacte o administrador se precisar de acesso.",
+    "back": "Voltar ao início",
+    "technicalTitle": "Área técnica",
+    "technicalPending": "Ainda não existem instalações atribuídas neste sistema. Consulte o calendário e o seu perfil. Os dados financeiros estão reservados às funções autorizadas.",
+    "contactAdmin": "Para obter uma conta, contacte o administrador."
   }
 }

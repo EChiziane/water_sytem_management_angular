@@ -10,12 +10,14 @@ describe('Company profile persistence',()=>{
   let service:CompanyProfileService;
   let http:HttpTestingController;
   let original:string|null;
+  let token='api-token';
   const key=`${environment.waterStorageKey}-company`;
   const url=`${environment.baseURL}/company`;
   const profile={...COMPANY_PROFILE,version:2};
   beforeEach(()=>{
+    token='api-token';
     original=localStorage.getItem(key);localStorage.removeItem(key);
-    TestBed.configureTestingModule({providers:[provideHttpClient(),provideHttpClientTesting(),{provide:AuthSessionService,useValue:{getUser:()=>({id:'operator'})}}]});
+    TestBed.configureTestingModule({providers:[provideHttpClient(),provideHttpClientTesting(),{provide:AuthSessionService,useValue:{getUser:()=>({id:'operator',role:'ADMIN',status:'ACTIVE'}),getToken:()=>token}}]});
     service=TestBed.inject(CompanyProfileService);http=TestBed.inject(HttpTestingController);
   });
   afterEach(()=>{http.verify();if(original===null)localStorage.removeItem(key);else localStorage.setItem(key,original);});
@@ -38,7 +40,7 @@ describe('Company profile persistence',()=>{
     expect(status).toBe(503);expect(localStorage.getItem(key)).toBeNull();expect(service.source$.value).toBe('api');
   });
   it('persists explicitly identified demo data and records the local actor',()=>{
-    service.getProfile().subscribe();http.expectOne(url).error(new ProgressEvent('error'));
+    token='local-water-session';service.getProfile().subscribe();http.expectNone(url);
     expect(service.source$.value).toBe('demo');
     service.save({...COMPANY_PROFILE,name:'Empresa de teste',version:null}).subscribe(saved=>{
       expect(saved.name).toBe('Empresa de teste');expect(saved.updatedBy).toBe('operator');expect(saved.version).toBe(0);
@@ -50,7 +52,7 @@ describe('Company profile persistence',()=>{
     http.expectOne(url+'/public').flush({...profile,updatedBy:'private-audit-user'});
   });
   it('rejects overwriting a newer demo version',()=>{
-    service.getProfile().subscribe();http.expectOne(url).error(new ProgressEvent('error'));
+    token='local-water-session';service.getProfile().subscribe();http.expectNone(url);
     localStorage.setItem(key,JSON.stringify({...profile,version:3}));
     let status=0;service.save(profile).subscribe({error:error=>status=error.status});
     expect(status).toBe(409);expect(JSON.parse(localStorage.getItem(key)!).version).toBe(3);

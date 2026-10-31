@@ -1,3 +1,4 @@
+import {environment} from '../../../environments/environments';
 import {isPlatformBrowser} from '@angular/common';
 import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {User} from '@shared/models/user';
@@ -30,7 +31,16 @@ export class AuthSessionService {
     }
 
     try {
-      return JSON.parse(rawUser) as StoredUser;
+      const user=JSON.parse(rawUser) as StoredUser;
+      if(this.getToken()==='local-water-session') {
+        const rawState=this.read(environment.waterStorageKey);
+        if(!rawState)return null;
+        const stored=JSON.parse(rawState);
+        const current=(stored.state || stored).users?.find((item:StoredUser)=>item.id===user.id);
+        if(!current)return null;
+        return {...user,role:current.role,status:current.status};
+      }
+      return user;
     } catch {
       this.clearUser();
       return null;
@@ -54,6 +64,8 @@ export class AuthSessionService {
 
   hasValidSession(): boolean {
     const token = this.getToken();
+    if(this.getUser()?.status !== 'ACTIVE')return false;
+    if(token === 'local-water-session')return !environment.production && environment.useLocalFallback;
     return !!token && !this.isTokenExpired(token);
   }
 
@@ -90,15 +102,15 @@ export class AuthSessionService {
     const [, payload] = token.split('.');
 
     if (!payload) {
-      return false;
+      return true;
     }
 
     try {
       const normalizedPayload = payload.replace(/-/g, '+').replace(/_/g, '/');
       const decoded = JSON.parse(atob(normalizedPayload)) as { exp?: number };
-      return !!decoded.exp && decoded.exp * 1000 <= Date.now();
+      return typeof decoded.exp !== 'number' || decoded.exp * 1000 <= Date.now();
     } catch {
-      return false;
+      return true;
     }
   }
 }

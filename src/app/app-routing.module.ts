@@ -1,9 +1,10 @@
+import {PermissionGuard} from '@core/guards/permission.guard';
+import {AccessDeniedComponent} from './features/auth/access-denied.component';
 import {CompanyComponent} from './features/company/company.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from '@core/guards/auth.guard';
-import { RoleGuard } from '@core/guards/role.guard';
 import { CalendarComponent } from './features/calendar/calendar.component';
 import { CustomerDetailsComponent } from './features/customers/customer-details/customer-details.component';
 import { CustomerComponent } from './features/customers/customer.component';
@@ -15,7 +16,6 @@ import { ReciboComponent } from './features/receipts/recibo.component';
 import { ListuserComponent } from './features/users/list-user/listuser.component';
 import { MainLayoutComponent } from '@features/shell/main-layout/main-layout.component';
 import { LoginComponent } from './features/auth/login/login.component';
-import { SigninComponent } from './features/auth/register/signin.component';
 import { LandingPageComponent } from './features/public/landing-page/landingpage.component';
 
 const routes: Routes = [
@@ -34,60 +34,61 @@ const routes: Routes = [
   },
   {
     path: 'register',
-    component: SigninComponent
+    redirectTo: 'login', pathMatch: 'full'
   },
   {
     path: 'app',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
     children: [
+      {path: 'access-denied', component: AccessDeniedComponent},
       {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent, canActivate: [PermissionGuard], data: {permission: 'dashboard.read'}
       },
       {
         path: 'customer',
-        component: CustomerComponent
+        component: CustomerComponent, canActivate: [PermissionGuard], data: {permission: 'customers.read'}
       },
       {
         path: 'customer-detail/:id',
-        component: CustomerDetailsComponent
+        component: CustomerDetailsComponent, canActivate: [PermissionGuard], data: {permission: 'customers.read'}
       },
       {
         path: 'payment',
-        component: PaymentComponent
+        component: PaymentComponent, canActivate: [PermissionGuard], data: {permission: 'payments.read'}
       },
       {
         path: 'receipts',
-        component: ReciboComponent
+        component: ReciboComponent, canActivate: [PermissionGuard], data: {permission: 'documents.issue'}
       },
       {
         path: 'payment-detail/:id',
-        component: PaymentDetailsComponent
+        component: PaymentDetailsComponent, canActivate: [PermissionGuard], data: {permission: 'payments.read'}
       },
       {
         path: 'calendar',
-        component: CalendarComponent
+        component: CalendarComponent, canActivate: [PermissionGuard], data: {permission: 'calendar.read'}
       },
       {
         path: 'users',
         component: ListuserComponent,
-        canActivate: [RoleGuard],
+        canActivate: [PermissionGuard],
         data: {
-          roles: ['ADMIN']
+          permission: 'users.manage'
         }
       },
       {
         path: 'company',
-        component: CompanyComponent
+        component: CompanyComponent, canActivate: [PermissionGuard], data: {permission: 'company.manage'}
       },
       {
         path: 'profile',
-        component: ProfileComponent
+        component: ProfileComponent, canActivate: [PermissionGuard], data: {permission: 'profile.read'}
       },
       {
         path: 'profile/:id',
-        component: ProfileComponent
+        component: ProfileComponent, canActivate: [PermissionGuard], data: {permission: 'users.manage'}
       },
       {
         path: '',

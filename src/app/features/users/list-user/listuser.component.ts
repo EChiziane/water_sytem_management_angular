@@ -138,20 +138,20 @@ export class ListuserComponent {
   openUserDrawer() {
     this.isUserDrawerVisible = true;
     this.currentEditingUserId = null;
-    this.userForm.reset({status: 'CREATED', role: 'OPERATOR'});
+    this.userForm.reset({status: 'ACTIVE', role: 'OPERATOR', password: '123456'});
   }
 
   closeUserDrawer() {
     this.isUserDrawerVisible = false;
     this.currentEditingUserId = null;
-    this.userForm.reset({status: 'CREATED', role: 'OPERATOR'});
+    this.userForm.reset({status: 'ACTIVE', role: 'OPERATOR', password: '123456'});
   }
 
 
   deleteUser(user: User): void {
-    this.confirmations.deletion('user', user.id, [user.name, user.login || user.email].filter(Boolean).join(' · '), 'deleteUserNote',
+    this.confirmations.run({key:'deactivate-user:'+user.id,title:'Desativar utilizador?',description:'A conta deixará de poder iniciar sessão. O histórico será preservado.',fields:[['Utilizador',user.name]],confirmLabel:'Desativar'},
       () => this.userService.deleteUser(user.id).pipe(tap({
-        next: () => { this.loadUsers(); this.message.success('Utilizador eliminado com sucesso.'); },
+        next: () => { this.loadUsers(); this.message.success('Utilizador desativado. O histórico foi preservado.'); },
         error: () => this.message.error('Erro ao eliminar o utilizador.')
       })));
   }
@@ -160,7 +160,7 @@ export class ListuserComponent {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', Validators.required],
-      password: [''],
+      password: ['123456'],
       status: [''],
       phone: ['', Validators.required],
       role: ['OPERATOR', Validators.required],
