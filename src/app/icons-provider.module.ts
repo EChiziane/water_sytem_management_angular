@@ -3,6 +3,8 @@ import {NzIconModule, provideNzIcons} from 'ng-zorro-antd/icon';
 
 import {
   ArrowRightOutline,
+  BankOutline,
+  UserSwitchOutline,
   AuditOutline,
   FolderOpenOutline,
   CarOutline,
@@ -48,6 +50,8 @@ import {
 } from '@ant-design/icons-angular/icons';
 
 const icons = [
+  BankOutline,
+  UserSwitchOutline,
   ArrowRightOutline,
   AuditOutline,
   FolderOpenOutline,

@@ -6,28 +6,29 @@
   },
   "layout": {
     "sections": {
-      "operations": "Operacao",
+      "operations": "Operação",
       "water": "Agua e clientes",
       "finance": "Financeiro",
-      "account": "Conta"
+      "account": "Conta",
+      "general": "Geral",
+      "administration": "Administração"
     },
     "nav": {
       "mobile": "Navegacao mobile",
-      "dashboard": "Dashboard",
+      "dashboard": "Visão geral",
       "customers": "Clientes",
       "payments": "Pagamentos",
       "receipts": "Recibos",
       "users": "Utilizadores",
-      "profile": "Perfil",
-      "company": "Empresa"
+      "profile": "Meu perfil",
+      "company": "Empresa",
+      "main": "Navegação principal"
     },
     "topbar": {
       "eyebrow": "Water System Management",
       "subtitle": "Clientes, pagamentos e cobrancas"
     },
     "status": {
-      "online": "Sistema operacional",
-      "localFallback": "Backend ou modo local",
       "demoActive": "Demonstração · dados locais"
     },
     "account": {

@@ -64,3 +64,5 @@ O controlo de acesso de 31/10/2026, a matriz aplicada e as contas de teste encon
 A navegação e recuperação entre anos, os filtros de 2012 a 2099 e respetivas verificações estão em [Suporte multianual](11-suporte-multianual.md).
 
 A página experimental de calendário foi retirada: [Remoção da agenda experimental](12-remocao-calendario-experimental.md). As regras financeiras de datas continuam disponíveis.
+
+O menu lateral e móvel foram reorganizados em grupos discretos: [Organização da navegação](13-menu-lateral.md).

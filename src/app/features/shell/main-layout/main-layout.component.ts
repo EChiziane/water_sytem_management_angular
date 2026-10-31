@@ -1,10 +1,11 @@
 import {PermissionService} from '@core/auth/permission.service';
 import {Component, OnInit} from '@angular/core';
-import {WaterLocalDataService} from '@core/services/water-local-data.service';
+import {DataModeService} from '@core/auth/data-mode.service';
 import {Router} from '@angular/router';
 import {AuthSessionService} from '@core/auth/auth-session.service';
 import {ROLE_LABELS} from '@shared/constants/app-labels';
 import {TranslationService} from '@core/services/translation.service';
+import {NAVIGATION_GROUPS, NavigationGroup, NavigationItem} from './navigation';
 
 @Component({
   selector: 'app-main-layout',
@@ -22,12 +23,22 @@ export class MainLayoutComponent implements OnInit {
 
   userRole: string = 'Conta autenticada';
 
-  isAdmin = false;
+  get navigationGroups():NavigationGroup[] {
+    return NAVIGATION_GROUPS.map(group=>({...group,items:group.items.filter(item=>this.permissions.can(item.permission))})).filter(group=>group.items.length>0);
+  }
+
+  trackGroup(_index:number,group:NavigationGroup):string { return group.key; }
+
+  isNavigationActive(item:NavigationItem):boolean {
+    const path=this.router.url.split(/[?#]/)[0];
+    if(item.path==='/app/users' && path.startsWith('/app/profile/'))return true;
+    return path===item.path || !!item.detailsPath && path.startsWith(item.detailsPath+'/');
+  }
 
   constructor(public permissions: PermissionService,
     private router: Router,
     private session: AuthSessionService,
-    public localData: WaterLocalDataService,
+    public mode: DataModeService,
     public translationService: TranslationService
   ) {
   }
@@ -39,7 +50,6 @@ export class MainLayoutComponent implements OnInit {
       this.username = user.name ?? user.login ?? 'Utilizador';
       this.userInitials = this.getInitials(this.username);
       this.userRole = this.getRoleLabel(user.role);
-      this.isAdmin = user.role === 'ADMIN';
     }
   }
 

@@ -9,25 +9,26 @@
       "operations": "Operations",
       "water": "Water and customers",
       "finance": "Finance",
-      "account": "Account"
+      "account": "Account",
+      "general": "General",
+      "administration": "Administration"
     },
     "nav": {
       "mobile": "Mobile navigation",
-      "dashboard": "Dashboard",
+      "dashboard": "Overview",
       "customers": "Customers",
       "payments": "Payments",
       "receipts": "Receipts",
       "users": "Users",
-      "profile": "Profile",
-      "company": "Company"
+      "profile": "My profile",
+      "company": "Company",
+      "main": "Main navigation"
     },
     "topbar": {
       "eyebrow": "Water System Management",
       "subtitle": "Customers, payments and collections"
     },
     "status": {
-      "online": "Operational system",
-      "localFallback": "Backend or local mode",
       "demoActive": "Demo · local data"
     },
     "account": {

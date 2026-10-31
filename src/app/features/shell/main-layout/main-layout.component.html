@@ -5,7 +5,7 @@
     class="app-sidebar"
     nzBreakpoint="lg"
     nzCollapsible
-    nzWidth="280px">
+    nzWidth="240px">
 
     <div class="brand">
       <div class="brand-mark">
@@ -18,67 +18,22 @@
       </div>
     </div>
 
-    <div class="sidebar-section">{{ 'layout.sections.operations' | translate }}</div>
-
-    <ul
-      [nzInlineCollapsed]="isCollapsed"
-      class="nav-menu"
-      nz-menu
-      nzMode="inline"
-      nzTheme="dark">
-
-      <li nz-menu-item nzMatchRouter>
-        <a routerLink="/app/dashboard">
-          <span nz-icon nzType="dashboard"></span>
-          <span>{{ 'layout.nav.dashboard' | translate }}</span>
-        </a>
-      </li>
-
-      <li *ngIf="permissions.can('customers.read')" nz-menu-item nzMatchRouter>
-        <a *ngIf="permissions.can('customers.read')" routerLink="/app/customer">
-          <span nz-icon nzType="team"></span>
-          <span>{{ 'layout.nav.customers' | translate }}</span>
-        </a>
-      </li>
-
-      <li *ngIf="permissions.can('payments.read')" nz-menu-item nzMatchRouter>
-        <a *ngIf="permissions.can('payments.read')" routerLink="/app/payment">
-          <span nz-icon nzType="credit-card"></span>
-          <span>{{ 'layout.nav.payments' | translate }}</span>
-        </a>
-      </li>
-
-      <li *ngIf="permissions.can('documents.issue')" nz-menu-item nzMatchRouter>
-        <a *ngIf="permissions.can('documents.issue')" routerLink="/app/receipts">
-          <span nz-icon nzType="file-text"></span>
-          <span>{{ 'layout.nav.receipts' | translate }}</span>
-        </a>
-      </li>
-
-
-      <li *ngIf="permissions.can('company.manage')" nz-menu-item nzMatchRouter><a *ngIf="permissions.can('company.manage')" routerLink="/app/company"><span nz-icon nzType="setting"></span><span>{{ 'layout.nav.company' | translate }}</span></a></li>
-
-      <li *ngIf="isAdmin" nz-menu-item nzMatchRouter>
-        <a routerLink="/app/users">
-          <span nz-icon nzType="usergroup-add"></span>
-          <span>{{ 'layout.nav.users' | translate }}</span>
-        </a>
-      </li>
-
-      <li nz-menu-item nzMatchRouter>
-        <a routerLink="/app/profile">
-          <span nz-icon nzType="user"></span>
-          <span>{{ 'layout.nav.profile' | translate }}</span>
-        </a>
+    <ul [nzInlineCollapsed]="isCollapsed" class="nav-menu" nz-menu nzMode="inline" nzTheme="dark" [attr.aria-label]="'layout.nav.main' | translate">
+      <li *ngFor="let group of navigationGroups; trackBy: trackGroup" nz-menu-group [nzTitle]="group.label | translate">
+        <ul>
+          <li *ngFor="let item of group.items" nz-menu-item [nzSelected]="isNavigationActive(item)">
+            <a [routerLink]="item.path" [attr.aria-label]="item.label | translate" [attr.aria-current]="isNavigationActive(item) ? 'page' : null"
+              nz-tooltip [nzTooltipTitle]="isCollapsed ? (item.label | translate) : null" nzTooltipPlacement="right">
+              <span nz-icon [nzType]="item.icon" aria-hidden="true"></span>
+              <span class="nav-label">{{ item.label | translate }}</span>
+            </a>
+          </li>
+        </ul>
       </li>
     </ul>
-
-    <div class="sidebar-footer">
-      <span class="status-dot"></span>
-      <div>
-        <strong>Sistema ativo</strong>
-        <span>{{ 'layout.status.localFallback' | translate }}</span>
-      </div>
+    <div *ngIf="mode.local" class="sidebar-footer" role="status">
+      <span nz-icon nzType="database" aria-hidden="true"></span>
+      <span>{{ 'layout.status.demoActive' | translate }}</span>
     </div>
   </nz-sider>
 
@@ -98,7 +53,7 @@
       </div>
 
       <div class="topbar-actions">
-        <span *ngIf="localData.isLocalMode$ | async" class="local-mode-label" role="status">{{ 'layout.status.demoActive' | translate }}</span>
+        <span *ngIf="mode.local" class="local-mode-label" role="status">{{ 'layout.status.demoActive' | translate }}</span>
         <button
           [nzDropdownMenu]="languageMenu"
           class="language-switch"
@@ -138,10 +93,10 @@
             </a>
           </li>
 
-          <li *ngIf="permissions.can('company.manage')" nz-menu-item><a *ngIf="permissions.can('company.manage')" routerLink="/app/company"><span nz-icon nzType="setting"></span>{{ 'layout.nav.company' | translate }}</a></li>
-          <li *ngIf="isAdmin" nz-menu-item>
+          <li *ngIf="permissions.can('company.manage')" nz-menu-item><a routerLink="/app/company"><span nz-icon nzType="bank"></span>{{ 'layout.nav.company' | translate }}</a></li>
+          <li *ngIf="permissions.can('users.manage')" nz-menu-item>
             <a routerLink="/app/users">
-              <span nz-icon nzType="setting"></span>
+              <span nz-icon nzType="user-switch"></span>
               {{ 'layout.nav.users' | translate }}
             </a>
           </li>
@@ -185,38 +140,14 @@
   [nzTitle]="'app.name' | translate"
   nzWidth="320px">
   <nav *nzDrawerContent class="mobile-navigation" [attr.aria-label]="'layout.nav.mobile' | translate">
-    <a routerLink="/app/dashboard" routerLinkActive="active" (click)="closeMobileMenu()">
-      <span nz-icon nzType="dashboard"></span>
-      <span>{{ 'layout.nav.dashboard' | translate }}</span>
-    </a>
-
-    <a *ngIf="permissions.can('customers.read')" routerLink="/app/customer" routerLinkActive="active" (click)="closeMobileMenu()">
-      <span nz-icon nzType="team"></span>
-      <span>{{ 'layout.nav.customers' | translate }}</span>
-    </a>
-
-    <a *ngIf="permissions.can('payments.read')" routerLink="/app/payment" routerLinkActive="active" (click)="closeMobileMenu()">
-      <span nz-icon nzType="credit-card"></span>
-      <span>{{ 'layout.nav.payments' | translate }}</span>
-    </a>
-
-    <a *ngIf="permissions.can('documents.issue')" routerLink="/app/receipts" routerLinkActive="active" (click)="closeMobileMenu()">
-      <span nz-icon nzType="file-text"></span>
-      <span>{{ 'layout.nav.receipts' | translate }}</span>
-    </a>
-
-
-    <a *ngIf="permissions.can('company.manage')" routerLink="/app/company" routerLinkActive="active" (click)="closeMobileMenu()"><span nz-icon nzType="setting"></span><span>{{ 'layout.nav.company' | translate }}</span></a>
-
-    <a routerLink="/app/profile" routerLinkActive="active" (click)="closeMobileMenu()">
-      <span nz-icon nzType="user"></span>
-      <span>{{ 'layout.nav.profile' | translate }}</span>
-    </a>
-
-    <a *ngIf="isAdmin" routerLink="/app/users" routerLinkActive="active" (click)="closeMobileMenu()">
-      <span nz-icon nzType="usergroup-add"></span>
-      <span>{{ 'layout.nav.users' | translate }}</span>
-    </a>
+    <section *ngFor="let group of navigationGroups; trackBy: trackGroup" [attr.aria-label]="group.label | translate">
+      <h2 class="mobile-nav-section">{{ group.label | translate }}</h2>
+      <a *ngFor="let item of group.items" [routerLink]="item.path" [class.active]="isNavigationActive(item)"
+        [attr.aria-current]="isNavigationActive(item) ? 'page' : null" (click)="closeMobileMenu()">
+        <span nz-icon [nzType]="item.icon" aria-hidden="true"></span>
+        <span>{{ item.label | translate }}</span>
+      </a>
+    </section>
 
     <div class="mobile-nav-section">{{ 'layout.language.label' | translate }}</div>
 
