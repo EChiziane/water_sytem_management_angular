@@ -42,7 +42,7 @@
           <th>Telefone</th>
           <th>Estado</th>
           <th>Data de Criação</th>
-          <th>Ações</th>
+          <th class="wsm-actions-column" nzWidth="176px">{{ 'tableActions.heading' | translate }}</th>
         </tr>
         </thead>
 
@@ -62,28 +62,7 @@
 
           <td>{{ data.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
 
-          <td>
-            <button
-              (click)="viewUser(data)" nz-button
-              nz-tooltip
-              nzTooltipTitle="Ver perfil"
-              nzSize="small"
-              nzType="link">
-              <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
-            </button>
-
-            <button
-              (click)="editUser(data)" nz-button nzSize="small"
-              nzType="link">
-              <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
-            </button>
-
-            <button
-              (click)="deleteUser(data)" nz-button nzDanger nzSize="small"
-              nzType="link">
-              <nz-icon nzTheme="outline" nzType="stop"></nz-icon>
-            </button>
-          </td>
+          <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + data.name"><app-row-action action="view" (activated)="viewUser(data)" [context]="data.name"></app-row-action><app-row-action action="edit" (activated)="editUser(data)" [context]="data.name"></app-row-action><span class="wsm-action-separator" aria-hidden="true"></span><app-row-action action="deactivate" (activated)="deleteUser(data)" [context]="data.name" [disabled]="data.status === 'INACTIVE' || data.id === session.getUser()?.id" [disabledReason]="data.id === session.getUser()?.id ? 'tableActions.ownAccount' : 'tableActions.alreadyInactive'"></app-row-action></div></td>
         </tr>
         </tbody>
 

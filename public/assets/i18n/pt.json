@@ -153,5 +153,21 @@
     "technicalTitle": "Área técnica",
     "technicalPending": "Ainda não existem instalações atribuídas neste sistema. Consulte o calendário e o seu perfil. Os dados financeiros estão reservados às funções autorizadas.",
     "contactAdmin": "Para obter uma conta, contacte o administrador."
+  },
+  "tableActions": {
+    "heading": "Ações",
+    "view": "Ver detalhes",
+    "viewShort": "Ver",
+    "edit": "Editar registo",
+    "editShort": "Editar",
+    "download": "Descarregar documento",
+    "downloadShort": "Documento",
+    "deactivate": "Desativar utilizador",
+    "deactivateShort": "Desativar",
+    "call": "Ligar ao cliente",
+    "callShort": "Ligar",
+    "noPayment": "Sem pagamento associado",
+    "ownAccount": "Não pode desativar a sua própria conta",
+    "alreadyInactive": "Esta conta já está inativa"
   }
 }

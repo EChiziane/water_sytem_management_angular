@@ -1,3 +1,4 @@
+import {AuthSessionService} from '@core/auth/auth-session.service';
 import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
 import {tap} from 'rxjs';
 import {Component} from '@angular/core';
@@ -37,7 +38,7 @@ export class ListuserComponent {
   isUserDrawerVisible = false;
   isSaving = false;
 
-  constructor(
+  constructor(public session: AuthSessionService,
     private confirmations: OperationConfirmationService,
     private http: HttpClient,
     private message: NzMessageService,

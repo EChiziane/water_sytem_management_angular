@@ -14,7 +14,7 @@
   <section class="table-wrapper">
     <nz-table #nzTable [nzData]="listOfDisplayData" [nzLoading]="isLoading" [nzScroll]="{ x: '1120px' }" nzTableLayout="fixed" [nzPageSize]="10" [nzNoResult]="emptyDocuments">
       <thead><tr>
-        <th nzWidth="160px">Documento</th><th nzWidth="200px">Cliente</th><th nzWidth="180px">Períodos</th><th nzWidth="120px">Pagamento</th><th nzWidth="140px">Valor</th><th nzWidth="130px">Estado</th><th nzWidth="130px">Emissão</th><th nzWidth="130px">Ações</th>
+        <th nzWidth="160px">Documento</th><th nzWidth="200px">Cliente</th><th nzWidth="180px">Períodos</th><th nzWidth="120px">Pagamento</th><th nzWidth="140px">Valor</th><th nzWidth="130px">Estado</th><th nzWidth="130px">Emissão</th><th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th>
       </tr></thead>
       <tbody><tr *ngFor="let data of nzTable.data">
         <td><strong>{{ data.invoiceCode || data.payment?.referenceCode || 'Sem referência' }}</strong><small class="document-caption">Recibo / pagamento</small></td>
@@ -22,7 +22,7 @@
         <td>{{ receiptPeriods(data) }}</td><td>{{ receiptMethod(data) }}</td><td class="document-amount">{{ receiptMoney(data) }}</td>
         <td><nz-tag [nzColor]="data.payment?.confirmed ? 'green' : 'gold'">{{ data.payment?.confirmed ? 'Confirmado' : 'Por confirmar' }}</nz-tag></td>
         <td>{{ data.createdAt | date:'dd/MM/yyyy':'+0200' }}</td>
-        <td><div class="document-row-actions"><button *ngIf="data.paymentId || data.payment?.id" [routerLink]="['/app/payment-detail', data.paymentId || data.payment?.id]" nz-button nzType="text" aria-label="Consultar pagamento" title="Consultar pagamento"><nz-icon nzType="eye"></nz-icon></button><button (click)="getDownloadUrl(data)" nz-button nzType="text" aria-label="Descarregar documento" title="Descarregar documento"><nz-icon nzType="download"></nz-icon></button></div></td>
+        <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + (data.invoiceCode || data.customerName)"><app-row-action action="view" *ngIf="data.paymentId || data.payment?.id" [route]="['/app/payment-detail', data.paymentId || data.payment?.id]" [context]="data.invoiceCode || data.customerName"></app-row-action><app-row-action action="download" (activated)="getDownloadUrl(data)" [context]="data.invoiceCode || data.customerName"></app-row-action></div></td>
       </tr></tbody>
     </nz-table>
     <ng-template #emptyDocuments><nz-empty nzNotFoundContent="Nenhum documento encontrado para esta pesquisa."></nz-empty></ng-template>

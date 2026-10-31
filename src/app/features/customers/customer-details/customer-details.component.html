@@ -40,7 +40,7 @@
         <section class="sheet-section table-section">
           <div class="section-heading"><h2>Movimentos por período</h2><span class="section-meta">Períodos: {{ totalTimelineMonths }} · Pagos: {{ totalPaidMonths }} · Pendentes: {{ totalUnpaidMonths }}</span></div>
           <nz-table #timelineTable [nzData]="monthlyTimeline" [nzNoResult]="emptyTimeline" [nzScroll]="{ x: '900px' }" nzSize="small" nzTableLayout="fixed" [nzHideOnSinglePage]="true">
-            <thead><tr><th nzWidth="140px">Mês</th><th nzWidth="95px">Estado</th><th nzWidth="130px">Responsável</th><th nzWidth="150px">Recibo</th><th nzWidth="140px">Data do pagamento</th><th nzWidth="100px">Valor</th><th nzWidth="90px">Método</th><th nzWidth="65px">Ações</th></tr></thead>
+            <thead><tr><th nzWidth="140px">Mês</th><th nzWidth="95px">Estado</th><th nzWidth="130px">Responsável</th><th nzWidth="150px">Recibo</th><th nzWidth="140px">Data do pagamento</th><th nzWidth="100px">Valor</th><th nzWidth="90px">Método</th><th class="wsm-actions-column" nzWidth="90px">{{ 'tableActions.heading' | translate }}</th></tr></thead>
             <tbody><tr *ngFor="let month of timelineTable.data">
               <td>{{ formatTimelineMonth(month) }}</td>
               <td><span class="row-status" [class.has-debt]="!month.paid && isOverdue(month.referenceMonth)">{{ month.paid ? 'Pago' : (isOverdue(month.referenceMonth) ? 'Em dívida' : 'Pendente') }}</span></td>
@@ -49,7 +49,7 @@
               <td>{{ month.paymentDate ? (month.paymentDate | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
               <td class="amount">{{ formatMoney(month.amount) }}</td>
               <td>{{ month.paymentMethod || '—' }}</td>
-              <td><button *ngIf="month.paymentId" [routerLink]="['/app/payment-detail', month.paymentId]" nz-button nzSize="small" nzType="link" aria-label="Ver detalhes do pagamento"><nz-icon nzType="eye"></nz-icon></button></td>
+              <td class="wsm-actions-cell"><div class="wsm-row-actions"><app-row-action action="view" *ngIf="month.paymentId; else noPaymentAction" [route]="['/app/payment-detail', month.paymentId]" [context]="month.paymentReferenceCode || formatTimelineMonth(month)"></app-row-action><ng-template #noPaymentAction><span class="wsm-no-action" [title]="'tableActions.noPayment' | translate">—<span class="wsm-visually-hidden">{{ 'tableActions.noPayment' | translate }}</span></span></ng-template></div></td>
             </tr></tbody>
           </nz-table>
           <ng-template #emptyTimeline><p class="table-empty">Sem mensalidades registadas no histórico.</p></ng-template>
@@ -57,7 +57,7 @@
         <section class="sheet-section table-section">
           <div class="section-heading payments-heading"><h2>Pagamentos do cliente</h2><input (ngModelChange)="searchValue = $event; search()" [ngModel]="searchValue" nz-input placeholder="Pesquisar pagamento" aria-label="Pesquisar pagamento" type="search"/></div>
           <nz-table #paymentsTable [nzData]="listOfDisplayData" [nzNoResult]="emptyPayments" [nzScroll]="{ x: '900px' }" nzSize="small" nzTableLayout="fixed" [nzHideOnSinglePage]="true">
-            <thead><tr><th nzWidth="155px">Referência</th><th nzWidth="110px">Montante</th><th nzWidth="170px">Períodos</th><th nzWidth="90px">Método</th><th nzWidth="115px">Estado</th><th nzWidth="140px">Data de registo</th><th nzWidth="120px">Ações</th></tr></thead>
+            <thead><tr><th nzWidth="155px">Referência</th><th nzWidth="110px">Montante</th><th nzWidth="170px">Períodos</th><th nzWidth="90px">Método</th><th nzWidth="115px">Estado</th><th nzWidth="140px">Data de registo</th><th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th></tr></thead>
             <tbody><tr *ngFor="let payment of paymentsTable.data">
               <td><a [routerLink]="['/app/payment-detail', payment.id]">{{ payment.referenceCode || 'Sem referência' }}</a></td>
               <td class="amount">{{ formatMoney(payment.amount) }}</td>
@@ -65,10 +65,7 @@
               <td>{{ payment.paymentMethod || '—' }}</td>
               <td><span class="row-status" [class.has-debt]="!payment.confirmed">{{ payment.confirmed ? 'Confirmado' : 'Não confirmado' }}</span></td>
               <td>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td><div class="row-actions">
-                <button [routerLink]="['/app/payment-detail', payment.id]" nz-button nzSize="small" nzType="link" aria-label="Ver detalhes do pagamento"><nz-icon nzType="eye"></nz-icon></button>
-                <button (click)="download(payment)" nz-button nzSize="small" nzType="link" aria-label="Descarregar documento do pagamento"><nz-icon nzType="printer"></nz-icon></button>
-              </div></td>
+              <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + payment.referenceCode"><app-row-action action="view" [route]="['/app/payment-detail', payment.id]" [context]="payment.referenceCode"></app-row-action><app-row-action action="download" (activated)="download(payment)" [context]="payment.referenceCode"></app-row-action></div></td>
             </tr></tbody>
           </nz-table>
           <ng-template #emptyPayments><p class="table-empty">Nenhum pagamento encontrado.</p></ng-template>

@@ -78,20 +78,7 @@
           </div>
         </dl>
 
-        <div class="mobile-card-actions">
-          <button [routerLink]="['/app/payment-detail', payment.id]" nz-button nzType="default">
-            <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
-            Detalhes
-          </button>
-
-          <a [href]="phoneHref(payment.customerContact)" class="mobile-call-action" nz-button nzType="default" aria-label="Ligar ao cliente">
-            <nz-icon nzTheme="outline" nzType="phone"></nz-icon>
-          </a>
-
-          <button (click)="download(payment)" nz-button nzType="default" aria-label="Imprimir recibo">
-            <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
-          </button>
-        </div>
+        <div class="mobile-card-actions wsm-row-actions"><app-row-action action="view" [route]="['/app/payment-detail', payment.id]" [context]="payment.referenceCode || payment.customerName"></app-row-action><app-row-action action="download" (activated)="download(payment)" [context]="payment.referenceCode || payment.customerName" [showLabel]="true"></app-row-action><app-row-action action="call" [href]="phoneHref(payment.customerContact)" [context]="payment.customerName"></app-row-action></div>
       </article>
     </div>
   </nz-spin>
@@ -129,7 +116,7 @@
             <th nzWidth="120px">Estado</th>
             <th nzWidth="160px">Criado por</th>
             <th nzWidth="180px">Data</th>
-            <th nzWidth="100px">Acoes</th>
+            <th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th>
           </tr>
           </thead>
 
@@ -156,32 +143,7 @@
             <td><nz-tag [nzColor]="getPaymentStatusColor(data)">{{ getPaymentStatusLabel(data) }}</nz-tag></td>
             <td>{{ data.createdByName || 'Sistema' }}</td>
             <td>{{ data.paymentDate | date: 'dd/MM/yyyy - HH:mm' }}</td>
-            <td>
-              <div class="table-actions">
-                <button
-                  [routerLink]="['/app/payment-detail', data.id]"
-                  nz-button
-                  nzShape="circle"
-                  nzSize="small"
-                  nz-tooltip
-                  nzTooltipTitle="Ver detalhes"
-                  nzType="link"
-                  aria-label="Ver detalhes">
-                  <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
-                </button>
-
-                <button
-                  (click)="download(data)"
-                  nz-button
-                  nzShape="circle"
-                  nzSize="small"
-                  nz-tooltip
-                  nzTooltipTitle="Imprimir recibo"
-                  nzType="link"
-                  aria-label="Imprimir recibo">
-                  <nz-icon nzTheme="outline" nzType="printer"></nz-icon>
-                </button>
-              </div>
+            <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + (data.referenceCode || data.customerName)"><app-row-action action="view" [route]="['/app/payment-detail', data.id]" [context]="data.referenceCode || data.customerName"></app-row-action><app-row-action action="download" (activated)="download(data)" [context]="data.referenceCode || data.customerName"></app-row-action></div>
             </td>
           </tr>
           </tbody>

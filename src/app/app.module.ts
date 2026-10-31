@@ -1,3 +1,4 @@
+import {RowActionComponent} from '@shared/components/row-action/row-action.component';
 import {AccessDeniedComponent} from './features/auth/access-denied.component';
 import {registerLocaleData} from '@angular/common';
 import en from '@angular/common/locales/en';
@@ -80,6 +81,7 @@ registerLocaleData(en);
     SigninComponent
   ],
   imports: [
+    RowActionComponent,
     BrowserModule,
     AppRoutingModule,
     IconsProviderModule,

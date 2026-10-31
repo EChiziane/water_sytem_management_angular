@@ -99,17 +99,7 @@
           </div>
         </dl>
 
-        <div class="mobile-card-actions">
-          <button [routerLink]="['/app/customer-detail', data.id]" nz-button nzType="default">
-            <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
-            Ver
-          </button>
-
-          <button (click)="editCustomer(data)" class="edit-action" nz-button nzType="primary">
-            <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
-            Editar
-          </button>
-        </div>
+        <div class="mobile-card-actions wsm-row-actions"><app-row-action action="view" [route]="['/app/customer-detail', data.id]" [context]="data.name"></app-row-action><app-row-action action="edit" (activated)="editCustomer(data)" [context]="data.name" [showLabel]="true"></app-row-action></div>
       </article>
     </div>
   </nz-spin>
@@ -148,7 +138,7 @@
             <th>Meses</th>
             <th>Taxa mensal</th>
             <th>Status</th>
-            <th>Acoes</th>
+            <th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th>
           </tr>
           </thead>
 
@@ -175,16 +165,7 @@
                 {{ data.status }}
               </nz-tag>
             </td>
-            <td>
-              <div class="table-actions">
-                <button [routerLink]="['/app/customer-detail', data.id]" nz-button nzSize="small" nzType="link" aria-label="Ver detalhes">
-                  <nz-icon nzTheme="outline" nzType="eye"></nz-icon>
-                </button>
-
-                <button (click)="editCustomer(data)" nz-button nzSize="small" nzType="link" aria-label="Editar cliente">
-                  <nz-icon nzTheme="outline" nzType="edit"></nz-icon>
-                </button>
-              </div>
+            <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + (data.name)"><app-row-action action="view" [route]="['/app/customer-detail', data.id]" [context]="data.name"></app-row-action><app-row-action action="edit" (activated)="editCustomer(data)" [context]="data.name"></app-row-action></div>
             </td>
           </tr>
           </tbody>

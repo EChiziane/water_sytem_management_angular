@@ -153,5 +153,21 @@
     "technicalTitle": "Technical workspace",
     "technicalPending": "Installation assignments are not yet available. You can access the calendar and your profile. Financial data is restricted to authorized roles.",
     "contactAdmin": "Contact your administrator to request an account."
+  },
+  "tableActions": {
+    "heading": "Actions",
+    "view": "View details",
+    "viewShort": "View",
+    "edit": "Edit record",
+    "editShort": "Edit",
+    "download": "Download document",
+    "downloadShort": "Document",
+    "deactivate": "Deactivate user",
+    "deactivateShort": "Deactivate",
+    "call": "Call customer",
+    "callShort": "Call",
+    "noPayment": "No associated payment",
+    "ownAccount": "You cannot deactivate your own account",
+    "alreadyInactive": "This account is already inactive"
   }
 }
