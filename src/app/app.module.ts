@@ -1,4 +1,5 @@
 import {YearFilterComponent} from '@shared/components/year-filter/year-filter.component';
+import {StatusBadgeComponent} from '@shared/components/status-badge/status-badge.component';
 import {RowActionComponent} from '@shared/components/row-action/row-action.component';
 import {AccessDeniedComponent} from './features/auth/access-denied.component';
 import {registerLocaleData} from '@angular/common';
@@ -79,6 +80,7 @@ registerLocaleData(en);
     SigninComponent
   ],
   imports: [
+    StatusBadgeComponent,
     YearFilterComponent,
     RowActionComponent,
     BrowserModule,

@@ -18,7 +18,7 @@
       <p *ngIf="isLoading" class="activity-empty">{{ 'dashboardHome.loading' | translate }}</p>
       <p *ngIf="!isLoading && paymentsFailed" class="activity-empty" role="alert">{{ 'dashboardHome.paymentsError' | translate }}</p>
       <ng-container *ngIf="!isLoading && !paymentsFailed">
-        <ul class="activity-list"><li *ngFor="let payment of recentPayments"><a [routerLink]="['/app/payment-detail', payment.id]"><div class="activity-person"><strong>{{ payment.customerName || '—' }}</strong><span>{{ payment.referenceCode || '—' }} · {{ payment.confirmed ? ('dashboardHome.confirmed' | translate) : ('dashboardHome.pending' | translate) }}</span></div><time>{{ paymentDate(payment) | date:'dd/MM HH:mm':'+0200' }}</time><nz-icon nzType="arrow-right"></nz-icon></a></li></ul>
+        <ul class="activity-list"><li *ngFor="let payment of recentPayments"><a [routerLink]="['/app/payment-detail', payment.id]"><div class="activity-person"><strong>{{ payment.customerName || '—' }}</strong><span>{{ payment.referenceCode || '—' }} · <app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge></span></div><time>{{ paymentDate(payment) | date:'dd/MM HH:mm':'+0200' }}</time><nz-icon nzType="arrow-right"></nz-icon></a></li></ul>
         <p *ngIf="!recentPayments.length" class="activity-empty">{{ 'dashboardHome.noPayments' | translate }}</p>
       </ng-container>
     </section>

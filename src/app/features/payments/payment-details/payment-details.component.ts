@@ -38,9 +38,6 @@ export class PaymentDetailsComponent implements OnInit {
       .join('') || 'C';
   }
 
-  get statusLabel(): string {
-    return this.payment?.confirmed ? 'Confirmado' : 'Aguarda confirmação';
-  }
 
   get methodLabel(): string { return paymentMethodLabel(this.payment?.paymentMethod); }
   get quantity(): number { return this.payment ? paymentQuantity(this.payment) : 0; }
@@ -48,9 +45,6 @@ export class PaymentDetailsComponent implements OnInit {
   downloadStatement(): void { if (this.payment) this.paymentInvoiceService.downloadBillingStatement(this.payment); }
   goToCustomer(): void { if (this.payment) this.router.navigate(['/app/customer-detail', this.payment.customerId]); }
 
-  get statusColor(): string {
-    return this.payment?.confirmed ? 'green' : 'volcano';
-  }
 
   ngOnInit(): void {
 

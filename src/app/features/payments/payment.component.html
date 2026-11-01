@@ -44,9 +44,7 @@
             <h3>{{ payment.customerName || 'Cliente sem nome' }}</h3>
           </div>
 
-          <nz-tag [nzColor]="getPaymentStatusColor(payment)">
-            {{ getPaymentStatusLabel(payment) }}
-          </nz-tag>
+          <app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge>
         </div>
 
         <div class="mobile-contact-line">
@@ -114,7 +112,7 @@
             <th nzWidth="130px">Montante</th>
             <th nzWidth="160px">Mes de referencia</th>
             <th nzWidth="100px">Metodo</th>
-            <th nzWidth="120px">Estado</th>
+            <th nzWidth="140px">Estado</th>
             <th nzWidth="160px">Criado por</th>
             <th nzWidth="180px">Data</th>
             <th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th>
@@ -123,7 +121,7 @@
 
           <tbody>
           <tr *ngFor="let data of nzTable.data">
-            <td><nz-tag nzColor="green">{{ data.referenceCode || 'Sem codigo' }}</nz-tag></td>
+            <td><nz-tag>{{ data.referenceCode || 'Sem codigo' }}</nz-tag></td>
             <td>
               <div class="payment-customer-cell">
                 <span class="customer-avatar-mini">{{ getCustomerInitials(data.customerName) }}</span>
@@ -141,7 +139,7 @@
               <ng-template #noTableMonths>-</ng-template>
             </td>
             <td><nz-tag nzColor="purple">{{ data.paymentMethod || '-' }}</nz-tag></td>
-            <td><nz-tag [nzColor]="getPaymentStatusColor(data)">{{ getPaymentStatusLabel(data) }}</nz-tag></td>
+            <td><app-status-badge kind="payment" [value]="data.confirmed"></app-status-badge></td>
             <td>{{ data.createdByName || 'Sistema' }}</td>
             <td>{{ data.paymentDate | date: 'dd/MM/yyyy - HH:mm' }}</td>
             <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + (data.referenceCode || data.customerName)"><app-row-action action="view" [route]="['/app/payment-detail', data.id]" [context]="data.referenceCode || data.customerName"></app-row-action><app-row-action action="download" (activated)="download(data)" [context]="data.referenceCode || data.customerName"></app-row-action></div>
@@ -213,11 +211,9 @@
         </div>
 
         <div class="customer-tags">
-          <nz-tag nzColor="green">{{ selectedCustomer.code }}</nz-tag>
+          <nz-tag>{{ selectedCustomer.code }}</nz-tag>
           <nz-tag nzColor="cyan">Valvula {{ selectedCustomer.valve }}</nz-tag>
-          <nz-tag [nzColor]="selectedCustomer.monthsInDebt ? 'volcano' : 'green'">
-            {{ selectedCustomer.monthsInDebt }} meses em divida
-          </nz-tag>
+          <app-status-badge [showCount]="true" kind="debt" [value]="selectedCustomer.monthsInDebt"></app-status-badge>
         </div>
       </section>
 

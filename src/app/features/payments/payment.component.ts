@@ -67,11 +67,11 @@ export class PaymentComponent implements OnInit {
   }
 
   get confirmedPayments(): number {
-    return this.dataSource.filter(payment => payment.confirmed).length;
+    return this.dataSource.filter(payment => payment.confirmed === true).length;
   }
 
   get pendingPayments(): number {
-    return this.dataSource.filter(payment => !payment.confirmed).length;
+    return this.dataSource.filter(payment => payment.confirmed === false).length;
   }
 
   get totalReceivedAmount(): number {
@@ -264,13 +264,7 @@ export class PaymentComponent implements OnInit {
     return `${Number(value || 0).toFixed(2)} MT`;
   }
 
-  getPaymentStatusLabel(payment: Payment): string {
-    return payment.confirmed ? 'Confirmado' : 'Nao confirmado';
-  }
 
-  getPaymentStatusColor(payment: Payment): string {
-    return payment.confirmed ? 'green' : 'volcano';
-  }
 
   getCustomerInitials(value: string | null | undefined): string {
     const name = value || 'Cliente';

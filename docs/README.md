@@ -66,3 +66,5 @@ A navegação e recuperação entre anos, os filtros de 2012 a 2099 e respetivas
 A página experimental de calendário foi retirada: [Remoção da agenda experimental](12-remocao-calendario-experimental.md). As regras financeiras de datas continuam disponíveis.
 
 O menu lateral e móvel foram reorganizados em grupos discretos: [Organização da navegação](13-menu-lateral.md).
+
+A apresentação dos estados foi uniformizada em [Estados da interface](14-estados-interface.md), preservando os códigos e regras existentes.

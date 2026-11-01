@@ -33,7 +33,6 @@ import { CustomerDetailPdfService } from '@core/services/customer-detail-pdf.ser
 import {MonthlyCharge} from '@shared/models/monthly-charge';
 import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
 import {money} from '@shared/utils/payment-presentation';
-import {isOverdueMonth} from '@shared/utils/billing-recovery';
 
 @Component({
   selector: 'app-customer-details',
@@ -180,15 +179,8 @@ export class CustomerDetailsComponent implements OnInit {
     return this.customer?.address || 'Sem endereco registado';
   }
 
-  get debtStatusLabel(): string {
-    return this.customer?.monthsInDebt > 0 ? 'Em dívida' : 'Sem dívida vencida';
-  }
 
-  isOverdue(month: string): boolean { return isOverdueMonth(month); }
 
-  get debtStatusColor(): string {
-    return this.customer?.monthsInDebt > 0 ? 'volcano' : 'green';
-  }
 
   // =====================================================
   // RESIZE
@@ -753,23 +745,7 @@ export class CustomerDetailsComponent implements OnInit {
   // TIMELINE HELPERS
   // =====================================================
 
-  getTimelineStatusColor(
-    item: MonthlyCharge
-  ): string {
 
-    return item.paid
-      ? 'green'
-      : 'volcano';
-  }
-
-  getTimelineStatusLabel(
-    item: MonthlyCharge
-  ): string {
-
-    return item.paid
-      ? 'Pago'
-      : 'Em D?vida';
-  }
 
   formatTimelineMonth(
     item: MonthlyCharge

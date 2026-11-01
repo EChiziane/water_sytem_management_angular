@@ -94,8 +94,8 @@
             <dd>{{ formatMoney(debtAmount(data)) }}</dd>
           </div>
           <div>
-            <dt>Status</dt>
-            <dd>{{ data.status || '-' }}</dd>
+            <dt>Estado</dt>
+            <dd><app-status-badge kind="customer" [value]="data.status"></app-status-badge></dd>
           </div>
         </dl>
 
@@ -137,7 +137,7 @@
             <th>Estado da divida</th>
             <th>Meses</th>
             <th>Taxa mensal</th>
-            <th>Status</th>
+            <th>Estado</th>
             <th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th>
           </tr>
           </thead>
@@ -145,7 +145,7 @@
           <tbody>
           <tr *ngFor="let data of nzTable.data">
             <td>
-              <nz-tag nzColor="green">{{ data.code || '-' }}</nz-tag>
+              <nz-tag>{{ data.code || '-' }}</nz-tag>
             </td>
             <td>
               <strong>{{ data.name }}</strong>
@@ -154,16 +154,12 @@
             <td>{{ data.valve }}</td>
             <td>{{ data.contact }}</td>
             <td>
-              <nz-tag [nzColor]="data.monthsInDebt > 0 ? 'volcano' : 'green'">
-                {{ data.monthsInDebt > 0 ? 'Em divida' : 'Em dia' }}
-              </nz-tag>
+              <app-status-badge kind="debt" [value]="data.monthsInDebt"></app-status-badge>
             </td>
             <td>{{ data.monthsInDebt }}</td>
             <td>{{ data.monthlyFee | number:'1.2-2' }} MT</td>
             <td>
-              <nz-tag [nzColor]="data.status === 'ATIVO' ? 'green' : 'red'">
-                {{ data.status }}
-              </nz-tag>
+              <app-status-badge kind="customer" [value]="data.status"></app-status-badge>
             </td>
             <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + (data.name)"><app-row-action action="view" [route]="['/app/customer-detail', data.id]" [context]="data.name"></app-row-action><app-row-action action="edit" (activated)="editCustomer(data)" [context]="data.name"></app-row-action></div>
             </td>
@@ -257,11 +253,11 @@
 
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
-              <nz-form-label>Status</nz-form-label>
+              <nz-form-label>Estado</nz-form-label>
               <nz-form-control>
-                <nz-select formControlName="status" nzPlaceHolder="Selecione o status">
-                  <nz-option nzLabel="ATIVO" nzValue="ATIVO"></nz-option>
-                  <nz-option nzLabel="INATIVO" nzValue="INATIVO"></nz-option>
+                <nz-select formControlName="status" nzPlaceHolder="Selecione o estado">
+                  <nz-option [nzLabel]="'statuses.active.label' | translate" nzValue="ATIVO"></nz-option>
+                  <nz-option [nzLabel]="'statuses.inactive.label' | translate" nzValue="INATIVO"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>

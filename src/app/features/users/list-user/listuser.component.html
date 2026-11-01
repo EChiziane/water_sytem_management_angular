@@ -55,9 +55,7 @@
           <td>{{ data.phone }}</td>
 
           <td>
-            <nz-tag [nzColor]="data.status === 'ACTIVE' ? 'green' : 'red'">
-              {{ data.status }}
-            </nz-tag>
+            <app-status-badge kind="user" [value]="data.status"></app-status-badge>
           </td>
 
           <td>{{ data.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
@@ -150,9 +148,9 @@
               <nz-form-label nzRequired>Estado</nz-form-label>
               <nz-form-control>
                 <nz-select formControlName="status">
-                  <nz-option nzLabel="Ativo" nzValue="ACTIVE"></nz-option>
-                  <nz-option nzLabel="Inativo" nzValue="INACTIVE"></nz-option>
-                  <nz-option nzLabel="Criado" nzValue="CREATED"></nz-option>
+                  <nz-option [nzLabel]="'statuses.active.label' | translate" nzValue="ACTIVE"></nz-option>
+                  <nz-option [nzLabel]="'statuses.inactive.label' | translate" nzValue="INACTIVE"></nz-option>
+                  <nz-option [nzLabel]="'statuses.created.label' | translate" nzValue="CREATED"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>

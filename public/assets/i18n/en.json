@@ -175,5 +175,57 @@
     "period": "Billing year",
     "issue": "Issue year",
     "estimated": "Estimate distributed from the demonstration total; historical monthly allocations are unavailable."
+  },
+  "statuses": {
+    "active": {
+      "label": "Active",
+      "hint": "The record is active."
+    },
+    "inactive": {
+      "label": "Inactive",
+      "hint": "The record is inactive; history is preserved."
+    },
+    "cancelled": {
+      "label": "Cancelled",
+      "hint": "Service was cancelled; history and debt are retained."
+    },
+    "installation": {
+      "label": "Awaiting installation",
+      "hint": "Installation has not been confirmed yet."
+    },
+    "created": {
+      "label": "Created",
+      "hint": "The account has been created but is not active yet."
+    },
+    "confirmed": {
+      "label": "Confirmed",
+      "hint": "Payment confirmed."
+    },
+    "unconfirmed": {
+      "label": "Unconfirmed",
+      "hint": "The payment has not been confirmed yet."
+    },
+    "paid": {
+      "label": "Paid",
+      "hint": "Monthly obligation settled."
+    },
+    "pending": {
+      "label": "Pending",
+      "hint": "Unpaid monthly obligation, still within its payment window or in a future period."
+    },
+    "overdue": {
+      "label": "Overdue",
+      "hint": "Monthly obligations have passed their payment deadline."
+    },
+    "clear": {
+      "label": "Up to date",
+      "hint": "No overdue monthly obligations; periods within their payment window may still exist."
+    },
+    "unknown": {
+      "label": "Not provided",
+      "hint": "No recognized status is available for this record."
+    },
+    "debtMonth": "overdue month",
+    "debtMonths": "overdue months"
   }
 }

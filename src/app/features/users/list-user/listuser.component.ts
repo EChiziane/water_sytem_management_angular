@@ -1,3 +1,5 @@
+import {TranslationService} from '@core/services/translation.service';
+import {describeStatus} from '@shared/utils/status-presentation';
 import {AuthSessionService} from '@core/auth/auth-session.service';
 import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
 import {tap} from 'rxjs';
@@ -38,7 +40,7 @@ export class ListuserComponent {
   isUserDrawerVisible = false;
   isSaving = false;
 
-  constructor(public session: AuthSessionService,
+  constructor(private translations: TranslationService, public session: AuthSessionService,
     private confirmations: OperationConfirmationService,
     private http: HttpClient,
     private message: NzMessageService,
@@ -90,7 +92,7 @@ export class ListuserComponent {
     const id = this.currentEditingUserId;
     this.confirmations.run({key: 'save-user:' + (id || 'new'), title: this.confirmations.text('saveUserTitle'),
       description: this.confirmations.text('saveUserDescription'),
-      fields: [[this.confirmations.text('user'), userData.name], [this.confirmations.text('role'), this.roleLabel(userData.role)], [this.confirmations.text('status'), userData.status]],
+      fields: [[this.confirmations.text('user'), userData.name], [this.confirmations.text('role'), this.roleLabel(userData.role)], [this.confirmations.text('status'), this.translations.instant(describeStatus('user',userData.status).label)]],
       confirmLabel: this.confirmations.text('save')}, () => {
       this.isSaving = true;
       return (id ? this.userService.updateUser(id,userData) : this.userService.addUser(userData)).pipe(tap({

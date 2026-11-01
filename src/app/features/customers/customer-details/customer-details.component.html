@@ -15,13 +15,13 @@
       </div>
       <article class="customer-sheet" aria-label="Ficha do cliente">
         <header class="sheet-heading">
-          <div><span class="sheet-label">Conta de cliente · {{ customer.code || 'Sem código' }}</span><h1>{{ customer.name }}</h1><span class="account-status" [class.has-debt]="customer.monthsInDebt > 0">{{ debtStatusLabel }}</span></div>
+          <div><span class="sheet-label">Conta de cliente · {{ customer.code || 'Sem código' }}</span><h1>{{ customer.name }}</h1><app-status-badge kind="debt" [value]="customer.monthsInDebt"></app-status-badge></div>
           <div class="sheet-balance"><span class="sheet-label">Dívida estimada</span><strong>{{ formatMoney(totalDebtAmount) }}</strong></div>
         </header>
         <section class="sheet-section" aria-label="Dados do cliente">
           <dl class="sheet-fields">
             <div><dt>Contacto</dt><dd>{{ customer.contact || 'Não informado' }}</dd></div>
-            <div><dt>Estado do cliente</dt><dd>{{ customer.status || 'Não informado' }}</dd></div>
+            <div><dt>Estado do cliente</dt><dd><app-status-badge kind="customer" [value]="customer.status"></app-status-badge></dd></div>
             <div><dt>Válvula</dt><dd>{{ customer.valve ?? 'Não informada' }}</dd></div>
             <div><dt>Cliente desde</dt><dd>{{ customer.createdAt | date:'dd/MM/yyyy HH:mm' }}</dd></div>
             <div class="address-field"><dt>Morada</dt><dd>{{ fullAddress }}</dd></div>
@@ -40,10 +40,10 @@
         <section class="sheet-section table-section">
           <div class="section-heading"><h2>Movimentos por período</h2><app-year-filter [(value)]="selectedPeriodYear" label="years.period"></app-year-filter><span class="section-meta">Períodos: {{ totalTimelineMonths }} · Pagos: {{ totalPaidMonths }} · Pendentes: {{ totalUnpaidMonths }}</span></div>
           <nz-table #timelineTable [nzData]="filteredTimeline" [nzNoResult]="emptyTimeline" [nzScroll]="{ x: '900px' }" nzSize="small" nzTableLayout="fixed" [nzHideOnSinglePage]="true">
-            <thead><tr><th nzWidth="140px">Mês</th><th nzWidth="95px">Estado</th><th nzWidth="130px">Responsável</th><th nzWidth="150px">Recibo</th><th nzWidth="140px">Data do pagamento</th><th nzWidth="100px">Valor</th><th nzWidth="90px">Método</th><th class="wsm-actions-column" nzWidth="90px">{{ 'tableActions.heading' | translate }}</th></tr></thead>
+            <thead><tr><th nzWidth="140px">Mês</th><th nzWidth="140px">Estado</th><th nzWidth="130px">Responsável</th><th nzWidth="150px">Recibo</th><th nzWidth="140px">Data do pagamento</th><th nzWidth="100px">Valor</th><th nzWidth="90px">Método</th><th class="wsm-actions-column" nzWidth="90px">{{ 'tableActions.heading' | translate }}</th></tr></thead>
             <tbody><tr *ngFor="let month of timelineTable.data">
               <td>{{ formatTimelineMonth(month) }}</td>
-              <td><span class="row-status" [class.has-debt]="!month.paid && isOverdue(month.referenceMonth)">{{ month.paid ? 'Pago' : (isOverdue(month.referenceMonth) ? 'Em dívida' : 'Pendente') }}</span></td>
+              <td><app-status-badge kind="monthly" [value]="month.paid" [period]="month.referenceMonth"></app-status-badge></td>
               <td>{{ month.createdByName || '—' }}</td>
               <td>{{ month.paymentReferenceCode || '—' }}</td>
               <td>{{ month.paymentDate ? (month.paymentDate | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
@@ -57,13 +57,13 @@
         <section class="sheet-section table-section">
           <div class="section-heading payments-heading"><h2>Pagamentos do cliente</h2><app-year-filter [(value)]="selectedPaymentYear" (valueChange)="search()" label="years.payment"></app-year-filter><input (ngModelChange)="searchValue = $event; search()" [ngModel]="searchValue" nz-input placeholder="Pesquisar pagamento" aria-label="Pesquisar pagamento" type="search"/></div>
           <nz-table #paymentsTable [nzData]="listOfDisplayData" [nzNoResult]="emptyPayments" [nzScroll]="{ x: '900px' }" nzSize="small" nzTableLayout="fixed" [nzHideOnSinglePage]="true">
-            <thead><tr><th nzWidth="155px">Referência</th><th nzWidth="110px">Montante</th><th nzWidth="170px">Períodos</th><th nzWidth="90px">Método</th><th nzWidth="115px">Estado</th><th nzWidth="140px">Data de registo</th><th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th></tr></thead>
+            <thead><tr><th nzWidth="155px">Referência</th><th nzWidth="110px">Montante</th><th nzWidth="170px">Períodos</th><th nzWidth="90px">Método</th><th nzWidth="140px">Estado</th><th nzWidth="140px">Data de registo</th><th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th></tr></thead>
             <tbody><tr *ngFor="let payment of paymentsTable.data">
               <td><a [routerLink]="['/app/payment-detail', payment.id]">{{ payment.referenceCode || 'Sem referência' }}</a></td>
               <td class="amount">{{ formatMoney(payment.amount) }}</td>
               <td><ul class="table-periods"><li *ngFor="let month of getFormattedReferenceMonths(payment.referenceMonth)">{{ month }}</li></ul><span *ngIf="!getFormattedReferenceMonths(payment.referenceMonth).length">—</span></td>
               <td>{{ payment.paymentMethod || '—' }}</td>
-              <td><span class="row-status" [class.has-debt]="!payment.confirmed">{{ payment.confirmed ? 'Confirmado' : 'Não confirmado' }}</span></td>
+              <td><app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge></td>
               <td>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</td>
               <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + payment.referenceCode"><app-row-action action="view" [route]="['/app/payment-detail', payment.id]" [context]="payment.referenceCode"></app-row-action><app-row-action action="download" (activated)="download(payment)" [context]="payment.referenceCode"></app-row-action></div></td>
             </tr></tbody>
@@ -100,9 +100,9 @@
       </div>
 
       <div class="customer-tags">
-        <nz-tag nzColor="green">{{ customer.code }}</nz-tag>
+        <nz-tag>{{ customer.code }}</nz-tag>
         <nz-tag nzColor="cyan">Válvula {{ customer.valve }}</nz-tag>
-        <nz-tag [nzColor]="debtStatusColor">{{ customer.monthsInDebt }} meses em divida</nz-tag>
+        <app-status-badge [showCount]="true" kind="debt" [value]="customer.monthsInDebt"></app-status-badge>
       </div>
     </div>
 
@@ -157,7 +157,7 @@
         </div>
 
         <div class="selected-months">
-          <nz-tag *ngFor="let m of selectedMonths" nzColor="volcano">{{ formatMonth(m) }}</nz-tag>
+          <nz-tag *ngFor="let m of selectedMonths">{{ formatMonth(m) }}</nz-tag>
         </div>
       </div>
 

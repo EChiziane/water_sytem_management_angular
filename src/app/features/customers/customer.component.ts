@@ -1,3 +1,5 @@
+import {TranslationService} from '@core/services/translation.service';
+import {describeStatus} from '@shared/utils/status-presentation';
 import {PermissionService} from '@core/auth/permission.service';
 import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
 import {tap} from 'rxjs';
@@ -52,7 +54,7 @@ export class CustomerComponent implements OnInit {
     monthsInDebt: new FormControl(1, [Validators.required, Validators.min(0)])
   });
 
-  constructor(public permissions: PermissionService,
+  constructor(private translations: TranslationService, public permissions: PermissionService,
     private confirmations: OperationConfirmationService,
     private customerService: CustomerService,
     private reports: WaterReportPdfService,
@@ -216,7 +218,7 @@ export class CustomerComponent implements OnInit {
     const id = this.selectedCustomerId;
     const editing = this.isEditMode;
     this.confirmations.run({key:'save-customer:' + (id || 'new'), title:this.confirmations.text('saveCustomerTitle'), description:this.confirmations.text('saveCustomerDescription'),
-      fields:[[this.confirmations.text('customer'),formData.name || ''],[this.confirmations.text('status'),formData.status || ''],[this.confirmations.text('tariff'),String(formData.monthlyFee) + ' MT']],
+      fields:[[this.confirmations.text('customer'),formData.name || ''],[this.confirmations.text('status'),this.translations.instant(describeStatus('customer',formData.status).label)],[this.confirmations.text('tariff'),String(formData.monthlyFee) + ' MT']],
       confirmLabel:this.confirmations.text('save')}, () => {
       this.isSaving = true;
       const request$ = editing && id ? this.customerService.updateCustomer(id,formData) : this.customerService.addCustomer(formData);

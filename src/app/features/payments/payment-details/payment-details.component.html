@@ -15,7 +15,7 @@
       </div>
       <article class="payment-sheet" aria-label="Ficha do pagamento">
         <header class="sheet-heading">
-          <div><span class="sheet-label">Detalhe do pagamento</span><h1>{{ payment.referenceCode || 'Sem referência' }}</h1><span class="payment-status" [class.pending]="!payment.confirmed"><nz-icon [nzType]="payment.confirmed ? 'check-circle' : 'clock-circle'"></nz-icon> {{ statusLabel }}</span></div>
+          <div><span class="sheet-label">Detalhe do pagamento</span><h1>{{ payment.referenceCode || 'Sem referência' }}</h1><app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge></div>
           <div class="sheet-amount"><span class="sheet-label">{{ payment.confirmed ? 'Montante recebido' : 'Montante por confirmar' }}</span><strong>{{ formatMoney(payment.amount) }}</strong></div>
         </header>
         <p *ngIf="!payment.confirmed" class="pending-note" role="status">O valor aguarda validação. Este registo não comprova o recebimento.</p>

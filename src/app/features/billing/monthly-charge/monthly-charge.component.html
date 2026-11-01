@@ -46,15 +46,13 @@
           <td>{{ data.customerNameSnapshot }}</td>
 
           <td>
-            <nz-tag nzColor="green">
+            <nz-tag>
               {{ data.referenceMonth }}
             </nz-tag>
           </td>
 
           <td>
-            <nz-tag [nzColor]="data.paid ? 'green' : 'red'">
-              {{ data.paid ? 'Pago' : 'Em dívida' }}
-            </nz-tag>
+            <app-status-badge kind="monthly" [value]="data.paid" [period]="data.referenceMonth"></app-status-badge>
           </td>
 
         </tr>

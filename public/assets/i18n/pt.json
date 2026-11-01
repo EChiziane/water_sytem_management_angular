@@ -175,5 +175,57 @@
     "period": "Ano da mensalidade",
     "issue": "Ano de emissão",
     "estimated": "Estimativa distribuída do total de demonstração; não existe detalhe histórico por mês."
+  },
+  "statuses": {
+    "active": {
+      "label": "Ativo",
+      "hint": "O registo está ativo."
+    },
+    "inactive": {
+      "label": "Inativo",
+      "hint": "O registo está inativo; o histórico é preservado."
+    },
+    "cancelled": {
+      "label": "Cancelado",
+      "hint": "O serviço foi cancelado; o histórico e a dívida permanecem."
+    },
+    "installation": {
+      "label": "Aguarda instalação",
+      "hint": "A instalação ainda não foi confirmada."
+    },
+    "created": {
+      "label": "Criado",
+      "hint": "A conta foi criada e ainda não está ativa."
+    },
+    "confirmed": {
+      "label": "Confirmado",
+      "hint": "Pagamento confirmado."
+    },
+    "unconfirmed": {
+      "label": "Por confirmar",
+      "hint": "O pagamento ainda não foi confirmado."
+    },
+    "paid": {
+      "label": "Paga",
+      "hint": "Mensalidade liquidada."
+    },
+    "pending": {
+      "label": "Pendente",
+      "hint": "Mensalidade por pagar, ainda dentro do prazo ou de um período futuro."
+    },
+    "overdue": {
+      "label": "Em dívida",
+      "hint": "Existem mensalidades cujo prazo de pagamento foi ultrapassado."
+    },
+    "clear": {
+      "label": "Em dia",
+      "hint": "Sem mensalidades vencidas; podem existir períodos ainda dentro do prazo."
+    },
+    "unknown": {
+      "label": "Não informado",
+      "hint": "Não existe um estado reconhecido para este registo."
+    },
+    "debtMonth": "mês vencido",
+    "debtMonths": "meses vencidos"
   }
 }

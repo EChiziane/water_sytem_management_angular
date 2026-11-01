@@ -22,7 +22,7 @@
 
       <div class="chips">
         <span>{{ roleLabel }}</span>
-        <span>{{ statusLabel }}</span>
+        <app-status-badge kind="user" [value]="user.status"></app-status-badge>
       </div>
 
       <div class="session-box">
@@ -48,7 +48,7 @@
 
           <div>
             <span>{{ field.label }}</span>
-            <strong>{{ field.value }}</strong>
+            <app-status-badge *ngIf="field.kind === 'status'; else fieldValue" kind="user" [value]="user.status"></app-status-badge><ng-template #fieldValue><strong>{{ field.value }}</strong></ng-template>
           </div>
         </article>
       </div>

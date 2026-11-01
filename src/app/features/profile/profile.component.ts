@@ -13,6 +13,7 @@ type ProfileField = {
   label: string;
   value: string;
   icon: string;
+  kind?: 'status';
 };
 
 @Component({
@@ -70,23 +71,6 @@ export class ProfileComponent implements OnInit {
     return this.user?.role ? ROLE_LABELS[this.user.role] : '-';
   }
 
-  get statusLabel(): string {
-    const status = this.user?.status;
-
-    if (status === 'ACTIVE') {
-      return 'Ativo';
-    }
-
-    if (status === 'INACTIVE') {
-      return 'Inativo';
-    }
-
-    if (status === 'CREATED') {
-      return 'Criado';
-    }
-
-    return '-';
-  }
 
   get memberSince(): string {
     return this.formatDate(this.user?.createdAt);
@@ -143,7 +127,8 @@ export class ProfileComponent implements OnInit {
       },
       {
         label: 'Estado',
-        value: this.statusLabel,
+        value: this.user?.status || '',
+        kind: 'status',
         icon: 'check-circle'
       },
       {

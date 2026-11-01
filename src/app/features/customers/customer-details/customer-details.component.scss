@@ -9,8 +9,6 @@
 .sheet-heading h1 { margin: 3px 0 7px; font-size: 20px; line-height: 1.35; font-weight: 600; overflow-wrap: anywhere; }
 .sheet-balance { text-align: right; flex-shrink: 0; }
 .sheet-balance strong { display: block; margin-top: 3px; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.account-status, .row-status { color: #327450; font-size: 12px; }
-.has-debt { color: #a45127; }
 .sheet-section { border-top: 1px solid #e8ecf0; padding: 14px 22px; min-width: 0; }
 .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
 .section-heading h2 { margin: 0; font-size: 13px; font-weight: 600; color: #233148; }
