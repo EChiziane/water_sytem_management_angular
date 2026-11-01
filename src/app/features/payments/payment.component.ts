@@ -1,3 +1,4 @@
+import {money} from '@shared/utils/payment-presentation';
 import {matchesBusinessYear} from '@shared/utils/billing-period';
 import {PermissionService} from '@core/auth/permission.service';
 import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
@@ -261,7 +262,7 @@ export class PaymentComponent implements OnInit {
   }
 
   formatMoney(value: number | null | undefined): string {
-    return `${Number(value || 0).toFixed(2)} MT`;
+    return money(value);
   }
 
 

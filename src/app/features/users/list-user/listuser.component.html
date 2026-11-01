@@ -58,7 +58,7 @@
             <app-status-badge kind="user" [value]="data.status"></app-status-badge>
           </td>
 
-          <td>{{ data.createdAt | date: 'dd MM yyyy - HH:mm' }}</td>
+          <td>{{ data.createdAt | businessDate:'datetime' }}</td>
 
           <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + data.name"><app-row-action action="view" (activated)="viewUser(data)" [context]="data.name"></app-row-action><app-row-action action="edit" (activated)="editUser(data)" [context]="data.name"></app-row-action><span class="wsm-action-separator" aria-hidden="true"></span><app-row-action action="deactivate" (activated)="deleteUser(data)" [context]="data.name" [disabled]="data.status === 'INACTIVE' || data.id === session.getUser()?.id" [disabledReason]="data.id === session.getUser()?.id ? 'tableActions.ownAccount' : 'tableActions.alreadyInactive'"></app-row-action></div></td>
         </tr>

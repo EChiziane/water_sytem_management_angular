@@ -6,8 +6,8 @@
   display: grid;
   grid-template-columns: minmax(420px, 1fr) minmax(380px, 520px);
   min-height: 100vh;
-  color: #10212b;
-  background: #f4f8fb;
+  color: var(--wsm-text);
+  background: var(--wsm-bg);
 }
 
 .brand-panel {
@@ -18,7 +18,7 @@
   min-height: 100vh;
   padding: 46px max(42px, calc((100vw - 1180px) / 2)) 46px 54px;
   overflow: hidden;
-  color: #ffffff;
+  color: var(--wsm-surface);
   background:
     linear-gradient(90deg, rgba(4, 24, 39, 0.9) 0%, rgba(4, 24, 39, 0.72) 48%, rgba(4, 24, 39, 0.36) 100%),
     url('/landing/water-hero.png') center / cover no-repeat;
@@ -44,7 +44,7 @@
   align-items: center;
   gap: 10px;
   width: fit-content;
-  color: #ffffff;
+  color: var(--wsm-surface);
   font-size: 17px;
   font-weight: 800;
   text-decoration: none;
@@ -76,7 +76,7 @@
 
   h1 {
     margin: 0;
-    color: #ffffff;
+    color: var(--wsm-surface);
     font-size: 54px;
     font-weight: 800;
     line-height: 1;
@@ -114,7 +114,7 @@
   }
 
   strong {
-    color: #ffffff;
+    color: var(--wsm-surface);
     font-size: 21px;
     font-weight: 800;
   }
@@ -134,13 +134,13 @@
   padding: 42px;
   background:
     radial-gradient(circle at top right, rgba(228, 173, 84, 0.2), transparent 34%),
-    #f4f8fb;
+    var(--wsm-bg);
 }
 
 .login-card {
   width: 100%;
   max-width: 440px;
-  border: 1px solid #dfeaf0;
+  border: 1px solid var(--wsm-border);
   border-radius: 8px;
   box-shadow: 0 24px 60px rgba(16, 33, 43, 0.12);
 
@@ -156,7 +156,7 @@
 
   h2 {
     margin: 0;
-    color: #10212b;
+    color: var(--wsm-text);
     font-size: 31px;
     font-weight: 800;
     letter-spacing: 0;
@@ -204,7 +204,7 @@
     }
 
     .ant-input-group-addon {
-      color: #0e7c72;
+      color: var(--wsm-primary);
       background: #f2f8fb;
     }
   }
@@ -233,7 +233,7 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  color: #0e7c72;
+  color: var(--wsm-primary);
   background: transparent;
   border: 0;
   font: inherit;
@@ -260,7 +260,7 @@
   cursor: pointer;
 
   &:hover {
-    color: #0e7c72;
+    color: var(--wsm-primary);
     background: #e8f6fb;
   }
 }
@@ -268,8 +268,8 @@
 .login-button {
   height: 46px;
   margin-top: 2px;
-  background: #10212b;
-  border-color: #10212b;
+  background: var(--wsm-text);
+  border-color: var(--wsm-text);
   border-radius: 8px;
   font-weight: 800;
 
@@ -304,7 +304,7 @@
 
   h3 {
     margin: 0;
-    color: #10212b;
+    color: var(--wsm-text);
     font-size: 24px;
     font-weight: 800;
   }
@@ -359,7 +359,7 @@
     gap: 3px;
     padding: 14px 16px;
     background: #f7fafc;
-    border: 1px solid #dfeaf0;
+    border: 1px solid var(--wsm-border);
     border-radius: 8px;
   }
 
@@ -371,7 +371,7 @@
   }
 
   strong {
-    color: #10212b;
+    color: var(--wsm-text);
     font-size: 15px;
   }
 }
@@ -408,7 +408,7 @@
     }
 
     .ant-modal-title {
-      color: #10212b;
+      color: var(--wsm-text);
       font-weight: 800;
     }
 
@@ -429,13 +429,13 @@
     }
 
     .ant-input-group-addon {
-      color: #0e7c72;
+      color: var(--wsm-primary);
       background: #f2f8fb;
     }
 
     .ant-btn-primary {
-      background: #10212b;
-      border-color: #10212b;
+      background: var(--wsm-text);
+      border-color: var(--wsm-text);
     }
 
     .ant-btn {

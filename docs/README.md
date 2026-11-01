@@ -68,3 +68,5 @@ A página experimental de calendário foi retirada: [Remoção da agenda experim
 O menu lateral e móvel foram reorganizados em grupos discretos: [Organização da navegação](13-menu-lateral.md).
 
 A apresentação dos estados foi uniformizada em [Estados da interface](14-estados-interface.md), preservando os códigos e regras existentes.
+
+A revisão de 01/11/2026 e as alterações preparatórias estão em [Arquitetura e produção](16-arquitetura-producao.md). Este relatório distingue a situação atual das descobertas históricas acima.

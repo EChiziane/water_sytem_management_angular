@@ -23,7 +23,7 @@
             <div><dt>Contacto</dt><dd>{{ customer.contact || 'Não informado' }}</dd></div>
             <div><dt>Estado do cliente</dt><dd><app-status-badge kind="customer" [value]="customer.status"></app-status-badge></dd></div>
             <div><dt>Válvula</dt><dd>{{ customer.valve ?? 'Não informada' }}</dd></div>
-            <div><dt>Cliente desde</dt><dd>{{ customer.createdAt | date:'dd/MM/yyyy HH:mm' }}</dd></div>
+            <div><dt>Cliente desde</dt><dd>{{ customer.createdAt | businessDate:'datetime' }}</dd></div>
             <div class="address-field"><dt>Morada</dt><dd>{{ fullAddress }}</dd></div>
           </dl>
         </section>
@@ -33,7 +33,7 @@
             <div><dt>Taxa mensal</dt><dd>{{ formatMoney(customer.monthlyFee) }}</dd></div>
             <div><dt>Meses em dívida</dt><dd>{{ customer.monthsInDebt || 0 }}</dd></div>
             <div><dt>Pagamentos registados</dt><dd>{{ totalPayments }}</dd></div>
-            <div><dt>Último pagamento</dt><dd>{{ lastPaymentDate ? (lastPaymentDate | date:'dd/MM/yyyy HH:mm') : 'Sem pagamentos' }}</dd></div>
+            <div><dt>Último pagamento</dt><dd>{{ lastPaymentDate ? (lastPaymentDate | businessDate:'datetime') : 'Sem pagamentos' }}</dd></div>
             <div class="open-periods"><dt>Períodos por pagar</dt><dd><ul *ngIf="debtMonths.length; else noDebtMonths" class="period-list"><li *ngFor="let month of debtMonths">{{ month }}</li></ul><ng-template #noDebtMonths>Sem períodos pendentes</ng-template></dd></div>
           </dl>
         </section>
@@ -46,7 +46,7 @@
               <td><app-status-badge kind="monthly" [value]="month.paid" [period]="month.referenceMonth"></app-status-badge></td>
               <td>{{ month.createdByName || '—' }}</td>
               <td>{{ month.paymentReferenceCode || '—' }}</td>
-              <td>{{ month.paymentDate ? (month.paymentDate | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
+              <td>{{ month.paymentDate ? (month.paymentDate | businessDate:'datetime') : '—' }}</td>
               <td class="amount" [title]="month.amountEstimated ? ('years.estimated' | translate) : ''">{{ month.amountEstimated ? '≈ ' : '' }}{{ formatMoney(month.amount) }}</td>
               <td><app-info-tag kind="method" [value]="month.paymentMethod"></app-info-tag></td>
               <td class="wsm-actions-cell"><div class="wsm-row-actions"><app-row-action action="view" *ngIf="month.paymentId; else noPaymentAction" [route]="['/app/payment-detail', month.paymentId]" [context]="month.paymentReferenceCode || formatTimelineMonth(month)"></app-row-action><ng-template #noPaymentAction><span class="wsm-no-action" [title]="'tableActions.noPayment' | translate">—<span class="wsm-visually-hidden">{{ 'tableActions.noPayment' | translate }}</span></span></ng-template></div></td>
@@ -64,7 +64,7 @@
               <td><ul class="table-periods"><li *ngFor="let month of getFormattedReferenceMonths(payment.referenceMonth)">{{ month }}</li></ul><span *ngIf="!getFormattedReferenceMonths(payment.referenceMonth).length">—</span></td>
               <td><app-info-tag kind="method" [value]="payment.paymentMethod"></app-info-tag></td>
               <td><app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge></td>
-              <td>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ payment.paymentDate | businessDate:'datetime' }}</td>
               <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + payment.referenceCode"><app-row-action action="view" [route]="['/app/payment-detail', payment.id]" [context]="payment.referenceCode"></app-row-action><app-row-action action="download" (activated)="download(payment)" [context]="payment.referenceCode"></app-row-action></div></td>
             </tr></tbody>
           </nz-table>

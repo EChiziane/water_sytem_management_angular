@@ -10,7 +10,7 @@
   padding: 0 8px;
   border: 1px solid #dce3eb;
   border-radius: 6px;
-  background: #fff;
+  background: var(--wsm-surface);
   color: #526278;
   font: inherit;
   font-size: 12px;
@@ -29,7 +29,7 @@
   &.row-action-view:hover { border-color: #a9bfd8; background: #dfecfa; }
   &.row-action-danger { color: #b54343; }
   &.row-action-danger:hover { color: #a52b2b; border-color: #e7b9b9; background: #fff2f2; }
-  &:disabled { color: #a0a8b4; border-color: #e7ebf0; background: #f7f8fa; cursor: not-allowed; }
+  &:disabled { color: #a0a8b4; border-color: #e7ebf0; background: var(--wsm-meta-bg); cursor: not-allowed; }
 }
 
 @media (pointer: coarse) { .row-action { min-width: 40px; height: 40px; } }

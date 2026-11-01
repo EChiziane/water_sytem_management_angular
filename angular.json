@@ -57,7 +57,11 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": true,
+                "fonts": false
+              },
               "extractLicenses": true,
               "outputHashing": "all",
               "budgets": [
@@ -70,6 +74,20 @@
                   "type": "anyComponentStyle",
                   "maximumWarning": "10kB",
                   "maximumError": "20kB"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public",
+                  "ignore": [
+                    "data/**"
+                  ]
+                },
+                {
+                  "glob": "**/*",
+                  "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                  "output": "/assets/"
                 }
               ]
             },

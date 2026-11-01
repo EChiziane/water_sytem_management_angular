@@ -73,7 +73,7 @@
           </div>
           <div>
             <dt>Data</dt>
-            <dd>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</dd>
+            <dd>{{ payment.paymentDate | businessDate:'datetime' }}</dd>
           </div>
         </dl>
 
@@ -141,7 +141,7 @@
             <td><app-info-tag kind="method" [value]="data.paymentMethod"></app-info-tag></td>
             <td><app-status-badge kind="payment" [value]="data.confirmed"></app-status-badge></td>
             <td>{{ data.createdByName || 'Sistema' }}</td>
-            <td>{{ data.paymentDate | date: 'dd/MM/yyyy - HH:mm' }}</td>
+            <td>{{ data.paymentDate | businessDate:'datetime' }}</td>
             <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + (data.referenceCode || data.customerName)"><app-row-action action="view" [route]="['/app/payment-detail', data.id]" [context]="data.referenceCode || data.customerName"></app-row-action><app-row-action action="download" (activated)="download(data)" [context]="data.referenceCode || data.customerName"></app-row-action></div>
             </td>
           </tr>

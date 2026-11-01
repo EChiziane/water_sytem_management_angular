@@ -1,0 +1,19 @@
+/* Shared density and interaction for authenticated operational pages. */
+.app-shell .ant-btn:not(.ant-btn-circle):not(.ant-btn-round) { border-radius:var(--wsm-radius-control) !important; font-size:var(--wsm-font-label) !important; font-weight:500 !important; }
+.app-shell .ant-btn:not(.ant-btn-lg):not(.ant-btn-sm):not(.back-arrow) { min-height:var(--wsm-control-height); }
+.app-shell .ant-btn-primary:not([disabled]):not(.ant-btn-dangerous) { background:var(--wsm-primary); border-color:var(--wsm-primary); }
+.app-shell .ant-btn-dangerous.ant-btn-primary:not([disabled]), .ant-modal .ant-btn-dangerous.ant-btn-primary:not([disabled]) { background:var(--wsm-danger) !important; border-color:var(--wsm-danger) !important; }
+.app-shell .ant-btn[disabled], .ant-modal .ant-btn[disabled] { color:#a0a8af !important; background:#f5f5f5 !important; border-color:var(--wsm-border) !important; box-shadow:none !important; }
+.app-shell button:focus-visible, .app-shell a:focus-visible { outline:2px solid var(--wsm-primary); outline-offset:3px; }
+.app-shell .table-wrapper .ant-table-thead > tr > th,
+.app-shell .timeline-table-wrapper .ant-table-thead > tr > th,
+.app-shell .table-wrapper .ant-table-tbody > tr > td,
+.app-shell .timeline-table-wrapper .ant-table-tbody > tr > td { padding:var(--wsm-table-padding) !important; font-size:var(--wsm-font-label) !important; border-color:var(--wsm-border); }
+.app-shell .table-wrapper .ant-table-thead > tr > th, .app-shell .timeline-table-wrapper .ant-table-thead > tr > th { color:var(--wsm-muted); background:var(--wsm-surface-muted); font-weight:600; text-transform:none; }
+.app-shell .ant-table-tbody > tr:hover > td { background:var(--wsm-primary-soft); }
+.app-shell .ant-pagination-item-active { border-color:var(--wsm-primary); }
+.app-shell .ant-pagination-item-active a { color:var(--wsm-primary); }
+.app-shell .ant-table-cell .document-amount, .app-shell .document-amount { font-variant-numeric:tabular-nums; }
+.app-shell .compact-list-layout .page-header p { color:var(--wsm-heading) !important; font-size:var(--wsm-font-title) !important; font-weight:600 !important; }
+.app-shell .compact-list-layout .filters-panel { border-radius:var(--wsm-radius) !important; border-color:var(--wsm-border); }
+@media (prefers-reduced-motion:reduce) { .app-shell *, .app-shell *::before, .app-shell *::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; } }

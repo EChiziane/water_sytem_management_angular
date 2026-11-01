@@ -22,7 +22,7 @@
         <td>{{ data.customerName || data.payment?.customerName || 'Não identificado' }}</td>
         <td>{{ receiptPeriods(data) }}</td><td><app-info-tag kind="method" [value]="data.payment?.paymentMethod"></app-info-tag></td><td class="document-amount">{{ receiptMoney(data) }}</td>
         <td><app-status-badge kind="payment" [value]="data.payment?.confirmed"></app-status-badge></td>
-        <td>{{ data.createdAt | date:'dd/MM/yyyy':'+0200' }}</td>
+        <td>{{ data.createdAt | businessDate:'date' }}</td>
         <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + (data.invoiceCode || data.customerName)"><app-row-action action="view" *ngIf="data.paymentId || data.payment?.id" [route]="['/app/payment-detail', data.paymentId || data.payment?.id]" [context]="data.invoiceCode || data.customerName"></app-row-action><app-row-action action="download" (activated)="getDownloadUrl(data)" [context]="data.invoiceCode || data.customerName"></app-row-action></div></td>
       </tr></tbody>
     </nz-table>

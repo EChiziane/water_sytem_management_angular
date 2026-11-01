@@ -4,8 +4,8 @@
 
 .landing-shell {
   min-height: 100vh;
-  background: #f4f8fb;
-  color: #10212b;
+  background: var(--wsm-bg);
+  color: var(--wsm-text);
 }
 
 .site-header {
@@ -33,7 +33,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #10212b;
+  color: var(--wsm-text);
   font-size: 17px;
   font-weight: 800;
   letter-spacing: 0;
@@ -47,8 +47,8 @@
   justify-content: center;
   width: 38px;
   height: 38px;
-  color: #ffffff;
-  background: linear-gradient(135deg, #0e7c72, #20c997);
+  color: var(--wsm-surface);
+  background: linear-gradient(135deg, var(--wsm-primary), #20c997);
   border-radius: 8px;
   box-shadow: 0 10px 22px rgba(14, 124, 199, 0.22);
 }
@@ -68,7 +68,7 @@
     transition: color 0.2s ease;
 
     &:hover {
-      color: #0e7c72;
+      color: var(--wsm-primary);
     }
   }
 }
@@ -97,13 +97,13 @@
 .login-button {
   height: 38px;
   padding: 0 18px;
-  background: #10212b;
-  border-color: #10212b;
+  background: var(--wsm-text);
+  border-color: var(--wsm-text);
 }
 
 .mobile-menu-btn {
   display: none;
-  color: #10212b;
+  color: var(--wsm-text);
 }
 
 nz-content {
@@ -116,7 +116,7 @@ nz-content {
   gap: 16px;
 
   a {
-    color: #10212b;
+    color: var(--wsm-text);
     font-weight: 700;
     text-decoration: none;
   }
@@ -142,7 +142,7 @@ nz-content {
   position: absolute;
   inset: auto 0 0;
   height: 180px;
-  background: linear-gradient(0deg, #f4f8fb 0%, rgba(244, 248, 251, 0) 100%);
+  background: linear-gradient(0deg, var(--wsm-bg) 0%, rgba(244, 248, 251, 0) 100%);
   pointer-events: none;
 }
 
@@ -150,7 +150,7 @@ nz-content {
   position: relative;
   z-index: 1;
   max-width: 640px;
-  color: #ffffff;
+  color: var(--wsm-surface);
 }
 
 .hero-kicker,
@@ -165,7 +165,7 @@ nz-content {
 
 .hero-content h1 {
   margin: 0;
-  color: #ffffff;
+  color: var(--wsm-surface);
   font-size: 64px;
   font-weight: 800;
   line-height: 1;
@@ -214,12 +214,12 @@ nz-content {
 .secondary-cta {
   min-height: 48px;
   padding: 0 20px;
-  color: #ffffff;
+  color: var(--wsm-surface);
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.32);
 
   &:hover {
-    color: #ffffff;
+    color: var(--wsm-surface);
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
   }
@@ -250,7 +250,7 @@ nz-content {
   }
 
   strong {
-    color: #ffffff;
+    color: var(--wsm-surface);
     font-size: 21px;
     font-weight: 800;
   }
@@ -270,7 +270,7 @@ nz-content {
 }
 
 .intro-band {
-  background: #f4f8fb;
+  background: var(--wsm-bg);
 }
 
 .section-grid {
@@ -281,7 +281,7 @@ nz-content {
 
   h2 {
     margin: 0;
-    color: #10212b;
+    color: var(--wsm-text);
     font-size: 42px;
     line-height: 1.12;
   }
@@ -295,7 +295,7 @@ nz-content {
 }
 
 .services-band {
-  background: #ffffff;
+  background: var(--wsm-surface);
 }
 
 .section-heading {
@@ -304,7 +304,7 @@ nz-content {
 
   h2 {
     margin: 0;
-    color: #10212b;
+    color: var(--wsm-text);
     font-size: 38px;
     line-height: 1.16;
   }
@@ -319,8 +319,8 @@ nz-content {
 .service-card {
   min-height: 228px;
   padding: 28px;
-  background: #f8fbfd;
-  border: 1px solid #dfeaf0;
+  background: var(--wsm-surface-muted);
+  border: 1px solid var(--wsm-border);
   border-radius: 8px;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 
@@ -332,7 +332,7 @@ nz-content {
 
   h3 {
     margin: 22px 0 10px;
-    color: #10212b;
+    color: var(--wsm-text);
     font-size: 20px;
     font-weight: 800;
   }
@@ -350,7 +350,7 @@ nz-content {
   justify-content: center;
   width: 46px;
   height: 46px;
-  color: #0e7c72;
+  color: var(--wsm-primary);
   background: #e8f6fb;
   border-radius: 8px;
   font-size: 24px;
@@ -361,12 +361,12 @@ nz-content {
   grid-template-columns: minmax(300px, 0.9fr) minmax(320px, 440px);
   gap: 54px;
   align-items: start;
-  background: #10212b;
-  color: #ffffff;
+  background: var(--wsm-text);
+  color: var(--wsm-surface);
 
   h2 {
     margin: 0;
-    color: #ffffff;
+    color: var(--wsm-surface);
     font-size: 38px;
     line-height: 1.16;
   }
@@ -392,7 +392,7 @@ nz-content {
   display: grid;
   gap: 14px;
   padding: 24px;
-  background: #ffffff;
+  background: var(--wsm-surface);
   border-radius: 8px;
   box-shadow: 0 24px 52px rgba(0, 0, 0, 0.16);
 
@@ -409,7 +409,7 @@ nz-content {
     width: 100%;
     min-height: 42px;
     padding: 10px 12px;
-    color: #10212b;
+    color: var(--wsm-text);
     background: #f7fafc;
     border: 1px solid #dce8ef;
     border-radius: 7px;
@@ -417,7 +417,7 @@ nz-content {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:focus {
-      border-color: #0e7c72;
+      border-color: var(--wsm-primary);
       box-shadow: 0 0 0 3px rgba(14, 124, 199, 0.13);
     }
   }
@@ -430,8 +430,8 @@ nz-content {
   button {
     height: 44px;
     margin-top: 4px;
-    background: #0e7c72;
-    border-color: #0e7c72;
+    background: var(--wsm-primary);
+    border-color: var(--wsm-primary);
   }
 }
 
@@ -444,7 +444,7 @@ nz-content {
 
   h2 {
     margin: 0;
-    color: #10212b;
+    color: var(--wsm-text);
     font-size: 34px;
   }
 
@@ -477,8 +477,8 @@ nz-content {
   gap: 18px;
   padding: 22px max(24px, calc((100vw - 1180px) / 2));
   color: #5f7481;
-  background: #ffffff;
-  border-top: 1px solid #dfeaf0;
+  background: var(--wsm-surface);
+  border-top: 1px solid var(--wsm-border);
 }
 
 @media (max-width: 980px) {

@@ -1,6 +1,6 @@
 <div class="dashboard-page">
   <header class="dashboard-heading">
-    <div><h1>{{ 'dashboardHome.title' | translate }}</h1><p>{{ 'dashboardHome.subtitle' | translate }}</p><span class="dashboard-date">{{ 'dashboardHome.today' | translate }}: {{ asOf | date:'dd/MM/yyyy':'+0200' }} · Maputo</span></div>
+    <div><h1>{{ 'dashboardHome.title' | translate }}</h1><p>{{ 'dashboardHome.subtitle' | translate }}</p><span class="dashboard-date">{{ 'dashboardHome.today' | translate }}: {{ asOf | businessDate:'date' }} · Maputo</span></div>
     <button nz-button (click)="loadDashboard()" [disabled]="isLoading"><nz-icon nzType="reload"></nz-icon> {{ 'dashboardHome.refresh' | translate }}</button>
   </header>
   <nz-spin *ngIf="permissions.can('customers.read')" [nzSpinning]="isLoading">
@@ -14,11 +14,11 @@
 
   <div *ngIf="permissions.can('customers.read')" class="dashboard-activity" [attr.aria-busy]="isLoading">
     <section class="activity-panel" aria-labelledby="recent-payments-heading">
-      <header><div><h2 id="recent-payments-heading">{{ 'dashboardHome.recentPayments' | translate }}</h2><p>{{ 'dashboardHome.latestTen' | translate }} · {{ asOf | date:'MM/yyyy':'+0200' }}</p></div><a *ngIf="permissions.can('payments.read')" routerLink="/app/payment">{{ 'dashboardHome.viewMore' | translate }} <nz-icon nzType="arrow-right"></nz-icon></a></header>
+      <header><div><h2 id="recent-payments-heading">{{ 'dashboardHome.recentPayments' | translate }}</h2><p>{{ 'dashboardHome.latestTen' | translate }} · {{ asOf | businessDate:'month' }}</p></div><a *ngIf="permissions.can('payments.read')" routerLink="/app/payment">{{ 'dashboardHome.viewMore' | translate }} <nz-icon nzType="arrow-right"></nz-icon></a></header>
       <p *ngIf="isLoading" class="activity-empty">{{ 'dashboardHome.loading' | translate }}</p>
       <p *ngIf="!isLoading && paymentsFailed" class="activity-empty" role="alert">{{ 'dashboardHome.paymentsError' | translate }}</p>
       <ng-container *ngIf="!isLoading && !paymentsFailed">
-        <ul class="activity-list"><li *ngFor="let payment of recentPayments"><a [routerLink]="['/app/payment-detail', payment.id]"><div class="activity-person"><strong>{{ payment.customerName || '—' }}</strong><span>{{ payment.referenceCode || '—' }} · <app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge></span></div><time>{{ paymentDate(payment) | date:'dd/MM HH:mm':'+0200' }}</time><nz-icon nzType="arrow-right"></nz-icon></a></li></ul>
+        <ul class="activity-list"><li *ngFor="let payment of recentPayments"><a [routerLink]="['/app/payment-detail', payment.id]"><div class="activity-person"><strong>{{ payment.customerName || '—' }}</strong><span>{{ payment.referenceCode || '—' }} · <app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge></span></div><time>{{ paymentDate(payment) | businessDate:'short' }}</time><nz-icon nzType="arrow-right"></nz-icon></a></li></ul>
         <p *ngIf="!recentPayments.length" class="activity-empty">{{ 'dashboardHome.noPayments' | translate }}</p>
       </ng-container>
     </section>

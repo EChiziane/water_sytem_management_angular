@@ -21,7 +21,7 @@
         <p *ngIf="!payment.confirmed" class="pending-note" role="status">O valor aguarda validação. Este registo não comprova o recebimento.</p>
         <section class="sheet-section" aria-label="Dados da operação">
           <dl class="sheet-fields">
-            <div><dt>Data e hora</dt><dd>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm':'+0200' }}</dd></div>
+            <div><dt>Data e hora</dt><dd>{{ payment.paymentDate | businessDate:'datetime' }}</dd></div>
             <div><dt>Forma de pagamento</dt><dd><app-info-tag kind="method" [value]="payment.paymentMethod"></app-info-tag></dd></div>
             <div><dt>Registado por</dt><dd>{{ payment.createdByName || 'Não informado' }}</dd></div>
           </dl>

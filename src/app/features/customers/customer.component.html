@@ -157,7 +157,7 @@
               <app-status-badge kind="debt" [value]="data.monthsInDebt"></app-status-badge>
             </td>
             <td>{{ data.monthsInDebt }}</td>
-            <td>{{ data.monthlyFee | number:'1.2-2' }} MT</td>
+            <td>{{ formatMoney(data.monthlyFee) }}</td>
             <td>
               <app-status-badge kind="customer" [value]="data.status"></app-status-badge>
             </td>

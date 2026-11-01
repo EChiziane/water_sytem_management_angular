@@ -1,18 +1,18 @@
 :host { display: block; }
-.payment-detail { color: #233148; }
+.payment-detail { color: var(--wsm-text); }
 .payment-breadcrumb { display: block; margin-bottom: 12px; font-size: 12px; }
 .payment-toolbar, .payment-actions { display: flex; align-items: center; gap: 8px; }
 .payment-toolbar { justify-content: space-between; margin-bottom: 12px; }
-.payment-sheet { background: #fff; border: 1px solid #e0e5eb; border-radius: 5px; overflow: hidden; }
+.payment-sheet { background: var(--wsm-surface); border: 1px solid var(--wsm-border); border-radius: 5px; overflow: hidden; }
 .sheet-heading { display: flex; justify-content: space-between; gap: 20px; padding: 18px 22px; }
-.sheet-label, dt { display: block; color: #68758a; font-size: 12px; line-height: 1.5; font-weight: 400; }
+.sheet-label, dt { display: block; color: var(--wsm-muted); font-size: 12px; line-height: 1.5; font-weight: 400; }
 h1 { margin: 3px 0 7px; font-size: 20px; line-height: 1.35; font-weight: 600; overflow-wrap: anywhere; }
 .sheet-amount { text-align: right; flex-shrink: 0; }
 .sheet-amount strong { display: block; margin-top: 3px; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .pending-note { margin: 0; padding: 9px 22px; background: #fff9ed; color: #845c20; font-size: 12px; }
-.sheet-section { border-top: 1px solid #e8ecf0; padding: 14px 22px; }
+.sheet-section { border-top: 1px solid var(--wsm-border); padding: 14px 22px; }
 .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
-h2 { margin: 0; font-size: 13px; font-weight: 600; color: #233148; }
+h2 { margin: 0; font-size: 13px; font-weight: 600; color: var(--wsm-text); }
 .section-heading a { font-size: 12px; }
 .sheet-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 24px; margin: 0; }
 dd { margin: 3px 0 0; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
@@ -20,7 +20,7 @@ dd { margin: 3px 0 0; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere
 .sheet-periods { margin-top: 13px; font-size: 13px; }
 .sheet-periods ul { display: flex; flex-wrap: wrap; gap: 5px 0; list-style: none; margin: 5px 0 0; padding: 0; }
 .sheet-periods li + li::before { content: '·'; color: #8490a1; margin: 0 10px; }
-.sheet-footer { border-top: 1px solid #e8ecf0; background: #fafbfc; padding: 11px 22px; color: #68758a; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+.sheet-footer { border-top: 1px solid var(--wsm-border); background: var(--wsm-surface-muted); padding: 11px 22px; color: var(--wsm-muted); font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
 .sheet-footer p { margin: 0; }
 .sheet-footer p + p { margin-top: 4px; }
 .sheet-footer p span { font-weight: 500; margin-right: 8px; }

@@ -1,6 +1,6 @@
 # Water System Management Angular
 
-Aplicacao Angular para gestao operacional de clientes, pagamentos, recibos, calendario e utilizadores do Water System Management.
+Aplicacao Angular para gestao operacional de clientes, pagamentos, recibos e utilizadores do Water System Management.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
 
@@ -93,3 +93,6 @@ Para verificar o gerador e produzir exemplos com os dados de demonstracao:
     node tools/verify-payment-documents.cjs
 
 Os exemplos ficam em output/pdf/. O caso longo de teste fica em tmp/pdfs/.
+## Preparação para produção
+
+Há bloqueios financeiros e de integração. Consulte [estado real e arquitetura](docs/16-arquitetura-producao.md) antes de publicar. O build de produção bloqueia a demonstração e exclui os JSON de teste. A base visual comum fica em src/styles/_tokens.scss e src/styles/_operational-ui.scss.

@@ -1,3 +1,4 @@
+import {BusinessDatePipe} from '@shared/pipes/business-date.pipe';
 import {StatusBadgeComponent} from '@shared/components/status-badge/status-badge.component';
 import {AuthSessionService} from '@core/auth/auth-session.service';
 import {PermissionService} from '@core/auth/permission.service';
@@ -33,7 +34,7 @@ describe('Dashboard monthly activity', () => {
     payments.getPayments.and.returnValue(of([payment('october', '2026-10-10T10:00:00Z')]));
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent, TranslatePipe],
-      imports: [StatusBadgeComponent,CommonModule, RouterModule.forRoot([]), NoopAnimationsModule, IconsProviderModule, NzButtonModule, NzSpinModule],
+      imports: [BusinessDatePipe,StatusBadgeComponent,CommonModule, RouterModule.forRoot([]), NoopAnimationsModule, IconsProviderModule, NzButtonModule, NzSpinModule],
       providers: [
         {provide:AuthSessionService,useValue:{getUser:()=>({role:'ADMIN',status:'ACTIVE'})}},
         {provide: CustomerService, useValue: customers},

@@ -1,3 +1,4 @@
+import {money} from '@shared/utils/payment-presentation';
 import {TranslationService} from '@core/services/translation.service';
 import {describeStatus} from '@shared/utils/status-presentation';
 import {PermissionService} from '@core/auth/permission.service';
@@ -163,7 +164,7 @@ export class CustomerComponent implements OnInit {
   }
 
   formatMoney(value: number | null | undefined): string {
-    return `${Number(value || 0).toFixed(2)} MT`;
+    return money(value);
   }
 
   phoneHref(phone: string | null | undefined): string {
