@@ -13,7 +13,7 @@ import {Payment} from '@shared/models/WSM/payment';
 import {PaymentService} from '@core/services/payment.service';
 import {CustomerPaymentInvoiceService} from '@core/services/customer-payment-invoice.service';
 import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
-import {money, paymentMethodLabel, referenceMonths} from '@shared/utils/payment-presentation';
+import {money, referenceMonths} from '@shared/utils/payment-presentation';
 import {finalize, forkJoin} from 'rxjs';
 
 @Component({
@@ -189,7 +189,6 @@ export class ReciboComponent implements OnInit {
   get totalReceiptAmount(): string { return money(this.dataSource.reduce((sum, item) => sum + (item.payment?.confirmed ? Number(item.payment.amount || 0) : 0), 0)); }
   receiptMoney(receipt: Recibo): string { return receipt.payment ? money(receipt.payment.amount) : receipt.total || 'Não disponível'; }
   receiptPeriods(receipt: Recibo): string { return referenceMonths(receipt.payment?.referenceMonth).join(', ') || receipt.monthDescription || 'Não informados'; }
-  receiptMethod(receipt: Recibo): string { return paymentMethodLabel(receipt.payment?.paymentMethod); }
 
   // ========= Navigation =========
   onBack() {

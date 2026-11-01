@@ -145,7 +145,7 @@
           <tbody>
           <tr *ngFor="let data of nzTable.data">
             <td>
-              <nz-tag>{{ data.code || '-' }}</nz-tag>
+              <app-info-tag kind="reference" [value]="data.code"></app-info-tag>
             </td>
             <td>
               <strong>{{ data.name }}</strong>

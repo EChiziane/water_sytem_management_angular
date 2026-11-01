@@ -46,9 +46,7 @@
           <td>{{ data.customerNameSnapshot }}</td>
 
           <td>
-            <nz-tag>
-              {{ data.referenceMonth }}
-            </nz-tag>
+            <app-info-tag kind="period" [value]="data.referenceMonth"></app-info-tag>
           </td>
 
           <td>

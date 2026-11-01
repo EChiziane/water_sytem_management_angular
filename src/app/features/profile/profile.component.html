@@ -21,7 +21,7 @@
       <p>{{ user.email || 'Email não informado' }}</p>
 
       <div class="chips">
-        <span>{{ roleLabel }}</span>
+        <app-info-tag kind="role" [value]="roleLabel"></app-info-tag>
         <app-status-badge kind="user" [value]="user.status"></app-status-badge>
       </div>
 

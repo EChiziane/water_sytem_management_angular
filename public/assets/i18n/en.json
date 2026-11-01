@@ -227,5 +227,21 @@
     },
     "debtMonth": "overdue month",
     "debtMonths": "overdue months"
+  },
+  "metadata": {
+    "notProvided": "Not provided",
+    "otherMethod": "Other method",
+    "valve": "Valve",
+    "periods": "periods",
+    "methods": {
+      "cash": "Cash",
+      "mpesa": "M-Pesa",
+      "emola": "e-Mola",
+      "bci": "BCI",
+      "bim": "BIM",
+      "transfer": "Bank transfer",
+      "card": "Card",
+      "pos": "Card / POS"
+    }
   }
 }

@@ -4,7 +4,7 @@ import {PaymentService} from '@core/services/payment.service';
 import {Payment} from '@shared/models/WSM/payment';
 import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
 import {finalize} from 'rxjs';
-import {money, paymentMethodLabel, referenceMonths, paymentQuantity} from '@shared/utils/payment-presentation';
+import {money, referenceMonths, paymentQuantity} from '@shared/utils/payment-presentation';
 
 @Component({
   selector: 'app-payment-details',
@@ -39,7 +39,6 @@ export class PaymentDetailsComponent implements OnInit {
   }
 
 
-  get methodLabel(): string { return paymentMethodLabel(this.payment?.paymentMethod); }
   get quantity(): number { return this.payment ? paymentQuantity(this.payment) : 0; }
   get periods(): string[] { return referenceMonths(this.payment?.referenceMonth); }
   downloadStatement(): void { if (this.payment) this.paymentInvoiceService.downloadBillingStatement(this.payment); }

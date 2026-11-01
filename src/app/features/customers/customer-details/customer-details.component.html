@@ -48,7 +48,7 @@
               <td>{{ month.paymentReferenceCode || '—' }}</td>
               <td>{{ month.paymentDate ? (month.paymentDate | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
               <td class="amount" [title]="month.amountEstimated ? ('years.estimated' | translate) : ''">{{ month.amountEstimated ? '≈ ' : '' }}{{ formatMoney(month.amount) }}</td>
-              <td>{{ month.paymentMethod || '—' }}</td>
+              <td><app-info-tag kind="method" [value]="month.paymentMethod"></app-info-tag></td>
               <td class="wsm-actions-cell"><div class="wsm-row-actions"><app-row-action action="view" *ngIf="month.paymentId; else noPaymentAction" [route]="['/app/payment-detail', month.paymentId]" [context]="month.paymentReferenceCode || formatTimelineMonth(month)"></app-row-action><ng-template #noPaymentAction><span class="wsm-no-action" [title]="'tableActions.noPayment' | translate">—<span class="wsm-visually-hidden">{{ 'tableActions.noPayment' | translate }}</span></span></ng-template></div></td>
             </tr></tbody>
           </nz-table>
@@ -62,7 +62,7 @@
               <td><a [routerLink]="['/app/payment-detail', payment.id]">{{ payment.referenceCode || 'Sem referência' }}</a></td>
               <td class="amount">{{ formatMoney(payment.amount) }}</td>
               <td><ul class="table-periods"><li *ngFor="let month of getFormattedReferenceMonths(payment.referenceMonth)">{{ month }}</li></ul><span *ngIf="!getFormattedReferenceMonths(payment.referenceMonth).length">—</span></td>
-              <td>{{ payment.paymentMethod || '—' }}</td>
+              <td><app-info-tag kind="method" [value]="payment.paymentMethod"></app-info-tag></td>
               <td><app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge></td>
               <td>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</td>
               <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + payment.referenceCode"><app-row-action action="view" [route]="['/app/payment-detail', payment.id]" [context]="payment.referenceCode"></app-row-action><app-row-action action="download" (activated)="download(payment)" [context]="payment.referenceCode"></app-row-action></div></td>
@@ -100,8 +100,8 @@
       </div>
 
       <div class="customer-tags">
-        <nz-tag>{{ customer.code }}</nz-tag>
-        <nz-tag nzColor="cyan">Válvula {{ customer.valve }}</nz-tag>
+        <app-info-tag kind="reference" [value]="customer.code"></app-info-tag>
+        <app-info-tag kind="valve" [value]="customer.valve"></app-info-tag>
         <app-status-badge [showCount]="true" kind="debt" [value]="customer.monthsInDebt"></app-status-badge>
       </div>
     </div>
@@ -153,11 +153,11 @@
       <div *ngIf="selectedMonths.length > 0" class="selected-months-wrapper">
         <div class="selected-months-header">
           <span>Meses selecionados</span>
-          <nz-tag nzColor="processing">{{ selectedMonths.length }} mes(es)</nz-tag>
+          <app-info-tag kind="period" [value]="selectedMonths.length + ' ' + ('metadata.periods' | translate)"></app-info-tag>
         </div>
 
         <div class="selected-months">
-          <nz-tag *ngFor="let m of selectedMonths">{{ formatMonth(m) }}</nz-tag>
+          <app-info-tag *ngFor="let m of selectedMonths" kind="period" [value]="formatMonth(m)"></app-info-tag>
         </div>
       </div>
 
@@ -167,7 +167,7 @@
             <nz-form-label>Metodo de pagamento</nz-form-label>
             <nz-form-control>
               <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o metodo">
-                <nz-option nzLabel="Numerario" nzValue="CASH"></nz-option>
+                <nz-option [nzLabel]="'metadata.methods.cash' | translate" nzValue="CASH"></nz-option>
                 <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
                 <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
                 <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>

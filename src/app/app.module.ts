@@ -1,3 +1,4 @@
+import {InfoTagComponent} from './shared/components/info-tag/info-tag.component';
 import {YearFilterComponent} from '@shared/components/year-filter/year-filter.component';
 import {StatusBadgeComponent} from '@shared/components/status-badge/status-badge.component';
 import {RowActionComponent} from '@shared/components/row-action/row-action.component';
@@ -80,6 +81,7 @@ registerLocaleData(en);
     SigninComponent
   ],
   imports: [
+    InfoTagComponent,
     StatusBadgeComponent,
     YearFilterComponent,
     RowActionComponent,

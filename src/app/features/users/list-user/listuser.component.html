@@ -51,7 +51,7 @@
           <td>{{ data.name }}</td>
           <td>{{ data.email }}</td>
           <td>{{ data.login }}</td>
-          <td>{{ roleLabel(data.role) }}</td>
+          <td><app-info-tag kind="role" [value]="roleLabel(data.role)"></app-info-tag></td>
           <td>{{ data.phone }}</td>
 
           <td>

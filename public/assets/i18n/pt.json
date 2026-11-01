@@ -227,5 +227,21 @@
     },
     "debtMonth": "mês vencido",
     "debtMonths": "meses vencidos"
+  },
+  "metadata": {
+    "notProvided": "Não informado",
+    "otherMethod": "Outro método",
+    "valve": "Válvula",
+    "periods": "períodos",
+    "methods": {
+      "cash": "Numerário",
+      "mpesa": "M-Pesa",
+      "emola": "e-Mola",
+      "bci": "BCI",
+      "bim": "BIM",
+      "transfer": "Transferência bancária",
+      "card": "Cartão",
+      "pos": "Cartão / POS"
+    }
   }
 }

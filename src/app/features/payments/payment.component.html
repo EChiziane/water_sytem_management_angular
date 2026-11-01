@@ -65,7 +65,7 @@
           </div>
           <div>
             <dt>Metodo</dt>
-            <dd>{{ payment.paymentMethod || '-' }}</dd>
+            <dd><app-info-tag kind="method" [value]="payment.paymentMethod"></app-info-tag></dd>
           </div>
           <div>
             <dt>Meses</dt>
@@ -121,7 +121,7 @@
 
           <tbody>
           <tr *ngFor="let data of nzTable.data">
-            <td><nz-tag>{{ data.referenceCode || 'Sem codigo' }}</nz-tag></td>
+            <td><app-info-tag kind="reference" [value]="data.referenceCode"></app-info-tag></td>
             <td>
               <div class="payment-customer-cell">
                 <span class="customer-avatar-mini">{{ getCustomerInitials(data.customerName) }}</span>
@@ -138,7 +138,7 @@
               </ul>
               <ng-template #noTableMonths>-</ng-template>
             </td>
-            <td><nz-tag nzColor="purple">{{ data.paymentMethod || '-' }}</nz-tag></td>
+            <td><app-info-tag kind="method" [value]="data.paymentMethod"></app-info-tag></td>
             <td><app-status-badge kind="payment" [value]="data.confirmed"></app-status-badge></td>
             <td>{{ data.createdByName || 'Sistema' }}</td>
             <td>{{ data.paymentDate | date: 'dd/MM/yyyy - HH:mm' }}</td>
@@ -211,8 +211,8 @@
         </div>
 
         <div class="customer-tags">
-          <nz-tag>{{ selectedCustomer.code }}</nz-tag>
-          <nz-tag nzColor="cyan">Valvula {{ selectedCustomer.valve }}</nz-tag>
+          <app-info-tag kind="reference" [value]="selectedCustomer.code"></app-info-tag>
+          <app-info-tag kind="valve" [value]="selectedCustomer.valve"></app-info-tag>
           <app-status-badge [showCount]="true" kind="debt" [value]="selectedCustomer.monthsInDebt"></app-status-badge>
         </div>
       </section>
@@ -270,7 +270,7 @@
             <nz-form-label>Metodo de pagamento</nz-form-label>
             <nz-form-control>
               <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o metodo">
-                <nz-option nzLabel="Numerario" nzValue="CASH"></nz-option>
+                <nz-option [nzLabel]="'metadata.methods.cash' | translate" nzValue="CASH"></nz-option>
                 <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
                 <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
                 <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
