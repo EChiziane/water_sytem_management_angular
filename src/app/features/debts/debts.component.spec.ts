@@ -47,3 +47,72 @@ describe('Period-based debt and payment consultation', () => {
     expect(c.availablePeriods).toEqual(['2026-01', '2025-12']);
   });
 });
+
+import { TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
+import { BillingService } from '@core/services/billing/billing.service';
+import { CustomerService } from '@core/services/customers/customer.service';
+import { TranslationService } from '@core/services/i18n/translation.service';
+import { IconsProviderModule } from '@core/icons/icons-provider.module';
+describe('Debt page rendering', () => {
+  it('stabilizes with the actual table and responds to a period change', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DebtsComponent, NoopAnimationsModule, IconsProviderModule],
+      providers: [
+        provideRouter([]),
+        {
+          provide: BillingService,
+          useValue: {
+            getAllBilling: () =>
+              of([
+                {
+                  id: 'a',
+                  customerId: 'c1',
+                  referenceMonth: '2025-12',
+                  paid: false,
+                  amount: 750,
+                  customerNameSnapshot: 'Ana',
+                },
+                {
+                  id: 'b',
+                  customerId: 'c1',
+                  referenceMonth: '2026-01',
+                  paid: false,
+                  amount: 900,
+                  customerNameSnapshot: 'Ana',
+                },
+              ]),
+          },
+        },
+        {
+          provide: CustomerService,
+          useValue: { getCustomers: () => of([{ id: 'c1', name: 'Ana', code: 'C001' }]) },
+        },
+        {
+          provide: TranslationService,
+          useValue: { currentLanguage: 'pt', instant: (key: string) => key },
+        },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(DebtsComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const c = fixture.componentInstance;
+    expect(fixture.nativeElement.textContent).toContain('Ana');
+    const initialRows = c.rows;
+    expect(c.rows).toBe(initialRows);
+    expect(c.periods).toBe(c.periods);
+    c.year = '2025';
+    c.period = '2025-12';
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(c.rows[0].charge.referenceMonth).toBe('2025-12');
+    expect(c.total).toBe(750);
+    expect(c.rows).not.toBe(initialRows);
+    fixture.destroy();
+  });
+});

@@ -73,11 +73,31 @@ export class DebtsComponent implements OnInit {
         },
       });
   }
+  private periodSource?: MonthlyCharge[];
+  private cachedPeriods: string[] = [];
   get periods() {
-    return [...new Set(this.charges.map((c) => c.referenceMonth))].sort().reverse();
+    if (this.periodSource !== this.charges) {
+      this.periodSource = this.charges;
+      this.cachedPeriods = [...new Set(this.charges.map((c) => c.referenceMonth))].sort().reverse();
+    }
+    return this.cachedPeriods;
   }
+  private rowSource?: MonthlyCharge[];
+  private customerSource?: Customer[];
+  private filterKey = '';
+  private cachedRows: { charge: MonthlyCharge; customer: Customer | undefined }[] = [];
   get rows() {
-    return this.charges
+    const key = JSON.stringify([this.period, this.year, this.search]);
+    if (
+      this.rowSource === this.charges &&
+      this.customerSource === this.customers &&
+      this.filterKey === key
+    )
+      return this.cachedRows;
+    this.rowSource = this.charges;
+    this.customerSource = this.customers;
+    this.filterKey = key;
+    this.cachedRows = this.charges
       .map((charge) => ({
         charge,
         customer: this.customers.find((c) => c.id === charge.customerId),
@@ -98,6 +118,7 @@ export class DebtsComponent implements OnInit {
           b.charge.referenceMonth.localeCompare(a.charge.referenceMonth) ||
           a.charge.customerNameSnapshot.localeCompare(b.charge.customerNameSnapshot),
       );
+    return this.cachedRows;
   }
   get total() {
     return this.rows.reduce((n, r) => n + Math.round(r.charge.amount * 100), 0) / 100;
