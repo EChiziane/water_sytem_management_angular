@@ -1,4 +1,4 @@
-import {businessTimestamp, maputoMonthKey} from './business-date';
+import { businessTimestamp, maputoMonthKey } from './business-date';
 
 describe('Business calendar in Africa/Maputo', () => {
   it('uses Maputo at the UTC month boundary including a year change', () => {

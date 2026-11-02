@@ -1,0 +1,74 @@
+<section class="data-tools" *ngIf="permissions.can('users.manage')" aria-labelledby="backup-title">
+  <header>
+    <h2 id="backup-title">{{ text('title') }}</h2>
+    <span>{{ text(local ? 'localMode' : 'cloudMode') }}</span>
+  </header>
+  <p>{{ text(local ? 'localNote' : 'cloudNote') }}</p>
+  <div class="tools-actions">
+    <button nz-button type="button" (click)="exportData()" [disabled]="busy">
+      <nz-icon nzType="download"></nz-icon>{{ text('export') }}
+    </button>
+    <button *ngIf="local" nz-button type="button" (click)="exportOriginal()" [disabled]="busy">
+      {{ text('exportOriginal') }}
+    </button>
+    <button *ngIf="local" nz-button type="button" (click)="file.click()" [disabled]="busy">
+      {{ text('import') }}
+    </button>
+    <input
+      #file
+      type="file"
+      accept=".txt,.json,application/json,text/plain"
+      hidden
+      (change)="selectFile($event)"
+    />
+    <button
+      *ngIf="!local"
+      nz-button
+      type="button"
+      (click)="cloudAction('snapshot')"
+      [disabled]="busy"
+    >
+      {{ text('snapshot') }}
+    </button>
+    <button
+      *ngIf="!local"
+      nz-button
+      type="button"
+      (click)="cloudAction('spring')"
+      [disabled]="busy"
+    >
+      {{ text('spring') }}
+    </button>
+    <button
+      *ngIf="!local"
+      nz-button
+      type="button"
+      (click)="cloudAction('test-source')"
+      [disabled]="busy"
+    >
+      {{ text('testSource') }}
+    </button>
+    <button *ngIf="!local" nz-button type="button" (click)="loadBackups()" [disabled]="busy">
+      {{ text('list') }}
+    </button>
+  </div>
+  <p *ngIf="lastSpringBackup">
+    {{ text('lastSpring') }}: {{ lastSpringBackup | businessDate: 'datetime' }}
+  </p>
+  <p *ngIf="notice" role="status">{{ notice }}</p>
+  <p *ngIf="error" class="error" role="alert">{{ error }}</p>
+  <ul *ngIf="backups.length">
+    <li *ngFor="let backup of backups">
+      <span>{{ backup.name }} · {{ backup.size }} B</span
+      ><button
+        nz-button
+        nzSize="small"
+        type="button"
+        (click)="downloadBackup(backup.name)"
+        [disabled]="busy"
+      >
+        {{ text('download') }}
+      </button>
+    </li>
+  </ul>
+</section>

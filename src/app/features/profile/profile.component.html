@@ -13,52 +13,59 @@
   </header>
 
   <nz-spin [nzSpinning]="isLoading" nzSize="large" nzTip="A carregar perfil...">
-  <div *ngIf="user; else emptyProfile" class="profile-grid">
-    <aside class="identity-card">
-      <div class="avatar">{{ initials }}</div>
+    <div *ngIf="user; else emptyProfile" class="profile-grid">
+      <aside class="identity-card">
+        <div class="avatar">{{ initials }}</div>
 
-      <h2>{{ displayName }}</h2>
-      <p>{{ user.email || 'Email não informado' }}</p>
+        <h2>{{ displayName }}</h2>
+        <p>{{ user.email || 'Email não informado' }}</p>
 
-      <div class="chips">
-        <app-info-tag kind="role" [value]="roleLabel"></app-info-tag>
-        <app-status-badge kind="user" [value]="user.status"></app-status-badge>
-      </div>
-
-      <div class="session-box">
-        <span nz-icon nzType="safety-certificate"></span>
-        <div>
-          <strong>Sessão protegida</strong>
-          <span>Dados carregados da autenticação atual</span>
+        <div class="chips">
+          <app-info-tag kind="role" [value]="roleLabel"></app-info-tag>
+          <app-status-badge kind="user" [value]="user.status"></app-status-badge>
         </div>
-      </div>
-    </aside>
 
-    <section class="details-card">
-      <div class="section-title">
-        <span>Informação</span>
-        <h2>Dados pessoais e acesso</h2>
-      </div>
-
-      <div class="field-grid">
-        <article *ngFor="let field of fields" class="field-card">
-          <div class="field-icon">
-            <span nz-icon [nzType]="field.icon"></span>
-          </div>
-
+        <div class="session-box">
+          <span nz-icon nzType="safety-certificate"></span>
           <div>
-            <span>{{ field.label }}</span>
-            <app-status-badge *ngIf="field.kind === 'status'; else fieldValue" kind="user" [value]="user.status"></app-status-badge><ng-template #fieldValue><strong>{{ field.value }}</strong></ng-template>
+            <strong>Sessão protegida</strong>
+            <span>Dados carregados da autenticação atual</span>
           </div>
-        </article>
-      </div>
-    </section>
-  </div>
+        </div>
+      </aside>
 
-  <ng-template #emptyProfile>
-    <section class="empty-profile">
-      <nz-empty nzNotFoundContent="Perfil não encontrado"></nz-empty>
-    </section>
-  </ng-template>
+      <section class="details-card">
+        <div class="section-title">
+          <span>Informação</span>
+          <h2>Dados pessoais e acesso</h2>
+        </div>
+
+        <div class="field-grid">
+          <article *ngFor="let field of fields" class="field-card">
+            <div class="field-icon">
+              <span nz-icon [nzType]="field.icon"></span>
+            </div>
+
+            <div>
+              <span>{{ field.label }}</span>
+              <app-status-badge
+                *ngIf="field.kind === 'status'; else fieldValue"
+                kind="user"
+                [value]="user.status"
+              ></app-status-badge
+              ><ng-template #fieldValue
+                ><strong>{{ field.value }}</strong></ng-template
+              >
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <ng-template #emptyProfile>
+      <section class="empty-profile">
+        <nz-empty nzNotFoundContent="Perfil não encontrado"></nz-empty>
+      </section>
+    </ng-template>
   </nz-spin>
 </section>

@@ -1,100 +1,75 @@
-# Water System Management Angular
+# Water System Management
 
-Aplicacao Angular para gestao operacional de clientes, pagamentos, recibos e utilizadores do Water System Management.
+Aplicação de gestão de clientes, mensalidades, pagamentos, recibos, empresa e utilizadores. Angular 19, TypeScript e NG-ZORRO no frontend; funções Node na Vercel para persistência privada. O backend Spring Boot irmão mantém o recetor opcional de backups.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
+Moeda: MZN, apresentada como MT. Fuso de negócio: Africa/Maputo.
 
-## Development server
+## Desenvolvimento
 
-To start a local development server, run:
+Usar Node 22 e instalar as dependências com `npm ci`. Iniciar com:
 
-```bash
+```powershell
 npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+O modo local lê o TXT de teste e usa o localStorage já existente. Não depende do Spring. Não limpar o armazenamento para atualizar o código.
 
-## Code scaffolding
+## Estrutura
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```text
+api/                         Entrada HTTP da Vercel
+server/
+  application/               Casos de uso, consultas e coordenação
+  domain/                    Mensalidades, pagamentos e integridade
+  security/                  Sessões, credenciais e permissões
+  infrastructure/            Adaptador do Blob e escrita condicional
+  http/                      Respostas HTTP e tratamento de erros
+  shared/                    Erros comuns
+  tests/                     Testes de contratos e persistência
+src/app/
+  core/
+    auth/                    Sessão e autorização do frontend
+    data/                    Seleção do modo e adaptador local
+    services/                Serviços agrupados por área de negócio
+    guards/                  Proteção de navegação
+    interceptors/            Interceção HTTP
+    icons/                   Registo de ícones
+  features/                  Páginas e componentes de cada funcionalidade
+  shared/                    Modelos, componentes genéricos, pipes e utilitários
+src/styles/                  Tokens e regras visuais partilhadas
+public/                      Recursos públicos e dados de desenvolvimento
+  data/dev/                  TXT/JSON de teste, excluídos do build de produção
+tools/
+  data/                      Validação e inicialização explícita do Blob
+  pdf/                       Verificadores existentes dos documentos
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+`server/application.mjs` e `server/domain.mjs` são pontos de entrada estáveis; a implementação está nas pastas correspondentes. Os ficheiros de componentes usam kebab-case. Rotas, códigos e nomes públicos dos contratos existentes foram preservados.
 
-```bash
-ng generate --help
-```
+## Verificações
 
-## Building
-
-To build the project run:
-
-```bash
+```powershell
+npm run format:check
+npm run test:api
+npm test -- --watch=false --browsers=ChromeHeadless
 npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Para aplicar o padrão de formatação: `npm run format`. O comando abrange código e configurações, sem formatar dados privados, TXT/JSON de teste ou ficheiros gerados.
 
-## Running unit tests
+A suite Angular ainda tem 12 specs antigas com configuração incompleta; consultar a evidência da reorganização. Não há configuração de testes end-to-end nem de lint semântico. A verificação de formatação não substitui testes.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Dados, documentos e produção
 
-```bash
-ng test
+- [Modos local/Vercel e backups](docs/17-modos-local-vercel-backups.md): variáveis privadas, preservação, primeira importação e Spring opcional.
+- [Organização e convenções](docs/18-organizacao-clean-code.md): responsabilidades, ficheiros movidos e validação da limpeza.
+- [Estado e riscos de produção](docs/16-arquitetura-producao.md): limitações financeiras e de integração ainda pendentes.
+- [Índice e histórico técnico](docs/README.md).
+
+O gerador PDF fica em `src/app/core/services/documents/templates/`. Para executar a verificação existente:
+
+```powershell
+node tools/pdf/verify-payment-documents.cjs
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
-## Organizacao do frontend
-
-O frontend segue a organizacao e a base visual do projeto local Carload:
-
-- src/app/features/auth/login: entrada e recuperacao de acesso.
-- src/app/features/auth/register: formulario de registo.
-- src/app/features/public/landing-page: pagina publica.
-- src/app/features/shell/main-layout: menu, cabecalho e navegacao mobile.
-- src/app/features: clientes, pagamentos, recibos, calendario, perfil e utilizadores.
-- src/app/core: sessao, guards, interceptores e servicos.
-- src/app/shared: modelos, constantes e pipe de traducao.
-- src/styles/_carload-foundation.scss: tokens, tabelas, filtros, drawers, mensagens e listas compactas.
-- src/styles.scss: estilos globais e ajustes especificos do sistema de agua.
-- src/theme.less: configuracao do tema NG-ZORRO.
-
-As cores e os componentes partilhados usam variaveis CSS com prefixo --wsm-.
-As imagens e os dados continuam a pertencer ao sistema de agua.
-## Documentos financeiros
-
-Os downloads de pagamentos e do arquivo de recibos usam o mesmo gerador,
-em src/app/core/utils/payment-document.ts. Os documentos incluem empresa,
-titular, periodos, valor, responsavel, referencia e paginacao A4.
-Pagamentos pendentes produzem um registo por confirmar, sem declarar valor recebido.
-
-O demonstrativo de faturacao e associado ao pagamento existente. Nao cria
-uma fatura fiscal, uma serie de faturacao ou uma nova cobranca.
-Os dados da empresa mantem-se em src/app/shared/config/company-profile.ts.
-
-Para verificar o gerador e produzir exemplos com os dados de demonstracao:
-
-    node tools/verify-payment-documents.cjs
-
-Os exemplos ficam em output/pdf/. O caso longo de teste fica em tmp/pdfs/.
-## Preparação para produção
-
-Há bloqueios financeiros e de integração. Consulte [estado real e arquitetura](docs/16-arquitetura-producao.md) antes de publicar. O build de produção bloqueia a demonstração e exclui os JSON de teste. A base visual comum fica em src/styles/_tokens.scss e src/styles/_operational-ui.scss.
-
-A implementação dos modos local/Vercel, preservação e backups está em [Modos e backups](docs/17-modos-local-vercel-backups.md). Os ambientes anteriores com API Spring direta permanecem documentados como histórico; produção agora aponta para /api na Vercel. A ativação na nuvem exige configuração privada e importação validada.
+Um demonstrativo ou recibo não constitui automaticamente uma fatura fiscal. Produção usa `/api` e um Blob privado, não o TXT dos assets. A publicação exige configuração e migração validada; nunca copiar credenciais para o Git.

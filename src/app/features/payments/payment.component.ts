@@ -1,19 +1,19 @@
-import {money} from '@shared/utils/payment-presentation';
-import {matchesBusinessYear} from '@shared/utils/billing-period';
-import {PermissionService} from '@core/auth/permission.service';
-import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
-import {tap} from 'rxjs';
-import {Component, HostListener, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {finalize} from 'rxjs';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {Customer} from '@shared/models/WSM/customer';
-import {Payment} from '@shared/models/WSM/payment';
-import {CustomerService} from '@core/services/customer.service';
-import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
-import {PaymentPayload, PaymentService} from '@core/services/payment.service';
-import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
-import {WaterReportPdfService} from '@core/services/water-report-pdf.service';
+import { money } from '@shared/utils/payment-presentation';
+import { matchesBusinessYear } from '@shared/utils/billing-period';
+import { PermissionService } from '@core/auth/permission.service';
+import { OperationConfirmationService } from '@core/services/dialogs/operation-confirmation.service';
+import { tap } from 'rxjs';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { Customer } from '@shared/models/customer';
+import { Payment } from '@shared/models/payment';
+import { CustomerService } from '@core/services/customers/customer.service';
+import { PaymentInvoiceService } from '@core/services/documents/payment-invoice.service';
+import { PaymentPayload, PaymentService } from '@core/services/payments/payment.service';
+import { MONTH_NAMES_PT } from '@shared/constants/app-labels';
+import { WaterReportPdfService } from '@core/services/documents/water-report-pdf.service';
 
 @Component({
   selector: 'app-payment',
@@ -31,7 +31,7 @@ export class PaymentComponent implements OnInit {
   selectedCustomer: Customer | null = null;
   selectedMonths: string[] = [];
 
-  selectedYear:number|null=null;
+  selectedYear: number | null = null;
   searchValue = '';
 
   isLoading = false;
@@ -45,16 +45,16 @@ export class PaymentComponent implements OnInit {
   private readonly MOBILE_BREAKPOINT = 768;
   private readonly DEFAULT_PAYMENT_METHOD = 'CASH';
 
-  constructor(public permissions: PermissionService,
+  constructor(
+    public permissions: PermissionService,
     private confirmations: OperationConfirmationService,
     private paymentService: PaymentService,
     private customerService: CustomerService,
     private paymentInvoiceService: PaymentInvoiceService,
     private reports: WaterReportPdfService,
     private message: NzMessageService,
-    private fb: FormBuilder
-  ) {
-  }
+    private fb: FormBuilder,
+  ) {}
 
   ngOnInit(): void {
     this.createForm();
@@ -68,11 +68,11 @@ export class PaymentComponent implements OnInit {
   }
 
   get confirmedPayments(): number {
-    return this.dataSource.filter(payment => payment.confirmed === true).length;
+    return this.dataSource.filter((payment) => payment.confirmed === true).length;
   }
 
   get pendingPayments(): number {
-    return this.dataSource.filter(payment => payment.confirmed === false).length;
+    return this.dataSource.filter((payment) => payment.confirmed === false).length;
   }
 
   get totalReceivedAmount(): number {
@@ -88,7 +88,10 @@ export class PaymentComponent implements OnInit {
       return 0;
     }
 
-    return Number(this.selectedCustomer.monthlyFee || 0) * Number(this.selectedCustomer.monthsInDebt || 0);
+    return (
+      Number(this.selectedCustomer.monthlyFee || 0) *
+      Number(this.selectedCustomer.monthsInDebt || 0)
+    );
   }
 
   get filteredReceivedAmount(): number {
@@ -105,16 +108,18 @@ export class PaymentComponent implements OnInit {
       customerId: [null, Validators.required],
       amount: [0, Validators.required],
       numMonths: [1, [Validators.required, Validators.min(1)]],
-      paymentMethod: [this.DEFAULT_PAYMENT_METHOD, Validators.required]
+      paymentMethod: [this.DEFAULT_PAYMENT_METHOD, Validators.required],
     });
   }
 
   loadCustomers(): void {
     this.customerService.getCustomers().subscribe({
-      next: customers => {
-        this.allCustomers = customers.filter(customer => (customer.unpaidMonths?.length || 0) > 0);
+      next: (customers) => {
+        this.allCustomers = customers.filter(
+          (customer) => (customer.unpaidMonths?.length || 0) > 0,
+        );
       },
-      error: () => this.message.error('Erro ao carregar clientes.')
+      error: () => this.message.error('Erro ao carregar clientes.'),
     });
   }
 
@@ -124,7 +129,7 @@ export class PaymentComponent implements OnInit {
     }
 
     this.customerService.getCustomerById(customerId).subscribe({
-      next: customer => {
+      next: (customer) => {
         this.selectedCustomer = customer;
 
         if (!customer.unpaidMonths?.length) {
@@ -134,12 +139,12 @@ export class PaymentComponent implements OnInit {
 
         this.paymentForm.patchValue({
           numMonths: 1,
-          amount: customer.monthlyFee || 0
+          amount: customer.monthlyFee || 0,
         });
 
         this.onNumMonthsChange();
       },
-      error: () => this.message.error('Erro ao carregar cliente.')
+      error: () => this.message.error('Erro ao carregar cliente.'),
     });
   }
 
@@ -164,10 +169,9 @@ export class PaymentComponent implements OnInit {
     }
 
     this.selectedMonths = this.selectedCustomer.unpaidMonths.slice(0, numMonths);
-    this.paymentForm.get('amount')?.setValue(
-      Number(this.selectedCustomer.monthlyFee || 0) * numMonths,
-      {emitEvent: false}
-    );
+    this.paymentForm
+      .get('amount')
+      ?.setValue(Number(this.selectedCustomer.monthlyFee || 0) * numMonths, { emitEvent: false });
   }
 
   updateDrawer(): void {
@@ -190,25 +194,52 @@ export class PaymentComponent implements OnInit {
       customerId: null,
       amount: 0,
       numMonths: 1,
-      paymentMethod: this.DEFAULT_PAYMENT_METHOD
+      paymentMethod: this.DEFAULT_PAYMENT_METHOD,
     });
   }
 
   savePayment(): void {
-    if (this.isSaving || this.paymentForm.invalid || !this.selectedCustomer?.id || !this.selectedMonths.length) {
-      if (!this.isSaving) this.message.warning('Confira o cliente, os períodos e os campos do pagamento.');
+    if (
+      this.isSaving ||
+      this.paymentForm.invalid ||
+      !this.selectedCustomer?.id ||
+      !this.selectedMonths.length
+    ) {
+      if (!this.isSaving)
+        this.message.warning('Confira o cliente, os períodos e os campos do pagamento.');
       return;
     }
-    const payload: PaymentPayload = {...this.paymentForm.value, customerId: this.selectedCustomer.id};
-    this.confirmations.payment({customerId: this.selectedCustomer.id, customer: this.selectedCustomer.name,
-      amount: Number(payload.amount), months: [...this.selectedMonths], method: payload.paymentMethod || ''}, () => {
-      this.isLoading = true;
-      this.isSaving = true;
-      return this.paymentService.addPayment(payload).pipe(finalize(() => this.stopLoading()), tap({
-        next: () => { this.message.success('Pagamento registado com sucesso.'); this.getPayments(); this.closePaymentDrawer(); },
-        error: () => this.message.error('Erro ao processar o pagamento. Confira o registo antes de tentar novamente.')
-      }));
-    });
+    const payload: PaymentPayload = {
+      ...this.paymentForm.value,
+      customerId: this.selectedCustomer.id,
+    };
+    this.confirmations.payment(
+      {
+        customerId: this.selectedCustomer.id,
+        customer: this.selectedCustomer.name,
+        amount: Number(payload.amount),
+        months: [...this.selectedMonths],
+        method: payload.paymentMethod || '',
+      },
+      () => {
+        this.isLoading = true;
+        this.isSaving = true;
+        return this.paymentService.addPayment(payload).pipe(
+          finalize(() => this.stopLoading()),
+          tap({
+            next: () => {
+              this.message.success('Pagamento registado com sucesso.');
+              this.getPayments();
+              this.closePaymentDrawer();
+            },
+            error: () =>
+              this.message.error(
+                'Erro ao processar o pagamento. Confira o registo antes de tentar novamente.',
+              ),
+          }),
+        );
+      },
+    );
   }
 
   stopLoading(): void {
@@ -217,7 +248,7 @@ export class PaymentComponent implements OnInit {
   }
 
   reset(): void {
-    this.selectedYear=null;
+    this.selectedYear = null;
     this.searchValue = '';
     this.filterData();
   }
@@ -229,26 +260,30 @@ export class PaymentComponent implements OnInit {
   filterData(): void {
     const search = this.searchValue.toLowerCase();
 
-    this.listOfDisplayData = this.dataSource.filter(item=>matchesBusinessYear(item.paymentDate,this.selectedYear)).filter((item: Payment) =>
-      (item.customerName || '').toLowerCase().includes(search) ||
-      (item.referenceCode || '').toLowerCase().includes(search)
-    );
+    this.listOfDisplayData = this.dataSource
+      .filter((item) => matchesBusinessYear(item.paymentDate, this.selectedYear))
+      .filter(
+        (item: Payment) =>
+          (item.customerName || '').toLowerCase().includes(search) ||
+          (item.referenceCode || '').toLowerCase().includes(search),
+      );
   }
 
   getPayments(): void {
     this.isLoading = true;
 
-    this.paymentService.getPayments()
-      .pipe(finalize(() => this.isLoading = false))
+    this.paymentService
+      .getPayments()
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: payments => {
-          this.dataSource = payments.map(payment => ({
+        next: (payments) => {
+          this.dataSource = payments.map((payment) => ({
             ...payment,
-            numMonths: Number(payment.numMonths)
+            numMonths: Number(payment.numMonths),
           }));
           this.filterData();
         },
-        error: () => this.message.error('Erro ao carregar pagamentos.')
+        error: () => this.message.error('Erro ao carregar pagamentos.'),
       });
   }
 
@@ -257,7 +292,7 @@ export class PaymentComponent implements OnInit {
   }
 
   downloadPaymentList(): void {
-    if(!this.permissions.can('reports.financial'))return;
+    if (!this.permissions.can('reports.financial')) return;
     this.reports.downloadPaymentList(this.listOfDisplayData);
   }
 
@@ -265,17 +300,17 @@ export class PaymentComponent implements OnInit {
     return money(value);
   }
 
-
-
   getCustomerInitials(value: string | null | undefined): string {
     const name = value || 'Cliente';
-    return name
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(part => part.charAt(0).toUpperCase())
-      .join('') || 'C';
+    return (
+      name
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join('') || 'C'
+    );
   }
 
   phoneHref(phone: string | null | undefined): string {
@@ -288,9 +323,7 @@ export class PaymentComponent implements OnInit {
       return [];
     }
 
-    return reference
-      .split('|')
-      .map(month => this.formatMonth(month.trim()));
+    return reference.split('|').map((month) => this.formatMonth(month.trim()));
   }
 
   formatMonth(month: string): string {

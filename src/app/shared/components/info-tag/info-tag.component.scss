@@ -1,4 +1,30 @@
-:host { display:inline-block; max-width:100%; vertical-align:middle; }
-.info-tag { display:inline-flex; align-items:center; gap:5px; max-width:100%; padding:2px 7px; border:1px solid var(--wsm-meta-border); border-radius:4px; background:var(--wsm-meta-bg); color:var(--wsm-meta-text); font-size:12px; font-weight:500; line-height:18px; vertical-align:middle; }
-.info-tag > span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-nz-icon { flex:0 0 auto; font-size:12px; color:var(--wsm-meta-icon); }
+:host {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+}
+.info-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 2px 7px;
+  border: 1px solid var(--wsm-meta-border);
+  border-radius: 4px;
+  background: var(--wsm-meta-bg);
+  color: var(--wsm-meta-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  vertical-align: middle;
+}
+.info-tag > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+nz-icon {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--wsm-meta-icon);
+}

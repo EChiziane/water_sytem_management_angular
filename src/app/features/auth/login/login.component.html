@@ -9,7 +9,8 @@
       <p class="eyebrow">Gestão de clientes e pagamentos</p>
       <h1>Entre no painel com segurança e continue o atendimento.</h1>
       <p>
-        Acompanhe clientes, pagamentos, recibos e cobranças num espaço simples, consistente e preparado para o trabalho diário.
+        Acompanhe clientes, pagamentos, recibos e cobranças num espaço simples, consistente e
+        preparado para o trabalho diário.
       </p>
     </div>
 
@@ -42,12 +43,11 @@
               formControlName="login"
               nz-input
               placeholder="Digite o utilizador"
-              type="text"/>
+              type="text"
+            />
           </nz-input-group>
 
-          <small *ngIf="isInvalid('login')" class="field-error">
-            Informe o utilizador.
-          </small>
+          <small *ngIf="isInvalid('login')" class="field-error"> Informe o utilizador. </small>
         </label>
 
         <label class="field">
@@ -58,7 +58,8 @@
               autocomplete="current-password"
               formControlName="password"
               nz-input
-              placeholder="Digite a senha"/>
+              placeholder="Digite a senha"
+            />
           </nz-input-group>
 
           <ng-template #passwordSuffixTpl>
@@ -66,14 +67,16 @@
               (click)="togglePasswordVisibility()"
               [attr.aria-label]="isPasswordVisible ? 'Ocultar senha' : 'Mostrar senha'"
               class="password-toggle"
-              type="button">
-              <nz-icon [nzType]="isPasswordVisible ? 'eye-invisible' : 'eye'" nzTheme="outline"></nz-icon>
+              type="button"
+            >
+              <nz-icon
+                [nzType]="isPasswordVisible ? 'eye-invisible' : 'eye'"
+                nzTheme="outline"
+              ></nz-icon>
             </button>
           </ng-template>
 
-          <small *ngIf="isInvalid('password')" class="field-error">
-            Informe a senha.
-          </small>
+          <small *ngIf="isInvalid('password')" class="field-error"> Informe a senha. </small>
         </label>
 
         <div class="options">
@@ -90,7 +93,8 @@
           nz-button
           nzBlock
           nzType="primary"
-          type="submit">
+          type="submit"
+        >
           <span *ngIf="!isLoading">Entrar no painel</span>
           <span *ngIf="isLoading" class="loading">
             <nz-spin nzSize="small"></nz-spin>
@@ -103,7 +107,8 @@
           [nzMessage]="responseMessage"
           class="error-alert"
           nzShowIcon
-          nzType="error">
+          nzType="error"
+        >
         </nz-alert>
 
         <p>{{ 'access.contactAdmin' | translate }}</p>
@@ -119,7 +124,8 @@
     nzCentered
     nzClassName="auth-modal"
     nzTitle="Criar conta"
-    nzWidth="720">
+    nzWidth="720"
+  >
     <ng-container *nzModalContent>
       <div class="modal-intro">
         <span class="section-label">Novo acesso</span>
@@ -137,7 +143,8 @@
     nzCentered
     nzClassName="auth-modal recovery-modal"
     nzTitle="Recuperar senha"
-    nzWidth="560">
+    nzWidth="560"
+  >
     <ng-container *nzModalContent>
       <div class="recovery-steps">
         <span [class.active]="recoveryStep === 0">WhatsApp</span>
@@ -161,7 +168,8 @@
                   formControlName="phoneWhatsApp"
                   inputmode="numeric"
                   nz-input
-                  placeholder="84xxxxxxx"/>
+                  placeholder="84xxxxxxx"
+                />
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
@@ -171,9 +179,17 @@
               Cancelar
             </button>
 
-            <button (click)="requestRecovery()" [disabled]="recoveryLoading" nz-button nzType="primary" type="button">
+            <button
+              (click)="requestRecovery()"
+              [disabled]="recoveryLoading"
+              nz-button
+              nzType="primary"
+              type="button"
+            >
               <span *ngIf="!recoveryLoading">Continuar</span>
-              <span *ngIf="recoveryLoading" class="loading"><nz-spin nzSize="small"></nz-spin></span>
+              <span *ngIf="recoveryLoading" class="loading"
+                ><nz-spin nzSize="small"></nz-spin
+              ></span>
             </button>
           </div>
         </form>
@@ -204,7 +220,13 @@
         <div class="recovery-actions">
           <button (click)="backRecovery()" nz-button nzType="default" type="button">Voltar</button>
 
-          <button (click)="confirmRecovery()" [disabled]="recoveryLoading" nz-button nzType="primary" type="button">
+          <button
+            (click)="confirmRecovery()"
+            [disabled]="recoveryLoading"
+            nz-button
+            nzType="primary"
+            type="button"
+          >
             <span *ngIf="!recoveryLoading">Enviar código</span>
             <span *ngIf="recoveryLoading" class="loading"><nz-spin nzSize="small"></nz-spin></span>
           </button>
@@ -222,7 +244,12 @@
           <nz-form-item>
             <nz-form-label nzRequired>Código</nz-form-label>
             <nz-form-control nzErrorTip="Informe o código.">
-              <input formControlName="otpCode" inputmode="numeric" nz-input placeholder="Ex: 123456"/>
+              <input
+                formControlName="otpCode"
+                inputmode="numeric"
+                nz-input
+                placeholder="Ex: 123456"
+              />
             </nz-form-control>
           </nz-form-item>
 
@@ -234,12 +261,20 @@
                   [type]="isResetPasswordVisible ? 'text' : 'password'"
                   formControlName="newPassword"
                   nz-input
-                  placeholder="Nova senha"/>
+                  placeholder="Nova senha"
+                />
               </nz-input-group>
 
               <ng-template #resetPassSuffixTpl>
-                <button (click)="toggleResetPasswordVisibility()" class="password-toggle" type="button">
-                  <nz-icon [nzType]="isResetPasswordVisible ? 'eye-invisible' : 'eye'" nzTheme="outline"></nz-icon>
+                <button
+                  (click)="toggleResetPasswordVisibility()"
+                  class="password-toggle"
+                  type="button"
+                >
+                  <nz-icon
+                    [nzType]="isResetPasswordVisible ? 'eye-invisible' : 'eye'"
+                    nzTheme="outline"
+                  ></nz-icon>
                 </button>
               </ng-template>
             </nz-form-control>
@@ -253,30 +288,45 @@
                   [type]="isResetConfirmVisible ? 'text' : 'password'"
                   formControlName="confirmPassword"
                   nz-input
-                  placeholder="Confirmar senha"/>
+                  placeholder="Confirmar senha"
+                />
               </nz-input-group>
 
               <ng-template #resetConfirmSuffixTpl>
-                <button (click)="toggleResetConfirmVisibility()" class="password-toggle" type="button">
-                  <nz-icon [nzType]="isResetConfirmVisible ? 'eye-invisible' : 'eye'" nzTheme="outline"></nz-icon>
+                <button
+                  (click)="toggleResetConfirmVisibility()"
+                  class="password-toggle"
+                  type="button"
+                >
+                  <nz-icon
+                    [nzType]="isResetConfirmVisible ? 'eye-invisible' : 'eye'"
+                    nzTheme="outline"
+                  ></nz-icon>
                 </button>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
 
-          <button (click)="confirmRecovery()" class="text-button resend" type="button">Reenviar código</button>
+          <button (click)="confirmRecovery()" class="text-button resend" type="button">
+            Reenviar código
+          </button>
 
           <div class="recovery-actions">
-            <button (click)="backRecovery()" nz-button nzType="default" type="button">Voltar</button>
+            <button (click)="backRecovery()" nz-button nzType="default" type="button">
+              Voltar
+            </button>
 
             <button
               (click)="submitResetPassword()"
               [disabled]="recoveryLoading"
               nz-button
               nzType="primary"
-              type="button">
+              type="button"
+            >
               <span *ngIf="!recoveryLoading">Confirmar</span>
-              <span *ngIf="recoveryLoading" class="loading"><nz-spin nzSize="small"></nz-spin></span>
+              <span *ngIf="recoveryLoading" class="loading"
+                ><nz-spin nzSize="small"></nz-spin
+              ></span>
             </button>
           </div>
         </form>

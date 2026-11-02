@@ -1,19 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {PaymentService} from '@core/services/payment.service';
-import {Payment} from '@shared/models/WSM/payment';
-import {PaymentInvoiceService} from '@core/services/payment-invoice.service';
-import {finalize} from 'rxjs';
-import {money, referenceMonths, paymentQuantity} from '@shared/utils/payment-presentation';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PaymentService } from '@core/services/payments/payment.service';
+import { Payment } from '@shared/models/payment';
+import { PaymentInvoiceService } from '@core/services/documents/payment-invoice.service';
+import { finalize } from 'rxjs';
+import { money, referenceMonths, paymentQuantity } from '@shared/utils/payment-presentation';
 
 @Component({
   selector: 'app-payment-details',
   standalone: false,
   templateUrl: './payment-details.component.html',
-  styleUrls: ['./payment-details.component.scss']
+  styleUrls: ['./payment-details.component.scss'],
 })
 export class PaymentDetailsComponent implements OnInit {
-
   payment: Payment | null = null;
 
   paymentId!: string;
@@ -29,26 +28,32 @@ export class PaymentDetailsComponent implements OnInit {
 
   get customerInitials(): string {
     const value = this.payment?.customerName || 'Cliente';
-    return value
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(part => part.charAt(0).toUpperCase())
-      .join('') || 'C';
+    return (
+      value
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join('') || 'C'
+    );
   }
 
-
-  get quantity(): number { return this.payment ? paymentQuantity(this.payment) : 0; }
-  get periods(): string[] { return referenceMonths(this.payment?.referenceMonth); }
-  downloadStatement(): void { if (this.payment) this.paymentInvoiceService.downloadBillingStatement(this.payment); }
-  goToCustomer(): void { if (this.payment) this.router.navigate(['/app/customer-detail', this.payment.customerId]); }
-
+  get quantity(): number {
+    return this.payment ? paymentQuantity(this.payment) : 0;
+  }
+  get periods(): string[] {
+    return referenceMonths(this.payment?.referenceMonth);
+  }
+  downloadStatement(): void {
+    if (this.payment) this.paymentInvoiceService.downloadBillingStatement(this.payment);
+  }
+  goToCustomer(): void {
+    if (this.payment) this.router.navigate(['/app/customer-detail', this.payment.customerId]);
+  }
 
   ngOnInit(): void {
-
-    this.route.params.subscribe(params => {
-
+    this.route.params.subscribe((params) => {
       this.paymentId = params['id'];
 
       this.getPayment();
@@ -65,8 +70,7 @@ export class PaymentDetailsComponent implements OnInit {
 
   download(): void {
     if (!this.payment) return;
-    this.paymentInvoiceService
-      .downloadPaymentInvoice(this.payment);
+    this.paymentInvoiceService.downloadPaymentInvoice(this.payment);
   }
 
   formatReferenceMonths(reference: string): string[] {
@@ -83,32 +87,24 @@ export class PaymentDetailsComponent implements OnInit {
   }
 
   private getPayment(): void {
-
     this.isLoading = true;
     this.payment = null;
 
     this.paymentService
       .getPaymentById(this.paymentId)
-      .pipe(finalize(() => this.isLoading = false))
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-
         next: (payment: Payment) => {
-
           this.payment = {
-
             ...payment,
 
-            confirmed:
-              payment.confirmed,
+            confirmed: payment.confirmed,
 
-            numMonths:
-              Number(payment.numMonths)
+            numMonths: Number(payment.numMonths),
           };
         },
 
-        error: () => {
-        }
+        error: () => {},
       });
   }
-
 }

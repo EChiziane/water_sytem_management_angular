@@ -1,7 +1,47 @@
-import {User} from '../models/user';
-export const DEMO_USERS:User[]=[
- {id:'demo-admin-ana',name:'Ana',login:'anaAC',password:'123456',role:'ADMIN',status:'ACTIVE',email:'ana@example.test',phone:'+258 840000001',createdAt:'2026-10-31T08:00:00+02:00'},
- {id:'demo-manager-bruno',name:'Bruno',login:'brunoAC',password:'123456',role:'MANAGER',status:'ACTIVE',email:'bruno@example.test',phone:'+258 840000002',createdAt:'2026-10-31T08:00:00+02:00'},
- {id:'demo-operator-carla',name:'Carla',login:'carlaAC',password:'123456',role:'OPERATOR',status:'ACTIVE',email:'carla@example.test',phone:'+258 840000003',createdAt:'2026-10-31T08:00:00+02:00'},
- {id:'demo-technician-david',name:'David',login:'davidAC',password:'123456',role:'TECHNICIAN',status:'ACTIVE',email:'david@example.test',phone:'+258 840000004',createdAt:'2026-10-31T08:00:00+02:00'}
+import { User } from '../models/user';
+export const DEMO_USERS: User[] = [
+  {
+    id: 'demo-admin-ana',
+    name: 'Ana',
+    login: 'anaAC',
+    password: '123456',
+    role: 'ADMIN',
+    status: 'ACTIVE',
+    email: 'ana@example.test',
+    phone: '+258 840000001',
+    createdAt: '2026-10-31T08:00:00+02:00',
+  },
+  {
+    id: 'demo-manager-bruno',
+    name: 'Bruno',
+    login: 'brunoAC',
+    password: '123456',
+    role: 'MANAGER',
+    status: 'ACTIVE',
+    email: 'bruno@example.test',
+    phone: '+258 840000002',
+    createdAt: '2026-10-31T08:00:00+02:00',
+  },
+  {
+    id: 'demo-operator-carla',
+    name: 'Carla',
+    login: 'carlaAC',
+    password: '123456',
+    role: 'OPERATOR',
+    status: 'ACTIVE',
+    email: 'carla@example.test',
+    phone: '+258 840000003',
+    createdAt: '2026-10-31T08:00:00+02:00',
+  },
+  {
+    id: 'demo-technician-david',
+    name: 'David',
+    login: 'davidAC',
+    password: '123456',
+    role: 'TECHNICIAN',
+    status: 'ACTIVE',
+    email: 'david@example.test',
+    phone: '+258 840000004',
+    createdAt: '2026-10-31T08:00:00+02:00',
+  },
 ];

@@ -7,50 +7,128 @@
   <nz-spin [nzSpinning]="isLoading" nzTip="A carregar pagamento...">
     <ng-container *ngIf="payment; else emptyPayment">
       <div class="payment-toolbar">
-        <button (click)="goToPayments()" nz-button><nz-icon nzType="arrow-left"></nz-icon> Pagamentos</button>
+        <button (click)="goToPayments()" nz-button>
+          <nz-icon nzType="arrow-left"></nz-icon> Pagamentos
+        </button>
         <div class="payment-actions">
-          <button (click)="downloadStatement()" nz-button><nz-icon nzType="file-text"></nz-icon> Demonstrativo</button>
-          <button (click)="download()" nz-button nzType="primary"><nz-icon nzType="download"></nz-icon> {{ payment.confirmed ? 'Descarregar recibo' : 'Descarregar registo' }}</button>
+          <button (click)="downloadStatement()" nz-button>
+            <nz-icon nzType="file-text"></nz-icon> Demonstrativo
+          </button>
+          <button (click)="download()" nz-button nzType="primary">
+            <nz-icon nzType="download"></nz-icon>
+            {{ payment.confirmed ? 'Descarregar recibo' : 'Descarregar registo' }}
+          </button>
         </div>
       </div>
       <article class="payment-sheet" aria-label="Ficha do pagamento">
         <header class="sheet-heading">
-          <div><span class="sheet-label">Detalhe do pagamento</span><h1>{{ payment.referenceCode || 'Sem referência' }}</h1><app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge></div>
-          <div class="sheet-amount"><span class="sheet-label">{{ payment.confirmed ? 'Montante recebido' : 'Montante por confirmar' }}</span><strong>{{ formatMoney(payment.amount) }}</strong></div>
+          <div>
+            <span class="sheet-label">Detalhe do pagamento</span>
+            <h1>{{ payment.referenceCode || 'Sem referência' }}</h1>
+            <app-status-badge kind="payment" [value]="payment.confirmed"></app-status-badge>
+          </div>
+          <div class="sheet-amount">
+            <span class="sheet-label">{{
+              payment.confirmed ? 'Montante recebido' : 'Montante por confirmar'
+            }}</span
+            ><strong>{{ formatMoney(payment.amount) }}</strong>
+          </div>
         </header>
-        <p *ngIf="!payment.confirmed" class="pending-note" role="status">O valor aguarda validação. Este registo não comprova o recebimento.</p>
+        <p *ngIf="!payment.confirmed" class="pending-note" role="status">
+          O valor aguarda validação. Este registo não comprova o recebimento.
+        </p>
         <section class="sheet-section" aria-label="Dados da operação">
           <dl class="sheet-fields">
-            <div><dt>Data e hora</dt><dd>{{ payment.paymentDate | businessDate:'datetime' }}</dd></div>
-            <div><dt>Forma de pagamento</dt><dd><app-info-tag kind="method" [value]="payment.paymentMethod"></app-info-tag></dd></div>
-            <div><dt>Registado por</dt><dd>{{ payment.createdByName || 'Não informado' }}</dd></div>
+            <div>
+              <dt>Data e hora</dt>
+              <dd>{{ payment.paymentDate | businessDate: 'datetime' }}</dd>
+            </div>
+            <div>
+              <dt>Forma de pagamento</dt>
+              <dd><app-info-tag kind="method" [value]="payment.paymentMethod"></app-info-tag></dd>
+            </div>
+            <div>
+              <dt>Registado por</dt>
+              <dd>{{ payment.createdByName || 'Não informado' }}</dd>
+            </div>
           </dl>
         </section>
         <section class="sheet-section">
-          <div class="section-heading"><h2>Cliente</h2><a *ngIf="payment.customerId" [routerLink]="['/app/customer-detail', payment.customerId]">Consultar conta <nz-icon nzType="arrow-right"></nz-icon></a></div>
+          <div class="section-heading">
+            <h2>Cliente</h2>
+            <a
+              *ngIf="payment.customerId"
+              [routerLink]="['/app/customer-detail', payment.customerId]"
+              >Consultar conta <nz-icon nzType="arrow-right"></nz-icon
+            ></a>
+          </div>
           <dl class="sheet-fields customer-fields">
-            <div><dt>Titular</dt><dd>{{ payment.customerName || 'Não identificado' }}</dd></div>
-            <div><dt>Contacto</dt><dd>{{ payment.customerContact || 'Não informado' }}</dd></div>
-            <div><dt>Válvula</dt><dd>{{ payment.customerValve ?? 'Não informada' }}</dd></div>
-            <div class="full-row"><dt>Morada</dt><dd>{{ payment.customerAddress || 'Não informada' }}</dd></div>
+            <div>
+              <dt>Titular</dt>
+              <dd>{{ payment.customerName || 'Não identificado' }}</dd>
+            </div>
+            <div>
+              <dt>Contacto</dt>
+              <dd>{{ payment.customerContact || 'Não informado' }}</dd>
+            </div>
+            <div>
+              <dt>Válvula</dt>
+              <dd>{{ payment.customerValve ?? 'Não informada' }}</dd>
+            </div>
+            <div class="full-row">
+              <dt>Morada</dt>
+              <dd>{{ payment.customerAddress || 'Não informada' }}</dd>
+            </div>
           </dl>
         </section>
         <section class="sheet-section">
           <div class="section-heading"><h2>Serviço e períodos abrangidos</h2></div>
           <dl class="sheet-fields">
-            <div><dt>Serviço</dt><dd>Abastecimento de água</dd></div>
-            <div><dt>Mensalidades registadas</dt><dd>{{ quantity || 'Não informado' }}</dd></div>
-            <div><dt>Taxa mensal de referência</dt><dd>{{ formatMoney(payment.monthlyFee) }}</dd></div>
-            <div *ngIf="payment.tax"><dt>IVA registado</dt><dd>{{ formatMoney(payment.tax) }}</dd></div>
+            <div>
+              <dt>Serviço</dt>
+              <dd>Abastecimento de água</dd>
+            </div>
+            <div>
+              <dt>Mensalidades registadas</dt>
+              <dd>{{ quantity || 'Não informado' }}</dd>
+            </div>
+            <div>
+              <dt>Taxa mensal de referência</dt>
+              <dd>{{ formatMoney(payment.monthlyFee) }}</dd>
+            </div>
+            <div *ngIf="payment.tax">
+              <dt>IVA registado</dt>
+              <dd>{{ formatMoney(payment.tax) }}</dd>
+            </div>
           </dl>
-          <div class="sheet-periods"><span class="sheet-label">Períodos de referência</span><ul><li *ngFor="let month of periods">{{ month }}</li></ul><span *ngIf="!periods.length">Não informados</span></div>
+          <div class="sheet-periods">
+            <span class="sheet-label">Períodos de referência</span>
+            <ul>
+              <li *ngFor="let month of periods">{{ month }}</li>
+            </ul>
+            <span *ngIf="!periods.length">Não informados</span>
+          </div>
         </section>
         <footer class="sheet-footer">
           <p><span>Identificador da operação</span> {{ payment.id }}</p>
-          <p>{{ payment.confirmed ? 'O recibo refere-se exclusivamente a este pagamento.' : 'O documento disponível é um registo de pagamento pendente.' }} O demonstrativo não substitui uma fatura fiscal nem cria uma nova cobrança.</p>
+          <p>
+            {{
+              payment.confirmed
+                ? 'O recibo refere-se exclusivamente a este pagamento.'
+                : 'O documento disponível é um registo de pagamento pendente.'
+            }}
+            O demonstrativo não substitui uma fatura fiscal nem cria uma nova cobrança.
+          </p>
         </footer>
       </article>
     </ng-container>
   </nz-spin>
-  <ng-template #emptyPayment><div *ngIf="!isLoading" class="payment-empty"><nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty><h3>Pagamento não encontrado</h3><p>Volte à lista para consultar outra operação.</p><button (click)="goToPayments()" nz-button nzType="primary">Lista de pagamentos</button></div></ng-template>
+  <ng-template #emptyPayment
+    ><div *ngIf="!isLoading" class="payment-empty">
+      <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
+      <h3>Pagamento não encontrado</h3>
+      <p>Volte à lista para consultar outra operação.</p>
+      <button (click)="goToPayments()" nz-button nzType="primary">Lista de pagamentos</button>
+    </div></ng-template
+  >
 </div>

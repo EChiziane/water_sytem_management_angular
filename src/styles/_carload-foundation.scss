@@ -1,10 +1,11 @@
-html, body {
+html,
+body {
   height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   background: var(--wsm-soft);
   color: var(--wsm-ink);
 }
@@ -482,7 +483,10 @@ body {
   border-radius: 8px !important;
   background: var(--wsm-surface) !important;
   box-shadow: 0 18px 45px rgba(16, 33, 43, 0.06) !important;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease !important;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease !important;
 }
 
 .summary-section nz-card:hover {
@@ -662,7 +666,6 @@ body {
   color: var(--wsm-primary) !important;
 }
 
-
 .compact-list-layout {
   gap: 6px !important;
   padding: 8px !important;
@@ -787,7 +790,6 @@ body {
   }
 }
 
-
 /* Water pages use h1 for the title and p for supporting copy. */
 .page-header:has(h1) h1 {
   margin: 0;
@@ -804,14 +806,27 @@ body {
   line-height: 1.5 !important;
 }
 @media (max-width: 640px) {
-  .page-header { flex-wrap: wrap; }
-  .filters-panel { min-width: 0; }
-  .filter-actions { margin-left: 0; flex-wrap: wrap; }
-  .table-scroll { overflow-x: auto !important; }
+  .page-header {
+    flex-wrap: wrap;
+  }
+  .filters-panel {
+    min-width: 0;
+  }
+  .filter-actions {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+  .table-scroll {
+    overflow-x: auto !important;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .summary-section nz-card { transition: none !important; }
-  .summary-section nz-card:hover { transform: none !important; }
+  .summary-section nz-card {
+    transition: none !important;
+  }
+  .summary-section nz-card:hover {
+    transform: none !important;
+  }
 }
 .compact-list-layout .page-header:has(h1) p {
   color: var(--wsm-muted) !important;
@@ -828,7 +843,9 @@ body {
   color: var(--wsm-muted);
   font-size: 12px;
 }
-.list-total-strip strong { color: var(--wsm-primary); }
+.list-total-strip strong {
+  color: var(--wsm-primary);
+}
 /* Dense operation lists keep the table close to the search/actions row. */
 .compact-list-layout.dense-list .filters-panel {
   flex-direction: row !important;
@@ -851,11 +868,13 @@ body {
   gap: 8px;
   margin-left: auto;
 }
-@media(max-width:640px) {
+@media (max-width: 640px) {
   .compact-list-layout.dense-list .filters-panel > input[nz-input],
   .compact-list-layout.dense-list .filters-panel > nz-input-group {
     flex-basis: 100%;
     max-width: none;
   }
-  .compact-list-layout.dense-list .filter-actions { margin-left: 0; }
+  .compact-list-layout.dense-list .filter-actions {
+    margin-left: 0;
+  }
 }

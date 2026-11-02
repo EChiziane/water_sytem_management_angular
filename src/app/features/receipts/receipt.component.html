@@ -1,0 +1,99 @@
+<div class="receipt-register content-wrapper compact-list-layout dense-list">
+  <header class="page-header">
+    <div class="compact-title-block">
+      <p>Recibos</p>
+      <span class="list-meta"
+        >{{ totalRecibos }} documentos · {{ confirmedReceipts }} confirmados</span
+      >
+    </div>
+    <button (click)="onBack()" class="back-arrow" nz-button nzType="text" aria-label="Voltar">
+      <nz-icon nzType="arrow-left"></nz-icon>
+    </button>
+  </header>
+  <section class="filters-panel document-toolbar">
+    <input
+      (ngModelChange)="search()"
+      [(ngModel)]="searchValue"
+      nz-input
+      placeholder="Pesquisar referência ou cliente"
+      aria-label="Pesquisar documentos"
+    />
+    <app-year-filter
+      [(value)]="selectedYear"
+      (valueChange)="search()"
+      label="years.issue"
+    ></app-year-filter>
+    <span>{{ listOfDisplayData.length }} documento(s)</span>
+    <button (click)="reset()" nz-button nzType="default">Limpar pesquisa</button>
+  </section>
+  <section class="table-wrapper">
+    <nz-table
+      #nzTable
+      [nzData]="listOfDisplayData"
+      [nzLoading]="isLoading"
+      [nzScroll]="{ x: '1120px' }"
+      nzTableLayout="fixed"
+      [nzPageSize]="10"
+      [nzNoResult]="emptyDocuments"
+    >
+      <thead>
+        <tr>
+          <th nzWidth="160px">Documento</th>
+          <th nzWidth="200px">Cliente</th>
+          <th nzWidth="180px">Períodos</th>
+          <th nzWidth="120px">Pagamento</th>
+          <th nzWidth="140px">Valor</th>
+          <th nzWidth="140px">Estado</th>
+          <th nzWidth="130px">Emissão</th>
+          <th class="wsm-actions-column" nzWidth="128px">
+            {{ 'tableActions.heading' | translate }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of nzTable.data">
+          <td>
+            <strong>{{
+              data.invoiceCode || data.payment?.referenceCode || 'Sem referência'
+            }}</strong
+            ><small class="document-caption">Recibo / pagamento</small>
+          </td>
+          <td>{{ data.customerName || data.payment?.customerName || 'Não identificado' }}</td>
+          <td>{{ receiptPeriods(data) }}</td>
+          <td><app-info-tag kind="method" [value]="data.payment?.paymentMethod"></app-info-tag></td>
+          <td class="document-amount">{{ receiptMoney(data) }}</td>
+          <td>
+            <app-status-badge kind="payment" [value]="data.payment?.confirmed"></app-status-badge>
+          </td>
+          <td>{{ data.createdAt | businessDate: 'date' }}</td>
+          <td class="wsm-actions-cell">
+            <div
+              class="wsm-row-actions"
+              role="group"
+              [attr.aria-label]="
+                ('tableActions.heading' | translate) +
+                ' · ' +
+                (data.invoiceCode || data.customerName)
+              "
+            >
+              <app-row-action
+                action="view"
+                *ngIf="data.paymentId || data.payment?.id"
+                [route]="['/app/payment-detail', data.paymentId || data.payment?.id]"
+                [context]="data.invoiceCode || data.customerName"
+              ></app-row-action
+              ><app-row-action
+                action="download"
+                (activated)="getDownloadUrl(data)"
+                [context]="data.invoiceCode || data.customerName"
+              ></app-row-action>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <ng-template #emptyDocuments
+      ><nz-empty nzNotFoundContent="Nenhum documento encontrado para esta pesquisa."></nz-empty
+    ></ng-template>
+  </section>
+</div>

@@ -1,23 +1,23 @@
-import {money} from '@shared/utils/payment-presentation';
-import {TranslationService} from '@core/services/translation.service';
-import {describeStatus} from '@shared/utils/status-presentation';
-import {PermissionService} from '@core/auth/permission.service';
-import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
-import {tap} from 'rxjs';
-import {Component, HostListener, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {finalize} from 'rxjs';
-import {Customer} from '@shared/models/WSM/customer';
-import {CustomerPayload, CustomerService} from '@core/services/customer.service';
-import {NzMessageService} from 'ng-zorro-antd/message';
-import {NzModalService} from 'ng-zorro-antd/modal';
-import {WaterReportPdfService} from '@core/services/water-report-pdf.service';
+import { money } from '@shared/utils/payment-presentation';
+import { TranslationService } from '@core/services/i18n/translation.service';
+import { describeStatus } from '@shared/utils/status-presentation';
+import { PermissionService } from '@core/auth/permission.service';
+import { OperationConfirmationService } from '@core/services/dialogs/operation-confirmation.service';
+import { tap } from 'rxjs';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
+import { Customer } from '@shared/models/customer';
+import { CustomerPayload, CustomerService } from '@core/services/customers/customer.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { WaterReportPdfService } from '@core/services/documents/water-report-pdf.service';
 
 @Component({
   selector: 'app-customer',
   standalone: false,
   templateUrl: './customer.component.html',
-  styleUrls: ['./customer.component.scss']
+  styleUrls: ['./customer.component.scss'],
 })
 export class CustomerComponent implements OnInit {
   private readonly filterStorageKey = 'wsm-customer-filters';
@@ -52,21 +52,23 @@ export class CustomerComponent implements OnInit {
     status: new FormControl('ATIVO', Validators.required),
     valve: new FormControl(10, [Validators.required, Validators.min(0)]),
     monthlyFee: new FormControl(750),
-    monthsInDebt: new FormControl(0, [Validators.required, Validators.min(0)])
+    monthsInDebt: new FormControl(0, [Validators.required, Validators.min(0)]),
   });
 
-  constructor(private translations: TranslationService, public permissions: PermissionService,
+  constructor(
+    private translations: TranslationService,
+    public permissions: PermissionService,
     private confirmations: OperationConfirmationService,
     private customerService: CustomerService,
     private reports: WaterReportPdfService,
     private message: NzMessageService,
-    private modal: NzModalService
-  ) {
-  }
+    private modal: NzModalService,
+  ) {}
 
   ngOnInit(): void {
-    for(const name of ['status','valve'] as const)if(!this.permissions.can('customers.lifecycle'))this.customerForm.controls[name].disable();
-    if(!this.permissions.can('tariffs.manage'))this.customerForm.controls.monthlyFee.disable();
+    for (const name of ['status', 'valve'] as const)
+      if (!this.permissions.can('customers.lifecycle')) this.customerForm.controls[name].disable();
+    if (!this.permissions.can('tariffs.manage')) this.customerForm.controls.monthlyFee.disable();
     this.customerForm.controls.monthsInDebt.disable();
     this.restoreFilters();
     this.getCustomers();
@@ -92,15 +94,16 @@ export class CustomerComponent implements OnInit {
   getCustomers(): void {
     this.isLoading = true;
 
-    this.customerService.getCustomers()
-      .pipe(finalize(() => this.isLoading = false))
+    this.customerService
+      .getCustomers()
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: customers => {
+        next: (customers) => {
           this.dataSource = customers;
           this.calculateStats();
           this.applyFilters();
         },
-        error: () => this.message.error('Erro ao carregar clientes.')
+        error: () => this.message.error('Erro ao carregar clientes.'),
       });
   }
 
@@ -110,18 +113,22 @@ export class CustomerComponent implements OnInit {
 
   get drawerInitials(): string {
     const name = this.customerForm.get('name')?.value || 'Cliente';
-    return name
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(part => part.charAt(0).toUpperCase())
-      .join('') || 'C';
+    return (
+      name
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join('') || 'C'
+    );
   }
 
   get drawerEstimatedDebt(): number {
-    return Number(this.customerForm.get('monthlyFee')?.value || 0) *
-      Number(this.customerForm.get('monthsInDebt')?.value || 0);
+    return (
+      Number(this.customerForm.get('monthlyFee')?.value || 0) *
+      Number(this.customerForm.get('monthsInDebt')?.value || 0)
+    );
   }
 
   applyFilters(): void {
@@ -129,20 +136,21 @@ export class CustomerComponent implements OnInit {
 
     if (this.searchValue) {
       const search = this.searchValue.toLowerCase();
-      data = data.filter(item =>
-        (item.name || '').toLowerCase().includes(search) ||
-        (item.code || '').toLowerCase().includes(search) ||
-        (item.contact || '').toLowerCase().includes(search) ||
-        (item.address || '').toLowerCase().includes(search)
+      data = data.filter(
+        (item) =>
+          (item.name || '').toLowerCase().includes(search) ||
+          (item.code || '').toLowerCase().includes(search) ||
+          (item.contact || '').toLowerCase().includes(search) ||
+          (item.address || '').toLowerCase().includes(search),
       );
     }
 
     if (this.debtFilter === 'DEBT') {
-      data = data.filter(item => item.monthsInDebt > 0);
+      data = data.filter((item) => item.monthsInDebt > 0);
     }
 
     if (this.debtFilter === 'CLEAR') {
-      data = data.filter(item => item.monthsInDebt === 0);
+      data = data.filter((item) => item.monthsInDebt === 0);
     }
 
     this.listOfDisplayData = data;
@@ -185,7 +193,7 @@ export class CustomerComponent implements OnInit {
       address: customer.address,
       status: customer.status,
       valve: customer.valve,
-      monthsInDebt: customer.monthsInDebt
+      monthsInDebt: customer.monthsInDebt,
     });
   }
 
@@ -204,13 +212,11 @@ export class CustomerComponent implements OnInit {
       status: value.status ?? 'ATIVO',
       valve: value.valve ?? 10,
       monthlyFee: value.monthlyFee ?? 750,
-      monthsInDebt: value.monthsInDebt ?? 0
+      monthsInDebt: value.monthsInDebt ?? 0,
     };
     const rawContact = formData.contact?.trim();
 
-    formData.contact = rawContact?.startsWith('+258')
-      ? rawContact
-      : `+258 ${rawContact}`;
+    formData.contact = rawContact?.startsWith('+258') ? rawContact : `+258 ${rawContact}`;
 
     if (!formData.monthlyFee) {
       formData.monthlyFee = 750;
@@ -218,28 +224,64 @@ export class CustomerComponent implements OnInit {
 
     const id = this.selectedCustomerId;
     const editing = this.isEditMode;
-    this.confirmations.run({key:'save-customer:' + (id || 'new'), title:this.confirmations.text('saveCustomerTitle'), description:this.confirmations.text('saveCustomerDescription'),
-      fields:[[this.confirmations.text('customer'),formData.name || ''],[this.confirmations.text('status'),this.translations.instant(describeStatus('customer',formData.status).label)],[this.confirmations.text('tariff'),String(formData.monthlyFee) + ' MT']],
-      confirmLabel:this.confirmations.text('save')}, () => {
-      this.isSaving = true;
-      const request$ = editing && id ? this.customerService.updateCustomer(id,formData) : this.customerService.addCustomer(formData);
-      return request$.pipe(finalize(() => this.isSaving = false), tap({
-        next: () => { this.getCustomers(); this.closeCustomerDrawer(); this.message.success(editing ? 'Cliente atualizado com sucesso.' : 'Cliente criado com sucesso.'); },
-        error: () => this.message.error('Erro ao gravar cliente.')
-      }));
-    });
+    this.confirmations.run(
+      {
+        key: 'save-customer:' + (id || 'new'),
+        title: this.confirmations.text('saveCustomerTitle'),
+        description: this.confirmations.text('saveCustomerDescription'),
+        fields: [
+          [this.confirmations.text('customer'), formData.name || ''],
+          [
+            this.confirmations.text('status'),
+            this.translations.instant(describeStatus('customer', formData.status).label),
+          ],
+          [this.confirmations.text('tariff'), String(formData.monthlyFee) + ' MT'],
+        ],
+        confirmLabel: this.confirmations.text('save'),
+      },
+      () => {
+        this.isSaving = true;
+        const request$ =
+          editing && id
+            ? this.customerService.updateCustomer(id, formData)
+            : this.customerService.addCustomer(formData);
+        return request$.pipe(
+          finalize(() => (this.isSaving = false)),
+          tap({
+            next: () => {
+              this.getCustomers();
+              this.closeCustomerDrawer();
+              this.message.success(
+                editing ? 'Cliente atualizado com sucesso.' : 'Cliente criado com sucesso.',
+              );
+            },
+            error: () => this.message.error('Erro ao gravar cliente.'),
+          }),
+        );
+      },
+    );
   }
 
   deleteCustomer(data: Customer): void {
-    this.confirmations.deletion('customer', data.id, [data.code, data.name].filter(Boolean).join(' · '), 'deleteCustomerNote',
-      () => this.customerService.deleteCustomer(data.id).pipe(tap({
-        next: () => { this.getCustomers(); this.message.success('Cliente eliminado com sucesso.'); },
-        error: () => this.message.error('Erro ao eliminar cliente.')
-      })));
+    this.confirmations.deletion(
+      'customer',
+      data.id,
+      [data.code, data.name].filter(Boolean).join(' · '),
+      'deleteCustomerNote',
+      () =>
+        this.customerService.deleteCustomer(data.id).pipe(
+          tap({
+            next: () => {
+              this.getCustomers();
+              this.message.success('Cliente eliminado com sucesso.');
+            },
+            error: () => this.message.error('Erro ao eliminar cliente.'),
+          }),
+        ),
+    );
   }
 
-  viewCustomer(_data: Customer): void {
-  }
+  viewCustomer(_data: Customer): void {}
 
   reset(): void {
     this.searchValue = '';
@@ -255,13 +297,13 @@ export class CustomerComponent implements OnInit {
       status: 'ATIVO',
       valve: 10,
       monthlyFee: 750,
-      monthsInDebt: 0
+      monthsInDebt: 0,
     });
     this.isCustomerDrawerVisible = true;
   }
 
   downloadCustomerList(): void {
-    if(!this.permissions.can('reports.financial'))return;
+    if (!this.permissions.can('reports.financial')) return;
     this.reports.downloadCustomerList(this.listOfDisplayData);
   }
 
@@ -278,14 +320,20 @@ export class CustomerComponent implements OnInit {
 
   private calculateStats(): void {
     this.totalCustomers = this.dataSource.length;
-    this.activeCustomers = this.dataSource.filter(customer => this.isActiveCustomer(customer)).length;
-    this.customersWithDebt = this.dataSource.filter(customer => Number(customer.monthsInDebt || 0) > 0).length;
+    this.activeCustomers = this.dataSource.filter((customer) =>
+      this.isActiveCustomer(customer),
+    ).length;
+    this.customersWithDebt = this.dataSource.filter(
+      (customer) => Number(customer.monthsInDebt || 0) > 0,
+    ).length;
   }
 
   private isActiveCustomer(customer: Customer): boolean {
-    return (customer.status || '').toLowerCase() === 'active' ||
+    return (
+      (customer.status || '').toLowerCase() === 'active' ||
       (customer.status || '').toLowerCase() === 'ativo' ||
-      (customer.status || '').toUpperCase() === 'ATIVO';
+      (customer.status || '').toUpperCase() === 'ATIVO'
+    );
   }
 
   private restoreFilters(): void {
@@ -295,7 +343,10 @@ export class CustomerComponent implements OnInit {
       const raw = localStorage.getItem(this.filterStorageKey);
       if (!raw) return;
 
-      const saved = JSON.parse(raw) as Partial<{ searchValue: string; debtFilter: 'ALL' | 'DEBT' | 'CLEAR' }>;
+      const saved = JSON.parse(raw) as Partial<{
+        searchValue: string;
+        debtFilter: 'ALL' | 'DEBT' | 'CLEAR';
+      }>;
       this.searchValue = saved.searchValue || '';
       this.debtFilter = saved.debtFilter || 'ALL';
     } catch {
@@ -306,9 +357,12 @@ export class CustomerComponent implements OnInit {
   private persistFilters(): void {
     if (typeof localStorage === 'undefined') return;
 
-    localStorage.setItem(this.filterStorageKey, JSON.stringify({
-      searchValue: this.searchValue,
-      debtFilter: this.debtFilter
-    }));
+    localStorage.setItem(
+      this.filterStorageKey,
+      JSON.stringify({
+        searchValue: this.searchValue,
+        debtFilter: this.debtFilter,
+      }),
+    );
   }
 }

@@ -10,7 +10,8 @@
     <div class="compact-title-block">
       <p>Clientes</p>
       <span class="list-meta">
-        {{ totalCustomers }} clientes - {{ activeCustomers }} ativos - {{ customersWithDebt }} com divida
+        {{ totalCustomers }} clientes - {{ activeCustomers }} ativos - {{ customersWithDebt }} com
+        divida
       </span>
     </div>
 
@@ -25,28 +26,55 @@
       [(ngModel)]="searchValue"
       nz-input
       placeholder="Pesquisar nome/codigo/contacto/endereco"
-      type="text"/>
+      type="text"
+    />
 
-    <button *ngIf="permissions.can('customers.create')" (click)="openCustomerDrawer()" class="create-action" nz-button nzType="primary">
+    <button
+      *ngIf="permissions.can('customers.create')"
+      (click)="openCustomerDrawer()"
+      class="create-action"
+      nz-button
+      nzType="primary"
+    >
       <nz-icon nzTheme="outline" nzType="user-add"></nz-icon>
       Novo cliente
     </button>
 
-    <button *ngIf="permissions.can('reports.financial')" (click)="downloadCustomerList()" nz-button nzType="default">
+    <button
+      *ngIf="permissions.can('reports.financial')"
+      (click)="downloadCustomerList()"
+      nz-button
+      nzType="default"
+    >
       <nz-icon nzTheme="outline" nzType="download"></nz-icon>
       Baixar lista
     </button>
 
     <div class="filter-actions">
-      <button (click)="filterByDebt('ALL')" [class.active]="debtFilter === 'ALL'" nz-button nzType="default">
+      <button
+        (click)="filterByDebt('ALL')"
+        [class.active]="debtFilter === 'ALL'"
+        nz-button
+        nzType="default"
+      >
         Todos
       </button>
 
-      <button (click)="filterByDebt('DEBT')" [class.active]="debtFilter === 'DEBT'" nz-button nzType="default">
+      <button
+        (click)="filterByDebt('DEBT')"
+        [class.active]="debtFilter === 'DEBT'"
+        nz-button
+        nzType="default"
+      >
         Com divida
       </button>
 
-      <button (click)="filterByDebt('CLEAR')" [class.active]="debtFilter === 'CLEAR'" nz-button nzType="default">
+      <button
+        (click)="filterByDebt('CLEAR')"
+        [class.active]="debtFilter === 'CLEAR'"
+        nz-button
+        nzType="default"
+      >
         Em dia
       </button>
     </div>
@@ -67,7 +95,8 @@
             [attr.aria-label]="'Ligar para ' + data.name"
             class="mobile-call-action"
             nz-button
-            nzType="default">
+            nzType="default"
+          >
             <nz-icon nzTheme="outline" nzType="phone"></nz-icon>
           </a>
         </div>
@@ -99,7 +128,19 @@
           </div>
         </dl>
 
-        <div class="mobile-card-actions wsm-row-actions"><app-row-action action="view" [route]="['/app/customer-detail', data.id]" [context]="data.name"></app-row-action><app-row-action action="edit" (activated)="editCustomer(data)" [context]="data.name" [showLabel]="true"></app-row-action></div>
+        <div class="mobile-card-actions wsm-row-actions">
+          <app-row-action
+            action="view"
+            [route]="['/app/customer-detail', data.id]"
+            [context]="data.name"
+          ></app-row-action
+          ><app-row-action
+            action="edit"
+            (activated)="editCustomer(data)"
+            [context]="data.name"
+            [showLabel]="true"
+          ></app-row-action>
+        </div>
       </article>
     </div>
   </nz-spin>
@@ -109,8 +150,16 @@
       <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
       <h3>Nenhum cliente encontrado</h3>
       <p *ngIf="hasActiveFilters">Tenta pesquisar por outro nome, contacto ou codigo.</p>
-      <p *ngIf="!hasActiveFilters">Comeca criando o primeiro cliente para acompanhar valvulas, pagamentos e dividas.</p>
-      <button *ngIf="permissions.can('customers.create')" (click)="openCustomerDrawer()" class="create-action" nz-button nzType="primary">
+      <p *ngIf="!hasActiveFilters">
+        Comeca criando o primeiro cliente para acompanhar valvulas, pagamentos e dividas.
+      </p>
+      <button
+        *ngIf="permissions.can('customers.create')"
+        (click)="openCustomerDrawer()"
+        class="create-action"
+        nz-button
+        nzType="primary"
+      >
         <nz-icon nzTheme="outline" nzType="user-add"></nz-icon>
         Novo cliente
       </button>
@@ -127,43 +176,62 @@
           [nzPageSize]="8"
           [nzScroll]="{ x: '980px', y: '360px' }"
           class="compact-customer-table"
-          nzTableLayout="fixed">
+          nzTableLayout="fixed"
+        >
           <thead>
-          <tr>
-            <th>Codigo</th>
-            <th>Nome</th>
-            <th>Valvula</th>
-            <th>Contacto</th>
-            <th>Estado da divida</th>
-            <th>Meses</th>
-            <th>Taxa mensal</th>
-            <th>Estado</th>
-            <th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th>
-          </tr>
+            <tr>
+              <th>Codigo</th>
+              <th>Nome</th>
+              <th>Valvula</th>
+              <th>Contacto</th>
+              <th>Estado da divida</th>
+              <th>Meses</th>
+              <th>Taxa mensal</th>
+              <th>Estado</th>
+              <th class="wsm-actions-column" nzWidth="128px">
+                {{ 'tableActions.heading' | translate }}
+              </th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr *ngFor="let data of nzTable.data">
-            <td>
-              <app-info-tag kind="reference" [value]="data.code"></app-info-tag>
-            </td>
-            <td>
-              <strong>{{ data.name }}</strong>
-              <span class="muted-text">{{ data.address || '-' }}</span>
-            </td>
-            <td>{{ data.valve }}</td>
-            <td>{{ data.contact }}</td>
-            <td>
-              <app-status-badge kind="debt" [value]="data.monthsInDebt"></app-status-badge>
-            </td>
-            <td>{{ data.monthsInDebt }}</td>
-            <td>{{ formatMoney(data.monthlyFee) }}</td>
-            <td>
-              <app-status-badge kind="customer" [value]="data.status"></app-status-badge>
-            </td>
-            <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + (data.name)"><app-row-action action="view" [route]="['/app/customer-detail', data.id]" [context]="data.name"></app-row-action><app-row-action action="edit" (activated)="editCustomer(data)" [context]="data.name"></app-row-action></div>
-            </td>
-          </tr>
+            <tr *ngFor="let data of nzTable.data">
+              <td>
+                <app-info-tag kind="reference" [value]="data.code"></app-info-tag>
+              </td>
+              <td>
+                <strong>{{ data.name }}</strong>
+                <span class="muted-text">{{ data.address || '-' }}</span>
+              </td>
+              <td>{{ data.valve }}</td>
+              <td>{{ data.contact }}</td>
+              <td>
+                <app-status-badge kind="debt" [value]="data.monthsInDebt"></app-status-badge>
+              </td>
+              <td>{{ data.monthsInDebt }}</td>
+              <td>{{ formatMoney(data.monthlyFee) }}</td>
+              <td>
+                <app-status-badge kind="customer" [value]="data.status"></app-status-badge>
+              </td>
+              <td class="wsm-actions-cell">
+                <div
+                  class="wsm-row-actions"
+                  role="group"
+                  [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + data.name"
+                >
+                  <app-row-action
+                    action="view"
+                    [route]="['/app/customer-detail', data.id]"
+                    [context]="data.name"
+                  ></app-row-action
+                  ><app-row-action
+                    action="edit"
+                    (activated)="editCustomer(data)"
+                    [context]="data.name"
+                  ></app-row-action>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </nz-table>
 
@@ -174,9 +242,26 @@
             <p *ngIf="!isLoading && hasActiveFilters">Nao ha clientes para os filtros atuais.</p>
             <p *ngIf="!isLoading && !hasActiveFilters">Comeca criando o primeiro cliente.</p>
             <div class="empty-actions" *ngIf="!isLoading">
-              <button *ngIf="hasActiveFilters" (click)="reset()" nz-button nzType="default">Limpar filtros</button>
-              <button *ngIf="permissions.can('reports.financial')" (click)="downloadCustomerList()" nz-button nzType="default">Baixar lista</button>
-              <button *ngIf="permissions.can('customers.create')" (click)="openCustomerDrawer()" class="create-action" nz-button nzType="primary">Novo cliente</button>
+              <button *ngIf="hasActiveFilters" (click)="reset()" nz-button nzType="default">
+                Limpar filtros
+              </button>
+              <button
+                *ngIf="permissions.can('reports.financial')"
+                (click)="downloadCustomerList()"
+                nz-button
+                nzType="default"
+              >
+                Baixar lista
+              </button>
+              <button
+                *ngIf="permissions.can('customers.create')"
+                (click)="openCustomerDrawer()"
+                class="create-action"
+                nz-button
+                nzType="primary"
+              >
+                Novo cliente
+              </button>
             </div>
           </div>
         </ng-template>
@@ -193,7 +278,8 @@
   [nzPlacement]="drawerPlacement"
   [nzTitle]="customerDrawerTitle"
   [nzVisible]="isCustomerDrawerVisible"
-  [nzWidth]="drawerWidth">
+  [nzWidth]="drawerWidth"
+>
   <nz-spin *nzDrawerContent [nzSpinning]="isSaving" nzTip="A gravar cliente...">
     <form [formGroup]="customerForm" class="drawer-form" nz-form>
       <section class="drawer-customer-preview">
@@ -224,7 +310,7 @@
             <nz-form-item>
               <nz-form-label>Nome</nz-form-label>
               <nz-form-control>
-                <input formControlName="name" nz-input placeholder="Digite o nome do cliente"/>
+                <input formControlName="name" nz-input placeholder="Digite o nome do cliente" />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -234,7 +320,7 @@
               <nz-form-label>Contacto</nz-form-label>
               <nz-form-control>
                 <nz-input-group nzAddOnBefore="+258">
-                  <input formControlName="contact" nz-input placeholder="Digite o contacto"/>
+                  <input formControlName="contact" nz-input placeholder="Digite o contacto" />
                 </nz-input-group>
               </nz-form-control>
             </nz-form-item>
@@ -246,7 +332,7 @@
             <nz-form-item>
               <nz-form-label>Endereco</nz-form-label>
               <nz-form-control>
-                <input formControlName="address" nz-input placeholder="Digite o endereco"/>
+                <input formControlName="address" nz-input placeholder="Digite o endereco" />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -256,8 +342,14 @@
               <nz-form-label>Estado</nz-form-label>
               <nz-form-control>
                 <nz-select formControlName="status" nzPlaceHolder="Selecione o estado">
-                  <nz-option [nzLabel]="'statuses.active.label' | translate" nzValue="ATIVO"></nz-option>
-                  <nz-option [nzLabel]="'statuses.inactive.label' | translate" nzValue="INATIVO"></nz-option>
+                  <nz-option
+                    [nzLabel]="'statuses.active.label' | translate"
+                    nzValue="ATIVO"
+                  ></nz-option>
+                  <nz-option
+                    [nzLabel]="'statuses.inactive.label' | translate"
+                    nzValue="INATIVO"
+                  ></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -269,7 +361,12 @@
             <nz-form-item>
               <nz-form-label>Valvula</nz-form-label>
               <nz-form-control>
-                <input formControlName="valve" nz-input placeholder="Digite a valvula" type="number"/>
+                <input
+                  formControlName="valve"
+                  nz-input
+                  placeholder="Digite a valvula"
+                  type="number"
+                />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -278,7 +375,12 @@
             <nz-form-item>
               <nz-form-label>Meses em divida</nz-form-label>
               <nz-form-control>
-                <input formControlName="monthsInDebt" nz-input placeholder="Digite os meses" type="number"/>
+                <input
+                  formControlName="monthsInDebt"
+                  nz-input
+                  placeholder="Digite os meses"
+                  type="number"
+                />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -288,7 +390,7 @@
               <nz-form-label>Taxa mensal</nz-form-label>
               <nz-form-control>
                 <nz-input-group nzAddOnBefore="MZN">
-                  <input formControlName="monthlyFee" nz-input placeholder="750" type="number"/>
+                  <input formControlName="monthlyFee" nz-input placeholder="750" type="number" />
                 </nz-input-group>
               </nz-form-control>
             </nz-form-item>
@@ -300,7 +402,13 @@
 
   <ng-template #customerDrawerFooter>
     <div class="drawer-footer">
-      <button (click)="closeCustomerDrawer()" [disabled]="isSaving" class="btn-cancel" nz-button nzType="default">
+      <button
+        (click)="closeCustomerDrawer()"
+        [disabled]="isSaving"
+        class="btn-cancel"
+        nz-button
+        nzType="default"
+      >
         Cancelar
       </button>
 
@@ -309,7 +417,8 @@
         [disabled]="customerForm.invalid || isSaving"
         class="btn-save"
         nz-button
-        nzType="primary">
+        nzType="primary"
+      >
         <ng-container *ngIf="!isSaving; else savingTpl">
           {{ isEditMode ? 'Salvar' : 'Criar' }}
         </ng-container>

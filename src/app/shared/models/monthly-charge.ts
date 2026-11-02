@@ -1,7 +1,4 @@
-
-
 export interface MonthlyCharge {
-
   id: string;
 
   referenceMonth: string;

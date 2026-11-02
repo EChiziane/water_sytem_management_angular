@@ -1,6 +1,6 @@
-import {PermissionGuard} from '@core/guards/permission.guard';
-import {AccessDeniedComponent} from './features/auth/access-denied.component';
-import {CompanyComponent} from './features/company/company.component';
+import { PermissionGuard } from '@core/guards/permission.guard';
+import { AccessDeniedComponent } from './features/auth/access-denied.component';
+import { CompanyComponent } from './features/company/company.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -11,96 +11,114 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { PaymentDetailsComponent } from './features/payments/payment-details/payment-details.component';
 import { PaymentComponent } from './features/payments/payment.component';
 import { ProfileComponent } from './features/profile/profile.component';
-import { ReciboComponent } from './features/receipts/recibo.component';
-import { ListuserComponent } from './features/users/list-user/listuser.component';
+import { ReciboComponent } from './features/receipts/receipt.component';
+import { ListuserComponent } from './features/users/list-user/list-user.component';
 import { MainLayoutComponent } from '@features/shell/main-layout/main-layout.component';
 import { LoginComponent } from './features/auth/login/login.component';
-import { LandingPageComponent } from './features/public/landing-page/landingpage.component';
+import { LandingPageComponent } from './features/public/landing-page/landing-page.component';
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'landing-page',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'landing-page',
-    component: LandingPageComponent
+    component: LandingPageComponent,
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
   },
   {
     path: 'register',
-    redirectTo: 'login', pathMatch: 'full'
+    redirectTo: 'login',
+    pathMatch: 'full',
   },
   {
     path: 'app',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      {path: 'access-denied', component: AccessDeniedComponent},
+      { path: 'access-denied', component: AccessDeniedComponent },
       {
         path: 'dashboard',
-        component: DashboardComponent, canActivate: [PermissionGuard], data: {permission: 'dashboard.read'}
+        component: DashboardComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'dashboard.read' },
       },
       {
         path: 'customer',
-        component: CustomerComponent, canActivate: [PermissionGuard], data: {permission: 'customers.read'}
+        component: CustomerComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'customers.read' },
       },
       {
         path: 'customer-detail/:id',
-        component: CustomerDetailsComponent, canActivate: [PermissionGuard], data: {permission: 'customers.read'}
+        component: CustomerDetailsComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'customers.read' },
       },
       {
         path: 'payment',
-        component: PaymentComponent, canActivate: [PermissionGuard], data: {permission: 'payments.read'}
+        component: PaymentComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'payments.read' },
       },
       {
         path: 'receipts',
-        component: ReciboComponent, canActivate: [PermissionGuard], data: {permission: 'documents.issue'}
+        component: ReciboComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'documents.issue' },
       },
       {
         path: 'payment-detail/:id',
-        component: PaymentDetailsComponent, canActivate: [PermissionGuard], data: {permission: 'payments.read'}
+        component: PaymentDetailsComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'payments.read' },
       },
       {
         path: 'users',
         component: ListuserComponent,
         canActivate: [PermissionGuard],
         data: {
-          permission: 'users.manage'
-        }
+          permission: 'users.manage',
+        },
       },
       {
         path: 'company',
-        component: CompanyComponent, canActivate: [PermissionGuard], data: {permission: 'company.manage'}
+        component: CompanyComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'company.manage' },
       },
       {
         path: 'profile',
-        component: ProfileComponent, canActivate: [PermissionGuard], data: {permission: 'profile.read'}
+        component: ProfileComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'profile.read' },
       },
       {
         path: 'profile/:id',
-        component: ProfileComponent, canActivate: [PermissionGuard], data: {permission: 'users.manage'}
+        component: ProfileComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'users.manage' },
       },
       {
         path: '',
         redirectTo: 'dashboard',
-        pathMatch: 'full'
-      }
-    ]
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: '**',
-    redirectTo: 'landing-page'
-  }
+    redirectTo: 'landing-page',
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

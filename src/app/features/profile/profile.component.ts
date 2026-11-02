@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 
 import { AuthSessionService } from '@core/auth/auth-session.service';
-import { UserService } from '@core/services/user.service';
-import {ROLE_LABELS} from '@shared/constants/app-labels';
+import { UserService } from '@core/services/users/user.service';
+import { ROLE_LABELS } from '@shared/constants/app-labels';
 import { User } from '@shared/models/user';
 
 type ProfileUser = Partial<Omit<User, 'password'>>;
@@ -20,7 +20,7 @@ type ProfileField = {
   selector: 'app-profile',
   standalone: false,
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
+  styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
   user: ProfileUser | null = null;
@@ -35,9 +35,8 @@ export class ProfileComponent implements OnInit {
     private session: AuthSessionService,
     private userService: UserService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {
-  }
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     const userId = this.route.snapshot.paramMap.get('id');
@@ -61,7 +60,7 @@ export class ProfileComponent implements OnInit {
       .trim()
       .split(/\s+/)
       .slice(0, 2)
-      .map(part => part.charAt(0).toUpperCase())
+      .map((part) => part.charAt(0).toUpperCase())
       .join('');
 
     return initials || 'UT';
@@ -70,7 +69,6 @@ export class ProfileComponent implements OnInit {
   get roleLabel(): string {
     return this.user?.role ? ROLE_LABELS[this.user.role] : '-';
   }
-
 
   get memberSince(): string {
     return this.formatDate(this.user?.createdAt);
@@ -85,7 +83,7 @@ export class ProfileComponent implements OnInit {
     this.isCurrentUserProfile = this.session.getUser()?.id === userId;
 
     this.userService.getUserById(userId).subscribe({
-      next: user => {
+      next: (user) => {
         this.user = user || null;
         this.buildFields();
         this.isLoading = false;
@@ -94,7 +92,7 @@ export class ProfileComponent implements OnInit {
         this.user = null;
         this.buildFields();
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -103,39 +101,39 @@ export class ProfileComponent implements OnInit {
       {
         label: 'Nome completo',
         value: this.user?.name || '-',
-        icon: 'user'
+        icon: 'user',
       },
       {
         label: 'Login',
         value: this.user?.login || '-',
-        icon: 'idcard'
+        icon: 'idcard',
       },
       {
         label: 'Email',
         value: this.user?.email || '-',
-        icon: 'mail'
+        icon: 'mail',
       },
       {
         label: 'Telefone',
         value: this.user?.phone || '-',
-        icon: 'phone'
+        icon: 'phone',
       },
       {
         label: 'Perfil de acesso',
         value: this.roleLabel,
-        icon: 'safety-certificate'
+        icon: 'safety-certificate',
       },
       {
         label: 'Estado',
         value: this.user?.status || '',
         kind: 'status',
-        icon: 'check-circle'
+        icon: 'check-circle',
       },
       {
         label: 'Criado em',
         value: this.memberSince,
-        icon: 'calendar'
-      }
+        icon: 'calendar',
+      },
     ];
   }
 

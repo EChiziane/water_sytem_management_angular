@@ -1,47 +1,36 @@
-import {matchesBusinessYear} from '@shared/utils/billing-period';
-import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
-import {tap} from 'rxjs';
-import {
-  Component,
-  HostListener,
-  Input,
-  OnInit
-} from '@angular/core';
+import { matchesBusinessYear } from '@shared/utils/billing-period';
+import { OperationConfirmationService } from '@core/services/dialogs/operation-confirmation.service';
+import { tap } from 'rxjs';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 
-import {
-  FormBuilder,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import {finalize} from 'rxjs';
+import { finalize } from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 
-import { Customer } from '@shared/models/WSM/customer';
-import { Payment } from '@shared/models/WSM/payment';
+import { Customer } from '@shared/models/customer';
+import { Payment } from '@shared/models/payment';
 
+import { CustomerService } from '@core/services/customers/customer.service';
+import { PaymentService } from '@core/services/payments/payment.service';
+import { BillingService } from '@core/services/billing/billing.service';
 
-import { CustomerService } from '@core/services/customer.service';
-import { PaymentService } from '@core/services/payment.service';
-import { BillingService } from '@core/services/billing.service';
-
-import { PaymentInvoiceService } from '@core/services/payment-invoice.service';
-import { CustomerDetailPdfService } from '@core/services/customer-detail-pdf.service';
-import {MonthlyCharge} from '@shared/models/monthly-charge';
-import {MONTH_NAMES_PT} from '@shared/constants/app-labels';
-import {money} from '@shared/utils/payment-presentation';
+import { PaymentInvoiceService } from '@core/services/documents/payment-invoice.service';
+import { CustomerDetailPdfService } from '@core/services/documents/customer-detail-pdf.service';
+import { MonthlyCharge } from '@shared/models/monthly-charge';
+import { MONTH_NAMES_PT } from '@shared/constants/app-labels';
+import { money } from '@shared/utils/payment-presentation';
 
 @Component({
   selector: 'app-customer-details',
   standalone: false,
   templateUrl: './customer-details.component.html',
-  styleUrl: './customer-details.component.scss'
+  styleUrl: './customer-details.component.scss',
 })
 export class CustomerDetailsComponent implements OnInit {
-
   // =====================================================
   // INPUT
   // =====================================================
@@ -73,9 +62,15 @@ export class CustomerDetailsComponent implements OnInit {
   // FILTERS
   // =====================================================
 
-  selectedPeriodYear:number|null=null;
-  selectedPaymentYear:number|null=null;
-  get filteredTimeline(){return this.selectedPeriodYear===null ? this.monthlyTimeline : this.monthlyTimeline.filter(item=>item.referenceMonth.startsWith(this.selectedPeriodYear+'-'));}
+  selectedPeriodYear: number | null = null;
+  selectedPaymentYear: number | null = null;
+  get filteredTimeline() {
+    return this.selectedPeriodYear === null
+      ? this.monthlyTimeline
+      : this.monthlyTimeline.filter((item) =>
+          item.referenceMonth.startsWith(this.selectedPeriodYear + '-'),
+        );
+  }
   searchValue = '';
 
   visible = false;
@@ -143,7 +138,7 @@ export class CustomerDetailsComponent implements OnInit {
     private modal: NzModalService,
     private paymentInvoiceService: PaymentInvoiceService,
     private customerDetailPdfService: CustomerDetailPdfService,
-    private message: NzMessageService
+    private message: NzMessageService,
   ) {}
 
   // =====================================================
@@ -151,11 +146,9 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   ngOnInit(): void {
-
     this.createForm();
 
-    this.route.params.subscribe(params => {
-
+    this.route.params.subscribe((params) => {
       this.customerId = params['id'];
 
       this.loadCustomerData();
@@ -166,21 +159,20 @@ export class CustomerDetailsComponent implements OnInit {
 
   get initials(): string {
     const value = this.customer?.name || 'C';
-    return value
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(part => part.charAt(0).toUpperCase())
-      .join('') || 'C';
+    return (
+      value
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join('') || 'C'
+    );
   }
 
   get fullAddress(): string {
     return this.customer?.address || 'Sem endereco registado';
   }
-
-
-
 
   // =====================================================
   // RESIZE
@@ -188,7 +180,6 @@ export class CustomerDetailsComponent implements OnInit {
 
   @HostListener('window:resize')
   onResize(): void {
-
     this.updateDrawer();
   }
 
@@ -197,30 +188,16 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   createForm(): void {
-
     this.paymentForm = this.fb.group({
-
-      amount: [
-        '',
-        Validators.required
-      ],
+      amount: ['', Validators.required],
 
       unitPrice: [200],
 
       taxRate: [300],
 
-      numMonths: [
-        1,
-        [
-          Validators.required,
-          Validators.min(1)
-        ]
-      ],
+      numMonths: [1, [Validators.required, Validators.min(1)]],
 
-      paymentMethod: [
-        this.DEFAULT_PAYMENT_METHOD,
-        Validators.required
-      ]
+      paymentMethod: [this.DEFAULT_PAYMENT_METHOD, Validators.required],
     });
   }
 
@@ -228,30 +205,24 @@ export class CustomerDetailsComponent implements OnInit {
   // LOAD ALL DATA
   // =====================================================
 
-
   // =====================================================
   // GET CUSTOMER
   // =====================================================
 
   private getCustomer(): void {
+    this.customerService.getCustomerById(this.customerId).subscribe({
+      next: (customer: Customer) => {
+        this.customer = customer;
+        this.getCustomerTimeline();
+        this.calculateDebtMonths();
 
-    this.customerService
-      .getCustomerById(this.customerId)
-      .subscribe({
+        this.calculateDebtAmount();
 
-        next: (customer: Customer) => {
+        this.onNumMonthsChange();
+      },
 
-          this.customer = customer;
-          this.getCustomerTimeline();
-          this.calculateDebtMonths();
-
-          this.calculateDebtAmount();
-
-          this.onNumMonthsChange();
-        },
-
-        error: () => this.message.error('Erro ao carregar cliente.')
-      });
+      error: () => this.message.error('Erro ao carregar cliente.'),
+    });
   }
 
   // =====================================================
@@ -259,102 +230,63 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   getCustomerTimeline(): void {
-
     this.timelineLoading = true;
 
     this.billingService
       .getCustomerTimeline(this.customerId)
-      .pipe(finalize(() => this.timelineLoading = false))
+      .pipe(finalize(() => (this.timelineLoading = false)))
       .subscribe({
-
         next: (response: MonthlyCharge[]) => {
           if (response?.length) {
-
             this.monthlyTimeline = response;
-          }
-          else {
-
-            this.monthlyTimeline =
-              [];
+          } else {
+            this.monthlyTimeline = [];
           }
 
-          this.unpaidTimeline =
-            this.monthlyTimeline.filter(
-              m => !m.paid
-            );
+          this.unpaidTimeline = this.monthlyTimeline.filter((m) => !m.paid);
 
-          this.totalTimelineMonths =
-            this.monthlyTimeline.length;
+          this.totalTimelineMonths = this.monthlyTimeline.length;
 
-          this.totalPaidMonths =
-            this.monthlyTimeline.filter(
-              m => m.paid
-            ).length;
+          this.totalPaidMonths = this.monthlyTimeline.filter((m) => m.paid).length;
 
-          this.totalUnpaidMonths =
-            this.monthlyTimeline.filter(
-              m => !m.paid
-            ).length;
-
+          this.totalUnpaidMonths = this.monthlyTimeline.filter((m) => !m.paid).length;
         },
 
         error: () => {
+          this.monthlyTimeline = [];
 
-          this.monthlyTimeline =
-            [];
+          this.unpaidTimeline = this.monthlyTimeline.filter((m) => !m.paid);
 
-          this.unpaidTimeline =
-            this.monthlyTimeline.filter(
-              m => !m.paid
-            );
+          this.totalTimelineMonths = this.monthlyTimeline.length;
 
-          this.totalTimelineMonths =
-            this.monthlyTimeline.length;
+          this.totalPaidMonths = this.monthlyTimeline.filter((m) => m.paid).length;
 
-          this.totalPaidMonths =
-            this.monthlyTimeline.filter(
-              m => m.paid
-            ).length;
-
-          this.totalUnpaidMonths =
-            this.monthlyTimeline.filter(
-              m => !m.paid
-            ).length;
-
-        }
+          this.totalUnpaidMonths = this.monthlyTimeline.filter((m) => !m.paid).length;
+        },
       });
   }
 
   getCustomerPayments(): void {
-
     this.isLoading = true;
 
     this.paymentService
       .getCustomerPayments(this.customerId)
-      .pipe(finalize(() => this.isLoading = false))
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-
         next: (payments: Payment[]) => {
-
           this.paymentDataSource = payments;
 
-          this.listOfDisplayData = [
-            ...payments
-          ];
+          this.listOfDisplayData = [...payments];
 
           this.search();
-          this.totalPayments =
-            payments.length;
+          this.totalPayments = payments.length;
 
           if (payments.length > 0) {
-
-            this.lastPaymentDate =
-              payments[0].paymentDate;
+            this.lastPaymentDate = payments[0].paymentDate;
           }
-
         },
 
-        error: () => this.message.error('Erro ao carregar pagamentos.')
+        error: () => this.message.error('Erro ao carregar pagamentos.'),
       });
   }
 
@@ -363,27 +295,21 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   onNumMonthsChange(): void {
-
-    let numMonths = Number(
-      this.paymentForm.get('numMonths')?.value || 1
-    );
+    let numMonths = Number(this.paymentForm.get('numMonths')?.value || 1);
 
     if (!this.customer?.unpaidMonths?.length) {
-
       this.selectedMonths = [];
 
       return;
     }
 
-    const maxMonths =
-      this.customer.unpaidMonths.length;
+    const maxMonths = this.customer.unpaidMonths.length;
 
     // ================================================
     // MIN VALIDATION
     // ================================================
 
     if (numMonths < 1) {
-
       numMonths = 1;
     }
 
@@ -392,9 +318,8 @@ export class CustomerDetailsComponent implements OnInit {
     // ================================================
 
     if (numMonths > maxMonths) {
-
       this.message.warning(
-        `Foram informados ${numMonths} m?s(es), mas o cliente possui apenas ${maxMonths} por pagar.`
+        `Foram informados ${numMonths} m?s(es), mas o cliente possui apenas ${maxMonths} por pagar.`,
       );
 
       numMonths = maxMonths;
@@ -404,22 +329,15 @@ export class CustomerDetailsComponent implements OnInit {
     // UPDATE FORM
     // ================================================
 
-    this.paymentForm
-      .get('numMonths')
-      ?.setValue(
-        numMonths,
-        {
-          emitEvent: false
-        }
-      );
+    this.paymentForm.get('numMonths')?.setValue(numMonths, {
+      emitEvent: false,
+    });
 
     // ================================================
     // SELECT MONTHS
     // ================================================
 
-    this.selectedMonths =
-      this.customer.unpaidMonths
-        .slice(0, numMonths);
+    this.selectedMonths = this.customer.unpaidMonths.slice(0, numMonths);
 
     // ================================================
     // AUTO CALCULATE AMOUNT
@@ -427,13 +345,11 @@ export class CustomerDetailsComponent implements OnInit {
 
     this.paymentForm.patchValue(
       {
-        amount:
-          numMonths *
-          (this.customer.monthlyFee || 0)
+        amount: numMonths * (this.customer.monthlyFee || 0),
       },
       {
-        emitEvent: false
-      }
+        emitEvent: false,
+      },
     );
   }
 
@@ -443,23 +359,40 @@ export class CustomerDetailsComponent implements OnInit {
 
   savePayment(): void {
     if (this.isSavingPayment || this.paymentForm.invalid || !this.selectedMonths.length) {
-      if (!this.isSavingPayment) this.message.warning('Confira os períodos e os campos obrigatórios.');
+      if (!this.isSavingPayment)
+        this.message.warning('Confira os períodos e os campos obrigatórios.');
       return;
     }
-    const payload = {...this.paymentForm.value, customerId: this.customerId};
-    this.confirmations.payment({customerId: this.customerId, customer: this.customer.name,
-      amount: Number(payload.amount), months: [...this.selectedMonths], method: payload.paymentMethod || ''}, () => {
-      this.isSavingPayment = true;
-      return this.paymentService.addPayment(payload).pipe(finalize(() => this.isSavingPayment = false), tap({
-        next: () => { this.loadCustomerData(); this.closePaymentDrawer(); this.message.success('Pagamento registado com sucesso.'); },
-        error: () => this.message.error('Erro ao registar o pagamento. Confira o registo antes de tentar novamente.')
-      }));
-    });
+    const payload = { ...this.paymentForm.value, customerId: this.customerId };
+    this.confirmations.payment(
+      {
+        customerId: this.customerId,
+        customer: this.customer.name,
+        amount: Number(payload.amount),
+        months: [...this.selectedMonths],
+        method: payload.paymentMethod || '',
+      },
+      () => {
+        this.isSavingPayment = true;
+        return this.paymentService.addPayment(payload).pipe(
+          finalize(() => (this.isSavingPayment = false)),
+          tap({
+            next: () => {
+              this.loadCustomerData();
+              this.closePaymentDrawer();
+              this.message.success('Pagamento registado com sucesso.');
+            },
+            error: () =>
+              this.message.error(
+                'Erro ao registar o pagamento. Confira o registo antes de tentar novamente.',
+              ),
+          }),
+        );
+      },
+    );
   }
 
-
   loadCustomerData(): void {
-
     this.getCustomerPayments();
 
     this.getCustomer();
@@ -469,23 +402,16 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   openPaymentDrawer(): void {
-
-    if (
-      !this.customer?.unpaidMonths?.length
-    ) {
-
-      this.message.warning(
-        'Este cliente não possui mensalidades por pagar.'
-      );
+    if (!this.customer?.unpaidMonths?.length) {
+      this.message.warning('Este cliente não possui mensalidades por pagar.');
 
       return;
     }
 
     this.paymentForm.patchValue({
-
       numMonths: 1,
 
-      amount: this.customer.monthlyFee
+      amount: this.customer.monthlyFee,
     });
 
     this.onNumMonthsChange();
@@ -498,14 +424,12 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   closePaymentDrawer(): void {
-
     this.isPaymentDrawerVisible = false;
 
     this.paymentForm.reset({
-
       numMonths: 1,
 
-      paymentMethod: this.DEFAULT_PAYMENT_METHOD
+      paymentMethod: this.DEFAULT_PAYMENT_METHOD,
     });
 
     this.selectedMonths = [];
@@ -516,11 +440,24 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   deletePayment(data: Payment): void {
-    this.confirmations.deletion('payment', data.id, [data.referenceCode, data.customerName, this.formatMoney(data.amount)].filter(Boolean).join(' · '), 'deletePaymentNote',
-      () => this.paymentService.deletePayment(data.id).pipe(tap({
-        next: () => { this.loadCustomerData(); this.message.success('Pagamento eliminado com sucesso.'); },
-        error: () => this.message.error('Erro ao eliminar o pagamento.')
-      })));
+    this.confirmations.deletion(
+      'payment',
+      data.id,
+      [data.referenceCode, data.customerName, this.formatMoney(data.amount)]
+        .filter(Boolean)
+        .join(' · '),
+      'deletePaymentNote',
+      () =>
+        this.paymentService.deletePayment(data.id).pipe(
+          tap({
+            next: () => {
+              this.loadCustomerData();
+              this.message.success('Pagamento eliminado com sucesso.');
+            },
+            error: () => this.message.error('Erro ao eliminar o pagamento.'),
+          }),
+        ),
+    );
   }
 
   // =====================================================
@@ -528,9 +465,7 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   download(payment: Payment): void {
-
-    this.paymentInvoiceService
-      .downloadPaymentInvoice(payment);
+    this.paymentInvoiceService.downloadPaymentInvoice(payment);
   }
 
   // =====================================================
@@ -539,18 +474,23 @@ export class CustomerDetailsComponent implements OnInit {
 
   downloadCustomerInfo(): void {
     const download = (history: boolean) => {
-      this.customerDetailPdfService.downloadCustomerReport(this.customer,this.paymentDataSource,history);
+      this.customerDetailPdfService.downloadCustomerReport(
+        this.customer,
+        this.paymentDataSource,
+        history,
+      );
       dialog.destroy();
     };
     const dialog: NzModalRef = this.modal.create({
       nzTitle: 'Preparar ficha A4 do cliente',
-      nzContent: 'Escolha o conteúdo do documento. A ficha será gerada em A4 vertical, pronta para impressão.',
+      nzContent:
+        'Escolha o conteúdo do documento. A ficha será gerada em A4 vertical, pronta para impressão.',
       nzMaskClosable: false,
       nzFooter: [
-        {label:'Cancelar',onClick:()=>dialog.destroy()},
-        {label:'Apenas dados do cliente',onClick:()=>download(false)},
-        {label:'Incluir histórico',type:'primary',onClick:()=>download(true)}
-      ]
+        { label: 'Cancelar', onClick: () => dialog.destroy() },
+        { label: 'Apenas dados do cliente', onClick: () => download(false) },
+        { label: 'Incluir histórico', type: 'primary', onClick: () => download(true) },
+      ],
     });
   }
 
@@ -559,15 +499,11 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   updateDrawer(): void {
+    const isMobile = window.innerWidth <= this.MOBILE_BREAKPOINT;
 
-    const isMobile =
-      window.innerWidth <= this.MOBILE_BREAKPOINT;
+    this.drawerWidth = isMobile ? '100%' : 720;
 
-    this.drawerWidth =
-      isMobile ? '100%' : 720;
-
-    this.drawerPlacement =
-      'right';
+    this.drawerPlacement = 'right';
   }
 
   // =====================================================
@@ -575,18 +511,12 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   search(): void {
-
     this.visible = false;
 
-    this.listOfDisplayData =
-      this.paymentDataSource.filter(item=>matchesBusinessYear(item.paymentDate,this.selectedPaymentYear)).filter(
-        (item: Payment) =>
-
-          item.customerName
-            .toLowerCase()
-            .includes(
-              this.searchValue.toLowerCase()
-            )
+    this.listOfDisplayData = this.paymentDataSource
+      .filter((item) => matchesBusinessYear(item.paymentDate, this.selectedPaymentYear))
+      .filter((item: Payment) =>
+        item.customerName.toLowerCase().includes(this.searchValue.toLowerCase()),
       );
   }
 
@@ -595,7 +525,6 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   reset(): void {
-
     this.searchValue = '';
 
     this.search();
@@ -606,12 +535,10 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   onBack(): void {
-
     window.history.back();
   }
 
   goBack(): void {
-
     window.history.back();
   }
 
@@ -633,18 +560,13 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   private calculateDebtMonths(): void {
-
     if (!this.customer?.unpaidMonths?.length) {
-
       this.debtMonths = [];
 
       return;
     }
 
-    this.debtMonths =
-      this.customer.unpaidMonths.map(
-        month => this.formatMonth(month)
-      );
+    this.debtMonths = this.customer.unpaidMonths.map((month) => this.formatMonth(month));
   }
 
   // =====================================================
@@ -652,29 +574,21 @@ export class CustomerDetailsComponent implements OnInit {
   // =====================================================
 
   private calculateDebtAmount(): void {
-
-    this.totalDebtAmount =
-      this.customer.monthsInDebt *
-      this.customer.monthlyFee;
+    this.totalDebtAmount = this.customer.monthsInDebt * this.customer.monthlyFee;
   }
 
   // =====================================================
   // FORMAT REFERENCE
   // =====================================================
 
-  formatReferenceMonths(
-    reference: string
-  ): string {
-
+  formatReferenceMonths(reference: string): string {
     if (!reference) {
       return '';
     }
 
     return reference
       .split('|')
-      .map(month =>
-        this.formatMonth(month.trim())
-      )
+      .map((month) => this.formatMonth(month.trim()))
       .join(' | ');
   }
 
@@ -682,46 +596,35 @@ export class CustomerDetailsComponent implements OnInit {
   // FORMAT MONTH ARRAY
   // =====================================================
 
-  getFormattedReferenceMonths(
-    reference: string
-  ): string[] {
-
+  getFormattedReferenceMonths(reference: string): string[] {
     if (!reference) {
       return [];
     }
 
-    return reference
-      .split('|')
-      .map(month =>
-        this.formatMonth(month.trim())
-      );
+    return reference.split('|').map((month) => this.formatMonth(month.trim()));
   }
 
   // =====================================================
   // FORMAT MONTH
   // =====================================================
 
-  formatMonth(month: string | { referenceYear?: string | number; referenceMonth?: string | number } | null | undefined): string {
+  formatMonth(
+    month:
+      | string
+      | { referenceYear?: string | number; referenceMonth?: string | number }
+      | null
+      | undefined,
+  ): string {
     if (!month) {
       return '';
     }
 
     if (typeof month === 'object') {
+      if (month.referenceYear && month.referenceMonth) {
+        const monthValue = String(month.referenceMonth).padStart(2, '0');
 
-      if (
-        month.referenceYear &&
-        month.referenceMonth
-      ) {
-
-        const monthValue =
-          String(month.referenceMonth)
-            .padStart(2, '0');
-
-        month =
-          `${month.referenceYear}-${monthValue}`;
-      }
-      else {
-
+        month = `${month.referenceYear}-${monthValue}`;
+      } else {
         return '';
       }
     }
@@ -745,11 +648,7 @@ export class CustomerDetailsComponent implements OnInit {
   // TIMELINE HELPERS
   // =====================================================
 
-
-
-  formatTimelineMonth(
-    item: MonthlyCharge
-  ): string {
+  formatTimelineMonth(item: MonthlyCharge): string {
     const generatedMonth = item as MonthlyCharge & {
       referenceYear?: string | number;
       referenceMonth?: string | number;
@@ -758,26 +657,18 @@ export class CustomerDetailsComponent implements OnInit {
     if (generatedMonth.referenceYear && generatedMonth.referenceMonth) {
       return this.formatMonth({
         referenceYear: generatedMonth.referenceYear,
-        referenceMonth: generatedMonth.referenceMonth
+        referenceMonth: generatedMonth.referenceMonth,
       });
     }
 
-    return this.formatMonth(
-      item.referenceMonth
-    );
+    return this.formatMonth(item.referenceMonth);
   }
 
-  openPaymentByTimeline(
-    item: MonthlyCharge
-  ): void {
-
+  openPaymentByTimeline(item: MonthlyCharge): void {
     if (!item.id) {
       return;
     }
 
-    window.open(
-      `/app/payment-detail/${item.id}`,
-      '_blank'
-    );
+    window.open(`/app/payment-detail/${item.id}`, '_blank');
   }
 }

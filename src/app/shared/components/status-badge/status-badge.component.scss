@@ -1,21 +1,43 @@
-:host { display:inline-flex; max-width:100%; vertical-align:middle; }
+:host {
+  display: inline-flex;
+  max-width: 100%;
+  vertical-align: middle;
+}
 .status-badge {
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  max-width:100%;
-  padding:2px 7px;
-  border:1px solid var(--wsm-status-neutral-border);
-  border-radius:4px;
-  color:var(--wsm-status-neutral-text);
-  background:var(--wsm-status-neutral-bg);
-  font-size:12px;
-  font-weight:500;
-  line-height:18px;
-  white-space:nowrap;
-  nz-icon { flex:0 0 auto; font-size:12px; }
-  >span { overflow:hidden; text-overflow:ellipsis; }
-  &[data-tone='success'] { color:var(--wsm-status-success-text); background:var(--wsm-status-success-bg); border-color:var(--wsm-status-success-border); }
-  &[data-tone='pending'] { color:var(--wsm-status-pending-text); background:var(--wsm-status-pending-bg); border-color:var(--wsm-status-pending-border); }
-  &[data-tone='warning'] { color:var(--wsm-status-warning-text); background:var(--wsm-status-warning-bg); border-color:var(--wsm-status-warning-border); }
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 2px 7px;
+  border: 1px solid var(--wsm-status-neutral-border);
+  border-radius: 4px;
+  color: var(--wsm-status-neutral-text);
+  background: var(--wsm-status-neutral-bg);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+  nz-icon {
+    flex: 0 0 auto;
+    font-size: 12px;
+  }
+  > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &[data-tone='success'] {
+    color: var(--wsm-status-success-text);
+    background: var(--wsm-status-success-bg);
+    border-color: var(--wsm-status-success-border);
+  }
+  &[data-tone='pending'] {
+    color: var(--wsm-status-pending-text);
+    background: var(--wsm-status-pending-bg);
+    border-color: var(--wsm-status-pending-border);
+  }
+  &[data-tone='warning'] {
+    color: var(--wsm-status-warning-text);
+    background: var(--wsm-status-warning-bg);
+    border-color: var(--wsm-status-warning-border);
+  }
 }

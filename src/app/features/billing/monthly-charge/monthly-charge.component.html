@@ -1,5 +1,4 @@
 <div class="content-wrapper">
-
   <!-- HEADER -->
   <div class="page-header">
     <p>Meses de Cobrança</p>
@@ -11,12 +10,7 @@
 
   <!-- FILTER -->
   <div class="filters-panel">
-    <input
-      nz-input
-      placeholder="Buscar cliente"
-      [(ngModel)]="searchValue"
-      (input)="filterData()"
-    />
+    <input nz-input placeholder="Buscar cliente" [(ngModel)]="searchValue" (input)="filterData()" />
 
     <button nz-button nzType="primary" (click)="generateMonth()">
       <nz-icon nzType="plus"></nz-icon>
@@ -27,38 +21,33 @@
   <!-- TABLE -->
   <div class="table-wrapper">
     <nz-spin [nzSpinning]="isLoading">
-
-      <nz-table
-        [nzData]="listOfDisplayData"
-        [nzScroll]="{ y: 'calc(100vh - 330px)' }">
-
+      <nz-table [nzData]="listOfDisplayData" [nzScroll]="{ y: 'calc(100vh - 330px)' }">
         <thead>
-        <tr>
-          <th>Cliente</th>
-          <th>Mês</th>
-          <th>Estado</th>
-        </tr>
+          <tr>
+            <th>Cliente</th>
+            <th>Mês</th>
+            <th>Estado</th>
+          </tr>
         </thead>
 
         <tbody>
-        <tr *ngFor="let data of listOfDisplayData">
+          <tr *ngFor="let data of listOfDisplayData">
+            <td>{{ data.customerNameSnapshot }}</td>
 
-          <td>{{ data.customerNameSnapshot }}</td>
+            <td>
+              <app-info-tag kind="period" [value]="data.referenceMonth"></app-info-tag>
+            </td>
 
-          <td>
-            <app-info-tag kind="period" [value]="data.referenceMonth"></app-info-tag>
-          </td>
-
-          <td>
-            <app-status-badge kind="monthly" [value]="data.paid" [period]="data.referenceMonth"></app-status-badge>
-          </td>
-
-        </tr>
+            <td>
+              <app-status-badge
+                kind="monthly"
+                [value]="data.paid"
+                [period]="data.referenceMonth"
+              ></app-status-badge>
+            </td>
+          </tr>
         </tbody>
-
       </nz-table>
-
     </nz-spin>
   </div>
-
 </div>

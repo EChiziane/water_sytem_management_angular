@@ -1,4 +1,4 @@
-import {UserRole} from '@shared/models/user';
+import { UserRole } from '@shared/models/user';
 
 export const MONTH_NAMES_PT = [
   'Janeiro',
@@ -12,19 +12,19 @@ export const MONTH_NAMES_PT = [
   'Setembro',
   'Outubro',
   'Novembro',
-  'Dezembro'
+  'Dezembro',
 ] as const;
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   ADMIN: 'Administrador',
   MANAGER: 'Gestor',
   OPERATOR: 'Tesoureiro / Operador',
-  TECHNICIAN: 'Técnico'
+  TECHNICIAN: 'Técnico',
 };
 
 export const ROLE_OPTIONS = [
-  {label: ROLE_LABELS.ADMIN, value: 'ADMIN' as const},
-  {label: ROLE_LABELS.MANAGER, value: 'MANAGER' as const},
-  {label: ROLE_LABELS.OPERATOR, value: 'OPERATOR' as const},
-  {label: ROLE_LABELS.TECHNICIAN, value: 'TECHNICIAN' as const}
+  { label: ROLE_LABELS.ADMIN, value: 'ADMIN' as const },
+  { label: ROLE_LABELS.MANAGER, value: 'MANAGER' as const },
+  { label: ROLE_LABELS.OPERATOR, value: 'OPERATOR' as const },
+  { label: ROLE_LABELS.TECHNICIAN, value: 'TECHNICIAN' as const },
 ];

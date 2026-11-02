@@ -2,9 +2,14 @@
   <header class="page-header">
     <div class="compact-title-block">
       <p>Pagamentos</p>
-      <span class="list-meta">{{ totalPayments }} registos · {{ confirmedPayments }} confirmados · {{ pendingPayments }} pendentes</span>
+      <span class="list-meta"
+        >{{ totalPayments }} registos · {{ confirmedPayments }} confirmados ·
+        {{ pendingPayments }} pendentes</span
+      >
     </div>
-    <button (click)="onBack()" class="back-arrow" nz-button nzType="text" aria-label="Voltar"><nz-icon nzType="arrow-left"></nz-icon></button>
+    <button (click)="onBack()" class="back-arrow" nz-button nzType="text" aria-label="Voltar">
+      <nz-icon nzType="arrow-left"></nz-icon>
+    </button>
   </header>
   <section class="filters-panel">
     <nz-input-group nzPrefixIcon="search" class="search-input">
@@ -13,17 +18,27 @@
         [(ngModel)]="searchValue"
         nz-input
         placeholder="Pesquisar por codigo ou cliente"
-        type="text"/>
+        type="text"
+      />
     </nz-input-group>
 
-    <app-year-filter [(value)]="selectedYear" (valueChange)="filterData()" label="years.payment"></app-year-filter>
+    <app-year-filter
+      [(value)]="selectedYear"
+      (valueChange)="filterData()"
+      label="years.payment"
+    ></app-year-filter>
     <div class="filter-actions">
       <button (click)="reset()" nz-button nzType="default">
         <nz-icon nzTheme="outline" nzType="reload"></nz-icon>
         Limpar
       </button>
 
-      <button *ngIf="permissions.can('reports.financial')" (click)="downloadPaymentList()" nz-button nzType="default">
+      <button
+        *ngIf="permissions.can('reports.financial')"
+        (click)="downloadPaymentList()"
+        nz-button
+        nzType="default"
+      >
         <nz-icon nzTheme="outline" nzType="download"></nz-icon>
         Baixar lista
       </button>
@@ -57,7 +72,10 @@
             <dt>Montante</dt>
             <dd>{{ formatMoney(payment.amount) }}</dd>
 
-            <ul *ngIf="getFormattedReferenceMonths(payment.referenceMonth).length" class="mobile-month-bullets">
+            <ul
+              *ngIf="getFormattedReferenceMonths(payment.referenceMonth).length"
+              class="mobile-month-bullets"
+            >
               <li *ngFor="let month of getFormattedReferenceMonths(payment.referenceMonth)">
                 {{ month }}
               </li>
@@ -69,15 +87,36 @@
           </div>
           <div>
             <dt>Meses</dt>
-            <dd>{{ payment.numMonths || getFormattedReferenceMonths(payment.referenceMonth).length || 0 }}</dd>
+            <dd>
+              {{
+                payment.numMonths || getFormattedReferenceMonths(payment.referenceMonth).length || 0
+              }}
+            </dd>
           </div>
           <div>
             <dt>Data</dt>
-            <dd>{{ payment.paymentDate | businessDate:'datetime' }}</dd>
+            <dd>{{ payment.paymentDate | businessDate: 'datetime' }}</dd>
           </div>
         </dl>
 
-        <div class="mobile-card-actions wsm-row-actions"><app-row-action action="view" [route]="['/app/payment-detail', payment.id]" [context]="payment.referenceCode || payment.customerName"></app-row-action><app-row-action action="download" (activated)="download(payment)" [context]="payment.referenceCode || payment.customerName" [showLabel]="true"></app-row-action><app-row-action action="call" [href]="phoneHref(payment.customerContact)" [context]="payment.customerName"></app-row-action></div>
+        <div class="mobile-card-actions wsm-row-actions">
+          <app-row-action
+            action="view"
+            [route]="['/app/payment-detail', payment.id]"
+            [context]="payment.referenceCode || payment.customerName"
+          ></app-row-action
+          ><app-row-action
+            action="download"
+            (activated)="download(payment)"
+            [context]="payment.referenceCode || payment.customerName"
+            [showLabel]="true"
+          ></app-row-action
+          ><app-row-action
+            action="call"
+            [href]="phoneHref(payment.customerContact)"
+            [context]="payment.customerName"
+          ></app-row-action>
+        </div>
       </article>
     </div>
   </nz-spin>
@@ -104,47 +143,82 @@
           [nzPageSize]="8"
           [nzScroll]="{ x: '1330px', y: '440px' }"
           class="compact-payment-table"
-          nzTableLayout="fixed">
+          nzTableLayout="fixed"
+        >
           <thead>
-          <tr>
-            <th nzWidth="160px">Codigo</th>
-            <th nzWidth="220px">Cliente</th>
-            <th nzWidth="130px">Montante</th>
-            <th nzWidth="160px">Mes de referencia</th>
-            <th nzWidth="100px">Metodo</th>
-            <th nzWidth="140px">Estado</th>
-            <th nzWidth="160px">Criado por</th>
-            <th nzWidth="180px">Data</th>
-            <th class="wsm-actions-column" nzWidth="128px">{{ 'tableActions.heading' | translate }}</th>
-          </tr>
+            <tr>
+              <th nzWidth="160px">Codigo</th>
+              <th nzWidth="220px">Cliente</th>
+              <th nzWidth="130px">Montante</th>
+              <th nzWidth="160px">Mes de referencia</th>
+              <th nzWidth="100px">Metodo</th>
+              <th nzWidth="140px">Estado</th>
+              <th nzWidth="160px">Criado por</th>
+              <th nzWidth="180px">Data</th>
+              <th class="wsm-actions-column" nzWidth="128px">
+                {{ 'tableActions.heading' | translate }}
+              </th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr *ngFor="let data of nzTable.data">
-            <td><app-info-tag kind="reference" [value]="data.referenceCode"></app-info-tag></td>
-            <td>
-              <div class="payment-customer-cell">
-                <span class="customer-avatar-mini">{{ getCustomerInitials(data.customerName) }}</span>
-                <div>
-                  <strong>{{ data.customerName || '-' }}</strong>
-                  <span class="muted-text">{{ data.customerContact || 'Sem contacto' }}</span>
+            <tr *ngFor="let data of nzTable.data">
+              <td><app-info-tag kind="reference" [value]="data.referenceCode"></app-info-tag></td>
+              <td>
+                <div class="payment-customer-cell">
+                  <span class="customer-avatar-mini">{{
+                    getCustomerInitials(data.customerName)
+                  }}</span>
+                  <div>
+                    <strong>{{ data.customerName || '-' }}</strong>
+                    <span class="muted-text">{{ data.customerContact || 'Sem contacto' }}</span>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td><span class="amount">{{ formatMoney(data.amount) }}</span></td>
-            <td>
-              <ul class="table-month-bullets" *ngIf="getFormattedReferenceMonths(data.referenceMonth).length; else noTableMonths">
-                <li *ngFor="let month of getFormattedReferenceMonths(data.referenceMonth)">{{ month }}</li>
-              </ul>
-              <ng-template #noTableMonths>-</ng-template>
-            </td>
-            <td><app-info-tag kind="method" [value]="data.paymentMethod"></app-info-tag></td>
-            <td><app-status-badge kind="payment" [value]="data.confirmed"></app-status-badge></td>
-            <td>{{ data.createdByName || 'Sistema' }}</td>
-            <td>{{ data.paymentDate | businessDate:'datetime' }}</td>
-            <td class="wsm-actions-cell"><div class="wsm-row-actions" role="group" [attr.aria-label]="('tableActions.heading' | translate) + ' · ' + (data.referenceCode || data.customerName)"><app-row-action action="view" [route]="['/app/payment-detail', data.id]" [context]="data.referenceCode || data.customerName"></app-row-action><app-row-action action="download" (activated)="download(data)" [context]="data.referenceCode || data.customerName"></app-row-action></div>
-            </td>
-          </tr>
+              </td>
+              <td>
+                <span class="amount">{{ formatMoney(data.amount) }}</span>
+              </td>
+              <td>
+                <ul
+                  class="table-month-bullets"
+                  *ngIf="
+                    getFormattedReferenceMonths(data.referenceMonth).length;
+                    else noTableMonths
+                  "
+                >
+                  <li *ngFor="let month of getFormattedReferenceMonths(data.referenceMonth)">
+                    {{ month }}
+                  </li>
+                </ul>
+                <ng-template #noTableMonths>-</ng-template>
+              </td>
+              <td><app-info-tag kind="method" [value]="data.paymentMethod"></app-info-tag></td>
+              <td><app-status-badge kind="payment" [value]="data.confirmed"></app-status-badge></td>
+              <td>{{ data.createdByName || 'Sistema' }}</td>
+              <td>{{ data.paymentDate | businessDate: 'datetime' }}</td>
+              <td class="wsm-actions-cell">
+                <div
+                  class="wsm-row-actions"
+                  role="group"
+                  [attr.aria-label]="
+                    ('tableActions.heading' | translate) +
+                    ' · ' +
+                    (data.referenceCode || data.customerName)
+                  "
+                >
+                  <app-row-action
+                    action="view"
+                    [route]="['/app/payment-detail', data.id]"
+                    [context]="data.referenceCode || data.customerName"
+                  ></app-row-action
+                  ><app-row-action
+                    action="download"
+                    (activated)="download(data)"
+                    [context]="data.referenceCode || data.customerName"
+                  ></app-row-action>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </nz-table>
       </nz-spin>
@@ -168,7 +242,8 @@
   [nzPlacement]="drawerPlacement"
   [nzTitle]="paymentDrawerTitle"
   [nzVisible]="isPaymentDrawerVisible"
-  [nzWidth]="drawerWidth">
+  [nzWidth]="drawerWidth"
+>
   <nz-spin *nzDrawerContent [nzSpinning]="isSaving" nzTip="A gravar pagamento...">
     <form [formGroup]="paymentForm" class="drawer-form" nz-form>
       <section class="drawer-section">
@@ -182,11 +257,13 @@
               formControlName="customerId"
               nzAllowClear
               nzPlaceHolder="Selecione o cliente"
-              nzShowSearch>
+              nzShowSearch
+            >
               <nz-option
                 *ngFor="let c of allCustomers"
                 [nzLabel]="c.name + ' - ' + c.unpaidMonths.length + ' mensalidade(s) por pagar'"
-                [nzValue]="c.id">
+                [nzValue]="c.id"
+              >
               </nz-option>
             </nz-select>
           </nz-form-control>
@@ -205,15 +282,24 @@
 
           <div class="customer-details">
             <h3>{{ selectedCustomer.name }}</h3>
-            <p><nz-icon nzType="phone"></nz-icon>{{ selectedCustomer.contact || 'Sem contacto' }}</p>
-            <p><nz-icon nzType="environment"></nz-icon>{{ selectedCustomer.address || 'Sem endereco' }}</p>
+            <p>
+              <nz-icon nzType="phone"></nz-icon>{{ selectedCustomer.contact || 'Sem contacto' }}
+            </p>
+            <p>
+              <nz-icon nzType="environment"></nz-icon
+              >{{ selectedCustomer.address || 'Sem endereco' }}
+            </p>
           </div>
         </div>
 
         <div class="customer-tags">
           <app-info-tag kind="reference" [value]="selectedCustomer.code"></app-info-tag>
           <app-info-tag kind="valve" [value]="selectedCustomer.valve"></app-info-tag>
-          <app-status-badge [showCount]="true" kind="debt" [value]="selectedCustomer.monthsInDebt"></app-status-badge>
+          <app-status-badge
+            [showCount]="true"
+            kind="debt"
+            [value]="selectedCustomer.monthsInDebt"
+          ></app-status-badge>
         </div>
       </section>
 
@@ -253,7 +339,8 @@
                 formControlName="numMonths"
                 nz-input
                 placeholder="Digite o numero de meses"
-                type="number"/>
+                type="number"
+              />
             </nz-form-control>
           </nz-form-item>
 
@@ -261,7 +348,12 @@
             <nz-form-label>Montante</nz-form-label>
             <nz-form-control>
               <nz-input-group nzAddOnBefore="MZN">
-                <input formControlName="amount" nz-input placeholder="Digite o valor" type="number">
+                <input
+                  formControlName="amount"
+                  nz-input
+                  placeholder="Digite o valor"
+                  type="number"
+                />
               </nz-input-group>
             </nz-form-control>
           </nz-form-item>
@@ -270,7 +362,10 @@
             <nz-form-label>Metodo de pagamento</nz-form-label>
             <nz-form-control>
               <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o metodo">
-                <nz-option [nzLabel]="'metadata.methods.cash' | translate" nzValue="CASH"></nz-option>
+                <nz-option
+                  [nzLabel]="'metadata.methods.cash' | translate"
+                  nzValue="CASH"
+                ></nz-option>
                 <nz-option nzLabel="M-Pesa" nzValue="MPESA"></nz-option>
                 <nz-option nzLabel="e-Mola" nzValue="EMOLA"></nz-option>
                 <nz-option nzLabel="BCI" nzValue="BCI"></nz-option>
@@ -301,7 +396,13 @@
 
 <ng-template #paymentDrawerFooter>
   <div class="drawer-footer">
-    <button (click)="closePaymentDrawer()" [disabled]="isSaving" class="btn-cancel" nz-button nzType="default">
+    <button
+      (click)="closePaymentDrawer()"
+      [disabled]="isSaving"
+      class="btn-cancel"
+      nz-button
+      nzType="default"
+    >
       Cancelar
     </button>
 
@@ -311,7 +412,8 @@
       [nzLoading]="isSaving"
       class="primary-water-action"
       nz-button
-      nzType="primary">
+      nzType="primary"
+    >
       Confirmar pagamento
     </button>
   </div>

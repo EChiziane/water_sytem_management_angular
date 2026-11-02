@@ -9,8 +9,10 @@
     "test": "ng test",
     "serve:ssr:WaterSystemManagementAngular": "node dist/water-system-management-angular/server/server.mjs",
     "test:api": "node --test server/tests/*.test.mjs",
-    "data:validate": "node tools/blob-data.mjs validate",
-    "data:initialize": "node tools/blob-data.mjs initialize"
+    "data:validate": "node tools/data/blob-data.mjs validate",
+    "data:initialize": "node tools/data/blob-data.mjs initialize",
+    "format": "prettier --write src server api tools angular.json vercel.json package.json tsconfig*.json",
+    "format:check": "prettier --check src server api tools angular.json vercel.json package.json tsconfig*.json"
   },
   "private": true,
   "dependencies": {
@@ -47,6 +49,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "prettier": "^3.9.10",
     "typescript": "~5.7.2"
   },
   "engines": {

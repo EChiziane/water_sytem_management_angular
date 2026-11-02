@@ -70,7 +70,7 @@ Não colocar tokens em environments.ts, TXT público, Git ou mensagens do chat. 
 3. Usar Node 22 e executar:
 
 ```powershell
-node --env-file=.env.local tools/blob-data.mjs validate "CAMINHO_DA_COPIA.txt"
+node --env-file=.env.local tools/data/blob-data.mjs validate "CAMINHO_DA_COPIA.txt"
 ```
 
 O comando mostra contagens e total dos pagamentos, sem imprimir credenciais. Valida autores/clientes, períodos, unicidade de referências e coerência das alocações. Conflitos são recusados; não se apagam registos para fazer a migração passar. IDs, referências e datas são preservados. Uma cópia sem recibo para um pagamento confirmado ganha apenas o recibo que falta. Alocações históricas sem valores individuais são distribuídas em centavos preservando o total e assinaladas como estimadas.
@@ -78,7 +78,7 @@ O comando mostra contagens e total dos pagamentos, sem imprimir credenciais. Val
 4. Conferir os valores com a cópia original. Depois:
 
 ```powershell
-node --env-file=.env.local tools/blob-data.mjs initialize "CAMINHO_DA_COPIA.txt"
+node --env-file=.env.local tools/data/blob-data.mjs initialize "CAMINHO_DA_COPIA.txt"
 ```
 
 O script preserva o original em private-data, cria snapshot privado e inicializa apenas se state.txt ainda não existe. Não usar initialize para substituir uma base em utilização. Não foram importados os dados reais nesta sessão.
@@ -112,3 +112,5 @@ Resultados executados nesta etapa:
 - Sem acesso visual ao navegador de trabalho, sem integração com Blob real, sem migração em PostgreSQL real e sem deploy. Esses passos continuam necessários para aceitar a publicação.
 
 Referências técnicas: https://vercel.com/docs/vercel-blob/using-blob-sdk e https://vercel.com/docs/vercel-blob/private-storage.
+
+A estrutura de módulos foi reorganizada posteriormente; consultar [Organização do código](18-organizacao-clean-code.md). As ferramentas de dados mantêm os mesmos argumentos em tools/data/.

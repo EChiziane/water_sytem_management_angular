@@ -1,19 +1,18 @@
-import {environment} from '../../../environments/environments';
-import {isPlatformBrowser} from '@angular/common';
-import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
-import {User} from '@shared/models/user';
+import { environment } from '../../../environments/environments';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { User } from '@shared/models/user';
 
 type StoredUser = Partial<Omit<User, 'password'>>;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthSessionService {
   private readonly tokenKey = 'token';
   private readonly userKey = 'user';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
-  }
+  constructor(@Inject(PLATFORM_ID) private platformId: object) {}
 
   getToken(): string | null {
     return this.read(this.tokenKey);
@@ -31,14 +30,16 @@ export class AuthSessionService {
     }
 
     try {
-      const user=JSON.parse(rawUser) as StoredUser;
-      if(this.getToken()==='local-water-session') {
-        const rawState=this.read(environment.waterStorageKey);
-        if(!rawState)return null;
-        const stored=JSON.parse(rawState);
-        const current=(stored.state || stored).users?.find((item:StoredUser)=>item.id===user.id);
-        if(!current)return null;
-        return {...user,role:current.role,status:current.status};
+      const user = JSON.parse(rawUser) as StoredUser;
+      if (this.getToken() === 'local-water-session') {
+        const rawState = this.read(environment.waterStorageKey);
+        if (!rawState) return null;
+        const stored = JSON.parse(rawState);
+        const current = (stored.state || stored).users?.find(
+          (item: StoredUser) => item.id === user.id,
+        );
+        if (!current) return null;
+        return { ...user, role: current.role, status: current.status };
       }
       return user;
     } catch {
@@ -56,7 +57,7 @@ export class AuthSessionService {
       phone: user.phone,
       login: user.login,
       role: user.role,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
     };
 
     this.write(this.userKey, JSON.stringify(safeUser));
@@ -64,8 +65,9 @@ export class AuthSessionService {
 
   hasValidSession(): boolean {
     const token = this.getToken();
-    if(this.getUser()?.status !== 'ACTIVE')return false;
-    if(token === 'local-water-session')return !environment.production && environment.useLocalFallback;
+    if (this.getUser()?.status !== 'ACTIVE') return false;
+    if (token === 'local-water-session')
+      return !environment.production && environment.useLocalFallback;
     return !!token && !this.isTokenExpired(token);
   }
 

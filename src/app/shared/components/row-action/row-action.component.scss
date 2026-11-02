@@ -1,4 +1,8 @@
-:host { display: inline-flex; flex: 0 0 auto; vertical-align: middle; }
+:host {
+  display: inline-flex;
+  flex: 0 0 auto;
+  vertical-align: middle;
+}
 
 .row-action {
   display: inline-flex;
@@ -19,18 +23,59 @@
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color 120ms, border-color 120ms, color 120ms;
+  transition:
+    background-color 120ms,
+    border-color 120ms,
+    color 120ms;
 
-  nz-icon { font-size: 15px; }
-  &:hover { color: #174f8c; border-color: #a9bfd8; background: #f0f5fb; }
-  &:focus-visible { outline: 2px solid #2474c5; outline-offset: 3px; }
-  &:active { background: #e2edf9; }
-  &.row-action-view { color: #1c5790; border-color: #d7e5f4; background: #edf4fc; }
-  &.row-action-view:hover { border-color: #a9bfd8; background: #dfecfa; }
-  &.row-action-danger { color: #b54343; }
-  &.row-action-danger:hover { color: #a52b2b; border-color: #e7b9b9; background: #fff2f2; }
-  &:disabled { color: #a0a8b4; border-color: #e7ebf0; background: var(--wsm-meta-bg); cursor: not-allowed; }
+  nz-icon {
+    font-size: 15px;
+  }
+  &:hover {
+    color: #174f8c;
+    border-color: #a9bfd8;
+    background: #f0f5fb;
+  }
+  &:focus-visible {
+    outline: 2px solid #2474c5;
+    outline-offset: 3px;
+  }
+  &:active {
+    background: #e2edf9;
+  }
+  &.row-action-view {
+    color: #1c5790;
+    border-color: #d7e5f4;
+    background: #edf4fc;
+  }
+  &.row-action-view:hover {
+    border-color: #a9bfd8;
+    background: #dfecfa;
+  }
+  &.row-action-danger {
+    color: #b54343;
+  }
+  &.row-action-danger:hover {
+    color: #a52b2b;
+    border-color: #e7b9b9;
+    background: #fff2f2;
+  }
+  &:disabled {
+    color: #a0a8b4;
+    border-color: #e7ebf0;
+    background: var(--wsm-meta-bg);
+    cursor: not-allowed;
+  }
 }
 
-@media (pointer: coarse) { .row-action { min-width: 40px; height: 40px; } }
-@media (prefers-reduced-motion: reduce) { .row-action { transition: none; } }
+@media (pointer: coarse) {
+  .row-action {
+    min-width: 40px;
+    height: 40px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .row-action {
+    transition: none;
+  }
+}

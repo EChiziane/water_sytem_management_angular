@@ -1,26 +1,28 @@
-import {CompanyProfileService} from '@core/services/company-profile.service';
-import {COMPANY_PROFILE} from '@shared/config/company-profile';
-import {CompanyProfile} from '@shared/models/company-profile';
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {AuthService} from '@core/auth/auth.service';
-import {Router} from '@angular/router';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {NzMessageService} from 'ng-zorro-antd/message';
+import { CompanyProfileService } from '@core/services/company/company-profile.service';
+import { COMPANY_PROFILE } from '@shared/config/company-profile';
+import { CompanyProfile } from '@shared/models/company-profile';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AuthService } from '@core/auth/auth.service';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-login',
   standalone: false,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
-  company: Pick<CompanyProfile,'name'|'address'|'contact'|'email'|'tagline'> = {...COMPANY_PROFILE};
+  company: Pick<CompanyProfile, 'name' | 'address' | 'contact' | 'email' | 'tagline'> = {
+    ...COMPANY_PROFILE,
+  };
   @Output() loginSuccess = new EventEmitter<void>();
 
   userForm = new FormGroup({
     login: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
-    rememberMe: new FormControl(false)
+    rememberMe: new FormControl(false),
   });
 
   isRegisterVisible = false;
@@ -36,13 +38,13 @@ export class LoginComponent implements OnInit {
   recoveryPreview: { maskedName: string; maskedEmail: string; maskedPhone: string } | null = null;
 
   forgotPasswordForm = new FormGroup({
-    phoneWhatsApp: new FormControl('', [Validators.required])
+    phoneWhatsApp: new FormControl('', [Validators.required]),
   });
 
   resetPasswordForm = new FormGroup({
     otpCode: new FormControl('', [Validators.required, Validators.minLength(4)]),
     newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    confirmPassword: new FormControl('', [Validators.required])
+    confirmPassword: new FormControl('', [Validators.required]),
   });
 
   isResetPasswordVisible = false;
@@ -52,13 +54,12 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private companies: CompanyProfileService,
     private router: Router,
-    private msg: NzMessageService
-  ) {
-  }
+    private msg: NzMessageService,
+  ) {}
 
   ngOnInit(): void {
     this.logout();
-    this.companies.getPublicProfile().subscribe(profile=>this.company=profile);
+    this.companies.getPublicProfile().subscribe((profile) => (this.company = profile));
   }
 
   logout(): void {
@@ -101,10 +102,9 @@ export class LoginComponent implements OnInit {
       error: () => {
         this.isLoading = false;
         this.responseMessage = 'Login inválido';
-      }
+      },
     });
   }
-
 
   openRegisterModal(): void {
     this.isRegisterVisible = true;
@@ -136,7 +136,7 @@ export class LoginComponent implements OnInit {
 
   requestRecovery(): void {
     if (this.forgotPasswordForm.invalid) {
-      Object.values(this.forgotPasswordForm.controls).forEach(c => c.markAsTouched());
+      Object.values(this.forgotPasswordForm.controls).forEach((c) => c.markAsTouched());
       this.msg.error('Informe o número de WhatsApp.');
       return;
     }
@@ -153,7 +153,7 @@ export class LoginComponent implements OnInit {
       error: () => {
         this.recoveryLoading = false;
         this.msg.error('Não foi possível localizar a conta com esse WhatsApp.');
-      }
+      },
     });
   }
 
@@ -170,7 +170,7 @@ export class LoginComponent implements OnInit {
       error: () => {
         this.recoveryLoading = false;
         this.msg.error('Não foi possível iniciar o envio do código.');
-      }
+      },
     });
   }
 
@@ -181,7 +181,7 @@ export class LoginComponent implements OnInit {
 
   submitResetPassword(): void {
     if (this.resetPasswordForm.invalid) {
-      Object.values(this.resetPasswordForm.controls).forEach(c => c.markAsTouched());
+      Object.values(this.resetPasswordForm.controls).forEach((c) => c.markAsTouched());
       this.msg.error('Preencha o código e a nova senha.');
       return;
     }
@@ -205,7 +205,7 @@ export class LoginComponent implements OnInit {
       error: () => {
         this.recoveryLoading = false;
         this.msg.error('Código inválido ou expirado.');
-      }
+      },
     });
   }
 

@@ -1,17 +1,17 @@
-import {PermissionService} from '@core/auth/permission.service';
-import {Component, OnInit} from '@angular/core';
-import {catchError, finalize, forkJoin, of} from 'rxjs';
-import {CustomerService} from '@core/services/customer.service';
-import {PaymentService} from '@core/services/payment.service';
-import {Customer} from '@shared/models/WSM/customer';
-import {Payment} from '@shared/models/WSM/payment';
-import {businessTimestamp, maputoMonthKey} from '@shared/utils/business-date';
+import { PermissionService } from '@core/auth/permission.service';
+import { Component, OnInit } from '@angular/core';
+import { catchError, finalize, forkJoin, of } from 'rxjs';
+import { CustomerService } from '@core/services/customers/customer.service';
+import { PaymentService } from '@core/services/payments/payment.service';
+import { Customer } from '@shared/models/customer';
+import { Payment } from '@shared/models/payment';
+import { businessTimestamp, maputoMonthKey } from '@shared/utils/business-date';
 
 @Component({
   selector: 'app-dashboard',
   standalone: false,
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
   isLoading = false;
@@ -24,14 +24,22 @@ export class DashboardComponent implements OnInit {
   recentPayments: Payment[] = [];
   debtors: Customer[] = [];
 
-  constructor(public permissions: PermissionService, private customerService: CustomerService, private paymentService: PaymentService) {}
+  constructor(
+    public permissions: PermissionService,
+    private customerService: CustomerService,
+    private paymentService: PaymentService,
+  ) {}
 
-  ngOnInit(): void { this.loadDashboard(); }
+  ngOnInit(): void {
+    this.loadDashboard();
+  }
 
-  paymentDate(payment: Payment): number { return businessTimestamp(payment.paymentDate); }
+  paymentDate(payment: Payment): number {
+    return businessTimestamp(payment.paymentDate);
+  }
 
   loadDashboard(): void {
-    if(!this.permissions.can('customers.read'))return;
+    if (!this.permissions.can('customers.read')) return;
     this.asOf = new Date();
     const currentMonth = maputoMonthKey(this.asOf);
     this.isLoading = true;
@@ -41,20 +49,29 @@ export class DashboardComponent implements OnInit {
     this.debtors = [];
     forkJoin({
       customers: this.customerService.getCustomers().pipe(catchError(() => of(null))),
-      payments: this.paymentService.getPayments().pipe(catchError(() => of(null)))
-    }).pipe(finalize(() => this.isLoading = false)).subscribe(({customers, payments}) => {
-      this.loadFailed = customers === null;
-      this.paymentsFailed = payments === null;
-      if (customers) {
-        this.totalCustomers = customers.length;
-        this.activeCustomers = customers.filter(customer => ['ATIVO', 'ACTIVE'].includes((customer.status || '').toUpperCase())).length;
-        this.inactiveCustomers = customers.filter(customer => ['INATIVO', 'INACTIVE', 'CANCELLED'].includes((customer.status || '').toUpperCase())).length;
-        this.debtors = customers.filter(customer => customer.monthsInDebt > 0)
-          .sort((a, b) => b.monthsInDebt - a.monthsInDebt || a.name.localeCompare(b.name)).slice(0, 10);
-      }
-      this.recentPayments = (payments || [])
-        .filter(payment => maputoMonthKey(new Date(this.paymentDate(payment))) === currentMonth)
-        .sort((a, b) => this.paymentDate(b) - this.paymentDate(a)).slice(0, 10);
-    });
+      payments: this.paymentService.getPayments().pipe(catchError(() => of(null))),
+    })
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe(({ customers, payments }) => {
+        this.loadFailed = customers === null;
+        this.paymentsFailed = payments === null;
+        if (customers) {
+          this.totalCustomers = customers.length;
+          this.activeCustomers = customers.filter((customer) =>
+            ['ATIVO', 'ACTIVE'].includes((customer.status || '').toUpperCase()),
+          ).length;
+          this.inactiveCustomers = customers.filter((customer) =>
+            ['INATIVO', 'INACTIVE', 'CANCELLED'].includes((customer.status || '').toUpperCase()),
+          ).length;
+          this.debtors = customers
+            .filter((customer) => customer.monthsInDebt > 0)
+            .sort((a, b) => b.monthsInDebt - a.monthsInDebt || a.name.localeCompare(b.name))
+            .slice(0, 10);
+        }
+        this.recentPayments = (payments || [])
+          .filter((payment) => maputoMonthKey(new Date(this.paymentDate(payment))) === currentMonth)
+          .sort((a, b) => this.paymentDate(b) - this.paymentDate(a))
+          .slice(0, 10);
+      });
   }
 }

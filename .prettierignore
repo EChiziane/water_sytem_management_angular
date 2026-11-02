@@ -1,0 +1,9 @@
+node_modules/
+.angular/
+dist/
+tmp/
+output/
+public/data/
+package-lock.json
+*.pdf
+*.txt

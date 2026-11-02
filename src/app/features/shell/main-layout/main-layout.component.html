@@ -5,8 +5,8 @@
     class="app-sidebar"
     nzBreakpoint="lg"
     nzCollapsible
-    nzWidth="240px">
-
+    nzWidth="240px"
+  >
     <div class="brand">
       <div class="brand-mark">
         <span>{{ 'app.brandShort' | translate }}</span>
@@ -18,12 +18,29 @@
       </div>
     </div>
 
-    <ul [nzInlineCollapsed]="isCollapsed" class="nav-menu" nz-menu nzMode="inline" nzTheme="dark" [attr.aria-label]="'layout.nav.main' | translate">
-      <li *ngFor="let group of navigationGroups; trackBy: trackGroup" nz-menu-group [nzTitle]="group.label | translate">
+    <ul
+      [nzInlineCollapsed]="isCollapsed"
+      class="nav-menu"
+      nz-menu
+      nzMode="inline"
+      nzTheme="dark"
+      [attr.aria-label]="'layout.nav.main' | translate"
+    >
+      <li
+        *ngFor="let group of navigationGroups; trackBy: trackGroup"
+        nz-menu-group
+        [nzTitle]="group.label | translate"
+      >
         <ul>
           <li *ngFor="let item of group.items" nz-menu-item [nzSelected]="isNavigationActive(item)">
-            <a [routerLink]="item.path" [attr.aria-label]="item.label | translate" [attr.aria-current]="isNavigationActive(item) ? 'page' : null"
-              nz-tooltip [nzTooltipTitle]="isCollapsed ? (item.label | translate) : null" nzTooltipPlacement="right">
+            <a
+              [routerLink]="item.path"
+              [attr.aria-label]="item.label | translate"
+              [attr.aria-current]="isNavigationActive(item) ? 'page' : null"
+              nz-tooltip
+              [nzTooltipTitle]="isCollapsed ? (item.label | translate) : null"
+              nzTooltipPlacement="right"
+            >
               <span nz-icon [nzType]="item.icon" aria-hidden="true"></span>
               <span class="nav-label">{{ item.label | translate }}</span>
             </a>
@@ -43,7 +60,8 @@
         (click)="togglePrimaryNavigation()"
         aria-label="Alternar menu"
         class="nav-toggle"
-        type="button">
+        type="button"
+      >
         <span [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" nz-icon></span>
       </button>
 
@@ -53,13 +71,16 @@
       </div>
 
       <div class="topbar-actions">
-        <span *ngIf="mode.local" class="local-mode-label" role="status">{{ 'layout.status.demoActive' | translate }}</span>
+        <span *ngIf="mode.local" class="local-mode-label" role="status">{{
+          'layout.status.demoActive' | translate
+        }}</span>
         <button
           [nzDropdownMenu]="languageMenu"
           class="language-switch"
           nz-dropdown
           nzTrigger="click"
-          type="button">
+          type="button"
+        >
           <span nz-icon nzType="global"></span>
           <span>{{ currentLanguageLabel }}</span>
           <span nz-icon nzType="down"></span>
@@ -93,7 +114,11 @@
             </a>
           </li>
 
-          <li *ngIf="permissions.can('company.manage')" nz-menu-item><a routerLink="/app/company"><span nz-icon nzType="bank"></span>{{ 'layout.nav.company' | translate }}</a></li>
+          <li *ngIf="permissions.can('company.manage')" nz-menu-item>
+            <a routerLink="/app/company"
+              ><span nz-icon nzType="bank"></span>{{ 'layout.nav.company' | translate }}</a
+            >
+          </li>
           <li *ngIf="permissions.can('users.manage')" nz-menu-item>
             <a routerLink="/app/users">
               <span nz-icon nzType="user-switch"></span>
@@ -114,7 +139,8 @@
             *ngFor="let language of translationService.languages"
             (click)="changeLanguage(language.code)"
             [class.active]="language.code === currentLanguage"
-            nz-menu-item>
+            nz-menu-item
+          >
             <span class="language-option-code">{{ languageShortLabel(language.code) }}</span>
             <span>{{ language.label }}</span>
             <span *ngIf="language.code === currentLanguage" nz-icon nzType="check"></span>
@@ -138,12 +164,25 @@
   class="mobile-navigation-drawer"
   nzPlacement="left"
   [nzTitle]="'app.name' | translate"
-  nzWidth="320px">
-  <nav *nzDrawerContent class="mobile-navigation" [attr.aria-label]="'layout.nav.mobile' | translate">
-    <section *ngFor="let group of navigationGroups; trackBy: trackGroup" [attr.aria-label]="group.label | translate">
+  nzWidth="320px"
+>
+  <nav
+    *nzDrawerContent
+    class="mobile-navigation"
+    [attr.aria-label]="'layout.nav.mobile' | translate"
+  >
+    <section
+      *ngFor="let group of navigationGroups; trackBy: trackGroup"
+      [attr.aria-label]="group.label | translate"
+    >
       <h2 class="mobile-nav-section">{{ group.label | translate }}</h2>
-      <a *ngFor="let item of group.items" [routerLink]="item.path" [class.active]="isNavigationActive(item)"
-        [attr.aria-current]="isNavigationActive(item) ? 'page' : null" (click)="closeMobileMenu()">
+      <a
+        *ngFor="let item of group.items"
+        [routerLink]="item.path"
+        [class.active]="isNavigationActive(item)"
+        [attr.aria-current]="isNavigationActive(item) ? 'page' : null"
+        (click)="closeMobileMenu()"
+      >
         <span nz-icon [nzType]="item.icon" aria-hidden="true"></span>
         <span>{{ item.label | translate }}</span>
       </a>
@@ -156,7 +195,8 @@
       (click)="changeLanguage(language.code); closeMobileMenu()"
       [class.active-language]="language.code === currentLanguage"
       class="mobile-language"
-      type="button">
+      type="button"
+    >
       <span class="language-option-code">{{ languageShortLabel(language.code) }}</span>
       <span>{{ language.label }}</span>
     </button>

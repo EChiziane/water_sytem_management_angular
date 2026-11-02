@@ -1,23 +1,19 @@
-import {OperationConfirmationService} from '@core/services/operation-confirmation.service';
-import {tap} from 'rxjs';
-
-
+import { OperationConfirmationService } from '@core/services/dialogs/operation-confirmation.service';
+import { tap } from 'rxjs';
 
 // monthly-charge.component.ts
 import { Component, OnInit } from '@angular/core';
-import {MonthlyCharge} from '@shared/models/monthly-charge';
-import {MonthlyChargeService} from '@core/services/monthly-charge.service';
-import {NzMessageService} from 'ng-zorro-antd/message';
-
+import { MonthlyCharge } from '@shared/models/monthly-charge';
+import { MonthlyChargeService } from '@core/services/billing/monthly-charge.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-monthly-charge',
   standalone: false,
   templateUrl: './monthly-charge.component.html',
-  styleUrls: ['./monthly-charge.component.scss']
+  styleUrls: ['./monthly-charge.component.scss'],
 })
 export class MonthlyChargeComponent implements OnInit {
-
   dataSource: MonthlyCharge[] = [];
   listOfDisplayData: MonthlyCharge[] = [];
 
@@ -27,7 +23,7 @@ export class MonthlyChargeComponent implements OnInit {
   constructor(
     private confirmations: OperationConfirmationService,
     private service: MonthlyChargeService,
-    private message: NzMessageService
+    private message: NzMessageService,
   ) {}
 
   ngOnInit(): void {
@@ -45,24 +41,46 @@ export class MonthlyChargeComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
-      }
+      },
     });
   }
 
   generateMonth(): void {
-    this.confirmations.run({key:'generate-month', title:this.confirmations.text('generateTitle'), description:this.confirmations.text('generateDescription'),
-      fields:[[this.confirmations.text('month'),new Intl.DateTimeFormat('pt-MZ',{month:'long',year:'numeric',timeZone:'Africa/Maputo'}).format(new Date())]],
-      confirmLabel:this.confirmations.text('generate')}, () => this.service.generateMonth().pipe(tap({
-        next: () => { this.message.success('Mensalidades geradas com sucesso.'); this.load(); },
-        error: () => this.message.error('Erro ao gerar mensalidades.')
-      })));
+    this.confirmations.run(
+      {
+        key: 'generate-month',
+        title: this.confirmations.text('generateTitle'),
+        description: this.confirmations.text('generateDescription'),
+        fields: [
+          [
+            this.confirmations.text('month'),
+            new Intl.DateTimeFormat('pt-MZ', {
+              month: 'long',
+              year: 'numeric',
+              timeZone: 'Africa/Maputo',
+            }).format(new Date()),
+          ],
+        ],
+        confirmLabel: this.confirmations.text('generate'),
+      },
+      () =>
+        this.service.generateMonth().pipe(
+          tap({
+            next: () => {
+              this.message.success('Mensalidades geradas com sucesso.');
+              this.load();
+            },
+            error: () => this.message.error('Erro ao gerar mensalidades.'),
+          }),
+        ),
+    );
   }
 
   filterData() {
     const search = this.searchValue.toLowerCase();
 
-    this.listOfDisplayData = this.dataSource.filter(item =>
-      (item.customerNameSnapshot || '').toLowerCase().includes(search)
+    this.listOfDisplayData = this.dataSource.filter((item) =>
+      (item.customerNameSnapshot || '').toLowerCase().includes(search),
     );
   }
 }

@@ -72,3 +72,5 @@ A apresentação dos estados foi uniformizada em [Estados da interface](14-estad
 A revisão de 01/11/2026 e as alterações preparatórias estão em [Arquitetura e produção](16-arquitetura-producao.md). Este relatório distingue a situação atual das descobertas históricas acima.
 
 A implementação dos modos local/Vercel, preservação e backups está em [Modos e backups](17-modos-local-vercel-backups.md). Os ambientes anteriores com API Spring direta permanecem documentados como histórico; produção agora aponta para /api na Vercel. A ativação na nuvem exige configuração privada e importação validada.
+
+A organização de pastas, a separação de responsabilidades e o padrão de formatação estão descritos em [Organização do código](18-organizacao-clean-code.md). Os caminhos de relatórios antigos representam a estrutura na data de cada análise.

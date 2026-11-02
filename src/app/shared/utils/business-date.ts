@@ -2,9 +2,11 @@
 export function maputoMonthKey(date: Date): string {
   if (!Number.isFinite(date.getTime())) return '';
   const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Africa/Maputo', year: 'numeric', month: '2-digit'
+    timeZone: 'Africa/Maputo',
+    year: 'numeric',
+    month: '2-digit',
   }).formatToParts(date);
-  return `${parts.find(part => part.type === 'year')?.value}-${parts.find(part => part.type === 'month')?.value}`;
+  return `${parts.find((part) => part.type === 'year')?.value}-${parts.find((part) => part.type === 'month')?.value}`;
 }
 
 /** API timestamps without an offset represent local business time. */

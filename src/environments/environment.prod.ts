@@ -5,5 +5,5 @@ export const environment = {
   useLocalFallback: false,
   baseURL: '/api',
   waterDataSourcePath: '/data/prod/water-data.json',
-  waterStorageKey: 'water-system-management-state-production'
+  waterStorageKey: 'water-system-management-state-production',
 };

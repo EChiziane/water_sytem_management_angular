@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {AuthSessionService} from '@core/auth/auth-session.service';
+import { Component } from '@angular/core';
+import { AuthSessionService } from '@core/auth/auth-session.service';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +8,7 @@ import {AuthSessionService} from '@core/auth/auth-session.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  constructor(private session: AuthSessionService) {
-  }
+  constructor(private session: AuthSessionService) {}
 
   isAuthenticated(): boolean {
     return this.session.hasValidSession();
