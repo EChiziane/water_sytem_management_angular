@@ -4,7 +4,7 @@ import {throwError} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environments';
 import {HttpClient} from '@angular/common/http';
-import {Observable, catchError, map, of, switchMap, take, tap} from 'rxjs';
+import {Observable, defer, catchError, map, of, switchMap, take, tap} from 'rxjs';
 import {User} from '@shared/models/user';
 import {AuthSessionService} from '@core/auth/auth-session.service';
 import {WaterLocalDataService} from '@core/services/water-local-data.service';
@@ -28,6 +28,9 @@ export class AuthService {
 
   login(login: string, password: string): Observable<User> {
     this.session.clear();
+    if (!environment.production && environment.useLocalFallback && environment.dataMode === 'local') {
+      return defer(()=>this.localData.login(login,password)).pipe(tap(user=>{this.session.setToken('local-water-session');this.session.setUser(user);}));
+    }
     return this.http.post<{ token: string }>(`${this.baseURL}/login`, {login, password}).pipe(
       catchError(error => this.mode.canLoginLocally(error) ? this.localData.login(login, password).pipe(
         map(user => ({token: 'local-water-session', user}))

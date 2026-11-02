@@ -1,3 +1,4 @@
+import {environment} from '../../../environments/environments';
 import {Injectable} from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Observable} from 'rxjs';
@@ -11,7 +12,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.session.getToken();
 
-    if (token && token !== 'local-water-session') {
+    if (token && token !== 'local-water-session' && (req.url===environment.baseURL || req.url.startsWith(environment.baseURL+'/'))) {
       const cloned = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,

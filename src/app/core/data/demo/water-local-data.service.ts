@@ -1,3 +1,4 @@
+import {COMPANY_PROFILE} from '@shared/config/company-profile';
 import {paymentPeriods, isBillingPeriod} from '@shared/utils/billing-period';
 import {maputoMonthKey} from '@shared/utils/business-date';
 import {PermissionService} from '@core/auth/permission.service';
@@ -357,16 +358,52 @@ export class WaterLocalDataService {
 
   exportState(format: 'json' | 'txt' = 'json'): string {
     this.permissions.require('users.manage');
-    const state = this.readStoredState() || this.cloneState(this.sourceState || this.seedState());
+    const stored=this.readStoredState();
+    if(!stored && !this.sourceState)throw new Error('Carregue os dados antes de exportar.');
+    const state = stored || this.cloneState(this.sourceState!);
     const payload = {
       exportedAt: new Date().toISOString(),
       sourceVersion: this.sourceState?.version || 'local',
+      company: this.readCompanyBackup(),
       state
     };
 
     return format === 'txt'
       ? JSON.stringify(payload, null, 2)
       : JSON.stringify(payload);
+  }
+
+
+  exportRawBackup(): string {
+    this.permissions.require('users.manage');
+    return JSON.stringify({exportedAt:new Date().toISOString(),raw:typeof localStorage==='undefined'?null:localStorage.getItem(this.storageKey),company:this.readCompanyBackup()});
+  }
+  private readCompanyBackup(): unknown {
+    const raw=typeof localStorage==='undefined'?null:localStorage.getItem(this.storageKey+'-company');
+    if(!raw)return {...COMPANY_PROFILE,version:null,updatedAt:null,updatedBy:null};try{return JSON.parse(raw);}catch{return {raw};}
+  }
+  restoreBackup(raw:string): void {
+    this.permissions.require('users.manage');
+    if(environment.production || !environment.useLocalFallback)throw new Error('A importação local está desativada.');
+    const parsed=JSON.parse(raw);const state=parsed.state;
+    if(!state || !['customers','payments','receipts','users'].every(key=>Array.isArray(state[key])))throw new Error('Ficheiro inválido.');
+    for(const key of ['customers','payments','receipts','users']){
+      const ids=state[key].map((item:{id?:string})=>item?.id);
+      if(ids.some((id:unknown)=>typeof id!=='string' || !id) || new Set(ids).size!==ids.length)throw new Error('Identificadores inválidos ou duplicados.');
+    }
+    if(state.customers.some((c:Customer)=>!Array.isArray(c.unpaidMonths) || c.unpaidMonths.some(m=>!isBillingPeriod(m)) || !Number.isFinite(c.monthlyFee) || c.monthlyFee<0))throw new Error('Dados de cliente inválidos.');
+    if(state.payments.some((p:Payment)=>!Number.isFinite(p.amount) || p.amount<0 || typeof p.referenceCode!=='string' || typeof p.confirmed!=='boolean'))throw new Error('Dados de pagamento inválidos.');
+    if(!state.users.some((u:User)=>u.role==='ADMIN' && u.status==='ACTIVE' && u.password))throw new Error('A cópia precisa de um administrador local com credencial.');
+    const customers=new Set(state.customers.map((c:Customer)=>c.id));const payments=new Set(state.payments.map((p:Payment)=>p.id));
+    if(state.payments.some((p:Payment)=>!customers.has(p.customerId)) || state.receipts.some((r:Recibo)=>!payments.has(r.paymentId)))throw new Error('Referências incompletas.');
+    const original=localStorage.getItem(this.storageKey),companyKey=this.storageKey+'-company',oldCompany=localStorage.getItem(companyKey);
+    // Preserve the exact original bytes before replacement; a quota error aborts import.
+    localStorage.setItem(this.storageKey+'-before-import-'+Date.now(),JSON.stringify({raw:original,company:oldCompany}));
+    const company=parsed.company || state.company;
+    try{
+      localStorage.setItem(this.storageKey,JSON.stringify({sourceVersion:parsed.sourceVersion || 'imported',state}));
+      if(company && typeof company.name==='string')localStorage.setItem(companyKey,JSON.stringify(company));
+    }catch(error){if(original===null)localStorage.removeItem(this.storageKey);else localStorage.setItem(this.storageKey,original);if(oldCompany===null)localStorage.removeItem(companyKey);else localStorage.setItem(companyKey,oldCompany);throw error;}
   }
 
   resetLocalData(): void {
@@ -407,13 +444,7 @@ export class WaterLocalDataService {
         this.save(state);
         return state;
       }),
-      catchError(() => {
-        const source = this.seedState();
-        this.sourceState = source;
-        const state = this.recoverBilling(this.cloneState(source));
-        this.save(state);
-        return of(state);
-      })
+      catchError(error => throwError(() => error))
     );
   }
 
@@ -488,8 +519,7 @@ export class WaterLocalDataService {
 
       return this.clone(parsed);
     } catch {
-      localStorage.removeItem(this.storageKey);
-      return null;
+      throw new HttpErrorResponse({status:409,statusText:'Os dados locais estão danificados. Exporte a cópia original antes de restaurar; nenhum dado foi apagado.'});
     }
   }
 

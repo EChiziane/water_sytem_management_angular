@@ -243,5 +243,39 @@
       "card": "Cartão",
       "pos": "Cartão / POS"
     }
+  },
+  "dataTools": {
+    "title": "Dados e cópias de segurança",
+    "localMode": "Modo local · dados neste navegador",
+    "cloudMode": "Vercel · armazenamento privado",
+    "localNote": "O TXT fornece a base inicial. As alterações ficam neste navegador; exporte uma cópia antes de mudar de computador. Importar exige confirmação e termina a sessão.",
+    "cloudNote": "As gravações são confirmadas pelo servidor. Os backups contêm dados sensíveis: guarde-os num local protegido.",
+    "export": "Exportar cópia completa",
+    "exportOriginal": "Exportar original para recuperação",
+    "import": "Importar cópia local",
+    "snapshot": "Criar backup privado",
+    "spring": "Enviar backup para o Spring",
+    "testSource": "Criar base de teste anonimizada",
+    "list": "Ver backups privados",
+    "download": "Descarregar",
+    "failed": "Não foi possível confirmar a operação. Os dados anteriores foram preservados.",
+    "corrupt": "Não foi possível ler os dados. Use a exportação original para recuperação.",
+    "invalid": "Cópia inválida ou incompatível. Os dados locais não foram substituídos.",
+    "importTitle": "Substituir os dados locais?",
+    "importNote": "Uma cópia exata do estado atual será preservada neste navegador antes da substituição. Exporte-a também para um ficheiro. Esta ação afeta apenas este navegador e termina a sessão.",
+    "customers": "Clientes",
+    "payments": "Pagamentos",
+    "receipts": "Recibos",
+    "importConfirm": "Preservar original e importar",
+    "confirm": "Confirmar",
+    "snapshotNote": "Criar uma cópia privada da versão atual dos dados.",
+    "springNote": "Contactar o servidor Spring e aguardar a confirmação de integridade da cópia. Se estiver a iniciar, esta operação pode demorar.",
+    "testSourceNote": "Substituir apenas a base de teste na nuvem por uma cópia anonimizada e descarregá-la. Não altera produção nem os navegadores locais.",
+    "done": "Operação confirmada.",
+    "lastSpring": "Último backup confirmado no Spring"
+  },
+  "accountSecurity": {
+    "productionPassword": "Pelo menos 12 caracteres; use uma credencial exclusiva.",
+    "localPassword": "PIN de teste: 123456. Exclusivo do modo local."
   }
 }

@@ -1,3 +1,4 @@
+import {DataToolsComponent} from './shared/components/data-tools/data-tools.component';
 import {BusinessDatePipe} from './shared/pipes/business-date.pipe';
 import {InfoTagComponent} from './shared/components/info-tag/info-tag.component';
 import {YearFilterComponent} from '@shared/components/year-filter/year-filter.component';
@@ -82,6 +83,7 @@ registerLocaleData(en);
     SigninComponent
   ],
   imports: [
+    DataToolsComponent,
     BusinessDatePipe,
     InfoTagComponent,
     StatusBadgeComponent,

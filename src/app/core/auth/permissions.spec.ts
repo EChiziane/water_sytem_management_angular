@@ -19,13 +19,15 @@ describe('Role boundaries', () => {
   let http:HttpTestingController;
   let session: {getUser:()=>any;getToken:()=>string;hasValidSession:()=>boolean;setToken:jasmine.Spy;setUser:jasmine.Spy;clear:jasmine.Spy};
   const denied = (error:any) => expect(error.status).toBe(403);
+  let originalMode:string;
   beforeEach(() => {
+    originalMode=environment.dataMode;environment.dataMode='spring';
     role='ADMIN';token='api-token';
     session={getUser:()=>({...DEMO_USERS.find(user=>user.role===role)!}),getToken:()=>token,hasValidSession:()=>true,setToken:jasmine.createSpy(),setUser:jasmine.createSpy(),clear:jasmine.createSpy()};
     TestBed.configureTestingModule({providers:[provideHttpClient(),provideHttpClientTesting(),{provide:AuthSessionService,useValue:session}]});
     http=TestBed.inject(HttpTestingController);
   });
-  afterEach(()=>http.verify());
+  afterEach(()=>{environment.dataMode=originalMode;http.verify();});
   it('reserves company and user administration exclusively to ADMIN',()=>{
     const permissions=TestBed.inject(PermissionService);
     for(const candidate of ['ADMIN','MANAGER','OPERATOR','TECHNICIAN'] as UserRole[]){

@@ -14,13 +14,15 @@ describe('Company profile persistence',()=>{
   const key=`${environment.waterStorageKey}-company`;
   const url=`${environment.baseURL}/company`;
   const profile={...COMPANY_PROFILE,version:2};
+  let originalMode:string;
   beforeEach(()=>{
+    originalMode=environment.dataMode;environment.dataMode='spring';
     token='api-token';
     original=localStorage.getItem(key);localStorage.removeItem(key);
     TestBed.configureTestingModule({providers:[provideHttpClient(),provideHttpClientTesting(),{provide:AuthSessionService,useValue:{getUser:()=>({id:'operator',role:'ADMIN',status:'ACTIVE'}),getToken:()=>token}}]});
     service=TestBed.inject(CompanyProfileService);http=TestBed.inject(HttpTestingController);
   });
-  afterEach(()=>{http.verify();if(original===null)localStorage.removeItem(key);else localStorage.setItem(key,original);});
+  afterEach(()=>{environment.dataMode=originalMode;http.verify();if(original===null)localStorage.removeItem(key);else localStorage.setItem(key,original);});
   it('loads the API profile and saves only editable fields and the version',()=>{
     service.getProfile().subscribe();http.expectOne(url).flush(profile);
     service.save({...profile,name:' Nova Empresa ',updatedBy:'forged'}).subscribe();

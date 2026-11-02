@@ -27,7 +27,7 @@ describe('Session integrity and demonstration login',()=>{
  it('creates missing demonstration role accounts on offline login and stores no PIN in the session',()=>{
    localStorage.setItem(environment.waterStorageKey,JSON.stringify({customers:[],payments:[],receipts:[],users:[]}));
    let role='';TestBed.inject(AuthService).login('carlaAC','123456').subscribe(user=>role=user.role);
-   TestBed.inject(HttpTestingController).expectOne(environment.baseURL+'/auth/login').error(new ProgressEvent('error'));
+   TestBed.inject(HttpTestingController).expectNone(environment.baseURL+'/auth/login');
    expect(role).toBe('OPERATOR');expect(session.hasValidSession()).toBeTrue();
    expect(localStorage.getItem('user')).not.toContain('password');expect(localStorage.getItem('user')).not.toContain('123456');
    expect(TestBed.inject(PermissionService).can('company.manage')).toBeFalse();

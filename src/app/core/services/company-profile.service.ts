@@ -32,6 +32,7 @@ export class CompanyProfileService {
 
   getPublicProfile(): Observable<Pick<CompanyProfile,'name'|'address'|'contact'|'email'|'tagline'>> {
     const published=(profile:CompanyProfile)=>({name:profile.name,address:profile.address,contact:profile.contact,email:profile.email,tagline:profile.tagline});
+    if (!environment.production && environment.dataMode === 'local') return of(published(this.readLocal()));
     return this.http.get<CompanyProfile>(this.url+'/public').pipe(map(published),catchError((error:HttpErrorResponse)=>defer(()=>{
       const profile=!environment.production && environment.useLocalFallback && error.status===0 ? this.readLocal() : {...COMPANY_PROFILE};
       return of(published(profile));

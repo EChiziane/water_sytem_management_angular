@@ -243,5 +243,39 @@
       "card": "Card",
       "pos": "Card / POS"
     }
+  },
+  "dataTools": {
+    "title": "Data and backups",
+    "localMode": "Local mode · data in this browser",
+    "cloudMode": "Vercel · private storage",
+    "localNote": "The TXT supplies initial data. Changes stay in this browser; export a copy before changing computers. Import requires confirmation and signs you out.",
+    "cloudNote": "Writes are confirmed by the server. Backups contain sensitive data: keep them in a protected location.",
+    "export": "Export full backup",
+    "exportOriginal": "Export original for recovery",
+    "import": "Import local backup",
+    "snapshot": "Create private backup",
+    "spring": "Send backup to Spring",
+    "testSource": "Create anonymized test data",
+    "list": "View private backups",
+    "download": "Download",
+    "failed": "The operation could not be confirmed. Previous data was preserved.",
+    "corrupt": "Data could not be read. Export the original for recovery.",
+    "invalid": "Invalid or incompatible backup. Local data was not replaced.",
+    "importTitle": "Replace local data?",
+    "importNote": "An exact copy of the current state will be preserved in this browser first. Also export it to a file. This affects only this browser and signs you out.",
+    "customers": "Customers",
+    "payments": "Payments",
+    "receipts": "Receipts",
+    "importConfirm": "Preserve original and import",
+    "confirm": "Confirm",
+    "snapshotNote": "Create a private copy of the current data version.",
+    "springNote": "Contact Spring and wait for backup integrity confirmation. Starting the server may take time.",
+    "testSourceNote": "Replace only the cloud test dataset with an anonymized copy and download it. Production and local browsers are unchanged.",
+    "done": "Operation confirmed.",
+    "lastSpring": "Last confirmed Spring backup"
+  },
+  "accountSecurity": {
+    "productionPassword": "At least 12 characters; use a unique credential.",
+    "localPassword": "Test PIN: 123456. Local mode only."
   }
 }

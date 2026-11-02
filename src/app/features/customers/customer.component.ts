@@ -52,7 +52,7 @@ export class CustomerComponent implements OnInit {
     status: new FormControl('ATIVO', Validators.required),
     valve: new FormControl(10, [Validators.required, Validators.min(0)]),
     monthlyFee: new FormControl(750),
-    monthsInDebt: new FormControl(1, [Validators.required, Validators.min(0)])
+    monthsInDebt: new FormControl(0, [Validators.required, Validators.min(0)])
   });
 
   constructor(private translations: TranslationService, public permissions: PermissionService,
@@ -204,7 +204,7 @@ export class CustomerComponent implements OnInit {
       status: value.status ?? 'ATIVO',
       valve: value.valve ?? 10,
       monthlyFee: value.monthlyFee ?? 750,
-      monthsInDebt: value.monthsInDebt ?? 1
+      monthsInDebt: value.monthsInDebt ?? 0
     };
     const rawContact = formData.contact?.trim();
 
@@ -255,7 +255,7 @@ export class CustomerComponent implements OnInit {
       status: 'ATIVO',
       valve: 10,
       monthlyFee: 750,
-      monthsInDebt: 1
+      monthsInDebt: 0
     });
     this.isCustomerDrawerVisible = true;
   }

@@ -43,3 +43,11 @@ Thumbs.db
 
 # Exemplos gerados de documentos
 /output/
+
+# Deployment credentials and private exports
+.env
+.env.*
+!.env.example
+.vercel/
+/backups/
+/private-data/

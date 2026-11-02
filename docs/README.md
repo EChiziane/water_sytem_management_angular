@@ -70,3 +70,5 @@ O menu lateral e móvel foram reorganizados em grupos discretos: [Organização 
 A apresentação dos estados foi uniformizada em [Estados da interface](14-estados-interface.md), preservando os códigos e regras existentes.
 
 A revisão de 01/11/2026 e as alterações preparatórias estão em [Arquitetura e produção](16-arquitetura-producao.md). Este relatório distingue a situação atual das descobertas históricas acima.
+
+A implementação dos modos local/Vercel, preservação e backups está em [Modos e backups](17-modos-local-vercel-backups.md). Os ambientes anteriores com API Spring direta permanecem documentados como histórico; produção agora aponta para /api na Vercel. A ativação na nuvem exige configuração privada e importação validada.

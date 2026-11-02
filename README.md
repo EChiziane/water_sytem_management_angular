@@ -96,3 +96,5 @@ Os exemplos ficam em output/pdf/. O caso longo de teste fica em tmp/pdfs/.
 ## Preparação para produção
 
 Há bloqueios financeiros e de integração. Consulte [estado real e arquitetura](docs/16-arquitetura-producao.md) antes de publicar. O build de produção bloqueia a demonstração e exclui os JSON de teste. A base visual comum fica em src/styles/_tokens.scss e src/styles/_operational-ui.scss.
+
+A implementação dos modos local/Vercel, preservação e backups está em [Modos e backups](docs/17-modos-local-vercel-backups.md). Os ambientes anteriores com API Spring direta permanecem documentados como histórico; produção agora aponta para /api na Vercel. A ativação na nuvem exige configuração privada e importação validada.

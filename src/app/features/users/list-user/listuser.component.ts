@@ -1,3 +1,4 @@
+import {environment} from '../../../../environments/environments';
 import {TranslationService} from '@core/services/translation.service';
 import {describeStatus} from '@shared/utils/status-presentation';
 import {AuthSessionService} from '@core/auth/auth-session.service';
@@ -21,6 +22,8 @@ import {ROLE_OPTIONS} from '@shared/constants/app-labels';
   styleUrl: './listuser.component.scss'
 })
 export class ListuserComponent {
+  readonly defaultPassword=environment.production?'':'123456';
+  get passwordHint(){return this.translations.instant(environment.production?'accountSecurity.productionPassword':'accountSecurity.localPassword');}
   dataSource: User[] = [];
   listOfDisplayData: User[] = [];
 
@@ -90,6 +93,7 @@ export class ListuserComponent {
     if (this.userForm.invalid || this.isSaving) return;
     const userData = {...this.userForm.value};
     const id = this.currentEditingUserId;
+    if(id)delete userData.password;
     this.confirmations.run({key: 'save-user:' + (id || 'new'), title: this.confirmations.text('saveUserTitle'),
       description: this.confirmations.text('saveUserDescription'),
       fields: [[this.confirmations.text('user'), userData.name], [this.confirmations.text('role'), this.roleLabel(userData.role)], [this.confirmations.text('status'), this.translations.instant(describeStatus('user',userData.status).label)]],
@@ -97,7 +101,7 @@ export class ListuserComponent {
       this.isSaving = true;
       return (id ? this.userService.updateUser(id,userData) : this.userService.addUser(userData)).pipe(tap({
         next: () => { this.loadUsers(); this.closeUserDrawer(); this.message.success('Conta guardada com sucesso.'); this.isSaving = false; },
-        error: () => { this.message.error('Erro ao guardar a conta.'); this.isSaving = false; }
+        error: error => { this.message.error(error.error?.message || 'Erro ao guardar a conta.'); this.isSaving = false; }
       }));
     });
   }
@@ -127,6 +131,9 @@ export class ListuserComponent {
 
   editUser(user: User) {
     this.currentEditingUserId = user.id;
+    this.userForm.controls['password'].clearValidators();
+    this.userForm.controls['password'].setValue('');
+    this.userForm.controls['password'].updateValueAndValidity();
 
     this.userForm.patchValue({
       name: user.name,
@@ -141,13 +148,14 @@ export class ListuserComponent {
   openUserDrawer() {
     this.isUserDrawerVisible = true;
     this.currentEditingUserId = null;
-    this.userForm.reset({status: 'ACTIVE', role: 'OPERATOR', password: '123456'});
+    this.userForm.controls['password'].setValidators([Validators.required,Validators.minLength(environment.production?12:6)]);
+    this.userForm.reset({status: 'ACTIVE', role: 'OPERATOR', password: this.defaultPassword});
   }
 
   closeUserDrawer() {
     this.isUserDrawerVisible = false;
     this.currentEditingUserId = null;
-    this.userForm.reset({status: 'ACTIVE', role: 'OPERATOR', password: '123456'});
+    this.userForm.reset({status: 'ACTIVE', role: 'OPERATOR', password: this.defaultPassword});
   }
 
 
@@ -163,7 +171,7 @@ export class ListuserComponent {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', Validators.required],
-      password: ['123456'],
+      password: [this.defaultPassword,[Validators.required,Validators.minLength(environment.production?12:6)]],
       status: [''],
       phone: ['', Validators.required],
       role: ['OPERATOR', Validators.required],

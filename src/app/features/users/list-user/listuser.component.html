@@ -163,7 +163,7 @@
             <nz-form-item>
               <nz-form-label nzRequired>Senha</nz-form-label>
               <nz-form-control>
-                <input formControlName="password" nz-input placeholder="Senha do usuário" type="password"/>
+                <input formControlName="password" nz-input [placeholder]="passwordHint" type="password" autocomplete="new-password"/><small>{{ passwordHint }}</small>
               </nz-form-control>
             </nz-form-item>
           </div>
