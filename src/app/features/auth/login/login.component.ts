@@ -1,3 +1,4 @@
+import { TranslationService } from '@core/services/i18n/translation.service';
 import { CompanyProfileService } from '@core/services/company/company-profile.service';
 import { COMPANY_PROFILE } from '@shared/config/company-profile';
 import { CompanyProfile } from '@shared/models/company-profile';
@@ -51,6 +52,7 @@ export class LoginComponent implements OnInit {
   isResetConfirmVisible = false;
 
   constructor(
+    private translations: TranslationService,
     private authService: AuthService,
     private companies: CompanyProfileService,
     private router: Router,
@@ -99,9 +101,17 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
         this.router.navigate(['/app/dashboard']);
       },
-      error: () => {
+      error: (error) => {
         this.isLoading = false;
-        this.responseMessage = 'Login inválido';
+        const key =
+          error.status === 409
+            ? 'accountSecurity.loginConflict'
+            : error.status === 429
+              ? 'accountSecurity.loginThrottled'
+              : error.status === 0 || error.status >= 500
+                ? 'accountSecurity.loginUnavailable'
+                : 'accountSecurity.loginInvalid';
+        this.responseMessage = this.translations.instant(key);
       },
     });
   }

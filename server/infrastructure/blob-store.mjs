@@ -84,6 +84,14 @@ export function blobStore(config, sdk = { get, put, list }) {
         503,
       );
       validateState(state);
+      // HTTP GET returns a quoted entity tag. Blob's control API expects its raw value.
+      const match = etag.match(/^"([^"\r\n]+)"$/);
+      const version = match ? match[1] : etag;
+      assert(
+        !version.startsWith('W/') && !/["\r\n]/.test(version),
+        'Versão de dados inválida.',
+        503,
+      );
       assert(
         Buffer.byteLength(JSON.stringify(state)) < 3_500_000,
         'Ficheiro excede o limite desta arquitetura.',
@@ -95,7 +103,7 @@ export function blobStore(config, sdk = { get, put, list }) {
           contentType: 'application/json',
           addRandomSuffix: false,
           allowOverwrite: true,
-          ifMatch: etag,
+          ifMatch: version,
         });
       } catch (error) {
         if (error instanceof BlobPreconditionFailedError)

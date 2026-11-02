@@ -200,11 +200,11 @@
           </div>
         </div>
 
-        <!-- Só aparece quando está a criar -->
-        <div *ngIf="!currentEditingUserId" [nzGutter]="16" nz-row>
+        <!-- Em edição, vazio preserva a senha atual. -->
+        <div [nzGutter]="16" nz-row>
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
-              <nz-form-label nzRequired>Senha</nz-form-label>
+              <nz-form-label [nzRequired]="!currentEditingUserId">Senha</nz-form-label>
               <nz-form-control>
                 <input
                   formControlName="password"

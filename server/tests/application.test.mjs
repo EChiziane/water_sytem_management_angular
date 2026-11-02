@@ -364,3 +364,77 @@ test('routing supports Vercel rewrite paths and Spring is optional with explicit
   );
   assert.equal(store.state.payments.length, 0);
 });
+
+test('initial admin is opt-in, provisioned once and never restores a changed password', async () => {
+  const store = new MemoryStore();
+  const request = {
+    url: '/api/auth/login',
+    method: 'POST',
+    headers: {},
+    body: { login: 'admin', password: '123456' },
+  };
+  await assert.rejects(dispatch(request, store, env, now), (e) => e.status === 401);
+  assert.equal(
+    store.state.users.some((u) => u.login === 'admin'),
+    false,
+  );
+  const enabled = { ...env, WSM_ENABLE_INITIAL_ADMIN: 'true' };
+  const result = await dispatch(request, store, enabled, now);
+  assert.equal(result.user.login, 'admin');
+  assert.equal(result.user.role, 'ADMIN');
+  assert.ok(result.token);
+  assert.ok(store.state.initialAdminProvisionedAt);
+  assert.equal(
+    store.state.audit.filter((a) => a.action === 'auth.initial-admin.provisioned').length,
+    1,
+  );
+  const admin = store.state.users.find((u) => u.login === 'admin');
+  await dispatch(
+    {
+      url: '/api/auth/' + admin.id,
+      method: 'PUT',
+      headers: { authorization: 'Bearer ' + result.token },
+      body: { password: 'owner-changed-password-123' },
+    },
+    store,
+    enabled,
+    now,
+  );
+  await assert.rejects(
+    dispatch(
+      { url: '/api/auth/me', method: 'GET', headers: { authorization: 'Bearer ' + result.token } },
+      store,
+      enabled,
+      now,
+    ),
+    (e) => e.status === 401,
+  );
+  await assert.rejects(dispatch(request, store, enabled, now), (e) => e.status === 401);
+  assert.equal(store.state.customers.length, 1);
+  assert.equal(store.state.users.length, 5);
+  const changed = await dispatch(
+    { ...request, body: { login: 'admin', password: 'owner-changed-password-123' } },
+    store,
+    enabled,
+    now,
+  );
+  assert.ok(changed.token);
+});
+test('explicit initial admin recovery preserves existing ID and cannot promote or reactivate accounts', async () => {
+  const store = new MemoryStore();
+  store.state.users[0].login = 'admin';
+  const request = {
+    url: '/api/auth/login',
+    method: 'POST',
+    headers: {},
+    body: { login: 'admin', password: '123456' },
+  };
+  const enabled = { ...env, WSM_ENABLE_INITIAL_ADMIN: 'true' };
+  const result = await dispatch(request, store, enabled, now);
+  assert.equal(result.user.id, 'u0');
+  assert.equal(store.state.users.length, 4);
+  const restricted = new MemoryStore();
+  restricted.state.users[1].login = 'admin';
+  await assert.rejects(dispatch(request, restricted, enabled, now), (e) => e.status === 409);
+  assert.equal(restricted.state.users[1].role, 'MANAGER');
+});

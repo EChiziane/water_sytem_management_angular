@@ -277,7 +277,11 @@
   },
   "accountSecurity": {
     "productionPassword": "Pelo menos 12 caracteres; use uma credencial exclusiva.",
-    "localPassword": "PIN de teste: 123456. Exclusivo do modo local."
+    "localPassword": "PIN de teste: 123456. Exclusivo do modo local.",
+    "loginConflict": "Não foi possível confirmar a sessão devido a um conflito de dados. Tente novamente.",
+    "loginThrottled": "Muitas tentativas. Aguarde 15 minutos.",
+    "loginUnavailable": "O serviço de autenticação está indisponível. Tente novamente mais tarde.",
+    "loginInvalid": "Login ou senha inválidos."
   },
   "periods": {
     "year": "Ano",

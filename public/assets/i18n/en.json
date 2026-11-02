@@ -277,7 +277,11 @@
   },
   "accountSecurity": {
     "productionPassword": "At least 12 characters; use a unique credential.",
-    "localPassword": "Test PIN: 123456. Local mode only."
+    "localPassword": "Test PIN: 123456. Local mode only.",
+    "loginConflict": "The session could not be confirmed due to a data conflict. Please retry.",
+    "loginThrottled": "Too many attempts. Please wait 15 minutes.",
+    "loginUnavailable": "Authentication is unavailable. Please try again later.",
+    "loginInvalid": "Invalid login or password."
   },
   "periods": {
     "year": "Year",

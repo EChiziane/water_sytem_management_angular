@@ -101,7 +101,7 @@ export class ListuserComponent {
     if (this.userForm.invalid || this.isSaving) return;
     const userData = { ...this.userForm.value };
     const id = this.currentEditingUserId;
-    if (id) delete userData.password;
+    if (id && !userData.password) delete userData.password;
     this.confirmations.run(
       {
         key: 'save-user:' + (id || 'new'),
@@ -124,6 +124,13 @@ export class ListuserComponent {
         ).pipe(
           tap({
             next: () => {
+              if (id === this.session.getUser()?.id && userData.password) {
+                this.session.clear();
+                this.router.navigate(['/login']);
+                this.closeUserDrawer();
+                this.isSaving = false;
+                return;
+              }
               this.loadUsers();
               this.closeUserDrawer();
               this.message.success('Conta guardada com sucesso.');
@@ -162,7 +169,9 @@ export class ListuserComponent {
 
   editUser(user: User) {
     this.currentEditingUserId = user.id;
-    this.userForm.controls['password'].clearValidators();
+    this.userForm.controls['password'].setValidators([
+      Validators.minLength(environment.production ? 12 : 6),
+    ]);
     this.userForm.controls['password'].setValue('');
     this.userForm.controls['password'].updateValueAndValidity();
 

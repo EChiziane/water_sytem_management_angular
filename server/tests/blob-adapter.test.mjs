@@ -136,3 +136,15 @@ test('SDK precondition failure is surfaced as a conflict rather than an uncondit
   await assert.rejects(store.write(value, 'old-version'), (e) => e.status === 409);
   await assert.rejects(store.write(value, undefined), (e) => e.status === 503);
 });
+
+test('HTTP quoted ETags are normalized for conditional writes; weak validators are rejected', async () => {
+  const seen = [];
+  const store = blobStore(
+    { prefix: 'water/production', token: 'test' },
+    { put: async (_path, _body, options) => seen.push(options) },
+  );
+  await store.write(state(), '"abc123"');
+  assert.equal(seen[0].ifMatch, 'abc123');
+  await assert.rejects(store.write(state(), 'W/"abc123"'), (e) => e.status === 503);
+  assert.equal(seen.length, 1);
+});

@@ -35,7 +35,8 @@ export async function dispatch(req, store, env = process.env, now = new Date()) 
     'Configure WSM_SESSION_SECRET antes de utilizar.',
     503,
   );
-  if (method === 'POST' && pathname === 'auth/login') return login({ body, store, secret, now });
+  if (method === 'POST' && pathname === 'auth/login')
+    return login({ body, store, secret, now, env });
   if (method === 'GET' && pathname === 'company/public') {
     const { state } = await store.read();
     const { name, address, contact, email, tagline } = state.company;
