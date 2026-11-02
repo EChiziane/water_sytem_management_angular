@@ -53,6 +53,7 @@ test('OIDC store ID reaches read, snapshot, conditional write and list without p
   const store = blobStore(
     { prefix: 'water/production', storeId: 'store_test' },
     {
+      head: async () => ({ etag: 'v1' }),
       get: async (_path, options) => {
         calls.push(options);
         return {
@@ -84,6 +85,7 @@ test('private Blob adapter reads fresh data, backs up first and writes only with
   const value = state(),
     calls = [];
   const sdk = {
+    head: async () => ({ etag: 'version-1' }),
     get: async (path, options) => {
       calls.push({ op: 'get', path, options });
       return {
@@ -115,7 +117,11 @@ test('Blob initialization refuses overwriting and missing data does not create a
   const calls = [];
   const store = blobStore(
     { prefix: 'water/production', token: 'private' },
-    { get: async () => null, put: async (...args) => calls.push(args) },
+    {
+      head: async () => ({ etag: 'v1' }),
+      get: async () => null,
+      put: async (...args) => calls.push(args),
+    },
   );
   await assert.rejects(store.read(), (e) => e.status === 503);
   assert.equal(calls.length, 0);
@@ -147,4 +153,50 @@ test('HTTP quoted ETags are normalized for conditional writes; weak validators a
   assert.equal(seen[0].ifMatch, 'abc123');
   await assert.rejects(store.write(state(), 'W/"abc123"'), (e) => e.status === 503);
   assert.equal(seen.length, 1);
+});
+
+test('weak HTTP validators do not replace the canonical object version', async () => {
+  const calls = [];
+  const store = blobStore(
+    { prefix: 'water/production', storeId: 'store_test' },
+    {
+      head: async (_path, options) => {
+        assert.equal(options.storeId, 'store_test');
+        return { etag: 'object-version' };
+      },
+      get: async () => ({
+        statusCode: 200,
+        stream: new Response(JSON.stringify(state())).body,
+        blob: { etag: 'W/"compressed-response"' },
+      }),
+      put: async (_path, _body, options) => calls.push(options),
+    },
+  );
+  const loaded = await store.read();
+  assert.equal(loaded.etag, 'object-version');
+  await store.write(loaded.state, loaded.etag);
+  assert.equal(calls[0].ifMatch, 'object-version');
+});
+test('a change between metadata and content reads refuses stale data before any write', async () => {
+  let count = 0,
+    writes = 0;
+  const store = blobStore(
+    { prefix: 'water/production', token: 'test' },
+    {
+      head: async () => ({ etag: ++count === 1 ? 'old' : 'new' }),
+      get: async () => ({
+        statusCode: 200,
+        stream: new Response(JSON.stringify(state())).body,
+        blob: { etag: 'W/"old"' },
+      }),
+      put: async () => {
+        writes++;
+      },
+    },
+  );
+  await assert.rejects(
+    transact(store, () => {}),
+    (e) => e.status === 409,
+  );
+  assert.equal(writes, 0);
 });

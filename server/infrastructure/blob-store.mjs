@@ -1,4 +1,4 @@
-import { get, put, list, BlobPreconditionFailedError } from '@vercel/blob';
+import { get, head, put, list, BlobPreconditionFailedError } from '@vercel/blob';
 import { createHash, randomUUID } from 'node:crypto';
 import { AppError, assert, validateState } from '../domain.mjs';
 export function storageConfig(env = process.env) {
@@ -29,12 +29,15 @@ export function storageConfig(env = process.env) {
     ...(oidc ? { storeId: env.BLOB_STORE_ID } : { token: env.BLOB_READ_WRITE_TOKEN }),
   };
 }
-export function blobStore(config, sdk = { get, put, list }) {
+export function blobStore(config, sdk = { get, head, put, list }) {
   // Let the SDK obtain/refresh the short-lived OIDC credential in Vercel Functions.
   const credentials = config.storeId ? { storeId: config.storeId } : { token: config.token };
   const options = { access: 'private', ...credentials };
   const path = `${config.prefix}/state.txt`;
   async function readFile(pathname) {
+    // CDN response validators can describe a compressed representation rather than
+    // the object version required by put(ifMatch). Use the control API metadata.
+    const before = await sdk.head(pathname, credentials);
     const item = await sdk.get(pathname, { ...options, useCache: false });
     assert(
       item && item.statusCode === 200,
@@ -43,7 +46,13 @@ export function blobStore(config, sdk = { get, put, list }) {
     );
     const text = await new Response(item.stream).text();
     assert(Buffer.byteLength(text) < 3_500_000, 'Ficheiro excede o limite desta arquitetura.', 507);
-    return { state: JSON.parse(text), etag: item.blob.etag };
+    const after = await sdk.head(pathname, credentials);
+    assert(
+      typeof before.etag === 'string' && before.etag.length > 0 && after.etag === before.etag,
+      'Os dados mudaram durante a leitura. Tente novamente.',
+      409,
+    );
+    return { state: JSON.parse(text), etag: after.etag };
   }
   return {
     async read() {
