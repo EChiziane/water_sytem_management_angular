@@ -46,3 +46,23 @@ TXT local como estado de produção: faltam a migração e os hashes das credenc
 Não publicar/reimplantar a aplicação antes de concluir a importação e conferir a
 configuração. Os testes do adaptador usam mocks; não constituem prova de uma
 escrita real na Vercel.
+
+## Resultado da importação pelo painel
+
+O utilizador recusou autorizar o CLI; o login foi cancelado. A importação foi
+realizada pela sessão já autenticada no painel, sem conceder acesso ao terminal.
+O destino estava vazio. Criaram-se as pastas `water/production` e enviou-se
+exclusivamente o estado migrado para `water/production/state.txt`, sem sufixo
+aleatório. As credenciais em texto simples não foram enviadas; o estado contém
+apenas os hashes scrypt.
+
+O painel confirmou o objeto privado de 12.935 bytes. O JSON apresentado pelo
+painel foi comparado integralmente com o JSON preparado: conteúdo idêntico.
+Mantêm-se quatro clientes, dois pagamentos, seis contas, 17 obrigações e dois
+recibos, com pagamentos confirmados de 1.500 MT. As duas cópias originais e o
+ficheiro separado de credenciais permanecem privados nesta máquina.
+
+Não foi efetuado push nem deploy. O deployment observado ainda usa o commit 26;
+precisa da correção OIDC do commit 29 antes de validar login e operações reais.
+Os valores secretos existentes não foram revelados, pelo que a sua validade
+permanece por testar no deployment. Não se afirmou prontidão de produção.
