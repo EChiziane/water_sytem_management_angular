@@ -81,7 +81,7 @@
           <h2 id="debtors-heading">{{ 'dashboardHome.debtors' | translate }}</h2>
           <p>{{ 'dashboardHome.debtorsHint' | translate }}</p>
         </div>
-        <a *ngIf="permissions.can('customers.read')" routerLink="/app/customer"
+        <a *ngIf="permissions.can('reports.financial')" routerLink="/app/debts"
           >{{ 'dashboardHome.viewMore' | translate }} <nz-icon nzType="arrow-right"></nz-icon
         ></a>
       </header>

@@ -753,6 +753,7 @@ export class WaterLocalDataService {
   ): MonthlyCharge {
     return {
       id: `charge-${customer.id}-${referenceMonth}`,
+      customerId: customer.id,
       referenceMonth,
       paid,
       paidAt: '',
@@ -779,6 +780,7 @@ export class WaterLocalDataService {
 
     return {
       id: `charge-${payment.customerId}-${firstMonth}-${payment.id}`,
+      customerId: payment.customerId,
       referenceMonth: firstMonth,
       paid: true,
       paidAt: payment.paymentDate,

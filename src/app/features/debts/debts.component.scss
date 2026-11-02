@@ -1,0 +1,31 @@
+.debt-search {
+  height: 32px;
+  border: 1px solid #dce3eb;
+  border-radius: 6px;
+  padding: 0 10px;
+  min-width: 220px;
+  font: inherit;
+}
+small {
+  display: block;
+  color: #68788b;
+  font-size: 12px;
+}
+.debt-state {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  background: #fff7e6;
+  color: #875b00;
+}
+.debt-state.overdue {
+  background: #fff1f0;
+  color: #a43131;
+}
+.filters-panel {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}

@@ -22,7 +22,8 @@
       "users": "Utilizadores",
       "profile": "Meu perfil",
       "company": "Empresa",
-      "main": "Navegação principal"
+      "main": "Navegação principal",
+      "debts": "Dívidas"
     },
     "topbar": {
       "eyebrow": "Water System Management",
@@ -277,5 +278,29 @@
   "accountSecurity": {
     "productionPassword": "Pelo menos 12 caracteres; use uma credencial exclusiva.",
     "localPassword": "PIN de teste: 123456. Exclusivo do modo local."
+  },
+  "periods": {
+    "year": "Ano",
+    "month": "Mês",
+    "allYears": "Todos os anos",
+    "allMonths": "Todos os meses",
+    "filterBy": "Filtrar por",
+    "received": "Data de recebimento",
+    "settled": "Mensalidade liquidada"
+  },
+  "debts": {
+    "title": "Dívidas",
+    "obligations": "mensalidades por pagar",
+    "reload": "Recarregar",
+    "search": "Pesquisar cliente, código ou contacto",
+    "error": "Não foi possível carregar as dívidas. Tente novamente.",
+    "empty": "Sem mensalidades por pagar neste período.",
+    "customer": "Cliente",
+    "contact": "Contacto",
+    "period": "Mensalidade",
+    "amount": "Valor em falta",
+    "status": "Situação",
+    "overdue": "Em atraso",
+    "unpaid": "Por pagar"
   }
 }

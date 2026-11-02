@@ -22,11 +22,19 @@
       />
     </nz-input-group>
 
-    <app-year-filter
-      [(value)]="selectedYear"
+    <label class="payment-period-mode"
+      >{{ translations.instant('periods.filterBy') }}
+      <select [(ngModel)]="periodMode" (ngModelChange)="changePeriodMode()">
+        <option value="received">{{ translations.instant('periods.received') }}</option>
+        <option value="settled">{{ translations.instant('periods.settled') }}</option>
+      </select></label
+    ><app-period-filter
+      [periods]="availablePeriods"
+      [(year)]="selectedYear"
+      [(value)]="selectedPeriod"
+      (yearChange)="filterData()"
       (valueChange)="filterData()"
-      label="years.payment"
-    ></app-year-filter>
+    ></app-period-filter>
     <div class="filter-actions">
       <button (click)="reset()" nz-button nzType="default">
         <nz-icon nzTheme="outline" nzType="reload"></nz-icon>

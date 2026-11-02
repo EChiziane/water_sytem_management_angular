@@ -1,0 +1,68 @@
+<div class="content-wrapper compact-list-layout dense-list">
+  <header class="page-header">
+    <div class="compact-title-block">
+      <p>{{ t.instant('debts.title') }}</p>
+      <span class="list-meta"
+        >{{ rows.length }} {{ t.instant('debts.obligations') }} · {{ money(total) }}</span
+      >
+    </div>
+    <button nz-button (click)="load()" [disabled]="loading">{{ t.instant('debts.reload') }}</button>
+  </header>
+  <section class="filters-panel">
+    <input
+      class="debt-search"
+      [(ngModel)]="search"
+      [placeholder]="t.instant('debts.search')"
+      [attr.aria-label]="t.instant('debts.search')"
+    /><app-period-filter [periods]="periods" [(year)]="year" [(value)]="period"></app-period-filter>
+  </section>
+  <p *ngIf="failed" role="alert">{{ t.instant('debts.error') }}</p>
+  <section class="table-wrapper">
+    <nz-table
+      #table
+      [nzData]="rows"
+      [nzLoading]="loading"
+      [nzPageSize]="12"
+      [nzScroll]="{ x: '900px' }"
+      [nzNoResult]="t.instant('debts.empty')"
+      nzSize="small"
+      ><thead>
+        <tr>
+          <th>{{ t.instant('debts.customer') }}</th>
+          <th>{{ t.instant('debts.contact') }}</th>
+          <th>{{ t.instant('debts.period') }}</th>
+          <th>{{ t.instant('debts.amount') }}</th>
+          <th>{{ t.instant('debts.status') }}</th>
+          <th class="wsm-actions-column">{{ t.instant('tableActions.heading') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of table.data">
+          <td>
+            <strong>{{ row.customer?.name || row.charge.customerNameSnapshot }}</strong
+            ><small>{{ row.customer?.code || '—' }}</small>
+          </td>
+          <td>{{ row.customer?.contact || row.charge.customerContactSnapshot || '—' }}</td>
+          <td>{{ label(row.charge.referenceMonth) }}</td>
+          <td>{{ money(row.charge.amount) }}</td>
+          <td>
+            <app-status-badge
+              kind="monthly"
+              [value]="false"
+              [period]="row.charge.referenceMonth"
+            ></app-status-badge>
+          </td>
+          <td class="wsm-actions-cell">
+            <div class="wsm-row-actions">
+              <app-row-action
+                *ngIf="row.customer"
+                action="view"
+                [route]="['/app/customer-detail', row.customer.id]"
+                [context]="row.customer.name"
+              ></app-row-action>
+            </div>
+          </td>
+        </tr></tbody
+    ></nz-table>
+  </section>
+</div>

@@ -39,6 +39,12 @@ export const NAVIGATION_GROUPS: NavigationGroup[] = [
         permission: 'customers.read',
       },
       {
+        label: 'layout.nav.debts',
+        icon: 'audit',
+        path: '/app/debts',
+        permission: 'reports.financial',
+      },
+      {
         label: 'layout.nav.payments',
         icon: 'credit-card',
         path: '/app/payment',

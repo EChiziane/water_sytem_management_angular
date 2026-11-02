@@ -1,5 +1,6 @@
 export interface MonthlyCharge {
   id: string;
+  customerId?: string;
 
   referenceMonth: string;
 

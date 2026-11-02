@@ -17,6 +17,7 @@ import { MainLayoutComponent } from '@features/shell/main-layout/main-layout.com
 import { LoginComponent } from './features/auth/login/login.component';
 import { LandingPageComponent } from './features/public/landing-page/landing-page.component';
 
+import { DebtsComponent } from './features/debts/debts.component';
 const routes: Routes = [
   {
     path: '',
@@ -59,6 +60,12 @@ const routes: Routes = [
         component: CustomerDetailsComponent,
         canActivate: [PermissionGuard],
         data: { permission: 'customers.read' },
+      },
+      {
+        path: 'debts',
+        component: DebtsComponent,
+        canActivate: [PermissionGuard],
+        data: { permission: 'reports.financial' },
       },
       {
         path: 'payment',

@@ -22,7 +22,8 @@
       "users": "Users",
       "profile": "My profile",
       "company": "Company",
-      "main": "Main navigation"
+      "main": "Main navigation",
+      "debts": "Debts"
     },
     "topbar": {
       "eyebrow": "Water System Management",
@@ -277,5 +278,29 @@
   "accountSecurity": {
     "productionPassword": "At least 12 characters; use a unique credential.",
     "localPassword": "Test PIN: 123456. Local mode only."
+  },
+  "periods": {
+    "year": "Year",
+    "month": "Month",
+    "allYears": "All years",
+    "allMonths": "All months",
+    "filterBy": "Filter by",
+    "received": "Date received",
+    "settled": "Billing period settled"
+  },
+  "debts": {
+    "title": "Debts",
+    "obligations": "unpaid obligations",
+    "reload": "Reload",
+    "search": "Search customer, code or contact",
+    "error": "Could not load debts. Please retry.",
+    "empty": "No unpaid obligations in this period.",
+    "customer": "Customer",
+    "contact": "Contact",
+    "period": "Billing period",
+    "amount": "Outstanding amount",
+    "status": "Status",
+    "overdue": "Overdue",
+    "unpaid": "Unpaid"
   }
 }

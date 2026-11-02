@@ -75,6 +75,8 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { ReciboComponent } from './features/receipts/receipt.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
+import { DebtsComponent } from './features/debts/debts.component';
+import { PeriodFilterComponent } from './shared/components/period-filter/period-filter.component';
 registerLocaleData(en);
 
 @NgModule({
@@ -97,6 +99,8 @@ registerLocaleData(en);
     SigninComponent,
   ],
   imports: [
+    DebtsComponent,
+    PeriodFilterComponent,
     DataToolsComponent,
     BusinessDatePipe,
     InfoTagComponent,

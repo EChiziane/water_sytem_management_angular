@@ -1,5 +1,7 @@
 import { money } from '@shared/utils/payment-presentation';
-import { matchesBusinessYear } from '@shared/utils/billing-period';
+import { paymentPeriods } from '@shared/utils/billing-period';
+import { businessTimestamp, maputoMonthKey } from '@shared/utils/business-date';
+import { TranslationService } from '@core/services/i18n/translation.service';
 import { PermissionService } from '@core/auth/permission.service';
 import { OperationConfirmationService } from '@core/services/dialogs/operation-confirmation.service';
 import { tap } from 'rxjs';
@@ -31,7 +33,9 @@ export class PaymentComponent implements OnInit {
   selectedCustomer: Customer | null = null;
   selectedMonths: string[] = [];
 
-  selectedYear: number | null = null;
+  selectedYear = '';
+  selectedPeriod = '';
+  periodMode: 'received' | 'settled' = 'received';
   searchValue = '';
 
   isLoading = false;
@@ -46,6 +50,7 @@ export class PaymentComponent implements OnInit {
   private readonly DEFAULT_PAYMENT_METHOD = 'CASH';
 
   constructor(
+    public translations: TranslationService,
     public permissions: PermissionService,
     private confirmations: OperationConfirmationService,
     private paymentService: PaymentService,
@@ -248,7 +253,9 @@ export class PaymentComponent implements OnInit {
   }
 
   reset(): void {
-    this.selectedYear = null;
+    this.selectedYear = '';
+    this.selectedPeriod = '';
+    this.periodMode = 'received';
     this.searchValue = '';
     this.filterData();
   }
@@ -261,7 +268,15 @@ export class PaymentComponent implements OnInit {
     const search = this.searchValue.toLowerCase();
 
     this.listOfDisplayData = this.dataSource
-      .filter((item) => matchesBusinessYear(item.paymentDate, this.selectedYear))
+      .filter(
+        (item) =>
+          (!this.selectedYear && !this.selectedPeriod) ||
+          this.periodsFor(item).some(
+            (p) =>
+              (!this.selectedYear || p.startsWith(this.selectedYear + '-')) &&
+              (!this.selectedPeriod || p === this.selectedPeriod),
+          ),
+      )
       .filter(
         (item: Payment) =>
           (item.customerName || '').toLowerCase().includes(search) ||
@@ -269,6 +284,19 @@ export class PaymentComponent implements OnInit {
       );
   }
 
+  periodsFor(payment: Payment): string[] {
+    return this.periodMode === 'settled'
+      ? paymentPeriods(payment.referenceMonth)
+      : [maputoMonthKey(new Date(businessTimestamp(payment.paymentDate)))].filter(Boolean);
+  }
+  get availablePeriods(): string[] {
+    return [...new Set(this.dataSource.flatMap((p) => this.periodsFor(p)))].sort().reverse();
+  }
+  changePeriodMode(): void {
+    this.selectedYear = '';
+    this.selectedPeriod = '';
+    this.filterData();
+  }
   getPayments(): void {
     this.isLoading = true;
 

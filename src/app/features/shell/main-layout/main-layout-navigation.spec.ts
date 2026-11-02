@@ -83,6 +83,7 @@ describe('Grouped application navigation', () => {
     expect(desktop).toEqual([
       '/app/dashboard',
       '/app/customer',
+      '/app/debts',
       '/app/payment',
       '/app/receipts',
       '/app/company',
