@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { BlobPreconditionFailedError } from '@vercel/blob';
-import { blobStore, transact } from '../infrastructure/blob-store.mjs';
+import { blobStore, storageConfig, transact } from '../infrastructure/blob-store.mjs';
 import { hashPassword } from '../domain.mjs';
 const state = () => ({
   schemaVersion: 1,
@@ -22,6 +22,63 @@ const state = () => ({
       passwordHash: hashPassword('testing-password-123'),
     },
   ],
+});
+test('storage accepts connected OIDC or legacy tokens without weakening environment isolation', () => {
+  const env = { WSM_DATA_NAMESPACE: 'production', VERCEL_ENV: 'production' };
+  assert.throws(() => storageConfig({ ...env, BLOB_STORE_ID: 'store_test' }));
+  assert.deepEqual(storageConfig({ ...env, VERCEL: '1', BLOB_STORE_ID: 'store_test' }), {
+    prefix: 'water/production',
+    storeId: 'store_test',
+  });
+  assert.deepEqual(
+    storageConfig({ ...env, VERCEL_OIDC_TOKEN: 'short-lived', BLOB_STORE_ID: 'store_test' }),
+    {
+      prefix: 'water/production',
+      storeId: 'store_test',
+    },
+  );
+  assert.equal(storageConfig({ ...env, BLOB_READ_WRITE_TOKEN: 'legacy' }).token, 'legacy');
+  assert.throws(() =>
+    storageConfig({
+      ...env,
+      WSM_DATA_NAMESPACE: 'preview',
+      VERCEL: '1',
+      BLOB_STORE_ID: 'store_test',
+    }),
+  );
+});
+test('OIDC store ID reaches read, snapshot, conditional write and list without pinning a credential', async () => {
+  const calls = [],
+    value = state();
+  const store = blobStore(
+    { prefix: 'water/production', storeId: 'store_test' },
+    {
+      get: async (_path, options) => {
+        calls.push(options);
+        return {
+          statusCode: 200,
+          stream: new Response(JSON.stringify(value)).body,
+          blob: { etag: 'v1' },
+        };
+      },
+      put: async (_path, _body, options) => {
+        calls.push(options);
+      },
+      list: async (options) => {
+        calls.push(options);
+        return { blobs: [] };
+      },
+    },
+  );
+  await transact(store, () => {});
+  await store.listBackups();
+  assert.equal(calls.length, 4);
+  for (const options of calls) {
+    assert.equal(options.storeId, 'store_test');
+    assert.equal(Object.hasOwn(options, 'token'), false);
+    assert.equal(Object.hasOwn(options, 'oidcToken'), false);
+  }
+  assert.equal(calls[2].ifMatch, 'v1');
 });
 test('private Blob adapter reads fresh data, backs up first and writes only with the observed ETag', async () => {
   const value = state(),

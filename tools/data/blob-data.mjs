@@ -7,7 +7,7 @@ const [command, source] = process.argv.slice(2);
 try {
   if (!['validate', 'initialize'].includes(command) || !source)
     throw new Error(
-      'Uso: node --env-file=.env.local tools/blob-data.mjs validate|initialize CAMINHO_DA_COPIA',
+      'Uso: node --env-file=.env.local tools/data/blob-data.mjs validate|initialize CAMINHO_DA_COPIA',
     );
   const raw = await readFile(resolve(source), 'utf8');
   const passwords = JSON.parse(process.env.WSM_INITIAL_PASSWORDS_JSON || '{}');

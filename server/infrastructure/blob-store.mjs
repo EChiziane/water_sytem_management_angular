@@ -18,11 +18,21 @@ export function storageConfig(env = process.env) {
     'Preview não pode usar dados de produção.',
     503,
   );
-  assert(!!env.BLOB_READ_WRITE_TOKEN, 'O armazenamento privado ainda não está configurado.', 503);
-  return { prefix: `water/${namespace}`, token: env.BLOB_READ_WRITE_TOKEN };
+  const oidc = !!env.BLOB_STORE_ID && (env.VERCEL === '1' || !!env.VERCEL_OIDC_TOKEN);
+  assert(
+    oidc || !!env.BLOB_READ_WRITE_TOKEN,
+    'O armazenamento privado ainda não está configurado.',
+    503,
+  );
+  return {
+    prefix: `water/${namespace}`,
+    ...(oidc ? { storeId: env.BLOB_STORE_ID } : { token: env.BLOB_READ_WRITE_TOKEN }),
+  };
 }
 export function blobStore(config, sdk = { get, put, list }) {
-  const options = { access: 'private', token: config.token };
+  // Let the SDK obtain/refresh the short-lived OIDC credential in Vercel Functions.
+  const credentials = config.storeId ? { storeId: config.storeId } : { token: config.token };
+  const options = { access: 'private', ...credentials };
   const path = `${config.prefix}/state.txt`;
   async function readFile(pathname) {
     const item = await sdk.get(pathname, { ...options, useCache: false });
@@ -95,7 +105,7 @@ export function blobStore(config, sdk = { get, put, list }) {
     },
     async listBackups() {
       const result = await sdk.list({
-        token: config.token,
+        ...credentials,
         prefix: `${config.prefix}/backups/`,
         limit: 1000,
       });
