@@ -1,3 +1,5 @@
+> Configuração atual (04/11/2026): [TXT e localStorage em produção](24-modo-navegador-producao.md). A integração Blob está suspensa no frontend; documentos anteriores são históricos.
+
 # Auditoria e plano de modernização — Water System Management
 
 Data de referência: **28/10/2026**. Natureza do trabalho: **análise, sem alterações funcionais**.

@@ -1,6 +1,6 @@
 # Water System Management
 
-Aplicação de gestão de clientes, mensalidades, pagamentos, recibos, empresa e utilizadores. Angular 19, TypeScript e NG-ZORRO no frontend; funções Node na Vercel para persistência privada. O backend Spring Boot irmão mantém o recetor opcional de backups.
+Aplicação de gestão de clientes, mensalidades, pagamentos, recibos, empresa e utilizadores. Angular 19, TypeScript e NG-ZORRO. Por decisão de 04/11/2026, desenvolvimento e produção usam TXT inicial e localStorage por navegador. A integração Node/Vercel/Blob e o recetor Spring foram preservados para retoma futura, mas não são usados pelo frontend nesta configuração.
 
 Moeda: MZN, apresentada como MT. Fuso de negócio: Africa/Maputo.
 
@@ -72,4 +72,4 @@ O gerador PDF fica em `src/app/core/services/documents/templates/`. Para executa
 node tools/pdf/verify-payment-documents.cjs
 ```
 
-Um demonstrativo ou recibo não constitui automaticamente uma fatura fiscal. Produção usa `/api` e um Blob privado, não o TXT dos assets. A publicação exige configuração e migração validada; nunca copiar credenciais para o Git.
+Um demonstrativo ou recibo não constitui automaticamente uma fatura fiscal. A configuração atual de produção usa `/data/prod/water-data.txt` e localStorage separado do desenvolvimento. A conta inicial é `admin / 123456`. Dados existentes no navegador têm prioridade; não há sincronização entre computadores nem gravação do TXT publicado. Exportar cópias em Empresa. O Blob anterior permanece intacto. Consulte [modo navegador atual](docs/24-modo-navegador-producao.md); os documentos anteriores de integração descrevem uma configuração agora suspensa. Nunca publicar exportações privadas ou dados financeiros reais nos assets.

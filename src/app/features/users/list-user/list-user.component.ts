@@ -1,4 +1,4 @@
-import { environment } from '../../../../environments/environments';
+import { usesBrowserData } from '@shared/config/data-mode';
 import { TranslationService } from '@core/services/i18n/translation.service';
 import { describeStatus } from '@shared/utils/status-presentation';
 import { AuthSessionService } from '@core/auth/auth-session.service';
@@ -21,12 +21,10 @@ import { ROLE_OPTIONS } from '@shared/constants/app-labels';
   styleUrl: './list-user.component.scss',
 })
 export class ListuserComponent {
-  readonly defaultPassword = environment.production ? '' : '123456';
+  readonly defaultPassword = !usesBrowserData() ? '' : '123456';
   get passwordHint() {
     return this.translations.instant(
-      environment.production
-        ? 'accountSecurity.productionPassword'
-        : 'accountSecurity.localPassword',
+      !usesBrowserData() ? 'accountSecurity.productionPassword' : 'accountSecurity.localPassword',
     );
   }
   dataSource: User[] = [];
@@ -170,7 +168,7 @@ export class ListuserComponent {
   editUser(user: User) {
     this.currentEditingUserId = user.id;
     this.userForm.controls['password'].setValidators([
-      Validators.minLength(environment.production ? 12 : 6),
+      Validators.minLength(!usesBrowserData() ? 12 : 6),
     ]);
     this.userForm.controls['password'].setValue('');
     this.userForm.controls['password'].updateValueAndValidity();
@@ -190,7 +188,7 @@ export class ListuserComponent {
     this.currentEditingUserId = null;
     this.userForm.controls['password'].setValidators([
       Validators.required,
-      Validators.minLength(environment.production ? 12 : 6),
+      Validators.minLength(!usesBrowserData() ? 12 : 6),
     ]);
     this.userForm.reset({ status: 'ACTIVE', role: 'OPERATOR', password: this.defaultPassword });
   }
@@ -229,7 +227,7 @@ export class ListuserComponent {
       email: ['', Validators.required],
       password: [
         this.defaultPassword,
-        [Validators.required, Validators.minLength(environment.production ? 12 : 6)],
+        [Validators.required, Validators.minLength(!usesBrowserData() ? 12 : 6)],
       ],
       status: [''],
       phone: ['', Validators.required],

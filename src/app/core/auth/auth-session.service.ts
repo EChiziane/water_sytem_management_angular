@@ -1,3 +1,4 @@
+import { usesBrowserData } from '@shared/config/data-mode';
 import { environment } from '../../../environments/environments';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
@@ -66,9 +67,8 @@ export class AuthSessionService {
   hasValidSession(): boolean {
     const token = this.getToken();
     if (this.getUser()?.status !== 'ACTIVE') return false;
-    if (token === 'local-water-session')
-      return !environment.production && environment.useLocalFallback;
-    return !!token && !this.isTokenExpired(token);
+    if (token === 'local-water-session') return usesBrowserData();
+    return !usesBrowserData() && !!token && !this.isTokenExpired(token);
   }
 
   clear(): void {

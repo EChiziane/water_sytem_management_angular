@@ -13,12 +13,15 @@ import { TranslationService } from '@core/services/i18n/translation.service';
 import { environment } from '../../../../environments/environments';
 import { DataToolsComponent } from './data-tools.component';
 describe('Backup controls', () => {
+  let originalMode: string;
   let production: boolean, allowed: boolean, http: HttpTestingController;
   let data: jasmine.SpyObj<WaterLocalDataService>,
     confirmation: jasmine.SpyObj<OperationConfirmationService>,
     session: { clear: jasmine.Spy };
   beforeEach(async () => {
     production = environment.production;
+    originalMode = environment.dataMode;
+    environment.dataMode = 'local';
     environment.production = false;
     allowed = true;
     data = jasmine.createSpyObj('LocalData', ['exportState', 'exportRawBackup', 'restoreBackup']);
@@ -41,6 +44,7 @@ describe('Backup controls', () => {
   });
   afterEach(() => {
     environment.production = production;
+    environment.dataMode = originalMode;
     http.verify();
   });
   it('does not show administrative backup controls to an unauthorized user', () => {
@@ -83,6 +87,7 @@ describe('Backup controls', () => {
   });
   it('uses cloud controls in production and does not turn a failed Spring backup into success', async () => {
     environment.production = true;
+    environment.dataMode = 'vercel';
     const f = TestBed.createComponent(DataToolsComponent);
     f.detectChanges();
     http.expectOne(environment.baseURL + '/backups/status').flush({ lastSpringBackup: null });

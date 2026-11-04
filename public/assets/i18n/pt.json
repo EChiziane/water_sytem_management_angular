@@ -30,7 +30,7 @@
       "subtitle": "Clientes, pagamentos e cobrancas"
     },
     "status": {
-      "demoActive": "Demonstração · dados locais"
+      "demoActive": "Dados neste navegador"
     },
     "account": {
       "defaultUser": "Utilizador",
@@ -118,7 +118,7 @@
     "title": "Perfil da empresa",
     "subtitle": "Dados institucionais e contactos da empresa.",
     "save": "Guardar alterações",
-    "demo": "Demonstração: estas alterações ficam apenas neste navegador. Na API, os dados são partilhados pela empresa.",
+    "demo": "Modo navegador: as alterações ficam apenas neste navegador. Exporte uma cópia em Dados e cópias de segurança.",
     "reload": "Recarregar",
     "identity": "Identificação da empresa",
     "name": "Nome / razão social",

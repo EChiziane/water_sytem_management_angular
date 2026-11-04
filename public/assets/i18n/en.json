@@ -30,7 +30,7 @@
       "subtitle": "Customers, payments and collections"
     },
     "status": {
-      "demoActive": "Demo · local data"
+      "demoActive": "Data in this browser"
     },
     "account": {
       "defaultUser": "User",
@@ -118,7 +118,7 @@
     "title": "Company profile",
     "subtitle": "Company details and contact information.",
     "save": "Save changes",
-    "demo": "Demo: changes are saved only in this browser. API data is shared across the company.",
+    "demo": "Browser mode: changes stay in this browser. Export a copy under Data and backups.",
     "reload": "Reload",
     "identity": "Company identification",
     "name": "Company / legal name",

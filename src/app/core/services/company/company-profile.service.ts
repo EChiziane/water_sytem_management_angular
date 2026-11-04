@@ -1,3 +1,4 @@
+import { usesBrowserData } from '@shared/config/data-mode';
 import { PermissionService } from '@core/auth/permission.service';
 import { DataModeService } from '@core/data/data-mode.service';
 import { Injectable } from '@angular/core';
@@ -50,16 +51,13 @@ export class CompanyProfileService {
       email: profile.email,
       tagline: profile.tagline,
     });
-    if (!environment.production && environment.dataMode === 'local')
-      return of(published(this.readLocal()));
+    if (usesBrowserData()) return of(published(this.readLocal()));
     return this.http.get<CompanyProfile>(this.url + '/public').pipe(
       map(published),
       catchError((error: HttpErrorResponse) =>
         defer(() => {
           const profile =
-            !environment.production && environment.useLocalFallback && error.status === 0
-              ? this.readLocal()
-              : { ...COMPANY_PROFILE };
+            usesBrowserData() && error.status === 0 ? this.readLocal() : { ...COMPANY_PROFILE };
           return of(published(profile));
         }),
       ),

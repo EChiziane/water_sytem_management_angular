@@ -1,3 +1,4 @@
+import { usesBrowserData } from '@shared/config/data-mode';
 import { BusinessDatePipe } from '@shared/pipes/business-date.pipe';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -6,7 +7,6 @@ import { Router } from '@angular/router';
 import { defer, of, tap, finalize } from 'rxjs';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { environment } from '../../../../environments/environments';
 import { AuthSessionService } from '@core/auth/auth-session.service';
 import { PermissionService } from '@core/auth/permission.service';
 import { WaterLocalDataService } from '@core/data/demo/water-local-data.service';
@@ -21,7 +21,7 @@ import { TranslationService } from '@core/services/i18n/translation.service';
   styleUrl: './data-tools.component.scss',
 })
 export class DataToolsComponent implements OnInit {
-  readonly local = !environment.production && environment.dataMode === 'local';
+  readonly local = usesBrowserData();
   busy = false;
   notice = '';
   error = '';

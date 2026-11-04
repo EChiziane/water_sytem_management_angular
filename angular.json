@@ -78,6 +78,11 @@
                   "ignore": ["data/**"]
                 },
                 {
+                  "glob": "water-data.txt",
+                  "input": "public/data/prod",
+                  "output": "/data/prod/"
+                },
+                {
                   "glob": "**/*",
                   "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
                   "output": "/assets/"

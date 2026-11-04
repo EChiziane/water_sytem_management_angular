@@ -1,3 +1,4 @@
+import { usesBrowserData } from '@shared/config/data-mode';
 import { COMPANY_PROFILE } from '@shared/config/company-profile';
 import { paymentPeriods, isBillingPeriod } from '@shared/utils/billing-period';
 import { maputoMonthKey } from '@shared/utils/business-date';
@@ -476,8 +477,7 @@ export class WaterLocalDataService {
   }
   restoreBackup(raw: string): void {
     this.permissions.require('users.manage');
-    if (environment.production || !environment.useLocalFallback)
-      throw new Error('A importação local está desativada.');
+    if (!usesBrowserData()) throw new Error('A importação local está desativada.');
     const parsed = JSON.parse(raw);
     const state = parsed.state;
     if (
@@ -575,7 +575,7 @@ export class WaterLocalDataService {
   }
 
   private state$(): Observable<WaterState> {
-    if (environment.production || !environment.useLocalFallback) {
+    if (!usesBrowserData()) {
       return throwError(
         () =>
           new HttpErrorResponse({
@@ -610,7 +610,7 @@ export class WaterLocalDataService {
   }
 
   private recoverBilling(state: WaterState): WaterState {
-    if (!environment.production && environment.useLocalFallback) {
+    if (usesBrowserData() && !environment.production) {
       for (const user of DEMO_USERS)
         if (!state.users.some((existing) => existing.login === user.login))
           state.users.push(this.clone(user));

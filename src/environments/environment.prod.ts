@@ -1,9 +1,9 @@
 export const environment = {
   name: 'production',
-  dataMode: 'vercel',
+  dataMode: 'local',
   production: true,
-  useLocalFallback: false,
+  useLocalFallback: true,
   baseURL: '/api',
-  waterDataSourcePath: '/data/prod/water-data.json',
+  waterDataSourcePath: '/data/prod/water-data.txt',
   waterStorageKey: 'water-system-management-state-production',
 };

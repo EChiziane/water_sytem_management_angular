@@ -7,56 +7,95 @@ import { DataModeService } from './data-mode.service';
 import { AuthSessionService } from '../auth/auth-session.service';
 import { PermissionService } from '../auth/permission.service';
 import { WaterLocalDataService } from '@core/data/demo/water-local-data.service';
-describe('Production data boundary', () => {
-  let originalProduction: boolean, originalFallback: boolean;
+import { AuthService } from '../auth/auth.service';
+
+describe('Explicit browser data mode in production', () => {
+  let saved: typeof environment;
+  let session: jasmine.SpyObj<AuthSessionService>;
   beforeEach(() => {
-    originalProduction = environment.production;
-    originalFallback = environment.useLocalFallback;
+    saved = { ...environment };
+    Object.assign(environment, production);
+    session = jasmine.createSpyObj('Session', ['getToken', 'setToken', 'setUser', 'clear']);
+    session.getToken.and.returnValue('local-water-session');
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: AuthSessionService, useValue: { getToken: () => 'local-water-session' } },
+        { provide: AuthSessionService, useValue: session },
         { provide: PermissionService, useValue: { require: () => {} } },
       ],
     });
   });
   afterEach(() => {
-    environment.production = originalProduction;
-    environment.useLocalFallback = originalFallback;
+    Object.assign(environment, saved);
     TestBed.inject(HttpTestingController).verify();
   });
-  it('ships with fallback explicitly disabled in the production environment', () => {
+  it('ships browser mode and a dedicated TXT without sharing the development storage key', () => {
     expect(production.production).toBeTrue();
-    expect(production.useLocalFallback).toBeFalse();
+    expect(production.dataMode).toBe('local');
+    expect(production.waterDataSourcePath).toBe('/data/prod/water-data.txt');
+    expect(production.waterStorageKey).not.toBe('water-system-management-state-development');
+    expect(TestBed.inject(DataModeService).local).toBeTrue();
   });
-  it('rejects demo sessions and offline logins in production even if fallback is enabled accidentally', () => {
-    environment.production = true;
-    environment.useLocalFallback = true;
-    const mode = TestBed.inject(DataModeService);
-    expect(mode.local).toBeFalse();
-    expect(mode.canLoginLocally({ status: 0 })).toBeFalse();
+  it('authenticates in browser mode without contacting Spring or Vercel', () => {
+    const data = TestBed.inject(WaterLocalDataService);
+    const user = {
+      id: 'test-admin',
+      login: 'admin',
+      password: '123456',
+      status: 'ACTIVE',
+      role: 'ADMIN',
+    } as any;
+    spyOn(data, 'login').and.returnValue(of(user));
+    let received: any;
+    TestBed.inject(AuthService)
+      .login('admin', '123456')
+      .subscribe((u) => (received = u));
+    expect(received.id).toBe('test-admin');
+    expect(session.setToken).toHaveBeenCalledWith('local-water-session');
+    TestBed.inject(HttpTestingController).expectNone((r) => r.url.startsWith(environment.baseURL));
   });
-  it('blocks direct access to local financial data before reading browser storage or JSON', () => {
-    environment.production = true;
-    const read = spyOn(Storage.prototype, 'getItem').and.callThrough();
-    const service = TestBed.inject(WaterLocalDataService);
-    let status = 0;
-    service
-      .getCustomers()
-      .subscribe({ next: () => fail('Demo data leaked'), error: (e) => (status = e.status) });
-    expect(status).toBe(403);
-    expect(read).not.toHaveBeenCalled();
-    expect(service.isLocalMode$.value).toBeFalse();
+  it('keeps stored records and credentials ahead of the TXT in production browser mode', () => {
+    const raw = JSON.stringify({
+      sourceVersion: 'browser-test',
+      state: {
+        users: [
+          {
+            id: 'test-admin',
+            login: 'admin',
+            password: 'owner-pin',
+            status: 'ACTIVE',
+            role: 'ADMIN',
+          },
+        ],
+        customers: [],
+        payments: [],
+        receipts: [],
+      },
+    });
+    spyOn(Storage.prototype, 'getItem').and.callFake((key) =>
+      key === environment.waterStorageKey ? raw : null,
+    );
+    const writes = spyOn(Storage.prototype, 'setItem');
+    let id = '';
+    TestBed.inject(WaterLocalDataService)
+      .login('admin', 'owner-pin')
+      .subscribe((u) => (id = u.id));
+    expect(id).toBe('test-admin');
+    expect(writes).not.toHaveBeenCalled();
     TestBed.inject(HttpTestingController).expectNone(environment.waterDataSourcePath);
   });
-  it('also respects an explicit demo opt-out in development', () => {
-    environment.production = false;
-    environment.useLocalFallback = false;
+  it('still refuses browser financial data when API mode is explicitly selected', () => {
+    environment.dataMode = 'vercel';
+    const read = spyOn(Storage.prototype, 'getItem').and.callThrough();
+    expect(TestBed.inject(DataModeService).local).toBeFalse();
+    expect(TestBed.inject(DataModeService).canLoginLocally({ status: 0 })).toBeFalse();
     let status = 0;
     TestBed.inject(WaterLocalDataService)
-      .login('anaAC', '123456')
-      .subscribe({ next: () => fail('Demo login enabled'), error: (e) => (status = e.status) });
+      .getCustomers()
+      .subscribe({ next: () => fail('unexpected local read'), error: (e) => (status = e.status) });
     expect(status).toBe(403);
+    expect(read).not.toHaveBeenCalled();
   });
 });
+import { of } from 'rxjs';

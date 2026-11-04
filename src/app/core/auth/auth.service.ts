@@ -1,3 +1,4 @@
+import { usesBrowserData } from '@shared/config/data-mode';
 import { DataModeService } from '../data/data-mode.service';
 import { DataAccessService } from '../data/data-access.service';
 import { throwError } from 'rxjs';
@@ -27,11 +28,7 @@ export class AuthService {
 
   login(login: string, password: string): Observable<User> {
     this.session.clear();
-    if (
-      !environment.production &&
-      environment.useLocalFallback &&
-      environment.dataMode === 'local'
-    ) {
+    if (usesBrowserData()) {
       return defer(() => this.localData.login(login, password)).pipe(
         tap((user) => {
           this.session.setToken('local-water-session');
