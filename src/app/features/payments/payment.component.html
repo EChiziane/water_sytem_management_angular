@@ -277,7 +277,13 @@
   [nzWidth]="drawerWidth"
 >
   <nz-spin *nzDrawerContent [nzSpinning]="isSaving" nzTip="A gravar pagamento...">
-    <form wsmProtectChanges [formGroup]="paymentForm" class="drawer-form" nz-form>
+    <form
+      wsmProtectChanges
+      [formGroup]="paymentForm"
+      class="drawer-form"
+      nz-form
+      nzLayout="vertical"
+    >
       <section class="drawer-section">
         <h3 class="section-title">Selecionar cliente</h3>
 

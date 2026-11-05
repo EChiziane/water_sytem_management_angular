@@ -284,7 +284,13 @@
   [nzWidth]="drawerWidth"
 >
   <nz-spin *nzDrawerContent [nzSpinning]="isSaving" nzTip="A gravar cliente...">
-    <form wsmProtectChanges [formGroup]="customerForm" class="drawer-form" nz-form>
+    <form
+      wsmProtectChanges
+      [formGroup]="customerForm"
+      class="drawer-form"
+      nz-form
+      nzLayout="vertical"
+    >
       <section class="drawer-customer-preview">
         <div class="customer-avatar">{{ drawerInitials }}</div>
         <div>

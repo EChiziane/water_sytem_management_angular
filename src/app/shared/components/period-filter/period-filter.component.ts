@@ -30,20 +30,22 @@ import { isBillingPeriod } from '@shared/utils/billing-period';
       }
       label {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 8px;
         font-size: 12px;
         color: #526278;
       }
       select {
-        height: 32px;
-        padding: 0 8px;
+        height: 36px;
+        padding: 0 10px;
         border: 1px solid #dce3eb;
         border-radius: 6px;
         background: #fff;
         color: #233148;
         font: inherit;
-        min-width: 110px;
+        min-width: 170px;
+        max-width: 100%;
       }
     `,
   ],

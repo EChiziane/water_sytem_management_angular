@@ -285,7 +285,7 @@
   [nzVisible]="isPaymentDrawerVisible"
   [nzWidth]="drawerWidth"
 >
-  <form *nzDrawerContent [formGroup]="paymentForm" class="drawer-form" nz-form>
+  <form *nzDrawerContent [formGroup]="paymentForm" class="drawer-form" nz-form nzLayout="vertical">
     <div class="drawer-customer-card">
       <div class="customer-main">
         <div class="customer-avatar">{{ initials }}</div>

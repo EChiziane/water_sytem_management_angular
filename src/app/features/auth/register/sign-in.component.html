@@ -7,17 +7,23 @@
     </div>
   </div>
 
-  <form (ngSubmit)="submitForm()" [formGroup]="signinForm" class="form-container" nz-form>
+  <form
+    (ngSubmit)="submitForm()"
+    [formGroup]="signinForm"
+    class="form-container"
+    nz-form
+    nzLayout="vertical"
+  >
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>Nome</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Informe o nome.">
+      <nz-form-label [nzXs]="24" nzFor="name" nzRequired>Nome</nz-form-label>
+      <nz-form-control [nzXs]="24" nzErrorTip="Informe o nome.">
         <input formControlName="name" id="name" nz-input placeholder="Ex: Ednilson Chiziane" />
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email" nzRequired>Email</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Email inválido.">
+      <nz-form-label [nzXs]="24" nzFor="email" nzRequired>Email</nz-form-label>
+      <nz-form-control [nzXs]="24" nzErrorTip="Email inválido.">
         <input
           formControlName="email"
           id="email"
@@ -29,8 +35,8 @@
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phone" nzRequired>Telefone</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Informe o telefone.">
+      <nz-form-label [nzXs]="24" nzFor="phone" nzRequired>Telefone</nz-form-label>
+      <nz-form-control [nzXs]="24" nzErrorTip="Informe o telefone.">
         <nz-input-group nzAddOnBefore="+258">
           <input
             (blur)="normalizePhone()"
@@ -46,15 +52,15 @@
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="login" nzRequired>Login</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Informe o login.">
+      <nz-form-label [nzXs]="24" nzFor="login" nzRequired>Login</nz-form-label>
+      <nz-form-control [nzXs]="24" nzErrorTip="Informe o login.">
         <input formControlName="login" id="login" nz-input placeholder="Ex: ednilson" />
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="password" nzRequired>Senha</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Informe a senha.">
+      <nz-form-label [nzXs]="24" nzFor="password" nzRequired>Senha</nz-form-label>
+      <nz-form-control [nzXs]="24" nzErrorTip="Informe a senha.">
         <nz-input-group [nzSuffix]="passwordSuffixTpl">
           <input
             [type]="isPasswordVisible ? 'text' : 'password'"
@@ -77,8 +83,8 @@
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="role" nzRequired>Função</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Selecione a função.">
+      <nz-form-label [nzXs]="24" nzFor="role" nzRequired>Função</nz-form-label>
+      <nz-form-control [nzXs]="24" nzErrorTip="Selecione a função.">
         <nz-select formControlName="role" id="role" nzPlaceHolder="Selecione">
           <nz-option nzLabel="Administrador" nzValue="ADMIN"></nz-option>
           <nz-option nzLabel="Gestor" nzValue="MANAGER"></nz-option>
@@ -88,7 +94,7 @@
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-control [nzOffset]="6" [nzSm]="14" [nzXs]="24">
+      <nz-form-control [nzXs]="24">
         <button [disabled]="signinForm.invalid || isLoading" nz-button nzType="primary">
           <span *ngIf="!isLoading">Registrar</span>
           <span *ngIf="isLoading" class="loading">
