@@ -1,3 +1,4 @@
+import { UnsavedChangesService } from '@core/services/dialogs/unsaved-changes.service';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
@@ -30,6 +31,7 @@ describe('Backup controls', () => {
     await TestBed.configureTestingModule({
       imports: [DataToolsComponent, IconsProviderModule, NoopAnimationsModule],
       providers: [
+        { provide: UnsavedChangesService, useValue: { discardAll: () => {} } },
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: PermissionService, useValue: { can: () => allowed } },

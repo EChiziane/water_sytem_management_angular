@@ -1,3 +1,5 @@
+import { BackupReminderService } from '@core/services/backups/backup-reminder.service';
+import { UnsavedChangesService } from '@core/services/dialogs/unsaved-changes.service';
 import { PermissionService } from '@core/auth/permission.service';
 import { Component, OnInit } from '@angular/core';
 import { DataModeService } from '@core/data/data-mode.service';
@@ -41,6 +43,8 @@ export class MainLayoutComponent implements OnInit {
   }
 
   constructor(
+    public backup: BackupReminderService,
+    private unsaved: UnsavedChangesService,
     public permissions: PermissionService,
     private router: Router,
     private session: AuthSessionService,
@@ -71,7 +75,8 @@ export class MainLayoutComponent implements OnInit {
     this.isMobileMenuVisible = false;
   }
 
-  logout(): void {
+  async logout() {
+    if (!(await this.unsaved.leave())) return;
     this.session.clear();
     this.router.navigate(['/landing-page']);
   }

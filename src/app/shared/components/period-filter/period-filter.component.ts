@@ -1,3 +1,4 @@
+import { formatMonthLabel } from '@shared/utils/month-label';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -67,11 +68,7 @@ export class PeriodFilterComponent {
     this.yearChange.emit(year);
     this.valueChange.emit('');
   }
-  monthLabel(p: string) {
-    return new Intl.DateTimeFormat(this.t.currentLanguage, {
-      month: 'long',
-      year: 'numeric',
-      timeZone: 'Africa/Maputo',
-    }).format(new Date(p + '-01T12:00:00+02:00'));
+  monthLabel(period: string) {
+    return formatMonthLabel(period, this.t.currentLanguage);
   }
 }

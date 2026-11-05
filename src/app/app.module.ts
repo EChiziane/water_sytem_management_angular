@@ -1,3 +1,5 @@
+import { ProtectChangesDirective } from './shared/directives/protect-changes.directive';
+import { RequestStateComponent } from './shared/components/request-state/request-state.component';
 import { DataToolsComponent } from './features/company/data-tools/data-tools.component';
 import { BusinessDatePipe } from './shared/pipes/business-date.pipe';
 import { InfoTagComponent } from './shared/components/info-tag/info-tag.component';
@@ -101,6 +103,8 @@ registerLocaleData(en);
   imports: [
     DebtsComponent,
     PeriodFilterComponent,
+    ProtectChangesDirective,
+    RequestStateComponent,
     DataToolsComponent,
     BusinessDatePipe,
     InfoTagComponent,

@@ -20,10 +20,15 @@ export class PaymentInvoiceService {
     const prefix =
       kind === 'statement' ? 'DEMONSTRATIVO' : payment.confirmed ? 'RECIBO' : 'REGISTO_PAGAMENTO';
     this.companyProfiles.getIssuerProfile().subscribe({
-      next: (company) =>
-        buildPaymentDocument(payment, { ...options, company }).save(
-          this.filenames.build(prefix, options.reference || payment.referenceCode || payment.id),
-        ),
+      next: (company) => {
+        try {
+          buildPaymentDocument(payment, { ...options, company }).save(
+            this.filenames.build(prefix, options.reference || payment.referenceCode || payment.id),
+          );
+        } catch {
+          this.messages.error(this.translations.instant('company.documentError'));
+        }
+      },
       error: () => this.messages.error(this.translations.instant('company.documentError')),
     });
   }

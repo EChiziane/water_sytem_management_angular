@@ -1,3 +1,6 @@
+import { PermissionService } from '@core/auth/permission.service';
+import { RequestStateComponent } from '@shared/components/request-state/request-state.component';
+import { formatMonthLabel } from '@shared/utils/month-label';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -19,6 +22,7 @@ import { money } from '@shared/utils/payment-presentation';
   selector: 'app-debts',
   standalone: true,
   imports: [
+    RequestStateComponent,
     CommonModule,
     FormsModule,
     NzTableModule,
@@ -45,6 +49,7 @@ export class DebtsComponent implements OnInit {
     private billing: BillingService,
     private customerService: CustomerService,
     public t: TranslationService,
+    public permissions: PermissionService,
   ) {}
   ngOnInit() {
     this.load();
@@ -124,10 +129,6 @@ export class DebtsComponent implements OnInit {
     return this.rows.reduce((n, r) => n + Math.round(r.charge.amount * 100), 0) / 100;
   }
   label(period: string) {
-    return new Intl.DateTimeFormat(this.t.currentLanguage, {
-      month: 'long',
-      year: 'numeric',
-      timeZone: 'Africa/Maputo',
-    }).format(new Date(period + '-01T12:00:00+02:00'));
+    return formatMonthLabel(period, this.t.currentLanguage);
   }
 }

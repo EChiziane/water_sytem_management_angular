@@ -31,6 +31,7 @@ export class OperationConfirmationService {
       customer: string;
       amount: number;
       months: string[];
+      periodAmounts?: Record<string, number>;
       method: string;
     },
     action: () => Observable<unknown>,
@@ -48,6 +49,11 @@ export class OperationConfirmationService {
             referenceMonths(details.months.join('|')).join('; '),
           ],
           [this.text('method'), paymentMethodLabel(details.method)],
+          ...details.months
+            .filter((m) => details.periodAmounts?.[m] !== undefined)
+            .map(
+              (m) => [referenceMonths(m)[0], money(details.periodAmounts![m])] as [string, string],
+            ),
         ],
         consequence: this.text('paymentConsequence'),
         confirmLabel: this.text('recordPayment'),

@@ -1,3 +1,4 @@
+import { writeBrowserData } from '@shared/utils/browser-storage';
 import { usesBrowserData } from '@shared/config/data-mode';
 import { COMPANY_PROFILE } from '@shared/config/company-profile';
 import { paymentPeriods, isBillingPeriod } from '@shared/utils/billing-period';
@@ -213,6 +214,7 @@ export class WaterLocalDataService {
           id: this.id('payment'),
           referenceCode,
           customerId: customer.id,
+          customerCode: customer.code,
           customerName: customer.name,
           customerContact: customer.contact,
           customerAddress: customer.address,
@@ -534,7 +536,11 @@ export class WaterLocalDataService {
     try {
       localStorage.setItem(
         this.storageKey,
-        JSON.stringify({ sourceVersion: parsed.sourceVersion || 'imported', state }),
+        JSON.stringify({
+          sourceVersion: parsed.sourceVersion || 'imported',
+          savedAt: new Date().toISOString(),
+          state,
+        }),
       );
       if (company && typeof company.name === 'string')
         localStorage.setItem(companyKey, JSON.stringify(company));
@@ -695,11 +701,12 @@ export class WaterLocalDataService {
   private save(state: WaterState): void {
     if (!this.canUseLocalStorage()) return;
 
-    const envelope: WaterStorageEnvelope = {
+    const envelope: WaterStorageEnvelope & { savedAt: string } = {
+      savedAt: new Date().toISOString(),
       sourceVersion: this.sourceState?.version || `water-local-${environment.name || 'local'}`,
       state,
     };
-    localStorage.setItem(this.storageKey, JSON.stringify(envelope));
+    writeBrowserData(this.storageKey, JSON.stringify(envelope));
   }
 
   private isStorageEnvelope(

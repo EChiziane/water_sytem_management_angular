@@ -832,3 +832,36 @@ nz-select {
     color: #233148;
   }
 }
+
+.payment-open-periods {
+  padding: 10px 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--wsm-border);
+}
+.payment-open-periods strong {
+  font-size: 12px;
+}
+.payment-open-periods p {
+  margin: 4px 0;
+  color: var(--wsm-muted);
+}
+.payment-open-periods ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  max-height: 140px;
+  overflow: auto;
+  list-style: none;
+  margin: 6px 0;
+  padding: 0;
+}
+.payment-open-periods li {
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--wsm-muted);
+}
+.payment-open-periods .is-selected {
+  background: var(--wsm-primary-soft);
+  color: var(--wsm-primary);
+  font-weight: 600;
+}

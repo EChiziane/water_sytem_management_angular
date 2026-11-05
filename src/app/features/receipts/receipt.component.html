@@ -1,3 +1,4 @@
+<app-request-state *ngIf="loadFailed" (retry)="getRecibos()"></app-request-state>
 <div class="receipt-register content-wrapper compact-list-layout dense-list">
   <header class="page-header">
     <div class="compact-title-block">
@@ -28,13 +29,15 @@
   </section>
   <section class="table-wrapper">
     <nz-table
+      [nzPageIndex]="pageIndex"
+      (nzPageIndexChange)="pageIndex = $event"
       #nzTable
       [nzData]="listOfDisplayData"
       [nzLoading]="isLoading"
       [nzScroll]="{ x: '1120px' }"
       nzTableLayout="fixed"
       [nzPageSize]="10"
-      [nzNoResult]="emptyDocuments"
+      [nzNoResult]="loadFailed ? '' : emptyDocuments"
     >
       <thead>
         <tr>

@@ -235,11 +235,7 @@ export function buildCustomerDocument(
         ? records.map((record) => [
             paymentDate(record.paymentDate),
             `${value(record.referenceCode)}\n${record.confirmed ? 'Confirmado' : 'Pendente'}`,
-            (record.referenceMonth || '')
-              .split('|')
-              .map((item) => item.trim())
-              .filter(Boolean)
-              .join('; ') || '-',
+            referenceMonths(record.referenceMonth).join('; ') || '-',
             paymentMethodLabel(record.paymentMethod),
             currency(record.amount).replace(/ MT$/, ''),
             value(record.createdByName),

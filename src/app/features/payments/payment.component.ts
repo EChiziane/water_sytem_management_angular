@@ -1,3 +1,9 @@
+import { ActivatedRoute, Router } from '@angular/router';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ListViewStateService } from '@core/services/dialogs/list-view-state.service';
+import { UnsavedChangesService } from '@core/services/dialogs/unsaved-changes.service';
+import { OperationFeedbackService } from '@core/services/dialogs/operation-feedback.service';
 import { money } from '@shared/utils/payment-presentation';
 import { paymentPeriods } from '@shared/utils/billing-period';
 import { businessTimestamp, maputoMonthKey } from '@shared/utils/business-date';
@@ -31,6 +37,7 @@ export class PaymentComponent implements OnInit {
   listOfDisplayData: Payment[] = [];
   allCustomers: Customer[] = [];
   selectedCustomer: Customer | null = null;
+  lastPayment: Payment | null = null;
   selectedMonths: string[] = [];
 
   selectedYear = '';
@@ -39,6 +46,7 @@ export class PaymentComponent implements OnInit {
   searchValue = '';
 
   isLoading = false;
+  loadFailed = false;
   isSaving = false;
   isPaymentDrawerVisible = false;
   paymentDrawerTitle = 'Novo Pagamento';
@@ -49,7 +57,23 @@ export class PaymentComponent implements OnInit {
   private readonly MOBILE_BREAKPOINT = 768;
   private readonly DEFAULT_PAYMENT_METHOD = 'CASH';
 
+  pageIndex = 1;
+  ngOnDestroy() {
+    this.views.save('payments', {
+      searchValue: this.searchValue,
+      selectedYear: this.selectedYear,
+      selectedPeriod: this.selectedPeriod,
+      periodMode: this.periodMode,
+      pageIndex: this.pageIndex,
+    });
+  }
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private destroyRef: DestroyRef,
+    private views: ListViewStateService,
+    private unsaved: UnsavedChangesService,
+    private feedback: OperationFeedbackService,
     public translations: TranslationService,
     public permissions: PermissionService,
     private confirmations: OperationConfirmationService,
@@ -62,10 +86,18 @@ export class PaymentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    Object.assign(this, this.views.read('payments'));
     this.createForm();
     this.loadCustomers();
     this.getPayments();
     this.updateDrawer();
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const customerId = params.get('customerId');
+      if (customerId) {
+        this.openPaymentDrawer();
+        this.onCustomerSelect(customerId);
+      }
+    });
   }
 
   get totalPayments(): number {
@@ -112,7 +144,7 @@ export class PaymentComponent implements OnInit {
     this.paymentForm = this.fb.group({
       customerId: [null, Validators.required],
       amount: [0, Validators.required],
-      numMonths: [1, [Validators.required, Validators.min(1)]],
+      numMonths: [1, [Validators.required, Validators.min(1), Validators.pattern(/^[1-9]\d*$/)]],
       paymentMethod: [this.DEFAULT_PAYMENT_METHOD, Validators.required],
     });
   }
@@ -135,9 +167,15 @@ export class PaymentComponent implements OnInit {
 
     this.customerService.getCustomerById(customerId).subscribe({
       next: (customer) => {
-        this.selectedCustomer = customer;
+        this.selectedCustomer = {
+          ...customer,
+          unpaidMonths: [...(customer.unpaidMonths || [])].sort(),
+        };
+        this.selectedMonths = [];
+        this.paymentForm.patchValue({ customerId: customer.id });
 
         if (!customer.unpaidMonths?.length) {
+          this.paymentForm.patchValue({ numMonths: 1, amount: 0 });
           this.message.warning('Cliente sem mensalidades por pagar');
           return;
         }
@@ -190,8 +228,17 @@ export class PaymentComponent implements OnInit {
     this.isPaymentDrawerVisible = true;
   }
 
-  closePaymentDrawer(): void {
+  async closePaymentDrawer(saved = false) {
+    if (this.isSaving && !saved) return;
+    if (!saved && this.paymentForm.dirty && !(await this.unsaved.confirm())) return;
     this.isPaymentDrawerVisible = false;
+    if (this.route.snapshot.queryParamMap.has('customerId'))
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { customerId: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
     this.selectedCustomer = null;
     this.selectedMonths = [];
 
@@ -224,6 +271,9 @@ export class PaymentComponent implements OnInit {
         customer: this.selectedCustomer.name,
         amount: Number(payload.amount),
         months: [...this.selectedMonths],
+        periodAmounts: Object.fromEntries(
+          this.selectedMonths.map((m) => [m, Number(this.selectedCustomer!.monthlyFee)]),
+        ),
         method: payload.paymentMethod || '',
       },
       () => {
@@ -232,14 +282,17 @@ export class PaymentComponent implements OnInit {
         return this.paymentService.addPayment(payload).pipe(
           finalize(() => this.stopLoading()),
           tap({
-            next: () => {
+            next: (payment) => {
+              this.lastPayment = payment;
+              this.loadCustomers();
               this.message.success('Pagamento registado com sucesso.');
               this.getPayments();
-              this.closePaymentDrawer();
+              this.closePaymentDrawer(true);
             },
-            error: () =>
-              this.message.error(
-                'Erro ao processar o pagamento. Confira o registo antes de tentar novamente.',
+            error: (error) =>
+              this.feedback.error(
+                error,
+                'Não foi possível registar o pagamento. Confira os registos antes de repetir; o formulário foi preservado.',
               ),
           }),
         );
@@ -298,6 +351,7 @@ export class PaymentComponent implements OnInit {
     this.filterData();
   }
   getPayments(): void {
+    this.loadFailed = false;
     this.isLoading = true;
 
     this.paymentService
@@ -311,7 +365,9 @@ export class PaymentComponent implements OnInit {
           }));
           this.filterData();
         },
-        error: () => this.message.error('Erro ao carregar pagamentos.'),
+        error: () => {
+          this.loadFailed = true;
+        },
       });
   }
 

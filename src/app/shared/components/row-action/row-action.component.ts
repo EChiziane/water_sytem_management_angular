@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Params, RouterLink } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { TranslationService } from '@core/services/i18n/translation.service';
 
-type RowAction = 'view' | 'edit' | 'download' | 'deactivate' | 'call';
+type RowAction = 'view' | 'edit' | 'download' | 'deactivate' | 'call' | 'pay';
 
 @Component({
   selector: 'app-row-action',
@@ -14,7 +14,7 @@ type RowAction = 'view' | 'edit' | 'download' | 'deactivate' | 'call';
   template: `
     <ng-template #content>
       <nz-icon [nzType]="icons[action]" aria-hidden="true"></nz-icon>
-      <span *ngIf="action === 'view' || showLabel">{{
+      <span *ngIf="action === 'view' || action === 'pay' || showLabel">{{
         text('tableActions.' + action + 'Short')
       }}</span>
     </ng-template>
@@ -23,9 +23,11 @@ type RowAction = 'view' | 'edit' | 'download' | 'deactivate' | 'call';
       type="button"
       class="row-action"
       [class.row-action-view]="action === 'view'"
+      [class.row-action-pay]="action === 'pay'"
       [class.row-action-danger]="action === 'deactivate'"
       [disabled]="disabled"
       [routerLink]="route"
+      [queryParams]="queryParams"
       [attr.aria-label]="label"
       nz-tooltip
       [nzTooltipTitle]="label"
@@ -52,12 +54,14 @@ export class RowActionComponent {
   @Input() action: RowAction = 'view';
   @Input() context = '';
   @Input() route: string | any[] | null = null;
+  @Input() queryParams: Params | null = null;
   @Input() href: string | null = null;
   @Input() showLabel = false;
   @Input() disabled = false;
   @Input() disabledReason = '';
   @Output() activated = new EventEmitter<void>();
   readonly icons: Record<RowAction, string> = {
+    pay: 'credit-card',
     view: 'eye',
     edit: 'edit',
     download: 'download',

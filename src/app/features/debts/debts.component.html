@@ -16,7 +16,7 @@
       [attr.aria-label]="t.instant('debts.search')"
     /><app-period-filter [periods]="periods" [(year)]="year" [(value)]="period"></app-period-filter>
   </section>
-  <p *ngIf="failed" role="alert">{{ t.instant('debts.error') }}</p>
+  <app-request-state *ngIf="failed" (retry)="load()"></app-request-state>
   <section class="table-wrapper">
     <nz-table
       #table
@@ -24,7 +24,7 @@
       [nzLoading]="loading"
       [nzPageSize]="12"
       [nzScroll]="{ x: '900px' }"
-      [nzNoResult]="t.instant('debts.empty')"
+      [nzNoResult]="failed ? '' : t.instant('debts.empty')"
       nzSize="small"
       ><thead>
         <tr>
@@ -33,7 +33,9 @@
           <th>{{ t.instant('debts.period') }}</th>
           <th>{{ t.instant('debts.amount') }}</th>
           <th>{{ t.instant('debts.status') }}</th>
-          <th class="wsm-actions-column">{{ t.instant('tableActions.heading') }}</th>
+          <th class="wsm-actions-column" nzWidth="180px">
+            {{ t.instant('tableActions.heading') }}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -54,6 +56,13 @@
           </td>
           <td class="wsm-actions-cell">
             <div class="wsm-row-actions">
+              <app-row-action
+                *ngIf="row.customer && permissions.can('payments.create')"
+                action="pay"
+                [route]="['/app/payment']"
+                [queryParams]="{ customerId: row.customer.id }"
+                [context]="row.customer.name"
+              ></app-row-action>
               <app-row-action
                 *ngIf="row.customer"
                 action="view"

@@ -167,7 +167,9 @@
     "callShort": "Call",
     "noPayment": "No associated payment",
     "ownAccount": "You cannot deactivate your own account",
-    "alreadyInactive": "This account is already inactive"
+    "alreadyInactive": "This account is already inactive",
+    "pay": "Record customer payment, starting with the oldest periods",
+    "payShort": "Pay"
   },
   "years": {
     "year": "Year",
@@ -263,7 +265,7 @@
     "corrupt": "Data could not be read. Export the original for recovery.",
     "invalid": "Invalid or incompatible backup. Local data was not replaced.",
     "importTitle": "Replace local data?",
-    "importNote": "An exact copy of the current state will be preserved in this browser first. Also export it to a file. This affects only this browser and signs you out.",
+    "importNote": "Import replaces data in this browser and signs you out. Unsaved form changes will be discarded. A copy of the previously saved state is preserved before replacement.",
     "customers": "Customers",
     "payments": "Payments",
     "receipts": "Receipts",
@@ -273,7 +275,16 @@
     "springNote": "Contact Spring and wait for backup integrity confirmation. Starting the server may take time.",
     "testSourceNote": "Replace only the cloud test dataset with an anonymized copy and download it. Production and local browsers are unchanged.",
     "done": "Operation confirmed.",
-    "lastSpring": "Last confirmed Spring backup"
+    "lastSpring": "Last confirmed Spring backup",
+    "exportRequested": "Download requested. Check that the file was saved in a safe place.",
+    "backupDue": "Export an up-to-date copy",
+    "backupCurrent": "Recent export requested",
+    "lastExportRequest": "Last full export requested",
+    "neverExported": "Not recorded in this browser yet",
+    "downloadCaution": "This date records the download request; it cannot verify file saving. Exporting does not synchronize other computers.",
+    "users": "Users",
+    "sourceDate": "Backup date",
+    "unknownDate": "Not provided"
   },
   "accountSecurity": {
     "productionPassword": "At least 12 characters; use a unique credential.",
@@ -306,5 +317,23 @@
     "status": "Status",
     "overdue": "Overdue",
     "unpaid": "Unpaid"
+  },
+  "ux": {
+    "discardTitle": "Leave without saving?",
+    "discardNote": "There are unsaved changes. Continuing will discard the entries in this form.",
+    "discard": "Discard changes",
+    "keepEditing": "Keep editing",
+    "loadFailed": "Could not load records",
+    "loadFailedNote": "This does not mean the list is empty. Please retry; saved records have not been deleted.",
+    "retry": "Try again",
+    "fieldError": "Complete this field and check the expected format and limits.",
+    "storageFull": "Could not save in this browser. Storage is full or unavailable. Keep the form, export a copy and free space before retrying.",
+    "emptyUsers": "No users match your search.",
+    "paymentSaved": "Payment saved and receipt available",
+    "receiptDownload": "Download receipt",
+    "dismiss": "Dismiss",
+    "backupReminder": "Backup: export an up-to-date copy in Company",
+    "openPeriods": "All unpaid billing periods",
+    "oldestFirst": "Payments start with the oldest periods. The month viewed in Debts does not limit this operation."
   }
 }

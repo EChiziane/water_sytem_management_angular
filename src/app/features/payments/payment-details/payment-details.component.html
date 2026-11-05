@@ -16,7 +16,7 @@
           </button>
           <button (click)="download()" nz-button nzType="primary">
             <nz-icon nzType="download"></nz-icon>
-            {{ payment.confirmed ? 'Descarregar recibo' : 'Descarregar registo' }}
+            {{ payment.confirmed ? 'Baixar recibo' : 'Baixar registo' }}
           </button>
         </div>
       </div>
@@ -110,7 +110,7 @@
           </div>
         </section>
         <footer class="sheet-footer">
-          <p><span>Identificador da operação</span> {{ payment.id }}</p>
+          <p><span>Referência da operação</span> {{ payment.referenceCode || '—' }}</p>
           <p>
             {{
               payment.confirmed

@@ -1,3 +1,4 @@
+import { unsavedChangesGuard } from '@core/services/dialogs/unsaved-changes.service';
 import { PermissionGuard } from '@core/guards/permission.guard';
 import { AccessDeniedComponent } from './features/auth/access-denied.component';
 import { CompanyComponent } from './features/company/company.component';
@@ -41,54 +42,63 @@ const routes: Routes = [
     path: 'app',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
+    canDeactivate: [unsavedChangesGuard],
     children: [
       { path: 'access-denied', component: AccessDeniedComponent },
       {
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'dashboard.read' },
       },
       {
         path: 'customer',
         component: CustomerComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'customers.read' },
       },
       {
         path: 'customer-detail/:id',
         component: CustomerDetailsComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'customers.read' },
       },
       {
         path: 'debts',
         component: DebtsComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'reports.financial' },
       },
       {
         path: 'payment',
         component: PaymentComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'payments.read' },
       },
       {
         path: 'receipts',
         component: ReciboComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'documents.issue' },
       },
       {
         path: 'payment-detail/:id',
         component: PaymentDetailsComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'payments.read' },
       },
       {
         path: 'users',
         component: ListuserComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: {
           permission: 'users.manage',
         },
@@ -97,18 +107,21 @@ const routes: Routes = [
         path: 'company',
         component: CompanyComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'company.manage' },
       },
       {
         path: 'profile',
         component: ProfileComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'profile.read' },
       },
       {
         path: 'profile/:id',
         component: ProfileComponent,
         canActivate: [PermissionGuard],
+        canDeactivate: [unsavedChangesGuard],
         data: { permission: 'users.manage' },
       },
       {

@@ -4,6 +4,7 @@ export interface Payment {
   referenceCode: string;
 
   customerId: string;
+  customerCode?: string;
   customerName: string;
   customerContact: string;
   customerAddress: string;

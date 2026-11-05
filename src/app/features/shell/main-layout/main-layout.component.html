@@ -151,6 +151,12 @@
 
     <nz-content class="content-area">
       <main class="inner-content">
+        <a
+          *ngIf="mode.local && permissions.can('company.manage') && backup.needsExport"
+          class="wsm-backup-link"
+          routerLink="/app/company"
+          >{{ 'ux.backupReminder' | translate }}</a
+        >
         <router-outlet></router-outlet>
       </main>
     </nz-content>

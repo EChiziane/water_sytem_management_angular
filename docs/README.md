@@ -76,3 +76,5 @@ A revisão de 01/11/2026 e as alterações preparatórias estão em [Arquitetura
 A implementação dos modos local/Vercel, preservação e backups está em [Modos e backups](17-modos-local-vercel-backups.md). Os ambientes anteriores com API Spring direta permanecem documentados como histórico; produção agora aponta para /api na Vercel. A ativação na nuvem exige configuração privada e importação validada.
 
 A organização de pastas, a separação de responsabilidades e o padrão de formatação estão descritos em [Organização do código](18-organizacao-clean-code.md). Os caminhos de relatórios antigos representam a estrutura na data de cada análise.
+
+A revisão de experiência operacional, confirmações, backups e pagamento a partir de Dívidas está em [Revisão UX operacional](25-revisao-ux-operacional.md). Mantém-se o modo navegador documentado em [Modo atual](24-modo-navegador-producao.md).

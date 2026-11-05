@@ -74,3 +74,136 @@
     animation: none !important;
   }
 }
+
+/* Operational polish: all forms, filters and recovery states share the same controls. */
+.app-shell input:not([type='checkbox']):not([type='radio']),
+.app-shell select,
+.app-shell textarea {
+  color: var(--wsm-text);
+  font-family: var(--wsm-font);
+  font-size: var(--wsm-font-label);
+}
+.app-shell input:focus-visible,
+.app-shell textarea:focus-visible,
+.app-shell select:focus-visible {
+  outline: 2px solid var(--wsm-primary);
+  outline-offset: 2px;
+}
+.app-shell .filters-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.app-shell .filters-panel select {
+  min-height: var(--wsm-control-height);
+  border: 1px solid var(--wsm-border);
+  border-radius: var(--wsm-radius-control);
+  background: var(--wsm-surface);
+  padding: 0 8px;
+}
+.app-shell .ant-form-item-label > label {
+  font-size: var(--wsm-font-label);
+  font-weight: 500;
+  color: var(--wsm-text);
+}
+.app-shell .ant-form-item-explain-error {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.wsm-request-error {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  background: var(--wsm-danger-soft);
+  border: 1px solid var(--wsm-border);
+  border-radius: var(--wsm-radius);
+  color: var(--wsm-danger);
+}
+.wsm-request-error p {
+  margin: 4px 0 0;
+  color: var(--wsm-text);
+  font-size: 12px;
+}
+.wsm-backup-health {
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid var(--wsm-border);
+  border-radius: var(--wsm-radius);
+  background: var(--wsm-surface-muted);
+}
+.wsm-backup-health p {
+  margin: 4px 0;
+  font-size: 12px;
+}
+.wsm-backup-health small {
+  color: var(--wsm-muted);
+}
+.wsm-backup-due {
+  border-left: 3px solid var(--wsm-warning);
+}
+.wsm-empty-copy {
+  padding: 20px;
+  margin: 0;
+  color: var(--wsm-muted);
+  font-size: 12px;
+}
+@media (max-width: 767px) {
+  .app-shell .filters-panel > * {
+    max-width: 100%;
+  }
+  .wsm-request-error {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .app-shell .ant-btn {
+    white-space: normal;
+  }
+}
+@media print {
+  .wsm-request-error,
+  .tools-actions,
+  .back-arrow {
+    display: none !important;
+  }
+}
+
+.wsm-operation-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  margin: 0 0 12px;
+  border: 1px solid var(--wsm-border);
+  border-left: 3px solid var(--wsm-success);
+  border-radius: var(--wsm-radius);
+  background: var(--wsm-success-soft);
+}
+.wsm-operation-result p {
+  margin: 4px 0 0;
+  font-size: 12px;
+}
+
+.wsm-backup-link {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 4px 8px;
+  border-left: 2px solid var(--wsm-warning);
+  color: var(--wsm-muted);
+  font-size: 12px;
+}
+.app-shell .company-toolbar h1,
+.app-shell .profile-header h1 {
+  font-size: var(--wsm-font-title);
+  font-weight: 600;
+}
+.app-shell .company-toolbar p,
+.app-shell .profile-header p {
+  color: var(--wsm-muted);
+  font-size: 12px;
+}

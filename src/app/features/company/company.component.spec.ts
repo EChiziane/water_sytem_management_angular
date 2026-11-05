@@ -17,6 +17,7 @@ describe('Company form confirmation', () => {
     data.save.and.returnValue(of({ ...COMPANY_PROFILE, version: 2 }));
     confirmations = jasmine.createSpyObj('Confirmations', ['run']);
     component = new CompanyComponent(
+      { error: () => {} } as any,
       new FormBuilder(),
       data,
       confirmations,

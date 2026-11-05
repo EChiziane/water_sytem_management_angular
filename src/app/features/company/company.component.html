@@ -27,6 +27,7 @@
       <button nz-button nzSize="small" (click)="load()">{{ 'company.reload' | translate }}</button>
     </div>
     <form
+      wsmProtectChanges
       *ngIf="profile"
       [formGroup]="form"
       (ngSubmit)="save()"

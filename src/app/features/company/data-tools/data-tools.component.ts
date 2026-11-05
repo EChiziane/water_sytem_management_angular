@@ -1,3 +1,5 @@
+import { UnsavedChangesService } from '@core/services/dialogs/unsaved-changes.service';
+import { BackupReminderService } from '@core/services/backups/backup-reminder.service';
 import { usesBrowserData } from '@shared/config/data-mode';
 import { BusinessDatePipe } from '@shared/pipes/business-date.pipe';
 import { Component, OnInit } from '@angular/core';
@@ -28,6 +30,8 @@ export class DataToolsComponent implements OnInit {
   lastSpringBackup = '';
   backups: BackupInfo[] = [];
   constructor(
+    private unsaved: UnsavedChangesService,
+    public reminder: BackupReminderService,
     public permissions: PermissionService,
     private backupsApi: BackupService,
     private data: WaterLocalDataService,
@@ -63,9 +67,13 @@ export class DataToolsComponent implements OnInit {
     }
   }
   exportData() {
+    this.error = '';
+    this.notice = '';
     if (this.local) {
       try {
         this.download(this.data.exportState('txt'), `water-backup-${Date.now()}.txt`);
+        this.reminder.recordExport();
+        this.notice = this.text('exportRequested');
       } catch {
         this.error = this.text('corrupt');
       }
@@ -107,6 +115,11 @@ export class DataToolsComponent implements OnInit {
             [this.text('customers'), String(state.customers.length)],
             [this.text('payments'), String(state.payments.length)],
             [this.text('receipts'), String(state.receipts.length)],
+            [this.text('users'), String(state.users.length)],
+            [
+              this.text('sourceDate'),
+              parsed.exportedAt ? String(parsed.exportedAt) : this.text('unknownDate'),
+            ],
           ],
           confirmLabel: this.text('importConfirm'),
           danger: true,
@@ -114,6 +127,7 @@ export class DataToolsComponent implements OnInit {
         () =>
           defer(() => {
             this.data.restoreBackup(raw);
+            this.unsaved.discardAll();
             this.session.clear();
             this.router.navigate(['/login']);
             return of(true);

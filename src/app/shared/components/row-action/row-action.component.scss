@@ -79,3 +79,9 @@
     transition: none;
   }
 }
+
+.row-action-pay {
+  color: var(--wsm-primary);
+  border-color: var(--wsm-border-strong);
+  background: var(--wsm-primary-soft);
+}

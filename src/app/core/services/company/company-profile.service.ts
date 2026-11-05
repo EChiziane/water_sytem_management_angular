@@ -1,3 +1,4 @@
+import { writeBrowserData } from '@shared/utils/browser-storage';
 import { usesBrowserData } from '@shared/config/data-mode';
 import { PermissionService } from '@core/auth/permission.service';
 import { DataModeService } from '@core/data/data-mode.service';
@@ -87,7 +88,7 @@ export class CompanyProfileService {
           updatedAt: new Date().toISOString(),
           updatedBy: this.session.getUser()?.id || 'demo-user',
         };
-        localStorage.setItem(this.storageKey, JSON.stringify(saved));
+        writeBrowserData(this.storageKey, JSON.stringify(saved));
         return of(saved);
       });
     if (this.source$.value !== 'api')

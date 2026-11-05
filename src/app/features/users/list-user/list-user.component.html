@@ -1,3 +1,4 @@
+<app-request-state *ngIf="loadFailed" (retry)="loadUsers()"></app-request-state>
 <div class="content-wrapper compact-list-layout dense-list">
   <header class="page-header">
     <div class="compact-title-block">
@@ -31,6 +32,10 @@
   <div class="table-wrapper">
     <div class="table-scroll">
       <nz-table
+        [nzPageIndex]="pageIndex"
+        (nzPageIndexChange)="pageIndex = $event"
+        [nzLoading]="isLoading"
+        [nzNoResult]="loadFailed ? '' : emptyUsers"
         #nzTable
         [nzData]="listOfDisplayData"
         [nzScroll]="{ x: '1100px', y: 'calc(100dvh - 255px)' }"
@@ -114,7 +119,7 @@
   [nzWidth]="drawerWidth"
 >
   <nz-spin *nzDrawerContent [nzSpinning]="isSaving" nzTip="A gravar utilizador...">
-    <form [formGroup]="userForm" class="drawer-form" nz-form>
+    <form wsmProtectChanges [formGroup]="userForm" class="drawer-form" nz-form>
       <div class="drawer-section">
         <h3 class="section-title">Basic Information</h3>
 
@@ -126,21 +131,27 @@
         <div [nzGutter]="16" nz-row>
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
-              <nz-form-label nzRequired>Nome</nz-form-label>
-              <nz-form-control>
-                <input formControlName="name" nz-input placeholder="Nome do usuário" />
+              <nz-form-label nzRequired nzFor="user-name">Nome</nz-form-label>
+              <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
+                <input
+                  id="user-name"
+                  formControlName="name"
+                  nz-input
+                  placeholder="Nome do utilizador"
+                />
               </nz-form-control>
             </nz-form-item>
           </div>
 
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
-              <nz-form-label nzRequired>Email</nz-form-label>
-              <nz-form-control>
+              <nz-form-label nzRequired nzFor="user-email">Email</nz-form-label>
+              <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
                 <input
+                  id="user-email"
                   formControlName="email"
                   nz-input
-                  placeholder="Email do usuário"
+                  placeholder="Email do utilizador"
                   type="email"
                 />
               </nz-form-control>
@@ -151,9 +162,14 @@
         <div [nzGutter]="16" nz-row>
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
-              <nz-form-label nzRequired>Telefone</nz-form-label>
-              <nz-form-control>
-                <input formControlName="phone" nz-input placeholder="Telefone do usuário" />
+              <nz-form-label nzRequired nzFor="user-phone">Telefone</nz-form-label>
+              <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
+                <input
+                  id="user-phone"
+                  formControlName="phone"
+                  nz-input
+                  placeholder="Telefone do utilizador"
+                />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -161,7 +177,7 @@
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
               <nz-form-label nzRequired>Função</nz-form-label>
-              <nz-form-control>
+              <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
                 <nz-select formControlName="role" nzPlaceHolder="Selecione a função">
                   <nz-option
                     *ngFor="let role of roleOptions"
@@ -180,7 +196,7 @@
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
               <nz-form-label nzRequired>Estado</nz-form-label>
-              <nz-form-control>
+              <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
                 <nz-select formControlName="status">
                   <nz-option
                     [nzLabel]="'statuses.active.label' | translate"
@@ -205,7 +221,7 @@
           <div nz-col nzMd="12" nzSm="24" nzXs="24">
             <nz-form-item>
               <nz-form-label [nzRequired]="!currentEditingUserId">Senha</nz-form-label>
-              <nz-form-control>
+              <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
                 <input
                   formControlName="password"
                   nz-input
@@ -249,3 +265,7 @@
     </div>
   </ng-template>
 </nz-drawer>
+
+<ng-template #emptyUsers
+  ><p class="wsm-empty-copy">{{ 'ux.emptyUsers' | translate }}</p></ng-template
+>

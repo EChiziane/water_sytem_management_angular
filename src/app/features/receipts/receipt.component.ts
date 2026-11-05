@@ -1,3 +1,4 @@
+import { ListViewStateService } from '@core/services/dialogs/list-view-state.service';
 import { matchesBusinessYear } from '@shared/utils/billing-period';
 import { OperationConfirmationService } from '@core/services/dialogs/operation-confirmation.service';
 import { tap } from 'rxjs';
@@ -40,11 +41,21 @@ export class ReciboComponent implements OnInit {
     paymentId: new FormControl('', Validators.required),
   });
   isLoading = false;
+  loadFailed = false;
   totalRecibos = 0;
   recibosComFicheiro = 0;
   recibosSemCaminho = 0;
 
+  pageIndex = 1;
+  ngOnDestroy() {
+    this.views.save('receipts', {
+      searchValue: this.searchValue,
+      selectedYear: this.selectedYear,
+      pageIndex: this.pageIndex,
+    });
+  }
   constructor(
+    private views: ListViewStateService,
     private confirmations: OperationConfirmationService,
     private http: HttpClient,
     private reciboService: ReciboService,
@@ -56,10 +67,12 @@ export class ReciboComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    Object.assign(this, this.views.read('receipts'));
     this.getRecibos();
   }
 
   getRecibos() {
+    this.loadFailed = false;
     this.isLoading = true;
     forkJoin({
       receipts: this.customerPaymentInvoice.getCustomerPaymentInvoice(),
@@ -77,8 +90,9 @@ export class ReciboComponent implements OnInit {
           this.search();
           this.calcStats();
         },
-        error: () =>
-          this.message.error('Não foi possível carregar o arquivo de documentos. Tente novamente.'),
+        error: () => {
+          this.loadFailed = true;
+        },
       });
   }
 
@@ -98,9 +112,15 @@ export class ReciboComponent implements OnInit {
 
   getPayments() {
     this.isLoading = true;
-    this.paymentService.getPayments().subscribe((payments: Payment[]) => {
-      this.payments = payments;
-      this.isLoading = false;
+    this.paymentService.getPayments().subscribe({
+      next: (payments: Payment[]) => {
+        this.payments = payments;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.loadFailed = true;
+      },
     });
   }
 
@@ -137,7 +157,7 @@ export class ReciboComponent implements OnInit {
           next: () => {
             this.getRecibos();
             this.close();
-            this.message.success('Recibo atualizado com sucesso! ✅');
+            this.message.success('Recibo atualizado com sucesso.');
           },
           error: () => {
             this.message.error('Erro ao atualizar recibo. 🚫');
@@ -150,7 +170,7 @@ export class ReciboComponent implements OnInit {
           this.listOfDisplayData = [...this.dataSource];
           this.reciboForm.reset();
           this.close();
-          this.message.success('Recibo criado com sucesso! ✅');
+          this.message.success('Recibo criado com sucesso.');
         },
         error: () => {
           this.message.error('Erro ao criar recibo. 🚫');

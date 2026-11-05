@@ -159,7 +159,7 @@
     "viewShort": "Ver",
     "edit": "Editar registo",
     "editShort": "Editar",
-    "download": "Descarregar documento",
+    "download": "Baixar documento",
     "downloadShort": "Documento",
     "deactivate": "Desativar utilizador",
     "deactivateShort": "Desativar",
@@ -167,7 +167,9 @@
     "callShort": "Ligar",
     "noPayment": "Sem pagamento associado",
     "ownAccount": "Não pode desativar a sua própria conta",
-    "alreadyInactive": "Esta conta já está inativa"
+    "alreadyInactive": "Esta conta já está inativa",
+    "pay": "Registar pagamento do cliente, começando pelos meses mais antigos",
+    "payShort": "Pagar"
   },
   "years": {
     "year": "Ano",
@@ -258,12 +260,12 @@
     "spring": "Enviar backup para o Spring",
     "testSource": "Criar base de teste anonimizada",
     "list": "Ver backups privados",
-    "download": "Descarregar",
+    "download": "Baixar",
     "failed": "Não foi possível confirmar a operação. Os dados anteriores foram preservados.",
     "corrupt": "Não foi possível ler os dados. Use a exportação original para recuperação.",
     "invalid": "Cópia inválida ou incompatível. Os dados locais não foram substituídos.",
     "importTitle": "Substituir os dados locais?",
-    "importNote": "Uma cópia exata do estado atual será preservada neste navegador antes da substituição. Exporte-a também para um ficheiro. Esta ação afeta apenas este navegador e termina a sessão.",
+    "importNote": "Esta importação substitui os dados deste navegador e termina a sessão. Alterações de formulários ainda não guardadas serão descartadas. Uma cópia do estado guardado anterior será preservada antes da substituição.",
     "customers": "Clientes",
     "payments": "Pagamentos",
     "receipts": "Recibos",
@@ -273,7 +275,16 @@
     "springNote": "Contactar o servidor Spring e aguardar a confirmação de integridade da cópia. Se estiver a iniciar, esta operação pode demorar.",
     "testSourceNote": "Substituir apenas a base de teste na nuvem por uma cópia anonimizada e descarregá-la. Não altera produção nem os navegadores locais.",
     "done": "Operação confirmada.",
-    "lastSpring": "Último backup confirmado no Spring"
+    "lastSpring": "Último backup confirmado no Spring",
+    "exportRequested": "Download solicitado. Confirme que o ficheiro ficou guardado num local seguro.",
+    "backupDue": "Exporte uma cópia atualizada",
+    "backupCurrent": "Exportação recente solicitada",
+    "lastExportRequest": "Última exportação completa solicitada",
+    "neverExported": "Ainda não registada neste navegador",
+    "downloadCaution": "Esta data regista o pedido de download; não verifica se o ficheiro foi guardado. Uma exportação não sincroniza outros computadores.",
+    "users": "Utilizadores",
+    "sourceDate": "Data da cópia",
+    "unknownDate": "Não indicada"
   },
   "accountSecurity": {
     "productionPassword": "Pelo menos 12 caracteres; use uma credencial exclusiva.",
@@ -306,5 +317,23 @@
     "status": "Situação",
     "overdue": "Em atraso",
     "unpaid": "Por pagar"
+  },
+  "ux": {
+    "discardTitle": "Sair sem guardar?",
+    "discardNote": "Existem alterações por guardar. Se continuar, o que introduziu neste formulário será descartado.",
+    "discard": "Descartar alterações",
+    "keepEditing": "Continuar a editar",
+    "loadFailed": "Não foi possível carregar os registos",
+    "loadFailedNote": "Isto não significa que a lista esteja vazia. Tente novamente; os dados guardados não foram apagados.",
+    "retry": "Tentar novamente",
+    "fieldError": "Preencha este campo e confira o formato e os limites indicados.",
+    "storageFull": "Não foi possível guardar neste navegador. O armazenamento está cheio ou indisponível. Preserve o formulário, exporte uma cópia e liberte espaço antes de tentar novamente.",
+    "emptyUsers": "Nenhum utilizador corresponde à pesquisa.",
+    "paymentSaved": "Pagamento guardado e recibo disponível",
+    "receiptDownload": "Baixar recibo",
+    "dismiss": "Fechar aviso",
+    "backupReminder": "Backup: exporte uma cópia atualizada em Empresa",
+    "openPeriods": "Todas as mensalidades em aberto",
+    "oldestFirst": "O pagamento começa pelos meses mais antigos. O mês consultado em Dívidas não limita esta operação."
   }
 }

@@ -1,3 +1,6 @@
+import { ListViewStateService } from '@core/services/dialogs/list-view-state.service';
+import { UnsavedChangesService } from '@core/services/dialogs/unsaved-changes.service';
+import { OperationFeedbackService } from '@core/services/dialogs/operation-feedback.service';
 import { money } from '@shared/utils/payment-presentation';
 import { TranslationService } from '@core/services/i18n/translation.service';
 import { describeStatus } from '@shared/utils/status-presentation';
@@ -27,6 +30,7 @@ export class CustomerComponent implements OnInit {
 
   isSaving = false;
   isLoading = false;
+  loadFailed = false;
 
   searchValue = '';
   visible = false;
@@ -46,16 +50,31 @@ export class CustomerComponent implements OnInit {
   drawerPlacement: 'right' | 'bottom' = 'right';
 
   customerForm = new FormGroup({
-    name: new FormControl('', Validators.required),
+    name: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/\S/),
+      Validators.maxLength(100),
+    ]),
     contact: new FormControl('', [Validators.required, Validators.pattern('^[+0-9 ]+$')]),
-    address: new FormControl('', Validators.required),
+    address: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/\S/),
+      Validators.maxLength(240),
+    ]),
     status: new FormControl('ATIVO', Validators.required),
     valve: new FormControl(10, [Validators.required, Validators.min(0)]),
-    monthlyFee: new FormControl(750),
+    monthlyFee: new FormControl(750, [Validators.required, Validators.min(0)]),
     monthsInDebt: new FormControl(0, [Validators.required, Validators.min(0)]),
   });
 
+  pageIndex = 1;
+  ngOnDestroy() {
+    this.views.save('customers', { pageIndex: this.pageIndex });
+  }
   constructor(
+    private views: ListViewStateService,
+    private unsaved: UnsavedChangesService,
+    private feedback: OperationFeedbackService,
     private translations: TranslationService,
     public permissions: PermissionService,
     private confirmations: OperationConfirmationService,
@@ -66,6 +85,7 @@ export class CustomerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    Object.assign(this, this.views.read('customers'));
     for (const name of ['status', 'valve'] as const)
       if (!this.permissions.can('customers.lifecycle')) this.customerForm.controls[name].disable();
     if (!this.permissions.can('tariffs.manage')) this.customerForm.controls.monthlyFee.disable();
@@ -92,6 +112,7 @@ export class CustomerComponent implements OnInit {
   }
 
   getCustomers(): void {
+    this.loadFailed = false;
     this.isLoading = true;
 
     this.customerService
@@ -103,7 +124,9 @@ export class CustomerComponent implements OnInit {
           this.calculateStats();
           this.applyFilters();
         },
-        error: () => this.message.error('Erro ao carregar clientes.'),
+        error: () => {
+          this.loadFailed = true;
+        },
       });
   }
 
@@ -250,12 +273,16 @@ export class CustomerComponent implements OnInit {
           tap({
             next: () => {
               this.getCustomers();
-              this.closeCustomerDrawer();
+              this.closeCustomerDrawer(true);
               this.message.success(
                 editing ? 'Cliente atualizado com sucesso.' : 'Cliente criado com sucesso.',
               );
             },
-            error: () => this.message.error('Erro ao gravar cliente.'),
+            error: (error) =>
+              this.feedback.error(
+                error,
+                'Não foi possível guardar o cliente. Os dados do formulário foram preservados.',
+              ),
           }),
         );
       },
@@ -307,7 +334,9 @@ export class CustomerComponent implements OnInit {
     this.reports.downloadCustomerList(this.listOfDisplayData);
   }
 
-  closeCustomerDrawer(): void {
+  async closeCustomerDrawer(saved = false) {
+    if (this.isSaving && !saved) return;
+    if (!saved && this.customerForm.dirty && !(await this.unsaved.confirm())) return;
     this.isCustomerDrawerVisible = false;
     this.customerForm.reset();
     this.selectedCustomerId = null;

@@ -1,3 +1,4 @@
+import { OperationFeedbackService } from '@core/services/dialogs/operation-feedback.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { finalize, tap, of } from 'rxjs';
@@ -20,6 +21,7 @@ export class CompanyComponent implements OnInit {
   profile: CompanyProfile | null = null;
   readonly form;
   constructor(
+    private feedback: OperationFeedbackService,
     private fb: FormBuilder,
     public company: CompanyProfileService,
     private confirmations: OperationConfirmationService,
@@ -121,7 +123,10 @@ export class CompanyComponent implements OnInit {
               this.messages.success(this.text('saved'));
             },
             error: (error) =>
-              this.messages.error(this.text(error.status === 409 ? 'conflict' : 'saveError')),
+              this.feedback.error(
+                error,
+                this.text(error.status === 409 ? 'conflict' : 'saveError'),
+              ),
           }),
         );
       },

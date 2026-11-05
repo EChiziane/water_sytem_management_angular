@@ -1,3 +1,5 @@
+import { formatMonthLabel } from '@shared/utils/month-label';
+import { maputoMonthKey } from '@shared/utils/business-date';
 import { OperationConfirmationService } from '@core/services/dialogs/operation-confirmation.service';
 import { tap } from 'rxjs';
 
@@ -51,16 +53,7 @@ export class MonthlyChargeComponent implements OnInit {
         key: 'generate-month',
         title: this.confirmations.text('generateTitle'),
         description: this.confirmations.text('generateDescription'),
-        fields: [
-          [
-            this.confirmations.text('month'),
-            new Intl.DateTimeFormat('pt-MZ', {
-              month: 'long',
-              year: 'numeric',
-              timeZone: 'Africa/Maputo',
-            }).format(new Date()),
-          ],
-        ],
+        fields: [[this.confirmations.text('month'), formatMonthLabel(maputoMonthKey(new Date()))]],
         confirmLabel: this.confirmations.text('generate'),
       },
       () =>

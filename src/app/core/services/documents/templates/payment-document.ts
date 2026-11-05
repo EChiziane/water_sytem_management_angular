@@ -112,8 +112,10 @@ export function buildPaymentDocument(
     ['MORADA', payment.customerAddress || 'Não informada'],
     ['CONTACTO', payment.customerContact || 'Não informado'],
     [
-      'CONTA / VÁLVULA',
-      `${payment.customerId || 'Não informada'} / ${payment.customerValve ?? '-'}`,
+      payment.customerCode ? 'CONTA / VÁLVULA' : 'VÁLVULA',
+      payment.customerCode
+        ? `${payment.customerCode} / ${payment.customerValve ?? '-'}`
+        : String(payment.customerValve ?? 'Não informada'),
     ],
   ];
   autoTable(doc, {
@@ -189,7 +191,7 @@ export function buildPaymentDocument(
   y += 38;
   note(
     'REGISTO E RASTREABILIDADE',
-    `Registado por: ${payment.createdByName || 'Não informado'}. Identificador do pagamento: ${payment.id || 'Não informado'}.`,
+    `Registado por: ${payment.createdByName || 'Não informado'}. Referência da operação: ${payment.referenceCode || reference}.`,
   );
   if (Number(payment.tax))
     note(

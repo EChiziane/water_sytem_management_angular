@@ -1,3 +1,6 @@
+import { ListViewStateService } from '@core/services/dialogs/list-view-state.service';
+import { UnsavedChangesService } from '@core/services/dialogs/unsaved-changes.service';
+import { OperationFeedbackService } from '@core/services/dialogs/operation-feedback.service';
 import { usesBrowserData } from '@shared/config/data-mode';
 import { TranslationService } from '@core/services/i18n/translation.service';
 import { describeStatus } from '@shared/utils/status-presentation';
@@ -46,7 +49,14 @@ export class ListuserComponent {
   isUserDrawerVisible = false;
   isSaving = false;
 
+  pageIndex = 1;
+  ngOnDestroy() {
+    this.views.save('users', { searchValue: this.searchValue, pageIndex: this.pageIndex });
+  }
   constructor(
+    private views: ListViewStateService,
+    private unsaved: UnsavedChangesService,
+    private feedback: OperationFeedbackService,
     private translations: TranslationService,
     public session: AuthSessionService,
     private confirmations: OperationConfirmationService,
@@ -72,14 +82,26 @@ export class ListuserComponent {
     window.history.back();
   }
 
+  loadFailed = false;
+  isLoading = false;
   loadUsers() {
-    this.userService.getUsers().subscribe((users) => {
-      this.dataSource = users;
-      this.listOfDisplayData = [...users];
+    this.loadFailed = false;
+    this.isLoading = true;
+    this.userService.getUsers().subscribe({
+      next: (users) => {
+        this.isLoading = false;
+        this.dataSource = users;
+        this.listOfDisplayData = [...users];
 
-      this.totalUsers = users.length;
-      this.activeUsers = users.filter((u) => u.status === 'ACTIVE').length;
-      this.inactiveUsers = users.filter((u) => u.status === 'INACTIVE').length;
+        this.totalUsers = users.length;
+        this.activeUsers = users.filter((u) => u.status === 'ACTIVE').length;
+        this.inactiveUsers = users.filter((u) => u.status === 'INACTIVE').length;
+        this.search();
+      },
+      error: () => {
+        this.loadFailed = true;
+        this.isLoading = false;
+      },
     });
   }
 
@@ -125,17 +147,21 @@ export class ListuserComponent {
               if (id === this.session.getUser()?.id && userData.password) {
                 this.session.clear();
                 this.router.navigate(['/login']);
-                this.closeUserDrawer();
+                this.closeUserDrawer(true);
                 this.isSaving = false;
                 return;
               }
               this.loadUsers();
-              this.closeUserDrawer();
+              this.closeUserDrawer(true);
               this.message.success('Conta guardada com sucesso.');
               this.isSaving = false;
             },
             error: (error) => {
-              this.message.error(error.error?.message || 'Erro ao guardar a conta.');
+              this.feedback.error(
+                error,
+                error.error?.message ||
+                  'Não foi possível guardar a conta. O formulário foi preservado.',
+              );
               this.isSaving = false;
             },
           }),
@@ -145,6 +171,7 @@ export class ListuserComponent {
   }
 
   ngOnInit(): void {
+    Object.assign(this, this.views.read('users'));
     this.loadUsers();
   }
 
@@ -193,7 +220,9 @@ export class ListuserComponent {
     this.userForm.reset({ status: 'ACTIVE', role: 'OPERATOR', password: this.defaultPassword });
   }
 
-  closeUserDrawer() {
+  async closeUserDrawer(saved = false) {
+    if (this.isSaving && !saved) return;
+    if (!saved && this.userForm.dirty && !(await this.unsaved.confirm())) return;
     this.isUserDrawerVisible = false;
     this.currentEditingUserId = null;
     this.userForm.reset({ status: 'ACTIVE', role: 'OPERATOR', password: this.defaultPassword });

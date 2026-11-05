@@ -1,3 +1,4 @@
+<app-request-state *ngIf="loadFailed" (retry)="getPayments()"></app-request-state>
 <div class="content-wrapper compact-list-layout dense-list">
   <header class="page-header">
     <div class="compact-title-block">
@@ -11,13 +12,34 @@
       <nz-icon nzType="arrow-left"></nz-icon>
     </button>
   </header>
+  <section *ngIf="lastPayment" class="wsm-operation-result" role="status">
+    <div>
+      <strong>{{ 'ux.paymentSaved' | translate }}</strong>
+      <p>
+        {{ lastPayment.referenceCode }} · {{ lastPayment.customerName }} ·
+        {{ formatMoney(lastPayment.amount) }}
+      </p>
+    </div>
+    <div class="wsm-row-actions">
+      <app-row-action
+        action="view"
+        [route]="['/app/payment-detail', lastPayment.id]"
+        [context]="lastPayment.referenceCode"
+      ></app-row-action
+      ><button nz-button type="button" (click)="download(lastPayment)">
+        {{ 'ux.receiptDownload' | translate }}</button
+      ><button nz-button nzType="text" type="button" (click)="lastPayment = null">
+        {{ 'ux.dismiss' | translate }}
+      </button>
+    </div>
+  </section>
   <section class="filters-panel">
     <nz-input-group nzPrefixIcon="search" class="search-input">
       <input
         (ngModelChange)="filterData()"
         [(ngModel)]="searchValue"
         nz-input
-        placeholder="Pesquisar por codigo ou cliente"
+        placeholder="Pesquisar por código ou cliente"
         type="text"
       />
     </nz-input-group>
@@ -63,7 +85,7 @@
       <article *ngFor="let payment of listOfDisplayData" class="mobile-payment-card">
         <div class="mobile-card-topline">
           <div>
-            <span class="mobile-card-kicker">{{ payment.referenceCode || 'Sem codigo' }}</span>
+            <span class="mobile-card-kicker">{{ payment.referenceCode || 'Sem código' }}</span>
             <h3>{{ payment.customerName || 'Cliente sem nome' }}</h3>
           </div>
 
@@ -90,7 +112,7 @@
             </ul>
           </div>
           <div>
-            <dt>Metodo</dt>
+            <dt>Método</dt>
             <dd><app-info-tag kind="method" [value]="payment.paymentMethod"></app-info-tag></dd>
           </div>
           <div>
@@ -130,7 +152,7 @@
   </nz-spin>
 
   <ng-template #mobileEmptyPayments>
-    <div *ngIf="!isLoading" class="mobile-empty-state">
+    <div *ngIf="!isLoading && !loadFailed" class="mobile-empty-state">
       <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
       <h3>Nenhum pagamento encontrado</h3>
       <p>Limpa a pesquisa ou regista um novo pagamento.</p>
@@ -145,9 +167,11 @@
     <div class="table-scroll">
       <nz-spin [nzSpinning]="isLoading" nzSize="large" nzTip="A carregar pagamentos...">
         <nz-table
+          [nzPageIndex]="pageIndex"
+          (nzPageIndexChange)="pageIndex = $event"
           #nzTable
           [nzData]="listOfDisplayData"
-          [nzNoResult]="tableEmptyPayments"
+          [nzNoResult]="loadFailed ? '' : tableEmptyPayments"
           [nzPageSize]="8"
           [nzScroll]="{ x: '1330px', y: '440px' }"
           class="compact-payment-table"
@@ -155,11 +179,11 @@
         >
           <thead>
             <tr>
-              <th nzWidth="160px">Codigo</th>
+              <th nzWidth="160px">Código</th>
               <th nzWidth="220px">Cliente</th>
               <th nzWidth="130px">Montante</th>
-              <th nzWidth="160px">Mes de referencia</th>
-              <th nzWidth="100px">Metodo</th>
+              <th nzWidth="160px">Mês de referência</th>
+              <th nzWidth="100px">Método</th>
               <th nzWidth="140px">Estado</th>
               <th nzWidth="160px">Criado por</th>
               <th nzWidth="180px">Data</th>
@@ -253,13 +277,13 @@
   [nzWidth]="drawerWidth"
 >
   <nz-spin *nzDrawerContent [nzSpinning]="isSaving" nzTip="A gravar pagamento...">
-    <form [formGroup]="paymentForm" class="drawer-form" nz-form>
+    <form wsmProtectChanges [formGroup]="paymentForm" class="drawer-form" nz-form>
       <section class="drawer-section">
         <h3 class="section-title">Selecionar cliente</h3>
 
         <nz-form-item>
           <nz-form-label>Cliente</nz-form-label>
-          <nz-form-control>
+          <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
             <nz-select
               (ngModelChange)="onCustomerSelect($event)"
               formControlName="customerId"
@@ -280,8 +304,8 @@
 
       <section *ngIf="!selectedCustomer" class="drawer-empty-guide">
         <nz-empty nzNotFoundImage="simple" nzNotFoundContent=""></nz-empty>
-        <h3>Selecione um cliente com divida</h3>
-        <p>Depois da selecao, o resumo financeiro e os meses em aberto aparecem aqui.</p>
+        <h3>Selecione um cliente com dívida</h3>
+        <p>Depois da seleção, o resumo financeiro e os meses em aberto aparecem aqui.</p>
       </section>
 
       <section *ngIf="selectedCustomer" class="drawer-customer-card">
@@ -318,18 +342,39 @@
         </article>
 
         <article class="financial-card debt">
-          <span>Total em divida</span>
+          <span>Total em dívida</span>
           <strong>{{ formatMoney(selectedDebtTotal) }}</strong>
         </article>
       </section>
 
       <section *ngIf="selectedCustomer" class="drawer-section">
-        <h3 class="section-title">Informacoes do pagamento</h3>
+        <div class="payment-open-periods">
+          <strong
+            >{{ 'ux.openPeriods' | translate }} ({{
+              selectedCustomer.unpaidMonths?.length || 0
+            }})</strong
+          >
+          <p>{{ 'ux.oldestFirst' | translate }}</p>
+          <ul>
+            <li
+              *ngFor="let month of selectedCustomer.unpaidMonths"
+              [class.is-selected]="selectedMonths.includes(month)"
+            >
+              {{ formatMonth(month) }}
+            </li>
+          </ul>
+        </div>
+        <h3 class="section-title">Informações do pagamento</h3>
 
         <aside class="drawer-amount-card">
           <span>Total a pagar</span>
           <strong>{{ formatMoney(selectedPaymentTotal) }}</strong>
-          <small>{{ selectedMonths.length }} mes(es) selecionado(s)</small>
+          <small
+            >{{ selectedMonths.length }}
+            {{
+              selectedMonths.length === 1 ? 'mensalidade selecionada' : 'mensalidades selecionadas'
+            }}</small
+          >
 
           <ul *ngIf="selectedMonths.length" class="drawer-month-bullets">
             <li *ngFor="let m of selectedMonths">{{ formatMonth(m) }}</li>
@@ -338,28 +383,34 @@
 
         <div class="payment-entry-grid">
           <nz-form-item>
-            <nz-form-label>Numero de meses</nz-form-label>
-            <nz-form-control>
+            <nz-form-label nzRequired nzFor="payment-months">Número de meses</nz-form-label>
+            <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
               <input
                 (input)="onNumMonthsChange()"
                 [max]="selectedCustomer.unpaidMonths.length || 1"
                 [min]="1"
+                min="1"
+                step="1"
+                id="payment-months"
                 formControlName="numMonths"
                 nz-input
-                placeholder="Digite o numero de meses"
+                placeholder="Indique o número de mensalidades"
                 type="number"
               />
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label>Montante</nz-form-label>
-            <nz-form-control>
+            <nz-form-label nzRequired nzFor="payment-amount">Montante</nz-form-label>
+            <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
               <nz-input-group nzAddOnBefore="MZN">
                 <input
+                  min="0"
+                  step="0.01"
+                  id="payment-amount"
                   formControlName="amount"
                   nz-input
-                  placeholder="Digite o valor"
+                  placeholder="Indique o valor recebido"
                   type="number"
                 />
               </nz-input-group>
@@ -367,9 +418,9 @@
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label>Metodo de pagamento</nz-form-label>
-            <nz-form-control>
-              <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o metodo">
+            <nz-form-label>Método de pagamento</nz-form-label>
+            <nz-form-control [nzErrorTip]="'ux.fieldError' | translate">
+              <nz-select formControlName="paymentMethod" nzPlaceHolder="Selecione o método">
                 <nz-option
                   [nzLabel]="'metadata.methods.cash' | translate"
                   nzValue="CASH"

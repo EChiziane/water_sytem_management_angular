@@ -1,3 +1,4 @@
+import { formatMonthLabel } from './month-label';
 import type { Payment } from '../models/payment';
 
 export function money(value: number | null | undefined): string {
@@ -25,13 +26,7 @@ export function referenceMonths(reference: string | null | undefined): string[] 
     .map((value) => {
       const match = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(value);
       if (!match) return value;
-      const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, 1));
-      const label = new Intl.DateTimeFormat('pt-MZ', {
-        month: 'long',
-        year: 'numeric',
-        timeZone: 'UTC',
-      }).format(date);
-      return label.charAt(0).toUpperCase() + label.slice(1);
+      return formatMonthLabel(value);
     });
 }
 
