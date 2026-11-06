@@ -527,3 +527,37 @@
     }
   }
 }
+/* Compact entry on tablets and phones: the form stays within easy reach. */
+.back-to-site {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--wsm-primary);
+}
+.access-help {
+  margin-top: 16px;
+  color: var(--wsm-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+@media (max-width: 980px) {
+  .brand-panel {
+    min-height: auto;
+    padding: 20px 24px;
+  }
+  .brand-copy {
+    display: none;
+  }
+  .auth-panel {
+    padding-top: 24px;
+    align-items: start;
+  }
+}
+@media (max-width: 560px) {
+  .brand-panel {
+    min-height: auto;
+    padding: 18px;
+  }
+  .auth-panel {
+    padding: 12px 14px 28px;
+  }
+}

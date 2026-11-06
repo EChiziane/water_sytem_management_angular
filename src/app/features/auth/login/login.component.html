@@ -7,29 +7,18 @@
 
     <div class="brand-copy">
       <p class="eyebrow">Gestão de clientes e pagamentos</p>
-      <h1>Entre no painel com segurança e continue o atendimento.</h1>
+      <h1>O seu espaço de trabalho diário.</h1>
       <p>
         Acompanhe clientes, pagamentos, recibos e cobranças num espaço simples, consistente e
         preparado para o trabalho diário.
       </p>
     </div>
-
-    <div class="brand-metrics">
-      <div>
-        <strong>24/7</strong>
-        <span>Dados organizados</span>
-      </div>
-      <div>
-        <strong>Seguro</strong>
-        <span>Acesso autenticado</span>
-      </div>
-    </div>
   </section>
 
-  <section class="auth-panel" aria-label="Área do Sistema">
+  <section class="auth-panel" aria-label="Área de funcionários">
     <nz-card class="login-card">
       <div class="card-heading">
-        <span class="section-label">Área do Sistema</span>
+        <span class="section-label">Área de funcionários</span>
         <h2>Bem-vindo de volta</h2>
         <p>Use as suas credenciais para aceder ao painel.</p>
       </div>
@@ -80,9 +69,12 @@
         </label>
 
         <div class="options">
-          <label formControlName="rememberMe" nz-checkbox>Lembrar-me</label>
-
-          <button (click)="openForgotPasswordModal()" class="text-button" type="button">
+          <button
+            *ngIf="!browserMode"
+            (click)="openForgotPasswordModal()"
+            class="text-button"
+            type="button"
+          >
             Esqueceu a senha?
           </button>
         </div>
@@ -105,13 +97,18 @@
         <nz-alert
           *ngIf="responseMessage"
           [nzMessage]="responseMessage"
+          role="alert"
+          aria-live="polite"
           class="error-alert"
           nzShowIcon
           nzType="error"
         >
         </nz-alert>
 
-        <p>{{ 'access.contactAdmin' | translate }}</p>
+        <p class="access-help">
+          Para obter acesso ou recuperar a senha, contacte o administrador da empresa.
+        </p>
+        <a class="back-to-site" routerLink="/landing-page">Voltar ao site da {{ company.name }}</a>
       </form>
     </nz-card>
   </section>

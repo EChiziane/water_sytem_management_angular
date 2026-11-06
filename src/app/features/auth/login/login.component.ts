@@ -4,6 +4,8 @@ import { COMPANY_PROFILE } from '@shared/config/company-profile';
 import { CompanyProfile } from '@shared/models/company-profile';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
+import { AuthSessionService } from '@core/auth/auth-session.service';
+import { usesBrowserData } from '@shared/config/data-mode';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -15,6 +17,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
+  readonly browserMode = usesBrowserData();
   company: Pick<CompanyProfile, 'name' | 'address' | 'contact' | 'email' | 'tagline'> = {
     ...COMPANY_PROFILE,
   };
@@ -23,7 +26,6 @@ export class LoginComponent implements OnInit {
   userForm = new FormGroup({
     login: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
-    rememberMe: new FormControl(false),
   });
 
   isRegisterVisible = false;
@@ -54,13 +56,17 @@ export class LoginComponent implements OnInit {
   constructor(
     private translations: TranslationService,
     private authService: AuthService,
+    private session: AuthSessionService,
     private companies: CompanyProfileService,
     private router: Router,
     private msg: NzMessageService,
   ) {}
 
   ngOnInit(): void {
-    this.logout();
+    if (this.session.hasValidSession()) {
+      this.router.navigate(['/app/dashboard']);
+      return;
+    }
     this.companies.getPublicProfile().subscribe((profile) => (this.company = profile));
   }
 
@@ -78,6 +84,8 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
+    if (this.isLoading) return;
+    this.responseMessage = null;
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       return;
@@ -125,6 +133,7 @@ export class LoginComponent implements OnInit {
   }
 
   openForgotPasswordModal(): void {
+    if (this.browserMode) return;
     this.isForgotPasswordVisible = true;
     this.recoveryStep = 0;
     this.recoveryPreview = null;

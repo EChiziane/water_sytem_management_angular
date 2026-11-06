@@ -600,3 +600,30 @@ nz-content {
     padding: 22px 18px;
   }
 }
+.visit-panel {
+  color: var(--wsm-text);
+  h3 {
+    margin: 0;
+    font-size: 22px;
+    color: var(--wsm-heading);
+  }
+  p {
+    margin: 0;
+    line-height: 1.7;
+    color: var(--wsm-muted);
+  }
+  .primary-cta {
+    width: fit-content;
+  }
+}
+section[id] {
+  scroll-margin-top: 88px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .service-card {
+    transition: none;
+  }
+  .service-card:hover {
+    transform: none;
+  }
+}

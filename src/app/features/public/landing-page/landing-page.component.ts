@@ -1,7 +1,8 @@
 import { CompanyProfileService } from '@core/services/company/company-profile.service';
 import { COMPANY_PROFILE } from '@shared/config/company-profile';
 import { CompanyProfile } from '@shared/models/company-profile';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,6 +12,14 @@ import { Router } from '@angular/router';
   styleUrl: './landing-page.component.scss',
 })
 export class LandingPageComponent {
+  readonly currentYear = new Date().getFullYear();
+  readonly foundedYear = 2012;
+  readonly openingHours = 'Seg–Sex: 08h às 17h | Sáb: 08h às 12h';
+  get directionsUrl(): string {
+    return (
+      'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(this.company.address)
+    );
+  }
   menuVisible = false;
   company: Pick<CompanyProfile, 'name' | 'address' | 'contact' | 'email' | 'tagline'> = {
     ...COMPANY_PROFILE,
@@ -25,11 +34,18 @@ export class LandingPageComponent {
   constructor(
     private router: Router,
     private companies: CompanyProfileService,
+    @Inject(DOCUMENT) private document: Document,
   ) {
     this.companies.getPublicProfile().subscribe((profile) => (this.company = profile));
   }
 
   goToLogin(): void {
     this.router.navigate(['/login']);
+  }
+  scrollToSection(event: Event): void {
+    event.preventDefault();
+    this.menuVisible = false;
+    const id = (event.currentTarget as HTMLAnchorElement).hash.slice(1);
+    this.document.getElementById(id)?.scrollIntoView({ block: 'start' });
   }
 }

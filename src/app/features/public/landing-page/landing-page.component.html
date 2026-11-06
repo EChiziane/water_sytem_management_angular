@@ -1,16 +1,21 @@
 <nz-layout class="landing-shell">
   <nz-header class="site-header">
     <div class="header-content">
-      <a class="brand" href="#inicio" [attr.aria-label]="company.name">
+      <a
+        class="brand"
+        href="/landing-page#inicio"
+        (click)="scrollToSection($event)"
+        [attr.aria-label]="company.name"
+      >
         <span class="brand-mark">AC</span>
         <span>{{ company.name }}</span>
       </a>
 
       <nav class="desktop-nav" aria-label="Navegação principal">
-        <a href="#quem-somos">Quem Somos</a>
-        <a href="#servicos">Serviços</a>
-        <a href="#contactos">Contactos</a>
-        <a href="#localizacao">Onde Estamos</a>
+        <a href="/landing-page#quem-somos" (click)="scrollToSection($event)">Quem Somos</a>
+        <a href="/landing-page#servicos" (click)="scrollToSection($event)">Serviços</a>
+        <a href="/landing-page#contactos" (click)="scrollToSection($event)">Contactos</a>
+        <a href="/landing-page#localizacao" (click)="scrollToSection($event)">Onde Estamos</a>
       </nav>
 
       <div class="header-actions">
@@ -24,7 +29,7 @@
         </a>
 
         <button (click)="goToLogin()" class="login-button" nz-button nzType="primary">
-          Área do Sistema
+          Área de funcionários
         </button>
 
         <button
@@ -47,10 +52,10 @@
     nzTitle="{{ company.name }}"
   >
     <nav *nzDrawerContent class="mobile-nav" aria-label="Navegação móvel">
-      <a (click)="menuVisible = false" href="#quem-somos">Quem Somos</a>
-      <a (click)="menuVisible = false" href="#servicos">Serviços</a>
-      <a (click)="menuVisible = false" href="#contactos">Contactos</a>
-      <a (click)="menuVisible = false" href="#localizacao">Onde Estamos</a>
+      <a href="/landing-page#quem-somos" (click)="scrollToSection($event)">Quem Somos</a>
+      <a href="/landing-page#servicos" (click)="scrollToSection($event)">Serviços</a>
+      <a href="/landing-page#contactos" (click)="scrollToSection($event)">Contactos</a>
+      <a href="/landing-page#localizacao" (click)="scrollToSection($event)">Onde Estamos</a>
 
       <a
         (click)="menuVisible = false"
@@ -63,7 +68,7 @@
       </a>
 
       <button (click)="goToLogin(); menuVisible = false" nz-button nzBlock nzType="primary">
-        Área do Sistema
+        Área de funcionários
       </button>
     </nav>
   </nz-drawer>
@@ -73,31 +78,30 @@
       <div class="hero-overlay"></div>
 
       <div class="hero-content">
-        <p class="hero-kicker">Água potável com entrega local</p>
+        <p class="hero-kicker">Abastecimento de água desde 2012</p>
         <h1>{{ company.name }}</h1>
         <p class="hero-copy">
-          Distribuição de água segura, tratada e acessível para famílias, escolas e empresas em
-          Maputo.
+          Abastecimento de água por ligação para famílias e empresas. Visite-nos para conhecer as
+          condições de instalação e tratar do seu atendimento.
         </p>
 
         <div class="hero-actions">
+          <a class="primary-cta" href="/landing-page#contactos" (click)="scrollToSection($event)"
+            >Visite-nos <span nz-icon nzType="arrow-right"></span
+          ></a>
           <a
-            class="primary-cta"
+            class="secondary-cta"
             [href]="'https://wa.me/' + phoneDigits"
             target="_blank"
             rel="noopener"
+            >Falar pelo WhatsApp</a
           >
-            Pedir informação
-            <span nz-icon nzType="arrow-right"></span>
-          </a>
-
-          <button (click)="goToLogin()" class="secondary-cta" nz-button>Entrar no sistema</button>
         </div>
       </div>
 
       <div class="hero-metrics" aria-label="Indicadores de serviço">
         <div>
-          <strong>2010</strong>
+          <strong>{{ foundedYear }}</strong>
           <span>Desde</span>
         </div>
         <div>
@@ -119,9 +123,9 @@
         </div>
 
         <p>
-          A {{ company.name }} é uma empresa familiar dedicada à produção e distribuição de água
-          potável. O foco é manter um serviço confiável, com acompanhamento próximo aos clientes e
-          atenção à qualidade em cada entrega.
+          A {{ company.name }} é uma empresa familiar dedicada ao abastecimento de água potável. O
+          foco é manter um serviço confiável, com acompanhamento próximo aos clientes e atenção ao
+          acompanhamento de cada ligação.
         </p>
       </div>
     </section>
@@ -135,14 +139,14 @@
       <div class="service-grid">
         <article class="service-card">
           <span class="service-icon" nz-icon nzType="safety-certificate"></span>
-          <h3>Água purificada</h3>
-          <p>Tratamento e controlo de qualidade para consumo seguro.</p>
+          <h3>Abastecimento de água</h3>
+          <p>Serviço de abastecimento para o dia a dia das famílias e empresas.</p>
         </article>
 
         <article class="service-card">
           <span class="service-icon" nz-icon nzType="car"></span>
-          <h3>Distribuição</h3>
-          <p>Entrega organizada para residências, empresas e instituições.</p>
+          <h3>Pedido de ligação</h3>
+          <p>Informações sobre instalação, zona de atendimento e condições de adesão.</p>
         </article>
 
         <article class="service-card">
@@ -156,7 +160,7 @@
     <section id="contactos" class="contact-band">
       <div class="contact-content">
         <span class="section-label">Contactos</span>
-        <h2>Fale connosco para pedidos e informações.</h2>
+        <h2>O atendimento começa aqui.</h2>
 
         <p>{{ company.address }}</p>
         <div class="contact-list">
@@ -170,48 +174,42 @@
           </a>
           <span>
             <span nz-icon nzType="clock-circle"></span>
-            Seg-Sex: 08h às 17h | Sáb: 08h às 12h
+            {{ openingHours }}
           </span>
         </div>
       </div>
 
-      <form class="message-panel">
-        <label>
-          Nome
-          <input placeholder="O seu nome" type="text" />
-        </label>
-        <label>
-          Contacto
-          <input placeholder="+258" type="tel" />
-        </label>
-        <label>
-          Mensagem
-          <textarea placeholder="Como podemos ajudar?"></textarea>
-        </label>
-        <button nz-button nzType="primary" type="submit">Enviar mensagem</button>
-      </form>
+      <aside class="message-panel visit-panel">
+        <span class="section-label">Atendimento presencial</span>
+        <h3>Venha falar connosco</h3>
+        <p>
+          Para pedidos de ligação, dúvidas sobre mensalidades e acompanhamento do serviço, visite o
+          nosso ponto de atendimento.
+        </p>
+        <p>{{ company.address }}</p>
+        <p>{{ openingHours }}</p>
+        <a class="primary-cta" [href]="directionsUrl" target="_blank" rel="noopener"
+          >Consultar direções</a
+        >
+        <p>Prefere contactar antes de sair?</p>
+        <a [href]="'https://wa.me/' + phoneDigits" target="_blank" rel="noopener"
+          >Falar pelo WhatsApp</a
+        >
+      </aside>
     </section>
 
     <section id="localizacao" class="location-band">
       <div class="location-copy">
         <span class="section-label">Onde Estamos</span>
-        <h2>Bairro Cumbeza, Maputo</h2>
-        <p>Av. de Moçambique, nº 534, Maputo, Moçambique.</p>
-      </div>
-
-      <div class="map-frame">
-        <iframe
-          title="Localização da {{ company.name }}"
-          loading="lazy"
-          src="https://maps.google.com/maps?q=Maputo&t=&z=15&ie=UTF8&iwloc=&output=embed"
-        >
-        </iframe>
+        <h2>Visite o nosso ponto de atendimento</h2>
+        <p>{{ company.address }}</p>
+        <a [href]="directionsUrl" target="_blank" rel="noopener">Ver localização no mapa</a>
       </div>
     </section>
   </nz-content>
 
   <nz-footer class="footer">
-    <span>© 2026 {{ company.name }}. Todos os direitos reservados.</span>
-    <button (click)="goToLogin()" nz-button nzType="default">Área do Sistema</button>
+    <span>© {{ currentYear }} {{ company.name }}. Todos os direitos reservados.</span>
+    <button (click)="goToLogin()" nz-button nzType="default">Área de funcionários</button>
   </nz-footer>
 </nz-layout>
